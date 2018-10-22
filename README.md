@@ -1,6 +1,5 @@
 # Sistema Evidência
-|
--------------------- | 
+
 O projeto da Companhia Prudentina de Desenvolvimento - PRUDENCO em parceria com a FCT Unesp de Presidente Prudente e alunos do curso de Ciência da Computação, aplica um pouco do conceito de Cidades Inteligentes para sistematizar e automatizar o processos de coletas de diversos tipos de lixo na cidade. Por meio da administração, fiscalização e operação sustentada pelo Sistema Evidênvia a Companhia objetiva melhorar a qualidade do seu serviço oferecido. |
 
 Em resumo, o Sistema Evidência deve permitir o gerenciamento dos serviços de coleta, oferecendo funcionalidades como mapeamento de casos, gestão de ordens de serviço, designação de responsabilidades, fiscalização da execução por meio de fotos, visualização de dados departamentais e operacionais, entre outras funcionalidades. 
@@ -14,7 +13,7 @@ Futuramente, a Companhia em parceria com a Universidade, utilizará os dados lev
 #### [Matheus Palmeira Gonçalves dos Santos](https://www.linkedin.com/in/matheuspalmeir/)
 #### [Gustavo Gimenez de Deus](https://www.linkedin.com/in/gustavo-gimenez-662424163/)
 #### [Pietro Barcarollo Schiavinato](https://www.linkedin.com/in/pietro-barcarollo-schiavinato-b52b3b136/)
-#### [Pedro Antônio Cerderinha](https://www.facebook.com/pedro.cerdeirinha)
+#### [Darlan Murilo Nakamura de Araújo](https://www.facebook.com/darlannakamura)
 
 
 # Professor Orientador
