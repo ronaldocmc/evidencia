@@ -1,0 +1,9 @@
+.btn-confirmar-senha{
+	width: 100%; 
+	background-color: grey;
+	color: white;
+}
+
+.btn-confirmar-senha:hover{
+	background-color: red;
+}

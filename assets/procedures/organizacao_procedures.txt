@@ -1,0 +1,206 @@
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_organizacao`(
+    IN in_dominio VARCHAR(10),
+    IN in_nome VARCHAR(60),
+	IN in_cnpj VARCHAR(18),
+	IN in_endereco_logradouro VARCHAR(100),
+	IN in_endereco_numero INT,
+	IN in_endereco_complemento VARCHAR(30),
+	IN in_bairro_fk INT,
+	IN in_municipio_fk INT)
+BEGIN
+		DECLARE count_municipio, count_bairro, count_endereco INT;
+        DECLARE endereco_fk, local_fk, enderecos_bairros_fk INT;
+    
+    	DECLARE municipio CURSOR FOR SELECT count(*) FROM municipios WHERE municipio_pk = in_municipio_fk;
+    
+        DECLARE bairro CURSOR FOR SELECT count(*) FROM bairros WHERE bairro_pk = in_bairro_fk;
+    
+        DECLARE endereco CURSOR FOR SELECT count(*),endereco_pk FROM enderecos WHERE endereco_logradouro = in_endereco_logradouro AND endereco_numero = in_endereco_numero AND endereco_complemento = in_endereco_complemento;
+        
+        DECLARE locais CURSOR FOR         SELECT locais.local_id FROM enderecos INNER JOIN enderecos_bairros ON enderecos_bairros.endereco_fk = endereco_fk INNER JOIN locais ON locais.endereco_bairro_fk = enderecos_bairros.endereco_bairro_pk;
+
+	OPEN municipio;
+    OPEN bairro;
+    OPEN endereco;
+    
+    FETCH municipio INTO count_municipio;
+    FETCH bairro INTO count_bairro;
+    FETCH endereco INTO count_endereco, endereco_fk;
+    
+        IF count_municipio > 0 AND count_bairro > 0 THEN
+    
+    	    	IF count_endereco < 1 THEN
+        	
+                        INSERT INTO `enderecos`(`endereco_pk`, `endereco_logradouro`, `endereco_numero`, `endereco_complemento`) VALUES (NULL, 	in_endereco_logradouro, in_endereco_numero, in_endereco_complemento);
+
+            SET endereco_fk = LAST_INSERT_ID();
+            
+                            INSERT INTO `enderecos_bairros`(`endereco_bairro_pk`, `endereco_fk`, `bairro_fk`) VALUES (NULL, endereco_fk, in_bairro_fk);   
+    	
+        SET enderecos_bairros_fk = LAST_INSERT_ID();
+        INSERT INTO `locais`(`local_id`, `municipio_fk`, `endereco_bairro_fk`) VALUES (NULL,in_municipio_fk, enderecos_bairros_fk);
+
+        SET local_fk = LAST_INSERT_ID();
+
+        ELSE
+        
+        OPEN locais;
+        FETCH locais INTO local_fk;
+		CLOSE locais;
+        
+        END IF;
+        
+                        INSERT INTO `organizacoes`(`organizacao_pk`, `organizacao_nome`, `organizacao_cnpj`, `local_fk`) VALUES (in_dominio ,in_nome,in_cnpj, local_fk);
+        
+    END IF;
+    CLOSE municipio;
+    CLOSE bairro;
+    CLOSE endereco;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `debug_msg`(IN `enabled` INT, IN `msg` VARCHAR(255))
+BEGIN
+  IF enabled THEN BEGIN
+    INSERT INTO `debug`(`id`, `mensagem`) VALUES (NULL,msg);
+  END; END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_organizacao`(IN `in_dominio` VARCHAR(10), IN `in_nome` VARCHAR(60), IN `in_cnpj` VARCHAR(18), IN `in_endereco_logradouro` VARCHAR(100), IN `in_endereco_numero` INT, IN `in_endereco_complemento` VARCHAR(30), IN `in_bairro_fk` INT, IN `in_municipios_fk` INT, IN `in_locais_fk` INT, IN `in_organizacao_pk` VARCHAR(10))
+BEGIN
+		DECLARE count_municipio, count_bairro, count_endereco INT;
+        DECLARE municipios_fk, endereco_fk, local_fk, bairro_fk, enderecos_bairros_fk INT;
+        DECLARE var_endereco_logradouro VARCHAR(100);
+        DECLARE var_endereco_numero INT;
+        DECLARE var_endereco_complemento VARCHAR(30);
+    
+        DECLARE endereco CURSOR FOR SELECT count(*),endereco_pk FROM enderecos WHERE endereco_logradouro = in_endereco_logradouro AND endereco_numero = in_endereco_numero AND endereco_complemento = in_endereco_complemento;
+        
+        DECLARE locais CURSOR FOR SELECT locais.municipio_fk, locais.endereco_bairro_fk FROM locais WHERE locais.local_id = in_locais_fk;
+    	DECLARE enderecos_bairros CURSOR FOR SELECT enderecos_bairros.endereco_fk, enderecos_bairros.bairro_fk FROM enderecos_bairros WHERE enderecos_bairros.endereco_bairro_pk = enderecos_bairros_fk;
+        DECLARE enderecos CURSOR FOR SELECT enderecos.endereco_logradouro, enderecos.endereco_numero, enderecos.endereco_complemento FROM enderecos WHERE enderecos.endereco_pk = endereco_fk;
+        DECLARE select_endereco CURSOR FOR SELECT count(*), enderecos.endereco_pk FROM enderecos WHERE enderecos.endereco_logradouro = in_endereco_logradouro AND enderecos.endereco_numero = in_endereco_numero AND enderecos.endereco_complemento = in_endereco_complemento;
+        DECLARE select_locais CURSOR FOR SELECT locais.local_id FROM enderecos INNER JOIN enderecos_bairros ON enderecos_bairros.endereco_fk = endereco_fk INNER JOIN locais ON locais.endereco_bairro_fk = enderecos_bairros.endereco_bairro_pk;
+    
+    SET @enabled = TRUE;
+    
+    TRUNCATE debug;
+    call debug_msg(@enabled,"INICIANDO PROCEDIMENTO");
+    
+    OPEN locais;
+    FETCH locais INTO municipios_fk, enderecos_bairros_fk;
+	
+    call debug_msg(@enabled,CONCAT("MUNICIPIO PASSADO: ", in_municipios_fk));
+    call debug_msg(@enabled,CONCAT("MUNICIPIO ENCONTRADO: ", municipios_fk));
+    call debug_msg(@enabled,CONCAT("BAIRRO ENCONTRADO: ", enderecos_bairros_fk));    
+    
+    IF municipios_fk = in_municipios_fk THEN
+        call debug_msg(@enabled,"O MUNICIPIO NÃO MUDOU");
+
+    	OPEN enderecos_bairros;
+        FETCH enderecos_bairros INTO endereco_fk, bairro_fk;
+        
+        call debug_msg(@enabled,CONCAT("endereco_fk: ", endereco_fk));
+        call debug_msg(@enabled,CONCAT("bairro_fk: ", bairro_fk));
+           
+            IF bairro_fk = in_bairro_fk THEN 
+                call debug_msg(@enabled,"O BAIRRO NÃO MUDOU");
+                OPEN enderecos;
+                FETCH enderecos INTO var_endereco_logradouro, var_endereco_numero, var_endereco_complemento;
+                
+                call debug_msg(@enabled,CONCAT("enderecos: ", var_endereco_logradouro));
+        
+        	    IF var_endereco_logradouro = in_endereco_logradouro AND var_endereco_numero = in_endereco_numero AND var_endereco_complemento = in_endereco_complemento THEN
+                    
+                    call debug_msg(@enabled,CONCAT("NADA MUDOU, APENAS OS DADOS DA ORGANIZAÇÃO"));
+                    UPDATE `organizacoes` SET `organizacao_pk`= in_dominio,`organizacao_nome`= in_nome,`organizacao_cnpj`= in_cnpj WHERE organizacoes.organizacao_pk = in_organizacao_pk;
+            
+                ELSE
+                    call debug_msg(@enabled,"O ENDEREÇO MUDOU, VERIFICANDO SE ELE EXISTE." );
+                    OPEN select_endereco;
+                    FETCH select_endereco INTO count_endereco, endereco_fk;
+
+                    call debug_msg(@enabled,CONCAT("count_endereco: ",count_endereco));
+
+                    IF endereco_fk != NULL THEN
+                        call debug_msg(@enabled,CONCAT("endereco_fk: ",endereco_fk));
+                    END IF;
+								
+                    IF count_endereco < 1 THEN
+
+                        call debug_msg(@enabled,"O ENDEREÇO NÃO EXISTE, SERÁ INSERIDO");
+
+                        INSERT INTO `enderecos`(`endereco_pk`, `endereco_logradouro`, `endereco_numero`, `endereco_complemento`) VALUES (NULL, 	in_endereco_logradouro, in_endereco_numero, in_endereco_complemento);
+                        SET endereco_fk = LAST_INSERT_ID();
+
+                        INSERT INTO `enderecos_bairros`(`endereco_bairro_pk`, `endereco_fk`, `bairro_fk`) VALUES (NULL, endereco_fk, in_bairro_fk);   
+                        SET enderecos_bairros_fk = LAST_INSERT_ID();
+
+                        INSERT INTO `locais`(`local_id`, `municipio_fk`, `endereco_bairro_fk`) VALUES (NULL,in_municipios_fk, enderecos_bairros_fk);
+                        SET local_fk = LAST_INSERT_ID();
+                    
+                        call debug_msg(@enabled,"ENDEREÇO INSERIDO");
+                    ELSE
+                        call debug_msg(@enabled,"O ENDEREÇO EXISTE E SERÁ BUSCADO PARA ATUALIZAR A ORGANIZAÇÃO");             
+                        OPEN select_locais;
+                        FETCH select_locais INTO local_fk; 
+                    
+                    END IF;
+
+                    call debug_msg(@enabled,"REALIZANDO O UPDATE");
+                    UPDATE `organizacoes` SET `organizacao_pk`= in_dominio,`organizacao_nome`= in_nome,`organizacao_cnpj`= in_cnpj,`local_fk`= local_fk WHERE organizacoes.organizacao_pk = in_organizacao_pk;
+                    
+                END IF;
+            ELSE
+        	    call debug_msg(@enabled,"O BAIRRO MUDOU");
+                OPEN enderecos;           
+       		    FETCH enderecos INTO var_endereco_logradouro, var_endereco_numero, var_endereco_complemento;
+        
+                IF var_endereco_logradouro = in_endereco_logradouro AND var_endereco_numero = in_endereco_numero AND var_endereco_complemento = in_endereco_complemento THEN
+                    call debug_msg(@enabled,"O ENDEREÇO NÃO MUDOU MAS TEMOS QUE INSERIR O ENDEREÇO EM OUTRO BAIRRO");
+                    INSERT INTO `enderecos_bairros`(`endereco_bairro_pk`, `endereco_fk`, `bairro_fk`) VALUES (NULL,endereco_fk, in_bairro_fk);
+                ELSE
+                    call debug_msg(@enabled,"O ENDEREÇO MUDOU E O BAIRRO TAMBÉM, DEVEMOS VERIFICAR SE EXISTE O ENDEREÇO");
+                    OPEN select_endereco;
+                    FETCH select_endereco INTO count_endereco, endereco_fk;
+
+                    IF count_endereco < 1 THEN
+                        call debug_msg(@enabled,"O ENDEREÇO NÃO EXISTE E SERÁ INSERIDO");
+                        INSERT INTO `enderecos`(`endereco_pk`, `endereco_logradouro`, `endereco_numero`, `endereco_complemento`) VALUES (NULL, 	in_endereco_logradouro, in_endereco_numero, in_endereco_complemento);
+                        SET endereco_fk = LAST_INSERT_ID();
+                    END IF;
+
+                    call debug_msg(@enabled,"ADICIONANDO O ENDEREÇO AO BAIRRO");
+                                    
+                    INSERT INTO `enderecos_bairros`(`endereco_bairro_pk`, `endereco_fk`, `bairro_fk`) VALUES (NULL,endereco_fk, in_bairro_fk);
+                    SET enderecos_bairros_fk = LAST_INSERT_ID();
+
+                    INSERT INTO `locais`(`local_id`, `municipio_fk`, `endereco_bairro_fk`) VALUES (NULL,in_municipio_fk, enderecos_bairros_fk);
+                    SET local_fk = LAST_INSERT_ID();
+                
+                    UPDATE `organizacoes` SET `organizacao_pk`= in_dominio,`organizacao_nome`= in_nome,`organizacao_cnpj`= in_cnpj,`local_fk`= local_fk WHERE organizacoes.organizacao_pk = in_organizacao_pk;
+            
+                END IF;
+            END IF;
+	    ELSE
+  		call debug_msg(@enabled,"O MUNICIPIO MUDOU");
+          
+        INSERT INTO `enderecos`(`endereco_pk`, `endereco_logradouro`, `endereco_numero`, `endereco_complemento`) VALUES (NULL, 	in_endereco_logradouro, in_endereco_numero, in_endereco_complemento);
+        SET endereco_fk = LAST_INSERT_ID();
+
+        INSERT INTO `enderecos_bairros`(`endereco_bairro_pk`, `endereco_fk`, `bairro_fk`) VALUES (NULL, endereco_fk, in_bairro_fk);   
+        SET enderecos_bairros_fk = LAST_INSERT_ID();
+
+        INSERT INTO `locais`(`local_id`, `municipio_fk`, `endereco_bairro_fk`) VALUES (NULL,in_municipios_fk, enderecos_bairros_fk);
+        SET local_fk = LAST_INSERT_ID();
+    
+    	UPDATE `organizacoes` SET `organizacao_pk`= in_dominio,`organizacao_nome`= in_nome,`organizacao_cnpj`= in_cnpj,`local_fk`= local_fk WHERE organizacoes.organizacao_pk = in_organizacao_pk;
+    END IF;
+
+	
+END$$
+DELIMITER ;

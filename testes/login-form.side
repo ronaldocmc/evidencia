@@ -1,0 +1,130 @@
+{
+  "id": "391787af-7f81-47c3-81a5-b2fb7495035a",
+  "name": "Login Form ",
+  "url": "http://localhost",
+  "tests": [{
+    "id": "a7dbd5dc-055c-4db0-b541-b10114619764",
+    "name": "Login Success",
+    "commands": [{
+      "id": "883182d5-b97e-44da-b374-a4d4d3433ca8",
+      "comment": "",
+      "command": "open",
+      "target": "/evidencia_v2/access",
+      "value": ""
+    }, {
+      "id": "7683e099-b665-4b40-80ec-907d39686545",
+      "comment": "",
+      "command": "clickAt",
+      "target": "//div[2]/div/div/div[2]",
+      "value": "82,15"
+    }, {
+      "id": "bef70493-9382-4682-870e-a43e9595ed7c",
+      "comment": "",
+      "command": "clickAt",
+      "target": "id=username",
+      "value": "81,11"
+    }, {
+      "id": "749823cc-c55b-430e-a76f-856c89781920",
+      "comment": "",
+      "command": "type",
+      "target": "id=username",
+      "value": "ronaldo@admin"
+    }, {
+      "id": "dd5beea8-bfc0-45e1-ae48-fef631ffacf3",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "value": "12345678"
+    }, {
+      "id": "e4cff05d-dc9e-49fb-aa25-8c19a6bb4fb7",
+      "comment": "",
+      "command": "clickAt",
+      "target": "id=btn-login-large",
+      "value": "122,16"
+    }]
+  }, {
+    "id": "9676f686-9eb3-4e3b-909c-901b953d4bb9",
+    "name": "Login Fail",
+    "commands": [{
+      "id": "311339d1-9e69-4b64-9f93-c0d5b263f7ab",
+      "comment": "",
+      "command": "open",
+      "target": "/evidencia_v2/",
+      "value": ""
+    }, {
+      "id": "7910a568-fc04-4387-8533-22848768e11e",
+      "comment": "",
+      "command": "clickAt",
+      "target": "id=username",
+      "value": "99,18"
+    }, {
+      "id": "083bde00-2f1a-4ea8-b932-fefb88996d23",
+      "comment": "",
+      "command": "type",
+      "target": "id=username",
+      "value": "ronaldo@admin"
+    }, {
+      "id": "8409f6dd-c363-4adc-80e5-c16be1801362",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "value": "123456789"
+    }, {
+      "id": "5108cf01-50b0-4409-8fd6-6c3f35d95e3a",
+      "comment": "",
+      "command": "clickAt",
+      "target": "id=btn-login-large",
+      "value": "101,28"
+    }, {
+      "id": "f7497323-6992-45df-bad4-0c9482eb1c13",
+      "comment": "",
+      "command": "",
+      "target": "",
+      "value": ""
+    }]
+  }, {
+    "id": "e77df04c-e606-4261-9ed5-d38a902b51a2",
+    "name": "Login Without Password",
+    "commands": [{
+      "id": "f650b253-55ec-47a3-aedf-cd3bb99788fe",
+      "comment": "",
+      "command": "open",
+      "target": "/evidencia_v2/",
+      "value": ""
+    }, {
+      "id": "2aa9bd73-df7f-4ab8-b2ab-649f6c18f011",
+      "comment": "",
+      "command": "clickAt",
+      "target": "id=username",
+      "value": "68,9"
+    }, {
+      "id": "7cb53827-b933-4b5b-949d-ca0782f91e40",
+      "comment": "",
+      "command": "type",
+      "target": "id=username",
+      "value": "ronaldo@admin"
+    }, {
+      "id": "d1ff3e08-2d89-4e17-9b5b-b88c6f67ca96",
+      "comment": "",
+      "command": "clickAt",
+      "target": "//div[2]/div/div/div[2]",
+      "value": "125,172"
+    }, {
+      "id": "5fd4c5c9-d466-4a31-aac1-cc8142755a93",
+      "comment": "",
+      "command": "clickAt",
+      "target": "id=btn-login-large",
+      "value": "142,28"
+    }]
+  }],
+  "suites": [{
+    "id": "42b26f9d-0f7e-428b-899a-2002d8bff7e5",
+    "name": "Default Suite",
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["a7dbd5dc-055c-4db0-b541-b10114619764"]
+  }],
+  "urls": ["http://localhost/"],
+  "plugins": [],
+  "version": "1.0"
+}

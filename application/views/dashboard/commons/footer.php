@@ -1,0 +1,51 @@
+</div>
+
+</div>
+
+<!-- Jquery JS-->
+
+<script src="<?php echo base_url('assets/vendor/jquery-3.2.1.min.js')?>"></script>
+<!-- Bootstrap JS-->
+<script src="<?php echo base_url('assets/vendor/bootstrap-4.1/popper.min.js')?>"></script>
+<script src="<?php echo base_url('assets/vendor/bootstrap-4.1/bootstrap.min.js')?>"></script>
+<!-- Vendor JS       -->
+<script src="<?php echo base_url('assets/vendor/slick/slick.min.js')?>">
+</script>
+<script src="<?php echo base_url('assets/vendor/wow/wow.min.js')?>"></script>
+<script src="<?php echo base_url('assets/vendor/animsition/animsition.min.js')?>"></script>
+<script src="<?php echo base_url('assets/vendor/bootstrap-progressbar/bootstrap-progressbar.min.js')?>">
+</script>
+<script src="<?php echo base_url('assets/vendor/counter-up/jquery.waypoints.min.js')?>"></script>
+<script src="<?php echo base_url('assets/vendor/counter-up/jquery.counterup.min.js')?>">
+</script>
+<script src="<?php echo base_url('assets/vendor/circle-progress/circle-progress.min.js')?>"></script>
+<script src="<?php echo base_url('assets/vendor/perfect-scrollbar/perfect-scrollbar.js')?>"></script>
+<script src="<?php echo base_url('assets/vendor/chartjs/Chart.bundle.min.js')?>"></script>
+<script src="<?php echo base_url('assets/vendor/select2/select2.min.js')?>">
+</script>
+
+
+<!-- Main JS-->
+<script src="<?php echo base_url('assets/js/main.js')?>"></script>
+
+	<?php
+    if(isset($this->session->scripts))
+    {
+        foreach ($this->session->scripts as $script) 
+        { ?>
+            
+            <script src="<?= $script ?>"></script>
+
+ 	<?php }
+    }
+	?>
+
+
+	<?php if (isset($this->session->mapa)): ?>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCICU1zIV5CiGivUz3fkzxGUuK6W-2G04c&callback=initMap"
+    async defer></script>
+	<?php endif ?>
+</body>
+
+</html>
+<!-- end document-->
