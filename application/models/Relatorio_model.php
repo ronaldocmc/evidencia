@@ -87,6 +87,23 @@ class Relatorio_model extends CI_Model
         }
     }
 
+    public function get_os_nao_verificadas()
+    {
+        $this->db->select('*');
+        $this->db->from('relatorios_os');
+        $this->db->where('relatorios_os.os_verificada', '0');
+
+        $result =  $this->db->get()->result();
+        
+        if ($result) 
+        {
+            return ($result);
+        } 
+        else 
+        {
+            return false;
+        }
+    }
 
     public function get_relatorios(){
         $this->db->select('*');
@@ -237,6 +254,18 @@ class Relatorio_model extends CI_Model
         }
     }
 
+    public function insert_os_nao_concluida($os, $relatorio)
+    {
+        if( $this->db->insert('relatorio_os_nao_concluidas', ['relatorio_fk' => $relatorio, 'ordem_servico_fk' => $os])) 
+        {
+            return true;
+        } 
+        else 
+        {
+            return false;
+        }
+    }
+
     /**
      * Updates selected record in the database
      *
@@ -260,6 +289,14 @@ class Relatorio_model extends CI_Model
         }
         $this->db->update(self::TABLE_NAME, $data, $where);
         return $this->db->affected_rows();
+    }
+
+
+    public function update_relatorios_os_verificada($os)
+    {
+        $data = array('os_verificada' => '1');
+        $where = array('os_fk' => $os);
+        $this->db->update('relatorios_os', $data, $where);
     }
 
 
@@ -315,6 +352,15 @@ class Relatorio_model extends CI_Model
             $where = array(self::PRI_INDEX => $where);
         }
         $this->db->delete(self::TABLE_NAME, $where);
+        return $this->db->affected_rows();
+    }
+
+
+    public function delete_relatorio_os($os)
+    {
+        $where = array('os_fk' => $os);
+        $this->db->delete('relatorios_os', $where);
+
         return $this->db->affected_rows();
     }
 }

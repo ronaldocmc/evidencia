@@ -78,7 +78,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a target="_blank" class="btn btn-sm btn-primary" href="<?= base_url('relatorio/detalhes_relatorio/'.$r->relatorio_pk) ?>">
+                                                            <a class="btn btn-sm btn-primary" href="<?= base_url('relatorio/detalhes_relatorio/'.$r->relatorio_pk) ?>">
                                                                    <div class="d-none d-sm-block">
                                                                        Detalhes
                                                                    </div>
