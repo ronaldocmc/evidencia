@@ -56,7 +56,7 @@ class Ordem_ServicoWS extends MY_Controller
 		$data_historico = [
 			'ordem_servico_fk' => $obj->ordem_servico_fk,
 			'historico_ordem_comentario' => $obj->comentario,
-			'funcionario_fk' => get('id_funcionario', $headers['token'],
+			'funcionario_fk' => get('id_funcionario', $headers['token']),
 			'situacao_fk'	=> $obj->situacao_fk,
 		];	            		
 
