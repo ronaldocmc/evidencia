@@ -66,7 +66,13 @@ class Funcionario_model extends CI_Model {
 
     public function get_login_mobile($where = NULL)
     {
-        $this->db->select('funcionario_pk, pessoa_pk, pessoa_nome, funcao_fk, organizacao_fk, funcionario_status');
+        $this->db->select('
+            funcionarios.funcionario_pk, 
+            populacao.pessoa_pk, 
+            populacao.pessoa_nome, 
+            funcionarios_funcoes.funcao_fk, 
+            funcionarios.organizacao_fk, 
+            funcionarios.funcionario_status');
         $this->db->from(self::TABLE_NAME);
         $this->db->join('acessos','acessos.pessoa_fk = '.self::TABLE_NAME.'.pessoa_fk');
         $this->db->join('populacao','populacao.pessoa_pk = '.self::TABLE_NAME.'.pessoa_fk');
@@ -404,11 +410,7 @@ class Funcionario_model extends CI_Model {
         
         $result = $this->db->get()->result();
         if ($result) {
-            if ($where !== NULL) {
-                return array_shift($result);
-            } else {
-                return true;
-            }
+            return ($result);
         } else {
             return false;
         }

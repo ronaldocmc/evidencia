@@ -10,9 +10,9 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once dirname(__FILE__) . "\Response.php";
-require_once dirname(__FILE__) . "\Localizacao.php";
-require_once APPPATH . "core\MY_Controller.php";
+require_once dirname(__FILE__) . "/Response.php";
+require_once dirname(__FILE__) . "/Localizacao.php";
+require_once APPPATH . "core/MY_Controller.php";
 
 class Ordem_ServicoWS extends MY_Controller
 {
@@ -52,100 +52,48 @@ class Ordem_ServicoWS extends MY_Controller
 
 		$obj = json_decode(file_get_contents('php://input'));
 		$headers = apache_request_headers();
-
-
-		// $_POST['comentario'] = $obj->comentario;
-
-		// var_dump($obj->comentario);die();
-
-	
-		$id_funcionario = $this->funcionario_model->get(['funcionarios.pessoa_fk' => get('id_pessoa', $headers['token'])]);
-
 		
 		$data_historico = [
-
 			'ordem_servico_fk' => $obj->ordem_servico_fk,
-
 			'historico_ordem_comentario' => $obj->comentario,
-
-			'funcionario_fk' => $id_funcionario[0]->funcionario_pk,
-
+			'funcionario_fk' => get('id_funcionario', $headers['token']),
 			'situacao_fk'	=> $obj->situacao_fk,
-
 		];	            		
 
 		$return_historico = $this->historico_model->insert($data_historico);
 
-		
-		// if($situacao->situacao_foto_obrigatoria == 1 && $_POST['image'] == null)
 
-		// {
-		// 	$this->response->set_code(Response::BAD_REQUEST);
-
-		// 	$this->response->set_data("Foto obrigatória não foi enviada!"); 
-
-		// }
-
-
-			if ($obj->foto != NULL) {
-
-				//Se ele enviou, então realizamos o upload. Caso os dados estejam duplicados esses dados são removidos
-
-				$file = $this->upload_img($obj->ordem_servico_fk ,$obj->foto);
-
-	
-
-				//Padronizando os dados para efetuar o insert
-
-				$data_imagem = array(
-
-					'historico_ordem_fk' => $return_historico['id'],
-
-					'imagem_situacao_caminho' => $file,
-
-				);
-
-
-
-				$setou = $this->ordem_servico_model->insert_image($data_imagem);
-
-
-				if($setou['code'] == 0)
-
-				{
-
-					$this->response->set_code(Response::SUCCESS);
-
-					$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
-
-				}
-
-				else
-
-				{
-
-					$this->response->set_code(Response::DB_ERROR_INSERT);
-
-					$this->response->set_data("Não foi possivel inserir a imagem!");
-
-				}
-
-
-
-		}
-
-		else
-
+		if ($obj->foto != NULL) 
 		{
+			//Se ele enviou, então realizamos o upload. Caso os dados estejam duplicados esses dados são removidos
+			$file = $this->upload_img($obj->ordem_servico_fk ,$obj->foto);
 
+			//Padronizando os dados para efetuar o insert
+			$data_imagem = array(
+				'historico_ordem_fk' => $return_historico['id'],
+				'imagem_situacao_caminho' => $file
+			);
+
+			$setou = $this->ordem_servico_model->insert_image($data_imagem);
+
+			if($setou['code'] == 0)
+			{
+				$this->response->set_code(Response::SUCCESS);
+				$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
+			}
+			else
+			{
+				$this->response->set_code(Response::DB_ERROR_INSERT);
+				$this->response->set_data("Não foi possivel inserir a imagem!");
+			}
+		}
+		else
+		{
 			$this->response->set_code(Response::SUCCESS);
-
 			$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
-
 		} 
 
-
-	$this->response->send();
+		$this->response->send();
 	}
 
 
@@ -153,11 +101,11 @@ class Ordem_ServicoWS extends MY_Controller
      * Método responsável por receber os dados de uma ordem de serviço e fazer a inserção
      */
     public function post()
-	{
-		$this->load->model('ordem_servico_model');
-		$this->load->model('servico_model');
-		$this->load->model('funcionario_model');
-		$this->load->model('historico_model');
+    {
+		$this->load->model('Ordem_Servico_model', 'ordem_servico_model');
+		$this->load->model('Servico_model', 'servico_model');
+		$this->load->model('Funcionario_model', 'funcionario_model');
+		$this->load->model('Historico_model', 'historico_model');
 		$this->load->helper('token_helper');
 
 		$this->response = new Response();
@@ -165,10 +113,9 @@ class Ordem_ServicoWS extends MY_Controller
 		
         $obj = json_decode(file_get_contents('php://input'));
 
-		
 		$headers = apache_request_headers();
+
         //Setando as regras do form_validation para ordens de serviço
-        
         $_POST['latitude'] = $obj->latitude;
         $_POST['longitude'] = $obj->longitude;
         $_POST['logradouro_nome'] = $obj->logradouro_nome;
@@ -179,7 +126,6 @@ class Ordem_ServicoWS extends MY_Controller
         $_POST['prioridade_fk'] = $obj->prioridade_fk;
         $_POST['situacao_fk'] = $obj->situacao_fk;
         $_POST['procedencia'] = $obj->procedencia;
-        // $_POST['setor'] = get('setor', $headers['token']);
         $_POST['setor'] = $obj->setor;
         $_POST['descricao'] = $obj->descricao;
         $_POST['servico_fk'] = $obj->servico_fk;
@@ -202,257 +148,123 @@ class Ordem_ServicoWS extends MY_Controller
 
 
 				if ($return_local->code != 200)
-
 				{
-
 					return $return_local;
-
 				}
-
-
 
 				$data_coordenadas = null;
 
-
-
 	            //Padronizando os dados de Coordenadas
-
 				if ($return_local->__get('data')['id'] != null)
 				{	
-
 					$data_coordenadas = [
-
 						'coordenada_lat' => $data_ordem['latitude'],
-
 						'coordenada_long' => $data_ordem['longitude'],
-
 						'local_fk' => $return_local->__get('data')['id']
-
 					];
-
 				}
-
 				else
-
 				{
-
 					$this->response->set_code(Response::DB_ERROR_GET);
-
 					$this->response->set_data(['erro' => 'Erro no local']);
-
 					$this->response->send();
-
 					return;
-
 				}
 
+				$return_coordenada = $this->ordem_servico_model->insert_coordenada($data_coordenadas);
+				$abreviacao = $this->ordem_servico_model->get_abreviacoes($data_ordem['servico_fk']);
 
+				$proximo_cod = $this->ordem_servico_model->get_cont_and_update(get('id_empresa', $headers['token']));
+				$abreviacao .= date('Y') . "/" . $proximo_cod;
 
-	           	//Verificando se a coordenada passada já existe no banco de dados
+				// Configuração do horário para pegar o ano e gerar o código da OS
+	            date_default_timezone_set('America/Sao_Paulo');
 
-				// $already_exists = $this->has_coordenada($data_ordem['latitude'], $data_ordem['longitude']);
+            	$data_ordem_servico = [
+            		'coordenada_fk' => $return_coordenada['id'],
+            		'prioridade_fk' => $data_ordem['prioridade_fk'],
+            		'procedencia_fk' => $data_ordem['procedencia'],
+            		'ordem_servico_status' => 1,
+            		'ordem_servico_desc' => $data_ordem['descricao'],
+            		'servico_fk' => $data_ordem['servico_fk'],
+            		'setor_fk' => $data_ordem['setor'],
+            		'ordem_servico_cod' => $abreviacao
+				];
 
-
-
-
-
-				// if(!$already_exists) //Se ela não existe então será criada
-
-				// {
-
-					$return_coordenada = $this->ordem_servico_model->insert_coordenada($data_coordenadas);
-
-					 // echo "Insert coordenadas";
-
-				// }
-
-				// else
-
-	            // {	//Caso a coordenada já exista, a função retorna o id dela
-
-	            // 	 // echo "Coordenadas já existem";
-
-	            // 	$return_coordenada = [
-
-	            // 		'id' => $already_exists->coordenada_pk,
-
-	            // 		'db_error' => [
-
-	            // 			'code' => 0,
-
-	            // 		],
-
-	            // 	];
-
-	            // }
-
-
-
-	            // if($return_coordenada['db_error']['code'] == 0)
-
-	            // {
-
-	            	//Padronizando os dados da Ordem de Serviço 
-
-	            	$data_ordem_servico = [
-
-	            		'coordenada_fk' => $return_coordenada['id'],
-
-	            		'prioridade_fk' => $data_ordem['prioridade_fk'],
-
-	            		'procedencia_fk' => $data_ordem['procedencia'],
-
-	            		'ordem_servico_status' => 1,
-
-	            		'ordem_servico_desc' => $data_ordem['descricao'],
-
-	            		'servico_fk' => $data_ordem['servico_fk'],
-
-	            		'setor_fk' => $data_ordem['setor']
-
-					];
-
+            	$return_ordem = $this->ordem_servico_model->insert_os($data_ordem_servico);
+									
+            	if($return_ordem['db_error']['code'] == 0)
+            	{
 					
+					$situacao = $this->servico_model->get_current(['servico_pk' => $data_ordem['servico_fk']]);								
+					$id_funcionario = $this->funcionario_model->get(['funcionarios.pessoa_fk' => get('id_pessoa', $headers['token'])]);
+
+            		$data_historico = [
+            			'ordem_servico_fk' => $return_ordem['id'],
+            			'funcionario_fk' => $id_funcionario[0]->funcionario_pk,
+            			'situacao_fk'	=> $obj->situacao_fk,
+            		];	            		
+
+					$return_historico = $this->historico_model->insert($data_historico);
 					
-					
-	            	$return_ordem = $this->ordem_servico_model->insert_os($data_ordem_servico);
-										
-	            	if($return_ordem['db_error']['code'] == 0)
-	            	{
-						
-						$situacao = $this->servico_model->get_current(['servico_pk' => $data_ordem['servico_fk']]);
-						
-						
-						$id_funcionario = $this->funcionario_model->get(['funcionarios.pessoa_fk' => get('id_pessoa', $headers['token'])]);
+            		if($return_historico['db_error']['code'] == 0)
+            		{
 
+        				if ($_POST['image'] != NULL) 
+        				{
+                			//Se ele enviou, então realizamos o upload. Caso os dados estejam duplicados esses dados são removidos
+        					$file = $this->upload_img($return_ordem['id'],$_POST['image']);
 
-	            		$data_historico = [
+                    		//Padronizando os dados para efetuar o insert
+        					$data_imagem = array(
+        						'historico_ordem_fk' => $return_historico['id'],
+        						'imagem_situacao_caminho' => $file,
+        					);
 
-	            			'ordem_servico_fk' => $return_ordem['id'],
+        					$setou = $this->ordem_servico_model->insert_image($data_imagem);
 
-	            			'funcionario_fk' => $id_funcionario[0]->funcionario_pk,
+        					if($setou['code'] == 0)
+        					{
+        						$this->response->set_code(Response::SUCCESS);
+        						$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
+        					}
+        					else
+        					{
+        						$this->response->set_code(Response::DB_ERROR_INSERT);
+        						$this->response->set_data("Não foi possivel inserir a imagem!");
+        					}
 
-	            			'situacao_fk'	=> $obj->situacao_fk,
+            			}
+            			else
+            			{
+            				$this->response->set_code(Response::SUCCESS);
+            				$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
+            			}
+            		}
+            		else
+            		{
+            			$this->response->set_code(Response::DB_ERROR_INSERT);
+            			$this->response->set_data("Não foi possivel inserir o histórico de ordem de serviço");
+            		}
 
-	            		];	            		
+            	}
 
-						$return_historico = $this->historico_model->insert($data_historico);
-						
-						
-
-	            		if($return_historico['db_error']['code'] == 0)
-
-	            		{
-
-
-							// Verificando se a foto é obrigatória e se ela existe.
-	            			if($situacao->situacao_foto_obrigatoria == 1 && $_POST['image'] == null)
-
-	            			{
-								$this->response->set_code(Response::BAD_REQUEST);
-
-								$this->response->set_data("Foto obrigatória não foi enviada!"); 
-
-							}
-
-
-	            				if ($_POST['image'] != NULL) {
-
-	                    			//Se ele enviou, então realizamos o upload. Caso os dados estejam duplicados esses dados são removidos
-
-	            					$file = $this->upload_img($return_ordem['id'],$_POST['image']);
-
-
-
-	                        		//Padronizando os dados para efetuar o insert
-
-	            					$data_imagem = array(
-
-	            						'historico_ordem_fk' => $return_historico['id'],
-
-	            						'imagem_situacao_caminho' => $file,
-
-	            					);
-
-
-
-	            					$setou = $this->ordem_servico_model->insert_image($data_imagem);
-
-	            					if($setou['code'] == 0)
-
-	            					{
-
-	            						$this->response->set_code(Response::SUCCESS);
-
-	            						$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
-
-	            					}
-
-	            					else
-
-	            					{
-
-	            						$this->response->set_code(Response::DB_ERROR_INSERT);
-
-	            						$this->response->set_data("Não foi possivel inserir a imagem!");
-
-	            					}
-
-
-
-	            			}
-
-	            			else
-
-	            			{
-
-	            				$this->response->set_code(Response::SUCCESS);
-
-	            				$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
-
-	            			} 
-
-	            		}
-
-	            		else
-
-	            		{
-
-	            			$this->response->set_code(Response::DB_ERROR_INSERT);
-
-	            			$this->response->set_data("Não foi possivel inserir o histórico de ordem de serviço");
-
-	            		}
-
-	            	}
-
-	            	else
-
-	            	{
-
-	            		if($return_ordem['db_error']['code'] == 503)
-
-	            		{
-
-	            			$this->response->set_code(Response::DB_ERROR_INSERT);
-
-	            			$this->response->set_data("Não foi possivel inserir a ordem de serviço!");
-
-	            		}
-
-	            	}
-
-	            }
-	            else
-                {
-    
-                    $this->response->set_code(Response::BAD_REQUEST);
-    
-                    $this->response->set_data($this->form_validation->errors_array()); 
-    
-                }
+            	else
+            	{
+            		if($return_ordem['db_error']['code'] == 503)
+            		{
+            			$this->response->set_code(Response::DB_ERROR_INSERT);
+            			$this->response->set_data("Não foi possivel inserir a ordem de serviço!");
+            		}
+            	}
+            }
+            else
+            {
+                $this->response->set_code(Response::BAD_REQUEST);
+                $this->response->set_data($this->form_validation->errors_array()); 
+            }
                 
-            $this->response->send();
+        $this->response->send();
 	} 
 	    
     
@@ -555,89 +367,62 @@ class Ordem_ServicoWS extends MY_Controller
 		return $path.$name;
 	}
 
-	public function has_service(){
-
-		$data = $this->servico_model->get([
-			'situacoes.organizacao_fk' => $this->session->user['id_organizacao'],
-			'servico_pk' => $this->input->post('servico_fk')
-		]);
-
-
-
-		if($data){
-			return true;
-		}
-		else
-		{
-			return false; 
-		}
-
-	}
-
-		public function has_setor(){
-
-		$data = $this->setores_model->get([
-			'setores.setor_pk' => $this->input->post('setor'),
-			'setores.organizacao_fk' => $this->session->user['id_organizacao']
-		]);
-
-		if($data){
-			return true;
-		}
-		else
-		{
-			return false; 
-		}
-
-	}
 	
 	public function get(){
 		
 		isset($_GET['id']) ? $id = $_GET['id'] : $id = null;
 
-		$this->load->model('ordem_servico_model');
+		$this->load->model('Ordem_Servico_model', 'ordem_servico_model');
+		$this->load->model('Historico_model', 'historico_model');
 		
 		$obj = apache_request_headers();
-		
-		//$today = date('Y-m-d');
-		// $today = date('Y-m-d H:i:s', strtotime('-5 days', strtotime($today)));
 
 		$empresa = get('id_empresa', $obj['token']);
-		$setor = $_GET['setor'];
-		// $setor = get('setor', $obj['token']);
-		
-		// var_dump($setor);die();
 		
 		$where['departamentos.organizacao_fk'] = $empresa;
 
-		if($id != null){
+		if($id != null)
+		{
 			$where['ordens_servicos.ordem_servico_pk'] = $id;
 
 			$ordens_servico = $this->ordem_servico_model->getEspecifico($where);
 	
-			$ordens_servico['historico'] = $this->ordem_servico_model->getHistorico([
+			$ordens_servico['historico'] = $this->historico_model->getHistoricoForMobile([
 				'historicos_ordens.ordem_servico_fk' => $id
 			]);
 
 			$this->response->add_data("ordem",$ordens_servico);
-		}else{
-			//$where['historicos_ordens.historico_ordem_tempo >= '] = $today;
-			$where['ordens_servicos.setor_fk'] = $setor;
+		}
+		else
+		{
+			$this->load->model('Funcionario_model', 'funcionario_model');
 
-			$ordens_servico = $this->ordem_servico_model->getJsonForMobile($where);
+			$funcionario_fk = get('id_funcionario', $obj['token']);
+			$setores = $this->funcionario_model->get_setor($funcionario_fk);
+			// var_dump($setores);die();
+
+
+			$query = 'ordens_servicos.setor_fk = ' . $setores[0]->setor_fk;
+
+			for ($i=1; $i < count($setores); $i++)
+			{ 
+				$query .= ' OR ordens_servicos.setor_fk = ' . $setores[$i]->setor_fk;
+			}
+
+
+			$ordens_servico = $this->ordem_servico_model->getJsonForMobile($where, $query);
+			var_dump($ordens_servico);
+			die();
 			$ordens = array();
 
-			foreach($ordens_servico as $os){
-				// Se for em andamento, ou encaminhada para alguem, o funcionário de campo pode ver
-				if($os->situacao == 2 || $os->situacao == 1){
-					array_push($ordens,$os);
-				}
+			foreach($ordens_servico as $os)
+			{
+				array_push($ordens,$os);
 			}
 
 			$this->response->add_data("ordens",$ordens);
 		}
 
-		// $this->response->add_data("empresa",$empresa);
 		$this->response->send();
 	}
 }

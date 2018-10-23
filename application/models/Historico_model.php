@@ -138,6 +138,49 @@ class Historico_model extends CI_Model {
             return false;
         }
     }
+
+
+    public function getHistoricoForMobile($where)
+    {
+        $this->db->select('
+            populacao.pessoa_nome AS funcionario,
+            historicos_ordens.historico_ordem_tempo AS data,
+            situacoes.situacao_nome AS situacao,
+            historicos_ordens.historico_ordem_comentario AS comentario,
+            imagens_situacoes.imagem_situacao_caminho as foto,
+            imagens_perfil.imagem_caminho as funcionario_foto
+        ');
+
+        $this->db->from('historicos_ordens');
+        $this->db->join('funcionarios','historicos_ordens.funcionario_fk = funcionarios.funcionario_pk');
+        $this->db->join('populacao', 'funcionarios.pessoa_fk = populacao.pessoa_pk');
+        $this->db->join('situacoes', 'situacoes.situacao_pk = historicos_ordens.situacao_fk');
+        $this->db->join('imagens_situacoes', 'imagens_situacoes.historico_ordem_fk = historicos_ordens.historico_ordem_pk','LEFT');
+        $this->db->join('imagens_perfil', 'populacao.pessoa_pk = imagens_perfil.pessoa_fk','LEFT');
+        
+        $this->db->order_by('historicos_ordens.historico_ordem_pk', 'DESC');
+        $this->db->limit(1);
+
+        if ($where !== NULL) {
+            if (is_array($where)) {
+                foreach ($where as $field=>$value) {
+                    $this->db->where($field, $value);
+                }
+            } else {
+                $this->db->where('historicos_ordens.ordem_servico_fk', $where);
+            }
+        }
+
+
+         // echo $this->db->get_compiled_select();die();
+        $result = $this->db->get()->result();
+
+        if ($result) {
+            return ($result);
+        } else {
+            return false;
+        }
+    }
 }
         
  ?>

@@ -84,7 +84,7 @@ class Ordem_Servico_model extends CI_Model {
         }
     }
 
-    public function getJsonForMobile($where = NULL) {
+    public function getJsonForMobile($where = NULL, $query = NULL) {
 
         $this->db->select(
             self::TABLE_NAME. '.'.self::PRI_INDEX. ' AS id,
@@ -123,6 +123,13 @@ class Ordem_Servico_model extends CI_Model {
 
         $this->db->group_by(self::TABLE_NAME. '.'.self::PRI_INDEX);
 
+        $this->db->where('historicos_ordens.situacao_fk = 1 OR historicos_ordens.situacao_fk = 2');
+
+        if($query != NULL)
+        {
+            $this->db->where($query);
+        }
+
         if ($where !== NULL) {
             if (is_array($where)) {
                 foreach ($where as $field=>$value) {
@@ -133,8 +140,7 @@ class Ordem_Servico_model extends CI_Model {
             }
         }
 
-        // $this->db->where('(SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) !=', '32');
-        //echo $this->db->get_compiled_select();die();
+        // echo $this->db->get_compiled_select();die();
         $result = $this->db->get()->result();
         if ($result) {
             return ($result);
@@ -260,6 +266,7 @@ class Ordem_Servico_model extends CI_Model {
         $this->db->join('situacoes', 'situacoes.situacao_pk = historicos_ordens.situacao_fk');
         $this->db->join('imagens_situacoes', 'imagens_situacoes.historico_ordem_fk = historicos_ordens.historico_ordem_pk','LEFT');
         $this->db->join('imagens_perfil', 'populacao.pessoa_pk = imagens_perfil.pessoa_fk','LEFT');
+
 
 
         if ($where !== NULL) {
@@ -497,6 +504,27 @@ class Ordem_Servico_model extends CI_Model {
         }
         return $query;
     }
+
+
+    public function get_abreviacoes($servico)
+    {
+        $this->db->select(
+            'servicos.servico_abreviacao,
+            tipos_servicos.tipo_servico_abreviacao'
+        );
+
+        $this->db->from('tipos_servicos');
+        $this->db->join('servicos', 'servicos.tipo_servico_fk = tipos_servicos.tipo_servico_pk');
+        $this->db->where('servicos.servico_pk', $servico);
+
+        $result = $this->db->get()->result();
+
+        $abreviacao = $result[0]->tipo_servico_abreviacao . $result[0]->servico_abreviacao . "-";
+        return $abreviacao;
+    }
+
+
+
 }
 
 
