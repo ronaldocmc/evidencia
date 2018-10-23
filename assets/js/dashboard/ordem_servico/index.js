@@ -231,13 +231,14 @@ function initMap()
         criarMarcacao(event.latLng);
     });
 
-        other_map = new google.maps.Map(document.getElementById('map2'), {
+    other_map = new google.maps.Map(document.getElementById('map2'), {
         center: {lat: -22.121265, lng: -51.383400},
         zoom: 13
     });
-        var geocoder2 = new google.maps.Geocoder();
-        criarMarcacao2({lat: -22.121265, lng: -51.383400});
-        $('#mapa_historico').hide();
+
+    var geocoder2 = new google.maps.Geocoder();
+    criarMarcacao2({lat: -22.121265, lng: -51.383400});
+    $('#mapa_historico').hide();
 
     //Função que preenhce o endereço conforme o clique do usuário do mapa
     function preencheCampos(endereco){
@@ -284,7 +285,7 @@ function initMap()
         $("#longitude").val(location.lng);
     }
 
-        function criarMarcacao2(location) {
+    function criarMarcacao2(location) {
         if(other_marker != null){
             other_marker.setMap(null);
         }
@@ -293,7 +294,7 @@ function initMap()
           position: location,
           map: other_map
       });
-}
+    }
 
     function criarMarcacao(location) {
         if(main_marker != null){
@@ -329,9 +330,9 @@ $(".referencia").focusout(function() {
 
              // console.log(results[0].address_components);
 
-            for(i = 0; i < results[0].address_components.length; i++){
+             for(i = 0; i < results[0].address_components.length; i++){
 
-            switch(results[0].address_components[i].types[0]){
+                switch(results[0].address_components[i].types[0]){
                 case 'street_number':  //Número da Rua
                 $('#numero-input').val(parseInt(results[0].address_components[i].long_name));
                 break;
@@ -342,20 +343,20 @@ $(".referencia").focusout(function() {
                 $('#bairro-input').val(results[0].address_components[i].long_name);
                 break;
                 case 'administrative_area_level_2': //Cidade
-                    $('#cidade-input option:selected').text(results[0].address_components[i].long_name);
-                    break;  
+                $('#cidade-input option:selected').text(results[0].address_components[i].long_name);
+                break;  
                 case 'administrative_area_level_1': //Estado
-                    $('#uf-input option:selected').text(results[0].address_components[i].short_name);
-                    break;    
-                }
+                $('#uf-input option:selected').text(results[0].address_components[i].short_name);
+                break;    
             }
-            var latlng = {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()}
-            populaLatLong(latlng);
-        } else {
-            console.log('Geocode was not successful for the following reason: ' + status);
         }
+        var latlng = {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()}
+        populaLatLong(latlng);
+    } else {
+        console.log('Geocode was not successful for the following reason: ' + status);
+    }
 
-    });
+});
     }
 });
 
@@ -446,29 +447,29 @@ $(document).on('click', '.btn_historico', function (event)
     var latlng = {lat: parseFloat(ordens_servico[posicao_selecionada]['coordenada_lat']), lng: parseFloat(ordens_servico[posicao_selecionada]['coordenada_long'])}
 
     geocoder2.geocode({'location': latlng}, function(results, status) {
-          if (status === 'OK') {
-            other_map.setCenter(results[0].geometry.location);
-            criarMarcacao2(results[0].geometry.location);
+      if (status === 'OK') {
+        other_map.setCenter(results[0].geometry.location);
+        criarMarcacao2(results[0].geometry.location);
 
-            let numero, rua, bairro, cidade, estado;
-            for(i = 0; i < results[0].address_components.length; i++){
+        let numero, rua, bairro, cidade, estado;
+        for(i = 0; i < results[0].address_components.length; i++){
 
-                switch(results[0].address_components[i].types[0]){
+            switch(results[0].address_components[i].types[0]){
                     case 'street_number':  //Número da Rua
-                        numero = results[0].address_components[i].long_name;
-                        break;
+                    numero = results[0].address_components[i].long_name;
+                    break;
                     case 'route':
                         rua = results[0].address_components[i].long_name; //Logradouro
                         break;
                     case 'political': //Bairro
-                        bairro = (results[0].address_components[i].long_name);
-                        break;
+                    bairro = (results[0].address_components[i].long_name);
+                    break;
                     case 'administrative_area_level_2': //Cidade
-                        cidade = (results[0].address_components[i].long_name);
-                        break;  
+                    cidade = (results[0].address_components[i].long_name);
+                    break;  
                     case 'administrative_area_level_1': //Estado
-                        estado = (results[0].address_components[i].short_name);
-                        break;    
+                    estado = (results[0].address_components[i].short_name);
+                    break;    
                 }
             }
 
@@ -521,12 +522,17 @@ get_historico = (id) =>
         url: base_url + '/ordem_servico/json_especifico/' + id + '/' + 1,
         dataType: "json",
         success: function (response) {
- 
+
             response.ordem.historico.map((historico, i) => {
                 indicators += '<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>';
                 if (historico.comentario == null) {
                     historico.comentario = "Nenhum comentário adicionado.";
                 }
+
+                if(historico.funcionario_foto == null){
+                    historico.funcionario_foto = './assets/uploads/perfil_images/default.png';
+                }
+
                 timeline += create_timeline(historico.comentario, historico.funcionario_foto, historico.funcionario, historico.situacao, historico.data);
 
                 if (historico.foto != null) {
@@ -612,7 +618,7 @@ function create_timeline(comentario, src, funcionario, situacao, data) {
     return '<div class="message-item">' +
     '<div class="message-inner">' +
     '<div class="message-head clearfix">' +
-    '<div class="avatar pull-left"><a href="./index.php?qa=user&qa_1=Oleg+Kolesnichenko"><img class="message-foto-perfil" src=" ' + src + '"></a></div>' +
+    '<div class="avatar pull-left"><a href="./index.php?qa=user&qa_1=Oleg+Kolesnichenko"><img class="message-foto-perfil" src="'+ src +'"></a></div>' +
     '<div class="user-detail">' +
     '<h5 class="handle">' + funcionario + '</h5>' +
     '<div class="post-meta">' +
@@ -652,21 +658,15 @@ send_historico = (imagem) =>
   pre_loader_show();
   const formData = new FormData();
 
+  formData.append('comentario', $('#historico_comentario').val());
+  formData.append('historico_pk', parseInt($('#historico_pk').val()));
+  formData.append('situacao_fk', parseInt($('#situacao_pk_historico').val()));
+  formData.append('servico_fk', parseInt(ordens_servico[posicao_selecionada]['servico_pk']));
+  formData.append('ordem_servico_fk', parseInt(ordens_servico[posicao_selecionada]['ordem_servico_pk']));
+  formData.append('img', imagem);
 
-// console.log($('#historico_comentario').val());
-// console.log($('#historico_pk').val());
-// console.log($('#situacao_pk_historico').val());
-// console.log(ordens_servico[posicao_selecionada]['ordem_servico_pk']);
-
-formData.append('comentario', $('#historico_comentario').val());
-formData.append('historico_pk', parseInt($('#historico_pk').val()));
-formData.append('situacao_fk', parseInt($('#situacao_pk_historico').val()));
-formData.append('servico_fk', parseInt(ordens_servico[posicao_selecionada]['servico_pk']));
-formData.append('ordem_servico_fk', parseInt(ordens_servico[posicao_selecionada]['ordem_servico_pk']));
-formData.append('img', imagem);
-
-var URL = base_url + '/ordem_servico/new_historico_os';
-$.ajax({
+  var URL = base_url + '/ordem_servico/new_historico_os';
+  $.ajax({
     url: URL,
     method: "POST",
     data: formData,
@@ -704,20 +704,25 @@ $.ajax({
             for (var i in ordens_servico) 
             {
                 if (ordens_servico[i]['ordem_servico_pk'] == $('#ordem_servico_pk').val()){
- 
                     break;
                 }
             }
+
+            let endereco =  ordens_servico[i]['logradouro_nome'] + ", " + ordens_servico[i]['local_num'] + " - " + ordens_servico[i]['bairro_nome'];
+
             table.row(i).data([
-                ordens_servico[i]['ordem_servico_desc'],
-                ordens_servico[i]['servico_nome'],
-                $('#situacao_pk_historico option:selected').text(),
-                ordens_servico[i]['prioridade_nome'],
-                '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                ]).draw();
+              ordens_servico[i]['ordem_servico_cod'],
+              ordens_servico[i]['data_criacao'],
+              ordens_servico[i]['prioridade_nome'],
+              endereco,
+              ordens_servico[i]['servico_nome'],
+              $('#situacao_pk_historico option:selected').text(),
+              ordens_servico[i]['setor_nome'],
+              '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
+              '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
+              'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
+              'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+              ]).draw();
             pre_loader_hide();
             remove_image();
             $('#ce_historico_servico').modal('hide');
@@ -771,6 +776,7 @@ send = (imagem) =>
   formData.append('municipio_pk', $('#cidade-input').val());
   formData.append('logradouro_nome', $('#logradouro-input').val());
   formData.append('local_num', $('#numero-input').val());
+  formData.append('ponto_referencia', $('#referencia-input').val());
   formData.append('complemento', $('#complemento-input').val());
   formData.append('bairro', $('#bairro-input').val());
   formData.append('latitude', $('#latitude').val());
@@ -784,9 +790,10 @@ send = (imagem) =>
 // console.log(formData);
   // procedencia
   var URL = ($('#ordem_servico_pk').val() == "") ? base_url + '/ordem_servico/insert' : base_url + '/ordem_servico/update_os';
-
+  var ab, data_criacao; 
   if ($('#ordem_servico_pk').val() != "") {
       formData.append('ordem_servico_pk', $('#ordem_servico_pk').val());
+
   }   
 
   $.ajax({
@@ -823,16 +830,28 @@ send = (imagem) =>
           pre_loader_hide();
       }
       else if(response.code == 200)
-      {
+      { 
+        console.log(response);
+         
+         if ($('#ordem_servico_pk').val() != ""){
+            cod = ordens_servico[posicao_selecionada]['ordem_servico_cod'];
+            data_criacao = ordens_servico[posicao_selecionada]['data_criacao'];
+         }else{
+            cod = response.data.ordem_servico_cod;
+            data_criacao = response.data.data_criacao;
+         } 
+
+         console.log(cod);
+
         os =
         {
-          'ordem_servico_cod': response.data.ordem_servico_cod,
-          'data_criacao' : response.data.data_criacao,
+          'ordem_servico_cod': cod,
+          'data_criacao' : data_criacao,
           'endereco' : response.data.endereco_os,
           'coordenada_lat' :  $('#latitude').val(),
           'coordenada_long' : $('#longitude').val(),
           'historico_ordem_pk' : response.data.historico_ordem_pk,
-          'local_fk' : response.data.local_fk,
+          'local_fk' : response.data.local_pk,
           'ordem_servico_desc' : $('#ordem_servico_desc').val(),
           'ordem_servico_pk' : ($('#ordem_servico_pk').val() == "") ? response.data.ordem_servico_pk : $('#ordem_servico_pk').val(),
           'ordem_servico_status': 1,
@@ -852,27 +871,26 @@ send = (imagem) =>
 
       if ($('#ordem_servico_pk').val() == "") 
               { //verifica se é um insert
-                  // console.log(os);
 
-                  ordens_servico.pop(os);
-                  table.row.add([
-                      os.ordem_servico_cod,
-                      os.data_criacao,
-                      os.prioridade_nome,
-                      os.endereco,
-                      os.servico_nome,
-                      os.situacao_nome,
-                      os.setor_nome,
-                      '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                      '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_servico"><div class="d-none d-sm-block">' +
-                      'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(ordens_servico.length - 1)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                      'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                      ]).draw(false);
-                  alerts('success', 'Sucesso', response.data.mensagem);
-                  remove_image();
-              } 
-              else 
-              {
+                 ordens_servico.push(os);
+                 table.row.add([
+                  os.ordem_servico_cod,
+                  os.data_criacao,
+                  os.prioridade_nome,
+                  os.endereco,
+                  os.servico_nome,
+                  os.situacao_nome,
+                  os.setor_nome,
+                  '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
+                  '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_servico"><div class="d-none d-sm-block">' +
+                  'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(ordens_servico.length - 1)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
+                  'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                  ]).draw(false);
+                 alerts('success', 'Sucesso', response.data.mensagem);
+                 remove_image();
+             } 
+             else 
+             {
                 for (var i in ordens_servico) 
                 {
 
@@ -883,10 +901,13 @@ send = (imagem) =>
               }
               ordens_servico[i] = (os);
               table.row(i).data([
-                os.ordem_servico_desc,
+                os.ordem_servico_cod,
+                os.data_criacao,
+                os.prioridade_nome,
+                os.endereco,
                 os.servico_nome,
                 os.situacao_nome,
-                os.prioridade_nome,
+                os.setor_nome,
                 '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
                 '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_servico"><div class="d-none d-sm-block">' +
                 'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
@@ -936,6 +957,8 @@ send = (imagem) =>
         $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
         posicao_selecionada = $(this).val();
 
+        // console.log("PK:" + ordens_servico[$(this).val()]['ordem_servico_pk']);
+
         var data = get_departamento_and_tiposervico(ordens_servico[posicao_selecionada]['tipo_servico_fk'])//Aqui eu vou fazer uma função que vai requisitar percorrer departamentos e encontrar o fk
         var servico_selecionado_pk = ordens_servico[posicao_selecionada]['servico_pk'];
 
@@ -957,13 +980,15 @@ send = (imagem) =>
         var data_local;
         var local = "";
 
+        // console.log("Local:" + " " + ordens_servico[posicao_selecionada]['local_fk']);
+
         $.get(
             base_url + '/ordem_servico/local', 
             {local_pk : ordens_servico[posicao_selecionada]['local_fk']}) 
         .done(function(response){
             if(response.code == 200){
                 data_local = response;
-
+                console.log(data_local);
                 $("#bairro-input").val(data_local.data.bairro_nome);
                 
 
@@ -1034,8 +1059,8 @@ send = (imagem) =>
         var data;
 
         if(is_superusuario){
-           data = 
-           {
+         data = 
+         {
             'ordem_servico_pk': $('#ordem_servico_pk').val(),
             'senha': $('#pass-modal-desativar').val()
         }
@@ -1047,13 +1072,13 @@ send = (imagem) =>
         }
     }
 
-
     $.post(base_url+'/ordem_servico/deactivate',data).done(function (response) {
+
         if (response.code == 200){
           alerts('success', 'Sucesso!', 'Ordem de Serviço desativada com sucesso');
           ordens_servico[posicao_selecionada]['ordem_servico_status'] = 0;
 
-          pre_loader_hide();
+          
       }else{
           alerts('failed', 'Erro!', 'Houve um erro ao desativar.');
       }
@@ -1066,8 +1091,8 @@ send = (imagem) =>
         var data;
 
         if(is_superusuario){
-           data = 
-           {
+         data = 
+         {
             'ordem_servico_pk': $('#ordem_servico_pk').val(),
             'senha': $('#pass-modal-reativar').val()
         }
@@ -1107,12 +1132,18 @@ send = (imagem) =>
 
         case "todos":
         $.each(ordens_servico, function (i, os) {
+
+            let endereco = os.logradouro_nome+ ", " + os.local_num + " - " + os.bairro_nome; 
+
             if(os.ordem_servico_status == 1){
                 table.row.add([
-                    os.ordem_servico_desc,
+                    os.ordem_servico_cod,
+                    os.data_criacao,
+                    os.prioridade_nome,
+                    endereco,
                     os.servico_nome,
                     os.situacao_nome,
-                    os.prioridade_nome,
+                    os.setor_nome,
                     '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
                     '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
                     'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
@@ -1120,10 +1151,13 @@ send = (imagem) =>
                     ]).draw(false);
             }else{
                 table.row.add([
-                    os.ordem_servico_desc,
+                    os.ordem_servico_cod,
+                    os.data_criacao,
+                    os.prioridade_nome,
+                    endereco,
                     os.servico_nome,
                     os.situacao_nome,
-                    os.prioridade_nome,
+                    os.setor_nome,
                     '<div class="btn-group"><button disabled type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
                     '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button disabled type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
                     'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico"><div class="d-none d-sm-block">' +
@@ -1136,73 +1170,97 @@ send = (imagem) =>
         case "ativadas":
         table.clear().draw();
         $.each(ordens_servico, function (i, os) {
+
+            let endereco = os.logradouro_nome+ ", " + os.local_num + " - " + os.bairro_nome; 
+
             if(os.ordem_servico_status == 1) {
-              table.row.add([
-                os.ordem_servico_desc,
-                os.servico_nome,
-                os.situacao_nome,
-                os.prioridade_nome,
-                '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                ]).draw(false);
-          }
-      });
+                table.row.add([
+                    os.ordem_servico_cod,
+                    os.data_criacao,
+                    os.prioridade_nome,
+                    endereco,
+                    os.servico_nome,
+                    os.situacao_nome,
+                    os.setor_nome,
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
+                    '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
+                    'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
+                    'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                    ]).draw(false);
+            }
+        });
         break;
 
         case "desativadas":
         table.clear().draw();
         $.each(ordens_servico, function (i, os) {
+
+            let endereco = os.logradouro_nome+ ", " + os.local_num + " - " + os.bairro_nome; 
+
             if(os.ordem_servico_status == 0) {
-              table.row.add([
-                os.ordem_servico_desc,
-                os.servico_nome,
-                os.situacao_nome,
-                os.prioridade_nome,
-                '<div class="btn-group"><button disabled type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button disabled type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico"><div class="d-none d-sm-block">' +
-                'Ativar</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                ]).draw(false);
-          }
-      });
+                table.row.add([
+                    os.ordem_servico_cod,
+                    os.data_criacao,
+                    os.prioridade_nome,
+                    endereco,
+                    os.servico_nome,
+                    os.situacao_nome,
+                    os.setor_nome,
+                    '<div class="btn-group"><button disabled type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
+                    '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button disabled type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
+                    'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico"><div class="d-none d-sm-block">' +
+                    'Ativar</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                    ]).draw(false);
+            }
+        });
         break;
 
         case "finalizadas":
         table.clear().draw();
         $.each(ordens_servico, function (i, os) {
+
+            let endereco = os.logradouro_nome+ ", " + os.local_num + " - " + os.bairro_nome; 
+
             if(os.situacao_nome === "Finalizado") {
-              table.row.add([
-                os.ordem_servico_desc,
-                os.servico_nome,
-                os.situacao_nome,
-                os.prioridade_nome,
-                '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                ]).draw(false);
-          }
-      });
+                table.row.add([
+                    os.ordem_servico_cod,
+                    os.data_criacao,
+                    os.prioridade_nome,
+                    endereco,
+                    os.servico_nome,
+                    os.situacao_nome,
+                    os.setor_nome,
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
+                    '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
+                    'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
+                    'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                    ]).draw(false);
+            }
+        });
         break;
 
         case "abertas":
         table.clear().draw();
         $.each(ordens_servico, function (i, os) {
+
+            let endereco = os.logradouro_nome+ ", " + os.local_num + " - " + os.bairro_nome; 
+
             if(os.situacao_nome !== "Finalizado") {
-              table.row.add([
-                os.ordem_servico_desc,
-                os.servico_nome,
-                os.situacao_nome,
-                os.prioridade_nome,
-                '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                ]).draw(false);
-          }
-      });
+                table.row.add([
+                    os.ordem_servico_cod,
+                    os.data_criacao,
+                    os.prioridade_nome,
+                    endereco,
+                    os.servico_nome,
+                    os.situacao_nome,
+                    os.setor_nome,
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
+                    '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
+                    'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
+                    'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                    ]).draw(false);
+            }
+        });
         break;
     }
 }
