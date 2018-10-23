@@ -10,8 +10,8 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once dirname(__FILE__) . "\Response.php";
-require_once APPPATH . "core\MY_Controller.php";
+require_once dirname(__FILE__) . "/Response.php";
+require_once APPPATH . "core/MY_Controller.php";
 
 class AccessWS extends MY_Controller
 {
@@ -75,9 +75,9 @@ class AccessWS extends MY_Controller
         $this->load->helper('attempt');
         $this->load->helper('token');
         $this->load->library('form_validation');
-        $this->load->model('Super_model', 'smodel');
         $this->load->model('Funcionario_model', 'fmodel');
-        $this->load->model('tentativa_model');
+        $this->load->model('Contato_model', 'contato_model');
+        $this->load->model('Tentativa_model');
         $this->load->model('Funcionario_setor_model', 'funcionario_setor_model');
 
         $today = date('Y-m-d H:i:s');
@@ -87,28 +87,29 @@ class AccessWS extends MY_Controller
         $attempt_result = verify_attempt($this->input->ip_address());
 		
         $login = explode('@', $obj->login_user);
-        $data['acessos.acesso_login'] = $obj->login_user;
+        $data['contatos.contato_email'] = $obj->login_user;
         $data['acessos.acesso_senha'] = $obj->password_user;
 
         $this->form_validation->set_data($data);
+
         $this->form_validation->set_rules(
-            'acessos.acesso_login',
+            'contatos.contato_email',
             'Login',
             'trim|required|regex_match[/[a-zA-Z0-9_\-.+]+@[a-zA-Z0-9-]+/]|min_length[8]|max_length[128]');
+
         $this->form_validation->set_rules(
             'acessos.acesso_senha',
             'Senha',
             'trim|required|min_length[8]|max_length[128]');
 
-        if ($this->form_validation->run()) {
-            if ($attempt_result === true) {
-                $data['acessos.acesso_login'] = $login[0];
+        if ($this->form_validation->run()) 
+        {
+            if ($attempt_result === true) 
+            {
                 $data['acessos.acesso_senha'] = hash(ALGORITHM_HASH, $obj->password_user . SALT);
 
-                if ($login[1] !== 'admin') {
-                    $model = 'fmodel';
-                    $data['funcionarios.organizacao_fk'] = $login[1];
-                } else {
+                if ($login[1] === 'admin') 
+                {
                     //Se for superusuário, não tem login no app
                     $this->response->set_code(Response::NOT_FOUND);
                     $this->response->set_data($this->data_json);
@@ -116,19 +117,19 @@ class AccessWS extends MY_Controller
                     die();
                 }
 	
-                $user = $this->$model->get_login_mobile($data);
+                $user = $this->fmodel->get_login_mobile($data);
                 
-                if($user->funcionario_status == 0){
+                if($user->funcionario_status == 0)
+                {
                     $this->response->set_code(Response::UNAUTHORIZED);
                     $this->response->set_data(null);
                     $this->response->send();
                     die();
                 }
 
-                if ($user) {
-                    // var_dump($user);die();
-					// $data_token['id_pessoa'] = $user->pessoa_fk;
-					$data_token['id_pessoa'] = $user->pessoa_fk;
+                if ($user)
+                {
+					$data_token['id_pessoa'] = $user->pessoa_pk;
                     $data_token['id_funcionario'] = $user->funcionario_pk;
 					$data_token['id_empresa'] =  $user->organizacao_fk;
 					$data_token['last_update'] = "01/01/2000";
@@ -138,7 +139,9 @@ class AccessWS extends MY_Controller
                     
 					$this->response->set_data($dados);
                     $this->tentativa_model->delete($this->input->ip_address());
-                } else {
+                } 
+                else 
+                {
                     $this->response->set_code(Response::NOT_FOUND);
                     $attempt = [
                         'tentativa_ip' => $this->input->ip_address(),
@@ -146,11 +149,15 @@ class AccessWS extends MY_Controller
                     ];
                     $this->tentativa_model->insert($attempt);
                 }
-            } else {
+            } 
+            else 
+            {
                 $this->response->set_code(Response::FORBIDDEN);
                 $this->response->set_data($attempt_result);
             }
-        } else {
+        } 
+        else 
+        {
             $this->response->set_code(Response::BAD_REQUEST);
         }
 
@@ -218,107 +225,4 @@ class AccessWS extends MY_Controller
         $this->__destruct();
     }
 
-    // public function get()
-    // {
-    //     echo "Legal";
-    //     die();
-    //     if(verify_token())
-    //     {
-    //         if(is_get_request())
-    //         {
-    //             create_token();
-
-    //             $id = $_GET['id_user'];
-
-    //             if($id == "undefined"){
-    //                 $this->data_json['users'] = $this->model->get();
-    //             }else{
-    //                 $this->data_json['users'] = $this->model->get($id);
-    //             }
-
-    //             $this->response->set_data($this->data_json);
-    //         }
-    //         else
-    //         {
-    //             $this->response->set_code(Response::INVALID_METHOD);
-    //         }
-    //     }
-    //     $this->response->send();
-    //     $this->__destruct();
-    // }
-
-    // public function insert()
-    // {
-    //     if(verify_token())
-    //     {
-    //         if(is_post_request())
-    //         {
-    //             create_token();
-
-    //             $data['login_user'] = $_POST['login_user'];
-    //             $data['password_user'] = $_POST['password_user'];
-
-    //             if(!$this->model->insert($data))
-    //             {
-    //                 $this->response->set_code(Response::DB_ERROR_INSERT);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             $this->response->set_code(Response::INVALID_METHOD);
-    //         }
-    //     }
-    //     $this->response->send();
-    //     $this->__destruct();
-    // }
-
-    // public function update()
-    // {
-    //     if(verify_token())
-    //     {
-    //         if(is_post_request())
-    //         {
-    //             create_token();
-
-    //             $data['login_user'] = $_POST['login_user'];
-    //             $data['password_user'] = $_POST['password_user'];
-    //             $id_user = $_POST['id_user'];
-
-    //             if(!$this->model->update($data,$id_user))
-    //             {
-    //                 $this->response->set_code(Response::DB_ERROR_UPDATE);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             $this->response->set_code(Response::INVALID_METHOD);
-    //         }
-    //     }
-    //     $this->response->send();
-    //     $this->__destruct();
-    // }
-
-    // public function delete()
-    // {
-    //     if(verify_token())
-    //     {
-    //         if(is_delete_request())
-    //         {
-    //             create_token();
-
-    //             $id_user = $_POST['id_user'];
-
-    //             if(!$this->model->delete($id_user))
-    //             {
-    //                 $this->response->set_code(Response::DB_ERROR_DELETE);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             $this->response->set_code(Response::INVALID_METHOD);
-    //         }
-    //     }
-    //     $this->response->send();
-    //     $this->__destruct();
-    // }
 }
