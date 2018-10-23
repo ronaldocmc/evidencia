@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -94,7 +95,7 @@ class CRUD_Controller extends CI_Controller
                 // Salva no log que o usuário tentou acessar um método que não tem permissão
                 $this->log_model->insert([
                     'log_pessoa_fk' => $this->session->user['id_user'],
-                    'log_descricao' => 'Tentou acessar ' . $exception . ' do controlador ' . $current_controller
+                    'log_descricao' => 'Tentou acessar ' . $exception['method'] . ' do controlador ' . $current_controller
                 ]);
                 $this->load_view_unauthorized();   
             }

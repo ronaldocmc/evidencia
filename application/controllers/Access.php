@@ -112,7 +112,7 @@ class Access extends CI_Controller {
     				'is_superusuario' => isset($response->organizacao_pk) ? FALSE : TRUE,
     				'image_user_min' => isset($response->imagem_caminho)?base_url('/assets/uploads/perfil_images/min/'.$response->imagem_caminho):base_url('/assets/img/default.png'),
     				'image_user' => isset($response->imagem_caminho)?base_url('/assets/uploads/perfil_images/'.$response->imagem_caminho):base_url('/assets/img/default.png'),
-                    'id_funcionario' => $response->funcionario_pk,
+                    'id_funcionario' => isset($response->funcionario_pk)?$response->funcionario_pk:null,
     				'func_funcao' => isset($response->funcao_nome)?$response->funcao_nome:null
     			];
 

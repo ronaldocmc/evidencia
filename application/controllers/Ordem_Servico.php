@@ -68,11 +68,11 @@ class Ordem_Servico extends CRUD_Controller {
 
 		//Criando um array de prodecencias de serviços (Interno/Externo) com dados necessário a serem exibidos na view index
 		$procedencias = $this->procedencia_model->get(['procedencias.organizacao_fk' => $this->session->user['id_organizacao']
-		]);
+	]);
 
 		//Criando um array de setores (A, B, C, D) com dados necessário a serem exibidos na view index
 		$setores = $this->setor_model->get(['setores.organizacao_fk' => $this->session->user['id_organizacao']
-		]);
+	]);
 
 
 		//Carregando arquivos CSS no flashdata da session para as views 
@@ -357,7 +357,7 @@ class Ordem_Servico extends CRUD_Controller {
 	}
 
 	//Função que chama a função de inserção de imagem relacionando-a com a situação atual. 
-	public function insert_imagem_situacao($return_ordem, $return_historico, $flag, $cod_os=NULL, 
+	public function insert_imagem_situacao($return_ordem, $return_historico, $flag, $data_local=NULL, $cod_os=NULL, 
 		$endereco_os=NULL)
 	{
 	    //Se o usuário enviou, então realizamos o upload
@@ -383,6 +383,7 @@ class Ordem_Servico extends CRUD_Controller {
 					'ordem_servico_pk' => $return_ordem['id'],
 					'historico_ordem_pk' => $return_historico['id'],
 					'ordem_servico_cod' => $cod_os,
+					'local_pk' => $data_local['local_fk'],
 					'data_criacao' => date('d/m/Y h:i:s'),
 					'endereco_os' => $endereco_os
 				]);
@@ -403,7 +404,15 @@ class Ordem_Servico extends CRUD_Controller {
 			if($flag == 1)
 			{
 				$this->response->set_code(Response::DB_ERROR_INSERT);
-				$this->response->set_data("Não foi possivel inserir a imagem! Contudo, a ordem de serviço foi cadastrada com sucesso!");
+				$this->response->set_data([
+					'mensagem' => "Não foi possivel inserir a imagem! Contudo, a ordem de serviço foi cadastrada com sucesso!",
+					'ordem_servico_pk' => $return_ordem['id'],
+					'historico_ordem_pk' => $return_historico['id'],
+					'local_fk' => $data_local['local_fk'],
+					'ordem_servico_cod' => $cod_os,
+					'data_criacao' => date('d/m/Y h:i:s'),
+					'endereco_os' => $endereco_os
+				]);
 			}
 			else
 			{
@@ -454,13 +463,13 @@ class Ordem_Servico extends CRUD_Controller {
 						'local_fk' => $return_local->__get('data')['id']
 					];
 					$endereco_os = $data_ordem['logradouro_nome'] . ', ' .
-								   $data_ordem['local_num'] . ' - ' .
-								   $data_ordem['bairro'];
-					}
+					$data_ordem['local_num'] . ' - ' .
+					$data_ordem['bairro'];
+				}
 				else
 				{
 					$this->response->set_code(Response::DB_ERROR_GET);
-					$this->response->set_data(['erro' => 'Erro no local']);
+					$this->response->set_data(['mensagem' => 'Erro no local']);
 					$this->response->send();
 					return;
 				}
@@ -533,43 +542,27 @@ class Ordem_Servico extends CRUD_Controller {
 	            		//Se a inserção foi bem sucedida, progredimos para inserir a imagem que poderá ser obrigatória ou opcional
 	            		if($return_historico['db_error']['code'] == 0)
 	            		{	
-	            			//Verificando se a situação corrente da ordem de serviço, exige uma fotografia/imagem.
-	            			if($situacao->situacao_foto_obrigatoria == 1)
-	            			{	
 	            				//Caso a foto seja obrigatória, verificamos se ela realmente foi enviada pelo usuário, caso não tenha sido. Retornaremos erro. Caso foi enviada, efetuaremos a inserção
-	            				if($this->input->post('img') !== "null")
-	            				{	
-	            					//Realizando a inserção do caminho da imagem (armazenada no servidor), no banco de dados, por meio da função abaixo. 
-	            					$this->insert_imagem_situacao($return_ordem,$return_historico, 1,
-	            							$codigo_os, $endereco_os);
-	            				}
-	            				else
-	            				{
-	            					$this->response->set_code(Response::BAD_REQUEST);
-	            					$this->response->set_data("Foto obrigatória não foi enviada!"); 
-	            				}
-	            			}
-	            			else
+	            			if($this->input->post('img') !== "null")
 	            			{	
-	            				//Caso a imagem não seja obrigatória mas o usuário ainda optou por envia-la, verificamos-a 
-	            				if($this->input->post('img') !== "null")
-	            				{	
-	            					//Caso tenha enviado, realizamos a inserção por meio da função abaixo
-	            					$this->insert_imagem_situacao($return_ordem,$return_historico,1,
-	            							$codigo_os, $endereco_os);
-	            				}
+	            					//Realizando a inserção do caminho da imagem (armazenada no servidor), no banco de dados, por meio da função abaixo. 
+	            				$this->insert_imagem_situacao($return_ordem,$return_historico, 1, $data_coordenadas['local_fk'],
+	            					$codigo_os, $endereco_os);
+	            			}
 	            				else //Se a imagem não era obrigatória e não foi enviada, então o processo foi finalizado e executado com sucesso, retornamos o response
 	            				{	
 	            					$this->response->set_code(Response::SUCCESS);
 	            					$this->response->set_data([
 	            						'mensagem' => "Ordem de serviço foi cadastrada e histórico registrado com sucesso!",
+	            						'ordem_servico_pk' => $return_ordem['id'],
+	            						'historico_ordem_pk' => $return_historico['id'],
+	            						'local_fk' => $data_coordenadas['local_fk'],
 	            						'ordem_servico_cod' => $codigo_os,
 	            						'data_criacao' => date('d/m/Y h:i:s'),
 	            						'endereco_os' => $endereco_os
 	            					]);
 	            				} 
 	            			}
-	            		}
 	            		else //Caso tenha acontecido algum erro de inserção no histórico, retornamos para o usuário
 	            		{	
 	            			$this->response->set_code(Response::DB_ERROR_INSERT);
@@ -648,6 +641,10 @@ class Ordem_Servico extends CRUD_Controller {
 						'coordenada_long' => $data_ordem['longitude'],
 						'local_fk' => $return_local->data['id']
 					];
+					$endereco_os = $data_ordem['logradouro_nome'] . ', ' .
+					$data_ordem['local_num'] . ' - ' .
+					$data_ordem['bairro'];
+					
 				}
 				else
 				{
@@ -717,10 +714,11 @@ class Ordem_Servico extends CRUD_Controller {
 	            	{
 	            		$this->response->set_code(Response::SUCCESS);
 	            		$this->response->set_data([
-	            			'Mensagem' => "Ordem de serviço foi modificada com sucesso!",
+	            			'mensagem' => "Ordem de serviço foi modificada com sucesso!",
 	            			'ordem_servico_pk' => $data_ordem['ordem_servico_pk'],
 	            			'historico_ordem_pk' => $return_historico[0]->historico_ordem_pk,
-	            			'local_fk' => $coordenada->local_fk
+	            			'local_fk' => $coordenada->local_fk,
+	            			'endereco_os' => $endereco_os
 	            		]);
 	            	}
 	            	else
@@ -735,7 +733,8 @@ class Ordem_Servico extends CRUD_Controller {
 	            					'mensagem' => "A situação inicial da ordem de serviço foi modificada com sucesso!",
 	            					'ordem_servico_pk' => $data_ordem['ordem_servico_pk'],
 	            					'historico_ordem_pk' => $return_historico[0]->historico_ordem_pk,
-	            					'local_fk' => $coordenada->local_fk
+	            					'local_fk' => $coordenada->local_fk,
+	            					'endereco_os' => $endereco_os
 	            				]);
 	            			}
 	            			else{ //O usuário não modificou nenhuma informação da ordem de serviço
@@ -939,6 +938,7 @@ class Ordem_Servico extends CRUD_Controller {
 			//Recebendo os dados via post (ID ordem)
 			$data = $this->input->post();
 
+
 			//Realizando a atualização do status da ordem para 0 = desativada/Excluída 
 			$return_delete = $this->ordem_servico_model->update_status(['ordem_servico_pk' => $data['ordem_servico_pk']], ['ordem_servico_status' => 0]);
 			
@@ -962,7 +962,6 @@ class Ordem_Servico extends CRUD_Controller {
 
 		//Enviando a response para o usuário (resposta servidor)
 		$this->response->send();
-
 	}
 
 
