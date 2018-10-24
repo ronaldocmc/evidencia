@@ -1,5 +1,5 @@
 <IfModule mod_rewrite.c>
-	SetEnv CI_ENV 'testing'
+	SetEnv CI_ENV 'development'
 	RewriteEngine on
 	RewriteCond $1 !^(index\.php|images|css|js|robots\.txt)
 	RewriteCond %{REQUEST_FILENAME} !-f

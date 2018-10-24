@@ -335,7 +335,7 @@ class CIPHPUnitTestRequest
 			}
 		}
 
-		// Create controller
+		//Create controller
 		if (CIPHPUnitTest::wiredesignzHmvcInstalled())
 		{
 			new CI();

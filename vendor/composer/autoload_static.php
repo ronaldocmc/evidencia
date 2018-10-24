@@ -9,8 +9,11 @@ class ComposerStaticInitae0d64468f114a47fb51ab267ef40cca
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
     );
@@ -46,7 +49,9 @@ class ComposerStaticInitae0d64468f114a47fb51ab267ef40cca
         array (
             'Psy\\' => 4,
             'Psr\\Log\\' => 8,
+            'Psr\\Http\\Message\\' => 17,
             'PhpParser\\' => 10,
+            'PhpCoveralls\\' => 13,
         ),
         'M' => 
         array (
@@ -56,10 +61,20 @@ class ComposerStaticInitae0d64468f114a47fb51ab267ef40cca
         array (
             'JakubOnderka\\PhpConsoleColor\\' => 29,
         ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
+        ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
+        ),
+        'C' => 
+        array (
+            'Composer\\XdebugHandler\\' => 23,
         ),
     );
 
@@ -130,9 +145,17 @@ class ComposerStaticInitae0d64468f114a47fb51ab267ef40cca
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
         'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
+        ),
+        'PhpCoveralls\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-coveralls/php-coveralls/src',
         ),
         'Mpdf\\' => 
         array (
@@ -142,6 +165,18 @@ class ComposerStaticInitae0d64468f114a47fb51ab267ef40cca
         array (
             0 => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src',
         ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
@@ -149,6 +184,10 @@ class ComposerStaticInitae0d64468f114a47fb51ab267ef40cca
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'Composer\\XdebugHandler\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/xdebug-handler/src',
         ),
     );
 
