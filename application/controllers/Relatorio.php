@@ -544,6 +544,13 @@ public function detalhes_relatorio($id_relatorio)
         if($ordens_servicos != false){
             foreach($ordens_servicos as $os){
                 $os->data_criacao = date('d/m/Y H:i:s', strtotime($os->data_criacao));
+
+                //Se não tiver sido entregue, vamos mostrar: Não Finalizado, se tiver, vamos printar a situação atual
+                if($os->status_os == 2){
+                    $os->status_os_string = 'Não Finalizado';
+                }else{
+                    $os->status_os_string = $os->situacao_atual;
+                }
             }
         }
 
@@ -855,6 +862,11 @@ private function create_relatorio($filtro)
             //arrumar a data:
             foreach($relatorios as $relatorio){
                 $relatorio->data_criacao = date('d/m/Y H:i:s', strtotime($relatorio->data_criacao));
+                if($relatorio->status == 0){
+                    $relatorio->status_string = 'Em Andamento';
+                }else{
+                    $relatorio->status_string = 'Entregue';
+                }
             }
         }
 
@@ -939,7 +951,7 @@ private function create_relatorio($filtro)
 
                     // Se for em andamento, não foi finalizada, logo, deve ser insertido um novo histórico
                     // a colocando em aberto novamente, informando que não foi finalizada no relatório
-                    if ($hist[0]->situacao_fk == '2') 
+                    if ($hist[0]->situacao_fk == '2') //2 é EM ANDAMENTO
                     {
                        $return =  $this->historico_model->insert([
                             'ordem_servico_fk' => $os->os_fk,
@@ -949,17 +961,20 @@ private function create_relatorio($filtro)
                         ]);
 
                         // O seu registro é retirado do relatório
-                        $this->relatorio_model->delete_relatorio_os($os->os_fk);
-
+                        //$this->relatorio_model->delete_relatorio_os($os->os_fk);
+                       //2 significa que não foi concluída.
+                       $this->relatorio_model->update_relatorios_os_verificada($os->os_fk, 2); 
                         // Insere an tabela para controle das OS não concluidas no relatório
-                        $this->relatorio_model->insert_os_nao_concluida($os->os_fk, $os->relatorio_fk);
+                        // $this->relatorio_model->insert_os_nao_concluida($os->os_fk, $os->relatorio_fk);
                     }
                     // Caso esteja finalizada, seu status na tabela de relatorio_os é alterado para verificado
                     else
                     {
-                        $this->relatorio_model->update_relatorios_os_verificada($os->os_fk);
+                        $this->relatorio_model->update_relatorios_os_verificada($os->os_fk, 1);
                     }
                 }
+                //após verificar todas as ordens, setamos o status do relatório para 1 para indicar que o relatório foi entregue.
+                $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $id_relatorio]);
             }
             else
             {

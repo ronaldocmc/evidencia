@@ -78,7 +78,8 @@
                                                 <th>Prioridade</th>
                                                 <th>Endereço</th>
                                                 <th>Serviço</th>
-                                                <th>Setor</th> 
+                                                <th>Setor</th>
+                                                <th>Situação Atual</th> 
                                                 <th>Opções</th>                
 
                                             </tr>
@@ -111,6 +112,9 @@
 
                                                         <td>
                                                             <?=$ordem_servico->setor_nome?>
+                                                        </td>
+                                                        <td>
+                                                            <?= $ordem_servico->status_os_string ?>
                                                         </td>
                                                         <td>
                                                             <div class="btn-group">

@@ -30,7 +30,7 @@ class Relatorio_model extends CI_Model
         $this->db->select('ordens_servicos.ordem_servico_pk,ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_cod, ordens_servicos.ordem_servico_status, servicos.servico_nome,  prioridades.prioridade_nome, procedencias.procedencia_nome, imagens_situacoes.imagem_situacao_caminho, coordenadas.coordenada_lat, coordenadas.coordenada_long, setores.setor_nome, (SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual,(SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial,
            (SELECT historicos_ordens.historico_ordem_tempo FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as data_criacao,
            tipos_servicos.tipo_servico_nome, 
-           locais.local_complemento, locais.local_num, logradouros.logradouro_nome, bairros.bairro_nome, municipios.municipio_nome, municipios.estado_fk, coordenadas.local_fk, departamento_nome
+           locais.local_complemento, locais.local_num, logradouros.logradouro_nome, bairros.bairro_nome, municipios.municipio_nome, municipios.estado_fk, coordenadas.local_fk, departamento_nome, relatorios_os.os_verificada as status_os
 
            ')
         ;
@@ -299,9 +299,9 @@ class Relatorio_model extends CI_Model
     }
 
 
-    public function update_relatorios_os_verificada($os)
+    public function update_relatorios_os_verificada($os, $status)
     {
-        $data = array('os_verificada' => '1');
+        $data = array('os_verificada' => $status);
         $where = array('os_fk' => $os);
         $this->db->update('relatorios_os', $data, $where);
     }
