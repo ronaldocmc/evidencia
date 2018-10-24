@@ -44,10 +44,10 @@ class Historico_model extends CI_Model {
         }
     }
 
-        public function get_first_and_last_historico($where = NULL) {
+    public function get_first_and_last_historico($where = NULL) {
         $this->db->select('(SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial_pk, (SELECT historicos_ordens.historico_ordem_pk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as historico_ordem_pk');
         $this->db->from(self::TABLE_NAME);
-         $this->db->join('ordens_servicos','ordens_servicos.ordem_servico_pk = '.self::TABLE_NAME. '.'.'ordem_servico_fk');
+        $this->db->join('ordens_servicos','ordens_servicos.ordem_servico_pk = '.self::TABLE_NAME. '.'.'ordem_servico_fk');
         if ($where !== NULL) {
             if (is_array($where)) {
                 foreach ($where as $field=>$value) {
@@ -61,6 +61,20 @@ class Historico_model extends CI_Model {
         // $result=(array) $return;
         if ($result) {
             return $result;
+        } else {
+            return false;
+        }
+    }
+
+    public function get_last_historico($os_pk){
+        $this->db->select('(SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = '.$os_pk.' ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as ultimo_historico');
+        $this->db->from(self::TABLE_NAME);
+     
+        $this->db->where('ordem_servico_fk', $os_pk);
+        $result = $this->db->get()->row();
+        // $result=(array) $return;
+        if ($result) {
+            return $result->ultimo_historico;
         } else {
             return false;
         }
@@ -100,9 +114,9 @@ class Historico_model extends CI_Model {
      * @return int Number of affected rows by the update query
      */
     public function update($where = array(), Array $data) {
-            if (!is_array($where)) {
-                $where = array(self::PRI_INDEX => $where);
-            }
+        if (!is_array($where)) {
+            $where = array(self::PRI_INDEX => $where);
+        }
         $this->db->update(self::TABLE_NAME, $data, $where);
 
         // var_dump($this->db->affected_rows()); die();
@@ -153,7 +167,7 @@ class Historico_model extends CI_Model {
             historicos_ordens.historico_ordem_comentario AS comentario,
             imagens_situacoes.imagem_situacao_caminho as foto,
             imagens_perfil.imagem_caminho as funcionario_foto
-        ');
+            ');
 
         $this->db->from('historicos_ordens');
         $this->db->join('funcionarios','historicos_ordens.funcionario_fk = funcionarios.funcionario_pk');
@@ -186,5 +200,5 @@ class Historico_model extends CI_Model {
         }
     }
 }
-        
- ?>
+
+?>

@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 if(is_cli()){
-	$config['base_url'] = 'localhost/evidencia/evidencia';
+	$config['base_url'] = 'localhost/evidencia';
 }else{
 	$root = "http://".$_SERVER['HTTP_HOST'];
 	$root .= dirname($_SERVER['SCRIPT_NAME']);
