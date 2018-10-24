@@ -220,10 +220,14 @@ class Access extends CI_Controller {
     	$this->load->library('form_validation');
 
 		//Faz a verificação de que o usuário não trata-se de um robo
-    	//$captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
-    	//$attempt_response = verify_attempt($this->input->ip_address());
-    	$captcha_response = TRUE;
-        $attempt_response = TRUE;
+        if(ENVIRONMENT == 'testing')
+        {
+            $captcha_response = TRUE;
+            $attempt_response = TRUE;
+        }else{
+        	$captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
+        	$attempt_response = verify_attempt($this->input->ip_address());
+        }
     	if ($captcha_response === TRUE && $attempt_response === TRUE)
     	{	
     		$this->form_validation->set_rules('login', 

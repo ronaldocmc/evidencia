@@ -87,11 +87,16 @@ class Relatorio_model extends CI_Model
         }
     }
 
-    public function get_os_nao_verificadas()
+    public function get_os_nao_verificadas($id_relatorio = NULL)
     {
         $this->db->select('*');
         $this->db->from('relatorios_os');
+        $this->db->join('relatorios', 'relatorios_os.relatorio_fk = relatorios.relatorio_pk');
+        $this->db->where('relatorios.status', '0');
         $this->db->where('relatorios_os.os_verificada', '0');
+        if($id_relatorio != NULL){
+            $this->db->where('relatorios.relatorio_pk', $id_relatorio);
+        }
 
         $result =  $this->db->get()->result();
         
