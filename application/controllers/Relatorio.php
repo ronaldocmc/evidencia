@@ -461,8 +461,17 @@ class Relatorio extends CRUD_Controller
     $message = $this->valida_filtro($filtro);
     if($message == "true"){
         //criamos o relatório e suas respectivas ordens de serviço, de acordo com o filtro.
-        $id_relatorio = $this->create_relatorio($filtro);  
-        redirect('relatorio/detalhes_relatorio/'.$id_relatorio); 
+        $response = $this->create_relatorio($filtro);  
+
+        //$response recebe o ID do relatório se deu tudo certo, ou a mensagem do erro.
+        if(is_int($response)){
+            $id_relatorio = $response;
+            redirect('relatorio/detalhes_relatorio/'.$id_relatorio); 
+        }else{
+            $this->session->set_flashdata('error', $response);
+            redirect('relatorio/novo_relatorio');
+        }
+
     }else{
         $this->session->set_flashdata('error', $message);
         redirect('relatorio/novo_relatorio');
@@ -670,6 +679,11 @@ private function create_relatorio($filtro)
 
     // vamos filtrar as OS que pertencerão a este relatório.
     $ordens_servicos = $this->ordem_servico_model->get_os_novo_relatorio($filtro);
+
+    //vamos bloquear a criação de relatórios sem ordens de serviço.
+    if(count($ordens_servicos) == 0){
+        return "Não é possível criar um relatório sem ordens de serviço.";
+    }
 
     $id_relatorio = $this->relatorio_model->insert(['funcionario_fk' => $filtro['funcionario_fk']]);
 
