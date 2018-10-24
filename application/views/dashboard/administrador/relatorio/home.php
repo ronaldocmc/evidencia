@@ -51,6 +51,7 @@
                                             <th>Funcionário</th>
                                             <th>Função do Funcionário</th>
                                             <th>Quantidade</th>
+                                            <th>Situação</th>
                                             <th>Data de Criação</th>
                                             <th>Detalhes</th>
                                         </tr>
@@ -72,6 +73,9 @@
                                                    </td>
                                                    <td>
                                                        <?= $r->quantidade_os ?>
+                                                   </td>
+                                                   <td>
+                                                     <?= $r->status_string ?>
                                                    </td>
                                                    <td>
                                                        <?= $r->data_criacao ?>
