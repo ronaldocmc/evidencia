@@ -1,5 +1,6 @@
 
 const google = "6LfwtV4UAAAAANnXXJhkM87IgNRNQghpwW467CEc";
+const base_url = window.location .protocol + "//" + window.location.host + "/" + window.location.pathname.split('/')[1];
 
 $(document).ready(function () {
 
@@ -95,7 +96,7 @@ login_send = (e, s) => {
   grecaptcha.execute(google, { action: 'homepage' }).then(function (token) {
     t = token;
     //Enviando os dados via post (AJAX)
-    $.post('http://localhost/evidencia_v2/access/login', { login: e, password: s, 'g-recaptcha-response': t }).done(function (response) {
+    $.post(base_url+'/access/login/', { login: e, password: s, 'g-recaptcha-response': t }).done(function (response) {
       console.log(response);
       if (response.code == 200) {
         window.location.reload();
@@ -126,7 +127,7 @@ email_send = (email) => {
     t = token;
 
     //Enviando os dados via post (AJAX)
-    $.post('http://localhost/evidencia_v2/contact/restore_password', { email, 'g-recaptcha-response': t }).done(function (response) {
+    $.post(base_url+'/contact/restore_password', { email, 'g-recaptcha-response': t }).done(function (response) {
       console.log(response);
       if (response.code == 200) {
         $('.area-acesso').append(alerts_access('success_email'));

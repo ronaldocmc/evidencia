@@ -52,9 +52,15 @@ class CRUD_Controller extends CI_Controller
     private function verify_authentication()
     {
 
-        $this->verify_controller_exceptions($this->session->permissions['controller_exceptions']);
+        if($this->session->permissions)
+        {
+            $this->verify_controller_exceptions($this->session->permissions['controller_exceptions']);
 
-        $this->verify_method_exceptions($this->session->permissions['method_exceptions']);
+            $this->verify_method_exceptions($this->session->permissions['method_exceptions']);
+        }else
+        {
+            $this->load_view_unauthorized();
+        }
 
     }
 

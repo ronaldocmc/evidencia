@@ -452,42 +452,42 @@ class Relatorio extends CRUD_Controller
         ],'administrador');    
     } 
 
-  public function insert_novo_relatorio()
-  {
+    public function insert_novo_relatorio()
+    {
 
         //pegamos os filtros que o usuário marcou na página anterior: qual(is) os setores, qual(is) os tipos de serviço e qual o funcionário responsável.
-    $filtro = $this->input->post();
+        $filtro = $this->input->post();
 
-    $message = $this->valida_filtro($filtro);
-    if($message == "true"){
+        $message = $this->valida_filtro($filtro);
+        if($message == "true"){
         //criamos o relatório e suas respectivas ordens de serviço, de acordo com o filtro.
-        $response = $this->create_relatorio($filtro);  
+            $response = $this->create_relatorio($filtro);  
 
         //$response recebe o ID do relatório se deu tudo certo, ou a mensagem do erro.
-        if(is_int($response)){
-            $id_relatorio = $response;
-            redirect('relatorio/detalhes_relatorio/'.$id_relatorio); 
+            if(is_int($response)){
+                $id_relatorio = $response;
+                redirect('relatorio/detalhes_relatorio/'.$id_relatorio); 
+            }else{
+                $this->session->set_flashdata('error', $response);
+                redirect('relatorio/novo_relatorio');
+            }
+
         }else{
-            $this->session->set_flashdata('error', $response);
+            $this->session->set_flashdata('error', $message);
             redirect('relatorio/novo_relatorio');
         }
 
-    }else{
-        $this->session->set_flashdata('error', $message);
-        redirect('relatorio/novo_relatorio');
+
     }
 
-    
-}
+    public function get_string_filtro_data($filtro_data){
+        return 'Relatório contendo as ordens de serviço emitidas do dia '.date('d/m/Y', strtotime($filtro_data->filtros_relatorios_data_inicio)).' até '.date('d/m/Y', strtotime($filtro_data->filtros_relatorios_data_fim));
+    }
 
-public function get_string_filtro_data($filtro_data){
-    return 'Relatório contendo as ordens de serviço emitidas do dia '.date('d/m/Y', strtotime($filtro_data->filtros_relatorios_data_inicio)).' até '.date('d/m/Y', strtotime($filtro_data->filtros_relatorios_data_fim));
-}
+    public function get_string_filtro_setores($filtro_setores){
+       $string = '';
 
-public function get_string_filtro_setores($filtro_setores){
-     $string = '';
-
-    for($i = 0; $i < count($filtro_setores); $i++){
+       for($i = 0; $i < count($filtro_setores); $i++){
         if($i == 0){ //se for o primeiro registro
         }else if($i == count($filtro_setores) -1){ //se for o ultimo registro:
             $string.= ' e ';
@@ -501,9 +501,9 @@ public function get_string_filtro_setores($filtro_setores){
 }
 
 public function get_string_filtro_tipos_servicos($filtro_tipos_servicos){
-     $string = '';
+   $string = '';
 
-    for($i = 0; $i < count($filtro_tipos_servicos); $i++){
+   for($i = 0; $i < count($filtro_tipos_servicos); $i++){
         if($i == 0){ //se for o primeiro registro
         }else if($i == count($filtro_tipos_servicos) -1){ //se for o ultimo registro:
             $string.= ' e ';
@@ -606,8 +606,8 @@ public function detalhes_relatorio($id_relatorio)
 
         load_view([
             0 => [
-             'src' => 'dashboard/administrador/relatorio/detalhe_relatorio',
-             'params' => [
+               'src' => 'dashboard/administrador/relatorio/detalhe_relatorio',
+               'params' => [
                 'ordens_servicos' => $ordens_servicos,
                 'funcionario' => $funcionario,
                 'funcionarios' => $funcionarios,
@@ -635,7 +635,7 @@ private function validateDate($date) {
 }
 
 private function valida_filtro($filtro){
-   
+
     if(isset($filtro['setor'])){
         if(isset($filtro['tipo'])){
             if($this->validateDate($filtro['data_inicial'])){
@@ -899,7 +899,7 @@ private function create_relatorio($filtro)
     }
 
     
-    public function restaurar_os()
+    public function restaurar_os($id_relatorio = NULL)
     {
         $this->load->model('Relatorio_model', 'relatorio_model');
         $response = new Response();
@@ -924,7 +924,7 @@ private function create_relatorio($filtro)
         }
         else
         {
-            $ordens_servico = $this->relatorio_model->get_os_nao_verificadas();
+            $ordens_servico = $this->relatorio_model->get_os_nao_verificadas($id_relatorio);
 
             // Verifica se há OS não finalizadas
             if ($ordens_servico !== false)
@@ -933,6 +933,7 @@ private function create_relatorio($filtro)
 
                 foreach ($ordens_servico as $os) 
                 {
+
                     // Para cada OS, é pego o último registro do histórico
                     $hist = $this->historico_model->get_max_data_os($os->os_fk);
 
@@ -940,7 +941,7 @@ private function create_relatorio($filtro)
                     // a colocando em aberto novamente, informando que não foi finalizada no relatório
                     if ($hist[0]->situacao_fk == '2') 
                     {
-                        $this->historico_model->insert([
+                       $return =  $this->historico_model->insert([
                             'ordem_servico_fk' => $os->os_fk,
                             'funcionario_fk' => $this->session->user['id_funcionario'],
                             'situacao_fk' => '1',
