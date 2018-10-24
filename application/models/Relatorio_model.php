@@ -194,10 +194,12 @@ class Relatorio_model extends CI_Model
         }
     }
 
-    public function get_relatorio_id_do_dia($id_funcionario){
+    public function get_relatorio_do_funcionario($id_funcionario){
        $this->db->select('relatorio_pk');
        $this->db->from('relatorios');
-       $this->db->where('DAY(data_criacao) = DAY(NOW())');
+       //$this->db->where('DAY(data_criacao) = DAY(NOW())');
+       $this->db->order_by('data_criacao', 'DESC');
+       $this->db->where('status = 0');
        $this->db->where('funcionario_fk', $id_funcionario);
 
         $result = $this->db->get()->row();

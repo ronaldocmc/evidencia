@@ -722,13 +722,13 @@ private function create_relatorio($filtro)
 }
 
     /**
-    Retorna o relatório do dia do funcionário
+    Retorna o relatório que está em aberto do funcionário
     **/
-    public function get_relatorio_do_dia($id_funcionario){
+    public function get_relatorio_do_funcionario($id_funcionario){
         $this->load->model('relatorio_model');
 
-        //precisamos descobrir o id do relatório do dia:
-        $relatorio = $this->relatorio_model->get_relatorio_id_do_dia($id_funcionario);
+        //precisamos descobrir o id do relatório que está em aberto do funcionário:
+        $relatorio = $this->relatorio_model->get_relatorio_do_funcionario($id_funcionario);
         
         //se o relatório existir:
         if($relatorio)

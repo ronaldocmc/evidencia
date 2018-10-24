@@ -474,7 +474,7 @@ class Ordem_Servico_model extends CI_Model {
         $query.="INNER JOIN tipos_servicos
             ON tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk ";
 
-        $query.= "WHERE historico_ordem_tempo BETWEEN '".$where['data_inicial']."' AND '".$where['data_final']."'";
+        $query.= "WHERE historico_ordem_tempo BETWEEN '".$where['data_inicial']." 00:00:01' AND '".$where['data_final']." 23:59:59'";
 
         $query.= $this->fill_query('setor_fk', $where['setor']);
         $query.= $this->fill_query('tipos_servicos.tipo_servico_pk', $where['tipo']);
