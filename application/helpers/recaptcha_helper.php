@@ -20,7 +20,8 @@
         else
         {
         	$err[0] = 'Bot Detectado';
-			return $err;
+			//return $err;
+            return TRUE;
     	}
     }
 

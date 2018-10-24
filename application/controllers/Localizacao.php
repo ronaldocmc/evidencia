@@ -9,12 +9,17 @@ class Localizacao extends CI_Controller
 
     function __construct() 
     {
+        if(ENVIRONMENT == 'testing'){
+            CIPHPUnitTest::createCodeIgniterInstance();
+        }
         if ($this->CI = & get_instance() === NULL)
         {
             parent::__construct();
             $this->CI = & get_instance();
             $this->user_call = FALSE;
         }
+        
+        
         $this->CI->load->library('form_validation');
     }
 
@@ -89,10 +94,10 @@ class Localizacao extends CI_Controller
     */
     public function get_estados()
     {
-        $this->load->model('estado_model');
+        $this->CI->load->model('estado_model');
         $response = new Response();
 
-        $estados = $this->estado_model->get();
+        $estados = $this->CI->estado_model->get();
 
         if (!$estados)
         {

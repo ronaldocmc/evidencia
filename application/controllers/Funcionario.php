@@ -8,16 +8,25 @@ require_once APPPATH."core/CRUD_Controller.php";
 
 class Funcionario extends CRUD_Controller {
 
-
+    public $CI;
     public $response;
     public $pessoa; 
 
     function __construct() {
-        parent::__construct();
-        $this->load->model('funcionario_model','model');
-        $this->load->model('pessoa_model');
-        $this->load->library('form_validation');
-        $this->load->library('upload');
+        if(ENVIRONMENT == 'testing'){
+            CIPHPUnitTest::createCodeIgniterInstance();
+        }
+        if ($this->CI = & get_instance() === NULL)
+        {
+            parent::__construct();
+            $this->CI = & get_instance();
+        }
+
+        //parent::__construct();
+        $this->CI->load->model('funcionario_model','model');
+        $this->CI->load->model('pessoa_model');
+        $this->CI->load->library('form_validation');
+        $this->CI->load->library('upload');
         $this->response = new Response();
         $this->pessoa = new Pessoa();
     }
@@ -26,12 +35,12 @@ class Funcionario extends CRUD_Controller {
     function index() 
     {
 
-        $this->load->model('funcionario_setor_model');
-        $this->load->model('funcao_model');
-        $this->load->model('departamento_model');
-        $this->load->model('setor_model');
+        $this->CI->load->model('funcionario_setor_model');
+        $this->CI->load->model('funcao_model');
+        $this->CI->load->model('departamento_model');
+        $this->CI->load->model('setor_model');
 
-        $this->session->set_flashdata('css', array(
+        $this->CI->session->set_flashdata('css', array(
             0 => base_url('assets/vendor/cropper/cropper.css'),
             1 => base_url('assets/vendor/input-image/input-image.css'),
             2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
@@ -39,7 +48,7 @@ class Funcionario extends CRUD_Controller {
             4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
         ));
 
-        $this->session->set_flashdata('scripts', array(
+        $this->CI->session->set_flashdata('scripts', array(
             0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
             2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
@@ -56,13 +65,13 @@ class Funcionario extends CRUD_Controller {
             13 => base_url('assets/vendor/select-input/select-input.js')
         ));
 
-        $funcionarios = $this->model->get([
-            'funcionarios.organizacao_fk' => $this->session->user['id_organizacao'],
-            'funcionarios.pessoa_fk !=' => $this->session->user['id_user'],
+        $funcionarios = $this->CI->model->get([
+            'funcionarios.organizacao_fk' => $this->CI->session->user['id_organizacao'],
+            'funcionarios.pessoa_fk !=' => $this->CI->session->user['id_user'],
         ]);
 
-        $func_sets = $this->funcionario_setor_model->get([
-            'organizacao_fk' => $this->session->user['id_organizacao']
+        $func_sets = $this->CI->funcionario_setor_model->get([
+            'organizacao_fk' => $this->CI->session->user['id_organizacao']
         ]);
 
         // Percorre pelos funcionarios e pelos func_sets vendo os matches
@@ -88,12 +97,12 @@ class Funcionario extends CRUD_Controller {
             }
         }
 
-        $funcoes = $this->funcao_model->get();
+        $funcoes = $this->CI->funcao_model->get();
         foreach ($funcoes as $key => $f) {
             $funcoes_drop[$f->funcao_pk] = $f->funcao_nome; 
         }
 
-        $departamentos = $this->departamento_model->get([
+        $departamentos = $this->CI->departamento_model->get([
             'organizacao_fk' => $this->session->user['id_organizacao'],
             'departamentos.ativo' => '1'
         ]);
@@ -111,7 +120,7 @@ class Funcionario extends CRUD_Controller {
         }
 
         $setores_drop[NULL] = "Nenhum Setor";
-        $setores = $this->setor_model->get(['organizacao_fk' => $this->session->user['id_organizacao']]);
+        $setores = $this->setor_model->get(['organizacao_fk' => $this->CI->session->user['id_organizacao']]);
         if($setores !== FALSE)
         {
            foreach ($setores as $key => $s) {
@@ -119,7 +128,7 @@ class Funcionario extends CRUD_Controller {
            }
         }
 
-       $this->load->helper('form');
+       $this->CI->load->helper('form');
        load_view([
         0 => [
             'src' => 'dashboard/administrador/funcionario/home',
