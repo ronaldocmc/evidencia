@@ -18,7 +18,20 @@
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
 	},
 	"require-dev": {
+        
 		"mikey179/vfsStream": "1.1.*",
-		"phpunit/phpunit": "4.* || 5.*"
+        
+		"kenjis/ci-phpunit-test": "1.0.x@dev",
+        
+		"satooshi/php-coveralls": "^1.0",
+        
+		"phpunit/phpunit": "4.8.*|5.7.*|6.1.*|7.*",
+        
+		"psy/psysh": "0.8.*",
+		"phpunit/php-code-coverage": "^6.1",
+		"guzzlehttp/guzzle": "^6.3",
+		"php-coveralls/php-coveralls": "^2.1",
+		"composer/xdebug-handler": "^1.3"
+
 	}
 }

@@ -51,6 +51,7 @@ class Funcionario_model extends CI_Model {
                 $this->db->where(self::PRI_INDEX, $where);
             }
         }
+        //echo $this->db->get_compiled_select();
         $result = $this->db->get()->result();
         if ($result) {
             if ($where !== NULL) {
@@ -174,7 +175,7 @@ class Funcionario_model extends CI_Model {
     }
 
 
-    public function count(Array $where)
+    public function count($where = NULL)
     {
         $this->db->select('count(*) as total');
         $this->db->from(self::TABLE_NAME);
