@@ -65,6 +65,9 @@ class Historico_model extends CI_Model {
             return false;
         }
     }
+
+
+
     /**
      * Inserts new data into database
      *
@@ -121,14 +124,15 @@ class Historico_model extends CI_Model {
 
 
     public function get_max_data_os($os) {
-        $this->db->select(self::TABLE_NAME.'.'.self::PRI_INDEX);
-        $this->db->select_max('historicos_ordens.historico_ordem_tempo');
+        $this->db->select('*');
 
         $this->db->from(self::TABLE_NAME);
 
         $this->db->where(self::TABLE_NAME.'.ordem_servico_fk', $os);
-
-        $result =  $this->db->get()->row();
+        $this->db->order_by('historicos_ordens.historico_ordem_pk', 'DESC');
+        $this->db->limit(1);
+        
+        $result =  $this->db->get()->result();
         if ($result) 
         {
             return ($result);

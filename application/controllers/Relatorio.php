@@ -3,11 +3,11 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(dirname(__FILE__)."\Response.php");   
+require_once(dirname(__FILE__)."/Response.php");   
 
-require_once APPPATH."core\CRUD_Controller.php"; 
-require_once dirname(__FILE__) . "\Response.php";
-require_once 'vendor\autoload.php';
+require_once APPPATH."core/CRUD_Controller.php"; 
+require_once dirname(__FILE__) . "/Response.php";
+require_once 'vendor/autoload.php';
 
 class Relatorio extends CRUD_Controller 
 {
@@ -21,11 +21,11 @@ class Relatorio extends CRUD_Controller
 
     function mapa()
     {
-        $this->load->model('prioridade_model');
-        $this->load->model('situacao_model');
-        $this->load->model('departamento_model');
-        $this->load->model('servico_model');
-        $this->load->model('tipo_servico_model');
+        $this->load->model('Prioridade_model', 'prioridade_model');
+        $this->load->model('Situacao_model', 'situacao_model');
+        $this->load->model('Departamento_model', 'departamento_model');
+        $this->load->model('Servico_model', 'servico_model');
+        $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
         $this->load->helper('form');
 
         $prioridades = $this->prioridade_model->get([
@@ -421,31 +421,36 @@ class Relatorio extends CRUD_Controller
 
     public function novo_relatorio()
     {
+        $this->load->model('Servico_model', 'servico_model');
+        $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
+        $this->load->model('Setor_model', 'setor_model');
+        $this->load->model('Funcionario_model', 'funcionario_model');
 
-      $this->load->model('setor_model');
-      $this->load->model('tipo_servico_model');
-      $this->load->model('servico_model');
-      $this->load->model('funcionario_model');
+        $this->session->flashdata('css', [
+            0 => base_url('assets/css/modal_desativar.css')
+        ]);
 
-      $this->session->set_flashdata('scripts',[
-        0 => base_url('assets/js/constants.js'),
-        1 => base_url('assets/js/jquery.noty.packaged.min.js'),
-        2 => base_url('assets/js/dashboard/relatorio/relatorios_gerais.js'),
-    ]);
-      load_view([
-        0 => [
-            'src' => 'dashboard/administrador/relatorio/novo_relatorio',
-            'params' => [
-                'setores' => $this->setor_model->get(),
-                'tipos_servicos' => $this->tipo_servico_model->get(),
-                'servicos' => $this->servico_model->get(),
-                //pegamos os motoristas de caminhão
-                'motoristas_de_caminhao' => $this->funcionario_model->get(['funcionarios_funcoes.funcao_fk'=>'6']),
-                'message' => $this->session->flashdata('error'),
+        $this->session->set_flashdata('scripts',[
+            0 => base_url('assets/js/constants.js'),
+            1 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            2 => base_url('assets/js/dashboard/relatorio/relatorios_gerais.js'),
+            3 => base_url('assets/js/utils.js')
+        ]);
+
+        load_view([
+            0 => [
+                'src' => 'dashboard/administrador/relatorio/novo_relatorio',
+                'params' => [
+                    'setores' => $this->setor_model->get(),
+                    'tipos_servicos' => $this->tipo_servico_model->get(),
+                    'servicos' => $this->servico_model->get(),
+                    //pegamos os motoristas de caminhão
+                    'motoristas_de_caminhao' => $this->funcionario_model->get(['funcionarios_funcoes.funcao_fk'=>'6']),
+                    'message' => $this->session->flashdata('error'),
+                ]
             ]
-        ]
-    ],'administrador');    
-  }
+        ],'administrador');    
+    } 
 
   public function insert_novo_relatorio()
   {
@@ -656,10 +661,10 @@ private function valida_filtro($filtro){
 
 private function create_relatorio($filtro)
 {
-    $this->load->model('ordem_servico_model');
-    $this->load->model('relatorio_model');
-    $this->load->model('funcionario_model');
-    $this->load->model('historico_model');
+    $this->load->model('Ordem_Servico_model', 'ordem_servico_model');
+    $this->load->model('Relatorio_model', 'relatorio_model');
+    $this->load->model('Funcionario_model', 'funcionario_model');
+    $this->load->model('Historico_model', 'historico_model');
 
     $resposta = $this->valida_filtro($filtro);
 
@@ -831,9 +836,12 @@ private function create_relatorio($filtro)
         $this->load->model('relatorio_model');
         $relatorios = $this->relatorio_model->get_relatorios();
 
-        //arrumar a data:
-        foreach($relatorios as $relatorio){
-            $relatorio->data_criacao = date('d/m/Y H:i:s', strtotime($relatorio->data_criacao));
+        if ($relatorios !== false)
+        {
+            //arrumar a data:
+            foreach($relatorios as $relatorio){
+                $relatorio->data_criacao = date('d/m/Y H:i:s', strtotime($relatorio->data_criacao));
+            }
         }
 
         //print_r($relatorios); die();
@@ -877,6 +885,78 @@ private function create_relatorio($filtro)
     }
 
     
+    public function restaurar_os()
+    {
+        $this->load->model('Relatorio_model', 'relatorio_model');
+        $response = new Response();
+
+        $this->form_validation->set_rules(
+            'senha',
+            'senha',
+            'required'
+        );
+
+        $this->load->model('Acesso_model', 'acesso_model');
+
+        // Verifica a senha do funcionário
+        $acesso = $this->acesso_model->get([
+            'pessoa_fk' => $this->session->user['id_user'],
+            'acesso_senha' => hash(ALGORITHM_HASH,$this->input->post('senha').SALT)
+        ]); 
+
+        if ($acesso === false)
+        {
+            $response->set_code(Response::UNAUTHORIZED);
+        }
+        else
+        {
+            $ordens_servico = $this->relatorio_model->get_os_nao_verificadas();
+
+            // Verifica se há OS não finalizadas
+            if ($ordens_servico !== false)
+            {
+                $this->load->model('Historico_model', 'historico_model');
+
+                foreach ($ordens_servico as $os) 
+                {
+                    // Para cada OS, é pego o último registro do histórico
+                    $hist = $this->historico_model->get_max_data_os($os->os_fk);
+
+                    // Se for em andamento, não foi finalizada, logo, deve ser insertido um novo histórico
+                    // a colocando em aberto novamente, informando que não foi finalizada no relatório
+                    if ($hist[0]->situacao_fk == '2') 
+                    {
+                        $this->historico_model->insert([
+                            'ordem_servico_fk' => $os->os_fk,
+                            'funcionario_fk' => $this->session->user['id_funcionario'],
+                            'situacao_fk' => '1',
+                            'historico_ordem_comentario' => 'Não foi feito no relatório'
+                        ]);
+
+                        // O seu registro é retirado do relatório
+                        $this->relatorio_model->delete_relatorio_os($os->os_fk);
+
+                        // Insere an tabela para controle das OS não concluidas no relatório
+                        $this->relatorio_model->insert_os_nao_concluida($os->os_fk, $os->relatorio_fk);
+                    }
+                    // Caso esteja finalizada, seu status na tabela de relatorio_os é alterado para verificado
+                    else
+                    {
+                        $this->relatorio_model->update_relatorios_os_verificada($os->os_fk);
+                    }
+                }
+            }
+            else
+            {
+                $response->set_code(Response::NOT_FOUND);
+                $response->send();
+                return;
+            }
+            
+            $response->set_code(Response::SUCCESS);
+        }
+        $response->send();
+    }
 
 }
 
