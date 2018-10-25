@@ -104,7 +104,7 @@
                                                         </div>
                                                         <?php elseif($ordem_servico->ordem_servico_status == 0):  ?>
                                                             <div class="btn-group">
-                                                                <button disabled type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico">
+                                                                <button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico">
                                                                     <div class="d-none d-sm-block">
                                                                         Editar
                                                                     </div>
@@ -112,7 +112,7 @@
                                                                         <i class="fas fa-edit fa-fw"></i>
                                                                     </div>
                                                                 </button>
-                                                                <button disabled type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico">
+                                                                <button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico">
                                                                     <div class="d-none d-sm-block">
                                                                         Histórico
                                                                     </div>
@@ -331,7 +331,7 @@
                                 <?php endif ?>
                                 <div class="text-center">
                                     <button type="button" class="btn btn-primary submit" onclick="send_data()">
-                                        <i class="fa fa-dot-circle-o"></i> Enviar
+                                        <i class="fa fa-dot-circle-o"></i> Finalizar
                                     </button>
                                 </div>
                             </div>
@@ -420,6 +420,7 @@
                         </div>
                         <div class= "modal-footer">
                             <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-historico" onclick="send_data_historico()">
+                                <i class="fa fa-dot-circle-o"></i>
                                 Salvar
                             </button>
                             <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" data-dismiss="modal">
@@ -459,7 +460,8 @@
                             </div>
                         <?php endif;?>
                         <div class="form-group">
-                            <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value="">Desativar</button>
+                            <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value="">
+                            <i class="fa fa-dot-circle-o"></i> Desativar</button>
                         </div>
                     </form>
                 </div>
@@ -493,7 +495,7 @@
                                 </div>
                             <?php endif;?>
                             <div class="form-group">
-                                <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value="">Reativar</button>
+                                <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Reativar</button>
                             </div>
                         </form>
                     </div>

@@ -15,7 +15,7 @@
             <div class="row py-2">
                 <div class="col-lg-12">
                     <div class="au-card d-flex flex-column">
-                        <form method="POST" action="<?= base_url('relatorio/insert_novo_relatorio') ?>">
+                        <form id="submit-form">
                         <h2 class="title-1 m-b-25">
 
                         Novo Relatório</h2>
@@ -73,15 +73,14 @@
                             </select>
                         </div>
                     </div>
+
+                    </form>
                     <div class="col-md-12">
                         <div class="row pt-5 d-flex justify-content-center">
-                            <button id="gerar_pdf" class="au-btn au-btn-icon au-btn--blue form-control">
-                                Gerar Relatório
+                            <button type="button" id="gerar_pdf" class="btn au-btn btn-primary form-control"><i class="fa fa-dot-circle-o"></i> Gerar Relatório
                             </button>
                         </div>
                     </div>
-
-                    </form>
                 </div>
             </div>
         </div>
