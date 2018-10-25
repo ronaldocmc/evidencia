@@ -200,7 +200,6 @@ $(document).on('click','.btn_reativar',function(event) {
 	// if (is_superusuario)
 	// {
 		botao = "#btn-reativar";
-		$('.modal-title').html("Desativar Departamento");
 		$('#r-departamento').modal("show");
 		$('#btn-reativar').val(departamentos[$(this).val()]["departamento_pk"]);
 	// }
