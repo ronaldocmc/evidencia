@@ -1,3 +1,17 @@
+function btn_load(button_submit){
+	button_submit.attr('disabled', 'disabled');
+	button_submit.css('cursor', 'default');
+	button_submit.find('i').removeClass();
+	button_submit.find('i').addClass('fa fa-refresh fa-spin');
+}
+
+function btn_ativar(button_submit){
+	button_submit.removeAttr('disabled');
+	button_submit.css('cursor', 'pointer');
+	button_submit.find('i').removeClass();
+	button_submit.find('i').addClass('fa fa-dot-circle-o');
+}
+
 $(".submit").click(function(){
 	var data = 
 		{
@@ -5,7 +19,12 @@ $(".submit").click(function(){
 			'setor_nome': $('#nome-input').val(),
            	'senha': $('#senha-input').val()
 		}
+
+	btn_load($(".submit"));
+    
     $.post(base_url+'/setor/insert_update',data).done(function (response) {
+    	btn_ativar($(".submit"));
+
   		if (response.code == 400)
   		{
 			show_errors(response);
@@ -19,9 +38,14 @@ $(".submit").click(function(){
 			$('#senha-input').val('');
 			$('#senha-input').focus();
   		}
-  		else if (response.code == 500)
+  		else if (response.code == 501)
   		{
-			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
+			alerts('failed','Erro!','Erro ao editar os dados');
+  			$('#senha-input').val('');
+  		}
+  		else if (response.code == 503)
+  		{
+			alerts('failed','Erro!','Erro ao editar os dados');
   			$('#senha-input').val('');
   		}
   		else if(response.code == 200)
@@ -78,15 +102,7 @@ $(document).on('click','.btn-desativar',function(event) {
 */
 
 $(document).on('click','.btn_reativar',function(event) {
-	if (is_superusuario)
-	{
-		$('#r-setor').modal("show");
 		$('#btn-reativar').val(setores[$(this).val()]["setor_pk"]);
-	}
-	else
-	{
-		activate(setores[$(this).val()]["setor_pk"],null);
-	}
 });
 
 /*
@@ -110,7 +126,12 @@ $(document).on('click','#btn-desativar',function(event) {
 			'setor_pk' : $(this).val(),
 			'senha': $('#pass-modal-desativar').val()
 		}
+	btn_load($('#btn-desativar'));
+
 	$.post(base_url+'/setor/deactivate', data, function(response, textStatus, xhr) {
+
+		btn_ativar($('#btn-desativar'));
+
 		if (response.code == 400)
 		{
 			alerts('failed','Erro!','O formulário apresenta algum erro de validação');
@@ -122,6 +143,14 @@ $(document).on('click','#btn-desativar',function(event) {
   		else if (response.code == 500)
   		{
 			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
+  		}
+  		else if (response.code == 501)
+  		{
+			alerts('failed','Erro!','Os dados não foram atualizados');
+  		}
+  		else if (response.code == 503)
+  		{
+			alerts('failed','Erro!','Os dados não foram inseridos');
   		}
 		else
 		{
@@ -154,7 +183,10 @@ activate = (setor_pk, pass) => {
 			'setor_pk' : setor_pk,
 			'senha': pass
 		}
+	btn_load($('#btn-reativar'));
 	$.post(base_url+'/setor/activate', data, function(response, textStatus, xhr) {
+		btn_ativar($('#btn-reativar'));
+
 		if (response.code == 401)
 		{
 			alerts('failed','Erro!','O formulário apresenta algum erro de validação');
@@ -163,6 +195,10 @@ activate = (setor_pk, pass) => {
   		{
   			show_errors(response);
 			alerts('failed','Erro!','Senha informada incorreta');
+  		}
+  		else if (response.code == 501)
+  		{
+			alerts('failed','Erro!','Setor não ativado');
   		}
   		else if (response.code == 1500 || response.code == 1501)
   		{
@@ -213,7 +249,7 @@ change_table = (select_options) => {
 	        		table.row.add([ 
 		          		setor.setor_nome, 
 		          		'<div class="btn-group">'+
-		          			'<button type="button" class="btn btn-sm btn-success btn_reativar" value="'+ (i) +'" title="Reativar">'+
+		          			'<button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" data-target="#r-setor" value="'+ (i) +'" title="Reativar">'+
                                 '<div class="d-none d-sm-block">'+
                                     '<i class="fas fa-power-off fa-fw"></i>'+
                                 '</div>'+
@@ -252,7 +288,7 @@ change_table = (select_options) => {
 		        	table.row.add([ 
 		          		setor.setor_nome, 
 		          		'<div class="btn-group">'+
-		          			'<button type="button" class="btn btn-sm btn-success btn_reativar" value="'+ (i) +'" title="Reativar">'+
+		          			'<button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" data-target="#r-setor" value="'+ (i) +'" title="Reativar">'+
                                 '<div class="d-none d-sm-block">'+
                                     '<i class="fas fa-power-off fa-fw"></i>'+
                                 '</div>'+
