@@ -151,19 +151,13 @@ update_table = () => {
             func.contato_email,
             func.funcao_nome,
             '<div class="btn-group">'+
-              '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario">'+
+              '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario" title="Editar">'+
                   '<div class="d-none d-sm-block">'+
-                      'Editar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
                     '<i class="fas fa-edit fa-fw"></i>'+
                   '</div>'+
               '</button>'+
-              '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario">'+
-                '<div class="d-none d-sm-block">'+
-                      'Desativar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
+              '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario" title="Desativar">'+
+                  '<div class="d-none d-sm-block">'+
                     '<i class="fas fa-times fa-fw"></i>'+
                   '</div>'+
               '</button>'+
@@ -175,12 +169,9 @@ update_table = () => {
             func.contato_email,
             func.funcao_nome,
             '<div class="btn-group">'+
-              '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="'+(i)+'" data-toggle="modal" data-target="#a_funcionario">'+
+              '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="'+(i)+'" data-toggle="modal" data-target="#a_funcionario" title="Reativar">'+
                   '<div class="d-none d-sm-block">'+
-                      'Ativar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
-                    '<i class="fas fa-times fa-fw"></i>'+
+                    '<i class="fas fa-power-off fa-fw"></i>'+
                   '</div>'+
               '</button>'+
             '</div>'
@@ -197,19 +188,13 @@ update_table = () => {
             func.contato_email,
             func.funcao_nome,
             '<div class="btn-group">'+
-              '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario">'+
+              '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario" title="Editar">'+
                   '<div class="d-none d-sm-block">'+
-                      'Editar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
                     '<i class="fas fa-edit fa-fw"></i>'+
                   '</div>'+
               '</button>'+
-              '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario">'+
-                '<div class="d-none d-sm-block">'+
-                      'Desativar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
+              '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario" title="Desativar">'+
+                  '<div class="d-none d-sm-block">'+
                     '<i class="fas fa-times fa-fw"></i>'+
                   '</div>'+
               '</button>'+
@@ -227,12 +212,9 @@ update_table = () => {
             func.contato_email,
             func.funcao_nome,
             '<div class="btn-group">'+
-              '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="'+(i)+'" data-toggle="modal" data-target="#a_funcionario">'+
+              '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="'+(i)+'" data-toggle="modal" data-target="#a_funcionario" title="Reativar">'+
                   '<div class="d-none d-sm-block">'+
-                      'Ativar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
-                    '<i class="fas fa-times fa-fw"></i>'+
+                    '<i class="fas fa-power-off fa-fw"></i>'+
                   '</div>'+
               '</button>'+
             '</div>'
