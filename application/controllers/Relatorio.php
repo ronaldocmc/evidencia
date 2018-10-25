@@ -341,8 +341,6 @@ class Relatorio extends CRUD_Controller
             'situacao' => $situacao
         ]);
 
-
-
         $this->form_validation->set_rules(
             'relatorio',
             'relatorio',
@@ -361,7 +359,6 @@ class Relatorio extends CRUD_Controller
             'trim|required'
         );
 
-        // var_dump($this->input->post());die();
 
         if (true)
         {
@@ -398,9 +395,6 @@ class Relatorio extends CRUD_Controller
             }
 
             $data['ordens'] = $this->ordem_servico_model->get_os_relatorio($where);
-
-            echo "<pre>";
-            // var_dump($data['ordens']);die();
 
             $data['data'] = date('d/m/Y');
             $data['empresa'] = 'Prudenco';
