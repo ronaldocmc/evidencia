@@ -109,8 +109,12 @@ class Ordem_Servico extends CRUD_Controller {
 			0 => true
 		]);
 
-		load_view([
+		load_view_ordem_servico([
 			0 => [
+				'src' => 'access/pre_loader',
+				'params' => null,
+			],
+			1 => [
 				'src' => 'dashboard/administrador/ordem_servico/home',
 				'params' => [
 					'ordens_servico' => $ordens_servico,
@@ -124,10 +128,6 @@ class Ordem_Servico extends CRUD_Controller {
 					'superusuario' => $this->session->user['is_superusuario']
 				]
 			],
-			1 => [
-				'src' => 'access/pre_loader',
-				'params' => null,
-			]
 		],'administrador');    
 	}
 
@@ -738,9 +738,14 @@ class Ordem_Servico extends CRUD_Controller {
 	            				]);
 	            			}
 	            			else{ //O usuário não modificou nenhuma informação da ordem de serviço
-	            				$this->response->set_code(Response::DB_ERROR_INSERT);
+	            				$this->response->set_code(Response::SUCCESS);
 	            				$this->response->set_data([
-	            					'mensagem' => "Não foi possivel alterar dados da ordem de serviço! Certifique-se de ter modificado alguma informação"]);	
+	            					'mensagem' => "Os dados não foram alterados.<br>Certifique-se de ter modificado alguma informação.",
+	            					'ordem_servico_pk' => $data_ordem['ordem_servico_pk'],
+			            			'historico_ordem_pk' => $return_historico[0]->historico_ordem_pk,
+			            			'local_fk' => $coordenada->local_fk,
+			            			'endereco_os' => $endereco_os
+	            				]);	
 	            			}
 	            		}
 	            	}
