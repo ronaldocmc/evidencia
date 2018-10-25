@@ -982,7 +982,9 @@ private function create_relatorio($filtro)
                     }
                 }
                 //após verificar todas as ordens, setamos o status do relatório para 1 para indicar que o relatório foi entregue.
-                $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $id_relatorio]);
+                //tem que pegar o id do relatório da ordem, pq o usuário pode ter solicitado para restaurar as ordens de todos os relatórios.
+
+                $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $os->relatorio_fk]);
             }
             else
             {
