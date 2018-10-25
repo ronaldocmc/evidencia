@@ -23,11 +23,12 @@ var primeiro_editar = false;
 var adicionar_imagem = 1; 
 var adicionar_mapa = 1; 
 //-----------------------------------//
-
 $(document).ready(function() {
     $("#data_brasileira").click();
     $("#data_brasileira").click();
+    pre_loader_hide();
 });
+
 
 
 //Função que aguarda a mudança de departamento. Caso o usuário altere o departamento, é necessário atualizar outros campos, operação
@@ -972,6 +973,8 @@ send = (imagem) =>
     //Função que aguarda o clique no botão editar e preenche os campos do modal
     $(document).on('click', '.btn_editar', function (event) 
     {
+        $('.submit').attr('disabled', 'disabled');
+        $('.submit').css('cursor', 'default');
         primeiro_editar = true;
 
         $('#titulo').val("Alterar dados ordem de serviço");
@@ -1035,6 +1038,8 @@ send = (imagem) =>
                 $("#logradouro-input").removeClass('loading');
                 $("#bairro-input").removeClass('loading');
                 $('#ce_ordem_servico').modal('show');
+                $('.submit').removeAttr('disabled');
+                $('.submit').css('cursor', 'pointer');
                 // primeiro_editar = true;
 
 
