@@ -94,7 +94,7 @@ class Access extends CI_Controller {
 
     	if ($response !== FALSE)
     	{
-    		if (isset($response->funcao_nome) && $response->funcao_nome == "Funcionário de Campo")
+    		if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5'))
     		{
     			$this->response->set_code(Response::UNAUTHORIZED);
     			$this->response->set_data([

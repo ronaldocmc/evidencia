@@ -30,7 +30,8 @@ class Funcionario_model extends CI_Model {
             acessos.acesso_senha,
             contatos.contato_email,
             imagens_perfil.imagem_caminho,
-            funcoes.funcao_nome
+            funcoes.funcao_nome,
+            funcoes.funcao_pk
             ');
         $this->db->from(self::TABLE_NAME);
         $this->db->join('acessos','acessos.pessoa_fk = '.self::TABLE_NAME.'.pessoa_fk');
