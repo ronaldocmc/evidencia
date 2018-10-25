@@ -331,19 +331,13 @@ change_table = (select_options) => {
 				table.row.add([ 
 					dep.departamento_nome, 
 					'<div class="btn-group">'+
-					'<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_departamento">'+
+					'<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_departamento" title="Editar">'+
 					'<div class="d-none d-sm-block">'+
-					'Editar'+
-					'</div>'+
-					'<div class="d-block d-sm-none">'+
 					'<i class="fas fa-edit fa-fw"></i>'+
 					'</div>'+
 					'</button>'+
-					'<button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="' + (i) + '" data-target="#d-departamento">'+
+					'<button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="' + (i) + '" data-target="#d-departamento" title="Desativar">'+
 					'<div class="d-none d-sm-block">'+
-					'Desativar'+
-					'</div>'+
-					'<div class="d-block d-sm-none">'+
 					'<i class="fas fa-times fa-fw"></i>'+
 					'</div>'+
 					'</button>'+
@@ -355,12 +349,9 @@ change_table = (select_options) => {
 				table.row.add([ 
 					dep.departamento_nome, 
 					'<div class="btn-group">'+
-					'<button type="button" class="btn btn-sm btn-success btn_reativar" value="'+ (i) +'">'+
+					'<button type="button" class="btn btn-sm btn-success btn_reativar" value="'+ (i) +'" title="Reativar" title="Reativar">'+
 					'<div class="d-none d-sm-block">'+
-					'Reativar'+
-					'</div>'+
-					'<div class="d-block d-sm-none">'+
-					'<i class="fas fa-check-circle fa-fw"></i>'+
+					'<i class="fas fa-power-off fa-fw"></i>'+
 					'</div>'+
 					'</button>'+
 					'</div>' 
@@ -375,19 +366,13 @@ change_table = (select_options) => {
 				table.row.add([ 
 					dep.departamento_nome, 
 					'<div class="btn-group">'+
-					'<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_departamento">'+
+					'<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_departamento" title="Editar">'+
 					'<div class="d-none d-sm-block">'+
-					'Editar'+
-					'</div>'+
-					'<div class="d-block d-sm-none">'+
 					'<i class="fas fa-edit fa-fw"></i>'+
 					'</div>'+
 					'</button>'+
-					'<button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="' + (i) + '" data-target="#d-departamento">'+
+					'<button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="' + (i) + '" data-target="#d-departamento" title="Desativar">'+
 					'<div class="d-none d-sm-block">'+
-					'Desativar'+
-					'</div>'+
-					'<div class="d-block d-sm-none">'+
 					'<i class="fas fa-times fa-fw"></i>'+
 					'</div>'+
 					'</button>'+
@@ -403,12 +388,9 @@ change_table = (select_options) => {
 				table.row.add([ 
 					dep.departamento_nome, 
 					'<div class="btn-group">'+
-					'<button type="button" class="btn btn-sm btn-success btn_reativar" value="'+ (i) +'">'+
+					'<button type="button" class="btn btn-sm btn-success btn_reativar" value="'+ (i) +'" title="Reativar">'+
 					'<div class="d-none d-sm-block">'+
-					'Reativar'+
-					'</div>'+
-					'<div class="d-block d-sm-none">'+
-					'<i class="fas fa-check-circle fa-fw"></i>'+
+					'<i class="fas fa-power-off fa-fw"></i>'+
 					'</div>'+
 					'</button>'+
 					'</div>'  

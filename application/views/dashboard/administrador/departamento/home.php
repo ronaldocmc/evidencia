@@ -72,29 +72,20 @@
                                                         <td>
                                                             <div class="btn-group">
                                                                 <?php if ($departamento->ativo): ?>
-                                                                    <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$key?>" data-target="#ce_departamento">
+                                                                    <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$key?>" data-target="#ce_departamento" title="Editar">
                                                                         <div class="d-none d-sm-block">
-                                                                            Editar
-                                                                        </div>
-                                                                        <div class="d-block d-sm-none">
                                                                             <i class="fas fa-edit fa-fw"></i>
                                                                         </div>
                                                                     </button>
-                                                                    <button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="<?=$key?>" data-target="#d-departamento">
-                                                                        <div class="d-none d-sm-block">
-                                                                            Desativar
-                                                                        </div>
-                                                                        <div class="d-block d-sm-none">
+                                                                    <button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="<?=$key?>" data-target="#d-departamento" title="Desativar">
+                                                                        <div class="d-none d-block">
                                                                             <i class="fas fa-times fa-fw"></i>
                                                                         </div>
                                                                     </button>
                                                                     <?php else: ?>
-                                                                        <button type="button" class="btn btn-sm btn-success btn_reativar" value="<?=$key?>">
+                                                                        <button type="button" class="btn btn-sm btn-success btn_reativar" value="<?=$key?>" title="Reativar">
                                                                             <div class="d-none d-sm-block">
-                                                                                Reativar
-                                                                            </div>
-                                                                            <div class="d-block d-sm-none">
-                                                                                <i class="fas fa-check-circle fa-fw"></i>
+                                                                                <i class="fas fa-power-off fa-fw"></i>
                                                                             </div>
                                                                         </button>
                                                                     <?php endif;?>
