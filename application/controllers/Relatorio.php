@@ -454,6 +454,7 @@ class Relatorio extends CRUD_Controller
 
     public function insert_novo_relatorio()
     {
+        $response = new Response();
 
         //pegamos os filtros que o usuário marcou na página anterior: qual(is) os setores, qual(is) os tipos de serviço e qual o funcionário responsável.
         $filtro = $this->input->post();
@@ -461,21 +462,32 @@ class Relatorio extends CRUD_Controller
         $message = $this->valida_filtro($filtro);
         if($message == "true"){
         //criamos o relatório e suas respectivas ordens de serviço, de acordo com o filtro.
-            $response = $this->create_relatorio($filtro);  
+            $resposta = $this->create_relatorio($filtro);  
 
         //$response recebe o ID do relatório se deu tudo certo, ou a mensagem do erro.
-            if(is_int($response)){
-                $id_relatorio = $response;
-                redirect('relatorio/detalhes_relatorio/'.$id_relatorio); 
+            if(is_int($resposta)){
+                $id_relatorio = $resposta;
+                //redirect('relatorio/detalhes_relatorio/'.$id_relatorio); 
+                $response->set_code(Response::SUCCESS);
+                $response->set_data([
+                    'id' => $id_relatorio, 
+                    'message' => 'Relatório criado com sucesso!<br>Aguarde enquanto estamos recarregando a página ...'
+                ]); 
             }else{
-                $this->session->set_flashdata('error', $response);
-                redirect('relatorio/novo_relatorio');
+                //$this->session->set_flashdata('error', $resposta);
+                //redirect('relatorio/novo_relatorio');
+                $response->set_code(Response::BAD_REQUEST);
+                $response->set_data(['message' => $resposta]); 
             }
 
         }else{
-            $this->session->set_flashdata('error', $message);
-            redirect('relatorio/novo_relatorio');
+            //$this->session->set_flashdata('error', $message);
+            //redirect('relatorio/novo_relatorio');
+            $response->set_code(Response::BAD_REQUEST);
+            $response->set_data(['message' => $message]); 
         }
+
+        $response->send();
 
 
     }
@@ -933,6 +945,8 @@ private function create_relatorio($filtro)
         if ($acesso === false)
         {
             $response->set_code(Response::UNAUTHORIZED);
+            $response->send();
+            return;
         }
         else
         {

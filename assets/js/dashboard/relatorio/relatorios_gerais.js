@@ -1,3 +1,18 @@
+function btn_load(button_submit){
+    button_submit.attr('disabled', 'disabled');
+    button_submit.css('cursor', 'default');
+    button_submit.find('i').removeClass();
+    button_submit.find('i').addClass('fa fa-refresh fa-spin');
+}
+
+
+function btn_ativar(button_submit){
+    button_submit.removeAttr('disabled');
+    button_submit.css('cursor', 'pointer');
+    button_submit.find('i').removeClass();
+    button_submit.find('i').addClass('fa fa-dot-circle-o');
+}
+
 
 $("#gerar_pdf_dia").click(function () {
 	var relatorio = "data";
@@ -33,6 +48,7 @@ function enviar(relatorio, filtro) {
 }
 
 $("#btn-restaurar").click(function() {
+	btn_load($('#btn-restaurar'));
 	var senha = $("#pass-modal-restaurar").val();
 
 	if(senha == ""){
@@ -45,7 +61,7 @@ $("#btn-restaurar").click(function() {
 	}
 
 	$.post(base_url+'/Relatorio/restaurar_os',data).done(function (response) {
-
+		btn_ativar($('#btn-restaurar'));
 		if (response.code == 200) {
 			alerts('success','Sucesso!','Ordens de Serviço restauradas.');
 			$('#restaurar_os').modal('hide');
@@ -59,6 +75,27 @@ $("#btn-restaurar").click(function() {
 		}
 
 		$("#pass-modal-restaurar").val("");
+
+	}, "json");
+});
+
+
+
+$("#gerar_pdf").click(function() {
+
+	btn_load($('#gerar_pdf'));
+	var form = $('form#submit-form').serialize();
+
+	$.post(base_url+'/Relatorio/insert_novo_relatorio',form).done(function (response) {
+		btn_ativar($('#gerar_pdf'));
+		console.log(response);
+		if (response.code == 200) {
+			alerts('success','Sucesso!', response.data.message);
+			window.location.href = base_url+'/Relatorio/detalhes_relatorio/'+response.data.id;
+		}
+		else if (response.code == 400) {
+			alerts('failed','Erro!',response.data.message);
+		}
 
 	}, "json");
 });
