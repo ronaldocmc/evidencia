@@ -141,7 +141,7 @@
                                     </li>
                                 <?php endif; ?>
                                 <li>
-                                    <a href="<?php echo base_url('ordem_servico'); ?>">Ordens de Serviço</a>
+                                    <a href="<?php echo base_url('Ordem_Servico'); ?>">Ordens de Serviço</a>
                                 </li>
                             </ul>
                         </li>

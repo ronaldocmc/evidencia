@@ -2,10 +2,10 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once APPPATH."core\CRUD_Controller.php";
-require_once dirname(__FILE__) . "\Response.php";
-require_once dirname(__FILE__) . "\Pessoa.php";
-require_once 'vendor\autoload.php';
+require_once APPPATH."core/CRUD_Controller.php";
+require_once dirname(__FILE__) . "/Response.php";
+require_once dirname(__FILE__) . "/Pessoa.php";
+require_once 'vendor/autoload.php';
 
 
 class Ordem_Servico extends CRUD_Controller {
@@ -18,16 +18,16 @@ class Ordem_Servico extends CRUD_Controller {
 
 		//Realizando o carregamento dos models que são utilizados em diversas funções de inserção, atualização e remoção. 
 		parent::__construct();
-		$this->load->model('ordem_servico_model');
-		$this->load->model('prioridade_model');
-		$this->load->model('situacao_model');
-		$this->load->model('servico_model');
-		$this->load->model('historico_model');
-		$this->load->model('procedencia_model');
-		$this->load->model('setor_model');
-		$this->load->model('departamento_model');
+		$this->load->model('Ordem_Servico_model', 'ordem_servico_model');
+		$this->load->model('Prioridade_model', 'prioridade_model');
+		$this->load->model('Situacao_model', 'situacao_model');
+		$this->load->model('Servico_model', 'servico_model');
+		$this->load->model('Historico_model', 'historico_model');
+		$this->load->model('Procedencia_model', 'procedencia_model');
+		$this->load->model('Setor_model', 'setor_model');
+		$this->load->model('Departamento_model', 'departamento_model');
 		$this->load->library('upload');
-		$this->load->model('tipo_servico_model');
+		$this->load->model('Tipo_Servico_model', 'tipo_servico_model');
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		$response = new Response();
