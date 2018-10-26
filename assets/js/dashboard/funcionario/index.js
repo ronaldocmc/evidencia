@@ -151,19 +151,13 @@ update_table = () => {
             func.contato_email,
             func.funcao_nome,
             '<div class="btn-group">'+
-              '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario">'+
+              '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario" title="Editar">'+
                   '<div class="d-none d-sm-block">'+
-                      'Editar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
                     '<i class="fas fa-edit fa-fw"></i>'+
                   '</div>'+
               '</button>'+
-              '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario">'+
-                '<div class="d-none d-sm-block">'+
-                      'Desativar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
+              '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario" title="Desativar">'+
+                  '<div class="d-none d-sm-block">'+
                     '<i class="fas fa-times fa-fw"></i>'+
                   '</div>'+
               '</button>'+
@@ -175,12 +169,9 @@ update_table = () => {
             func.contato_email,
             func.funcao_nome,
             '<div class="btn-group">'+
-              '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="'+(i)+'" data-toggle="modal" data-target="#a_funcionario">'+
+              '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="'+(i)+'" data-toggle="modal" data-target="#a_funcionario" title="Reativar">'+
                   '<div class="d-none d-sm-block">'+
-                      'Ativar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
-                    '<i class="fas fa-times fa-fw"></i>'+
+                    '<i class="fas fa-power-off fa-fw"></i>'+
                   '</div>'+
               '</button>'+
             '</div>'
@@ -197,19 +188,13 @@ update_table = () => {
             func.contato_email,
             func.funcao_nome,
             '<div class="btn-group">'+
-              '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario">'+
+              '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario" title="Editar">'+
                   '<div class="d-none d-sm-block">'+
-                      'Editar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
                     '<i class="fas fa-edit fa-fw"></i>'+
                   '</div>'+
               '</button>'+
-              '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario">'+
-                '<div class="d-none d-sm-block">'+
-                      'Desativar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
+              '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario" title="Desativar">'+
+                  '<div class="d-none d-sm-block">'+
                     '<i class="fas fa-times fa-fw"></i>'+
                   '</div>'+
               '</button>'+
@@ -227,12 +212,9 @@ update_table = () => {
             func.contato_email,
             func.funcao_nome,
             '<div class="btn-group">'+
-              '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="'+(i)+'" data-toggle="modal" data-target="#a_funcionario">'+
+              '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="'+(i)+'" data-toggle="modal" data-target="#a_funcionario" title="Reativar">'+
                   '<div class="d-none d-sm-block">'+
-                      'Ativar'+
-                  '</div>'+
-                  '<div class="d-block d-sm-none">'+
-                    '<i class="fas fa-times fa-fw"></i>'+
+                    '<i class="fas fa-power-off fa-fw"></i>'+
                   '</div>'+
               '</button>'+
             '</div>'
@@ -308,8 +290,8 @@ send = (imagem) => {
     processData: false,
     contentType: false,
     success: function (response) {
-      btn_ativar($('#pula-para-confirmacao'));
-      btn_ativar($('.submit'));
+      // btn_ativar($('#pula-para-confirmacao'));
+      // btn_ativar($('.submit'));
 
       if (response.code !== 200) {
         show_errors(response);
@@ -382,6 +364,7 @@ $(document).on('click', '.btn-editar', function (event) {
   $('#titulo').html("Editar Funcionário");
   botao = ".submit";
   if (funcionarios[posicao_selecionada].setor_fk != null) {
+    $('#setor-input option:selected').prop('selected', false);
     for (var i = 0; i < funcionarios[posicao_selecionada].setor_fk.length; i++) {
       $('#setor-input option[value=' + funcionarios[posicao_selecionada].setor_fk[i] + ']').prop('selected', true);
     }  
@@ -395,18 +378,22 @@ $(document).on('click', '.btn-editar', function (event) {
   $('#email-input').val(funcionarios[posicao_selecionada]['contato_email']);
   $('#telefone-input').val(funcionarios[posicao_selecionada]['contato_tel']);
   $('#celular-input').val(funcionarios[posicao_selecionada]['contato_cel']);
-  $('#funcao-input').val(funcionarios[posicao_selecionada]['funcao_pk']);
-  $('#departamento-input').val(funcionarios[posicao_selecionada]['departamento_fk']);
-  $('#logradouro-input').val(funcionarios[posicao_selecionada]['logradouro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
+  $('#funcao-input option[value=' + funcionarios[posicao_selecionada]['funcao_pk'] + ']').prop('selected', true);
+  $('#departamento-input option[value=' + funcionarios[posicao_selecionada]['departamento_pk'] + ']').prop('selected', true);
+  if(funcionarios[posicao_selecionada]['logradouro_nome'] != null){ 
+    $('#logradouro-input').val(funcionarios[posicao_selecionada]['logradouro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
+  }
   $('#numero-input').val(funcionarios[posicao_selecionada]['local_num']);
   $('#complemento-input').val(funcionarios[posicao_selecionada]['local_complemento']);
-  $('#bairro-input').val(funcionarios[posicao_selecionada]['bairro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
+  if(funcionarios[posicao_selecionada]['bairro_nome'] != null){
+    $('#bairro-input').val(funcionarios[posicao_selecionada]['bairro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
+  }
 
 
   if ($("#uf-input :selected").text() != funcionarios[$(this).val()]["estado_pk"])
   {
     $("#uf-input option").filter(function() {
-        return this.text == funcionarios[id_org]["estado_pk"]; 
+        return this.text == funcionarios['id_org']["estado_pk"]; 
     }).attr('selected', true);
 
     change_uf($("#uf-input").val(),$("#uf-input option:selected").text(),funcionarios[$(this).val()]["municipio_pk"]);

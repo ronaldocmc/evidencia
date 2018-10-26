@@ -1,3 +1,13 @@
+ <script type="text/javascript">
+    async function pre_loader_show(){
+      $('.inner').show();
+      // $('#preloader .inner').delay(1000).fadeIn();
+      $('#preloader .inner').delay(10).fadeIn();
+      $('#preloader').delay(5).fadeIn('slow');
+    }
+
+    pre_loader_show();
+ </script>
  <!--MAIN CONTENT-->
  <div class="main-content">
     <div class="section__content section__content--p30">
@@ -77,55 +87,37 @@
                                                 <td>
                                                     <?php if($ordem_servico->ordem_servico_status == 1): ?>
                                                         <div class="btn-group">
-                                                            <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico">
+                                                            <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
                                                                 <div class="d-none d-sm-block">
-                                                                    Editar
-                                                                </div>
-                                                                <div class="d-block d-sm-none">
                                                                     <i class="fas fa-edit fa-fw"></i>
                                                                 </div>
                                                             </button>
-                                                            <button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico">
+                                                            <button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico" title="Histórico">
                                                                 <div class="d-none d-sm-block">
-                                                                    Histórico
-                                                                </div>
-                                                                <div class="d-block d-sm-none">
-                                                                    <i class="fas fa-edit fa-fw"></i>
+                                                                    <i class="far fa-clock fa-fw"></i>
                                                                 </div>
                                                             </button>
-                                                            <button type="button" class="btn btn-sm btn-danger reset_multistep btn-excluir btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#d_servico">
+                                                            <button type="button" class="btn btn-sm btn-danger reset_multistep btn-excluir btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#d_servico" title="Excluir">
                                                                 <div class="d-none d-sm-block">
-                                                                    Excluir
-                                                                </div>
-                                                                <div class="d-block d-sm-none">
                                                                     <i class="fas fa-times fa-fw"></i>
                                                                 </div>
                                                             </button>
                                                         </div>
                                                         <?php elseif($ordem_servico->ordem_servico_status == 0):  ?>
                                                             <div class="btn-group">
-                                                                <button disabled type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico">
+                                                                <button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
                                                                     <div class="d-none d-sm-block">
-                                                                        Editar
-                                                                    </div>
-                                                                    <div class="d-block d-sm-none">
                                                                         <i class="fas fa-edit fa-fw"></i>
                                                                     </div>
                                                                 </button>
-                                                                <button disabled type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico">
+                                                                <button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico" title="Histórico">
                                                                     <div class="d-none d-sm-block">
-                                                                        Histórico
-                                                                    </div>
-                                                                    <div class="d-block d-sm-none">
-                                                                        <i class="fas fa-edit fa-fw"></i>
+                                                                        <i class="far fa-clock fa-fw"></i>
                                                                     </div>
                                                                 </button>
-                                                                <button type="button" class="btn btn-sm btn-success reset_multistep btn-ativar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#r_servico">
+                                                                <button type="button" class="btn btn-sm btn-success reset_multistep btn-ativar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#r_servico" title="Reativar">
                                                                     <div class="d-none d-sm-block">
-                                                                        Ativar
-                                                                    </div>
-                                                                    <div class="d-block d-sm-none">
-                                                                        <i class="fas fa-times fa-fw"></i>
+                                                                        <i class="fas fa-power-off fa-fw"></i>
                                                                     </div>
                                                                 </button>
                                                             </div>
@@ -331,7 +323,7 @@
                                 <?php endif ?>
                                 <div class="text-center">
                                     <button type="button" class="btn btn-primary submit" onclick="send_data()">
-                                        <i class="fa fa-dot-circle-o"></i> Enviar
+                                        <i class="fa fa-dot-circle-o"></i> Finalizar
                                     </button>
                                 </div>
                             </div>
@@ -420,6 +412,7 @@
                         </div>
                         <div class= "modal-footer">
                             <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-historico" onclick="send_data_historico()">
+                                <i class="fa fa-dot-circle-o"></i>
                                 Salvar
                             </button>
                             <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" data-dismiss="modal">
@@ -459,7 +452,8 @@
                             </div>
                         <?php endif;?>
                         <div class="form-group">
-                            <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value="">Desativar</button>
+                            <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value="">
+                            <i class="fa fa-dot-circle-o"></i> Desativar</button>
                         </div>
                     </form>
                 </div>
@@ -493,7 +487,7 @@
                                 </div>
                             <?php endif;?>
                             <div class="form-group">
-                                <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value="">Reativar</button>
+                                <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Reativar</button>
                             </div>
                         </form>
                     </div>
@@ -517,4 +511,3 @@
 
 
 <!-- END MAIN CONTENT-->
-<!-- END PAGE CONTAINER

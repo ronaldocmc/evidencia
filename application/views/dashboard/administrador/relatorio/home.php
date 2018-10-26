@@ -51,6 +51,7 @@
                                             <th>Funcionário</th>
                                             <th>Função do Funcionário</th>
                                             <th>Quantidade</th>
+                                            <th>Situação</th>
                                             <th>Data de Criação</th>
                                             <th>Detalhes</th>
                                         </tr>
@@ -74,11 +75,14 @@
                                                        <?= $r->quantidade_os ?>
                                                    </td>
                                                    <td>
+                                                     <?= $r->status_string ?>
+                                                   </td>
+                                                   <td>
                                                        <?= $r->data_criacao ?>
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a target="_blank" class="btn btn-sm btn-primary" href="<?= base_url('relatorio/detalhes_relatorio/'.$r->relatorio_pk) ?>">
+                                                            <a class="btn btn-sm btn-primary" href="<?= base_url('relatorio/detalhes_relatorio/'.$r->relatorio_pk) ?>">
                                                                    <div class="d-none d-sm-block">
                                                                        Detalhes
                                                                    </div>

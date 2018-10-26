@@ -30,11 +30,12 @@ class Funcionario_model extends CI_Model {
             acessos.acesso_senha,
             contatos.contato_email,
             imagens_perfil.imagem_caminho,
-            funcoes.funcao_nome
+            funcoes.funcao_nome,
+            funcoes.funcao_pk
             ');
         $this->db->from(self::TABLE_NAME);
         $this->db->join('acessos','acessos.pessoa_fk = '.self::TABLE_NAME.'.pessoa_fk');
-        $this->db->join('funcionarios_setores','funcionarios_setores.funcionario_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX.' and funcionarios_setores.setor_fim_data IS NULL','left');
+        $this->db->join('funcionarios_setores','funcionarios_setores.funcionario_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX, 'left');
         $this->db->join('populacao','populacao.pessoa_pk = '.self::TABLE_NAME.'.pessoa_fk');
         $this->db->join('organizacoes','organizacoes.organizacao_pk = '.self::TABLE_NAME.'.organizacao_fk');
         $this->db->join('contatos','contatos.pessoa_fk = '.self::TABLE_NAME.'.pessoa_fk');
@@ -51,6 +52,7 @@ class Funcionario_model extends CI_Model {
                 $this->db->where(self::PRI_INDEX, $where);
             }
         }
+        //echo $this->db->get_compiled_select();
         $result = $this->db->get()->result();
         if ($result) {
             if ($where !== NULL) {
@@ -140,7 +142,7 @@ class Funcionario_model extends CI_Model {
             ');
         $this->db->from(self::TABLE_NAME);
         $this->db->join('funcionarios_funcoes','funcionarios_funcoes.funcionario_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX);
-        $this->db->join('funcionarios_setores','funcionarios_setores.funcionario_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX.' and funcionarios_setores.setor_fim_data IS NULL', 'left');
+        $this->db->join('funcionarios_setores','funcionarios_setores.funcionario_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX, 'left');
         $this->db->join('enderecos_pessoas','enderecos_pessoas.pessoa_fk = '.self::TABLE_NAME.'.pessoa_fk','left');
         $this->db->join('locais', 'locais.local_pk = enderecos_pessoas.local_fk','left');
         $this->db->join('logradouros', 'locais.logradouro_fk = logradouros.logradouro_pk','left');
@@ -174,7 +176,7 @@ class Funcionario_model extends CI_Model {
     }
 
 
-    public function count(Array $where)
+    public function count($where = NULL)
     {
         $this->db->select('count(*) as total');
         $this->db->from(self::TABLE_NAME);

@@ -2,10 +2,10 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once APPPATH."core\CRUD_Controller.php";
-require_once dirname(__FILE__) . "\Response.php";
-require_once dirname(__FILE__) . "\Pessoa.php";
-require_once 'vendor\autoload.php';
+require_once APPPATH."core/CRUD_Controller.php";
+require_once dirname(__FILE__) . "/Response.php";
+require_once dirname(__FILE__) . "/Pessoa.php";
+require_once 'vendor/autoload.php';
 
 
 class Ordem_Servico extends CRUD_Controller {
@@ -18,16 +18,16 @@ class Ordem_Servico extends CRUD_Controller {
 
 		//Realizando o carregamento dos models que são utilizados em diversas funções de inserção, atualização e remoção. 
 		parent::__construct();
-		$this->load->model('ordem_servico_model');
-		$this->load->model('prioridade_model');
-		$this->load->model('situacao_model');
-		$this->load->model('servico_model');
-		$this->load->model('historico_model');
-		$this->load->model('procedencia_model');
-		$this->load->model('setor_model');
-		$this->load->model('departamento_model');
+		$this->load->model('Ordem_Servico_model', 'ordem_servico_model');
+		$this->load->model('Prioridade_model', 'prioridade_model');
+		$this->load->model('Situacao_model', 'situacao_model');
+		$this->load->model('Servico_model', 'servico_model');
+		$this->load->model('Historico_model', 'historico_model');
+		$this->load->model('Procedencia_model', 'procedencia_model');
+		$this->load->model('Setor_model', 'setor_model');
+		$this->load->model('Departamento_model', 'departamento_model');
 		$this->load->library('upload');
-		$this->load->model('tipo_servico_model');
+		$this->load->model('Tipo_Servico_model', 'tipo_servico_model');
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		$response = new Response();
@@ -109,8 +109,12 @@ class Ordem_Servico extends CRUD_Controller {
 			0 => true
 		]);
 
-		load_view([
+		load_view_ordem_servico([
 			0 => [
+				'src' => 'access/pre_loader',
+				'params' => null,
+			],
+			1 => [
 				'src' => 'dashboard/administrador/ordem_servico/home',
 				'params' => [
 					'ordens_servico' => $ordens_servico,
@@ -124,10 +128,6 @@ class Ordem_Servico extends CRUD_Controller {
 					'superusuario' => $this->session->user['is_superusuario']
 				]
 			],
-			1 => [
-				'src' => 'access/pre_loader',
-				'params' => null,
-			]
 		],'administrador');    
 	}
 
@@ -738,9 +738,14 @@ class Ordem_Servico extends CRUD_Controller {
 	            				]);
 	            			}
 	            			else{ //O usuário não modificou nenhuma informação da ordem de serviço
-	            				$this->response->set_code(Response::DB_ERROR_INSERT);
+	            				$this->response->set_code(Response::SUCCESS);
 	            				$this->response->set_data([
-	            					'mensagem' => "Não foi possivel alterar dados da ordem de serviço! Certifique-se de ter modificado alguma informação"]);	
+	            					'mensagem' => "Os dados não foram alterados.<br>Certifique-se de ter modificado alguma informação.",
+	            					'ordem_servico_pk' => $data_ordem['ordem_servico_pk'],
+			            			'historico_ordem_pk' => $return_historico[0]->historico_ordem_pk,
+			            			'local_fk' => $coordenada->local_fk,
+			            			'endereco_os' => $endereco_os
+	            				]);	
 	            			}
 	            		}
 	            	}

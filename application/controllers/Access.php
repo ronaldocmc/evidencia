@@ -74,7 +74,9 @@ class Access extends CI_Controller {
             'log_pessoa_fk' => $this->session->user['id_user'],
             'log_descricao' => 'Logut'
         ]);
-    	session_destroy();
+
+	   session_destroy(); 
+        
     	redirect(base_url());
     }
 
@@ -92,7 +94,7 @@ class Access extends CI_Controller {
 
     	if ($response !== FALSE)
     	{
-    		if (isset($response->funcao_nome) && $response->funcao_nome == "Funcionário de Campo")
+    		if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5'))
     		{
     			$this->response->set_code(Response::UNAUTHORIZED);
     			$this->response->set_data([
@@ -218,24 +220,29 @@ class Access extends CI_Controller {
     	$this->load->library('form_validation');
 
 		//Faz a verificação de que o usuário não trata-se de um robo
-    	$captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
-    	$attempt_response = verify_attempt($this->input->ip_address());
-    	
+        if(ENVIRONMENT == 'testing')
+        {
+            $captcha_response = TRUE;
+            $attempt_response = TRUE;
+        }else{
+        	$captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
+        	$attempt_response = verify_attempt($this->input->ip_address());
+        }
     	if ($captcha_response === TRUE && $attempt_response === TRUE)
     	{	
-    		$this->form_validation->set_rules(	'login', 
+    		$this->form_validation->set_rules('login', 
     			'Login',
     			'trim|required|regex_match[/[a-zA-Z0-9_\-.+]+@[a-zA-Z0-9-]+/]|min_length[8]|max_length[128]'
     		);
-    		$this->form_validation->set_rules(	'password',
+    		$this->form_validation->set_rules('password',
     			'Senha', 
     			'trim|required|min_length[8]|max_length[128]'
     		);
-
+         
     		if ($this->form_validation->run() === TRUE) 
     		{
     			$id = explode('@',$this->input->post('login'));
-
+                
     			$access =[
     				'acessos.acesso_senha' => hash(ALGORITHM_HASH,$this->input->post('password').SALT)
     			];

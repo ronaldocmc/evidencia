@@ -84,69 +84,9 @@ class Ordem_Servico_model extends CI_Model {
         }
     }
 
-    public function getJsonForMobile($where = NULL, $query = NULL) {
-
-        $this->db->select(
-            self::TABLE_NAME. '.'.self::PRI_INDEX. ' AS id,
-            coordenadas.coordenada_lat AS latitude,
-            coordenadas.coordenada_long AS longitude,
-            ordens_servicos.ordem_servico_desc AS descricao,
-            ordens_servicos.prioridade_fk AS prioridade,
-            MIN(historicos_ordens.historico_ordem_tempo) AS data_inicial,
-            (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao,
-            locais.local_complemento, locais.local_num,
-            logradouros.logradouro_nome,
-            bairros.bairro_nome
-            ');
-
-        $this->db->from(self::TABLE_NAME);
-
-        $this->db->join('coordenadas',
-            'coordenadas.coordenada_pk = '.self::TABLE_NAME.'.coordenada_fk');
-
-        $this->db->join('servicos','servicos.servico_pk = '.self::TABLE_NAME.'.servico_fk');
-
-        $this->db->join('tipos_servicos',
-            'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
-
-        $this->db->join('departamentos',
-            'departamentos.departamento_pk = tipos_servicos.departamento_fk');
-
-
-        $this->db->join('historicos_ordens','historicos_ordens.ordem_servico_fk = '.self::TABLE_NAME. '.'.self::PRI_INDEX);
-       
-        $this->db->join('locais','locais.local_pk = coordenadas.local_fk');
-        
-        $this->db->join('logradouros','locais.logradouro_fk = logradouros.logradouro_pk');
-
-        $this->db->join('bairros','locais.bairro_fk = bairros.bairro_pk');
-
-        $this->db->group_by(self::TABLE_NAME. '.'.self::PRI_INDEX);
-
-        $this->db->where('historicos_ordens.situacao_fk = 1 OR historicos_ordens.situacao_fk = 2');
-
-        if($query != NULL)
-        {
-            $this->db->where($query);
-        }
-
-        if ($where !== NULL) {
-            if (is_array($where)) {
-                foreach ($where as $field=>$value) {
-                    $this->db->where($field, $value);
-                }
-            } else {
-                $this->db->where(self::PRI_INDEX, $where);
-            }
-        }
-
-        // echo $this->db->get_compiled_select();die();
-        $result = $this->db->get()->result();
-        if ($result) {
-            return ($result);
-        } else {
-            return false;
-        }
+    public function getJsonForMobile($where) {
+        $ordens = $this->db->query("CALL getForMobile('".$where['id_organizacao']."',".$where['id_funcionario'].")");
+        return $ordens->result();
     }
 
 
@@ -475,7 +415,7 @@ class Ordem_Servico_model extends CI_Model {
         $query.="INNER JOIN tipos_servicos
             ON tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk ";
 
-        $query.= "WHERE historico_ordem_tempo BETWEEN '".$where['data_inicial']."' AND '".$where['data_final']."'";
+        $query.= "WHERE historico_ordem_tempo BETWEEN '".$where['data_inicial']." 00:00:01' AND '".$where['data_final']." 23:59:59'";
 
         $query.= $this->fill_query('setor_fk', $where['setor']);
         $query.= $this->fill_query('tipos_servicos.tipo_servico_pk', $where['tipo']);

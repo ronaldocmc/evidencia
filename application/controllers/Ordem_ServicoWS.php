@@ -369,18 +369,23 @@ class Ordem_ServicoWS extends MY_Controller
 
 	
 	public function get(){
-		
+		// Destrói a sessão que ele cria automaticamente, pois tava dando erro
+		$this->session->sess_destroy();
+
 		isset($_GET['id']) ? $id = $_GET['id'] : $id = null;
 
 		$this->load->model('Ordem_Servico_model', 'ordem_servico_model');
 		$this->load->model('Historico_model', 'historico_model');
 		
+		// Pega os headers para acessar o token
 		$obj = apache_request_headers();
 
+		// Decripta o token
 		$empresa = get('id_empresa', $obj['token']);
 		
 		$where['departamentos.organizacao_fk'] = $empresa;
 
+		// Se foi especificada uma OS, pega só ela
 		if($id != null)
 		{
 			$where['ordens_servicos.ordem_servico_pk'] = $id;
@@ -393,34 +398,22 @@ class Ordem_ServicoWS extends MY_Controller
 
 			$this->response->add_data("ordem",$ordens_servico);
 		}
+		// Caso contrário, chama um stored procedure que pega todas com o histórico aberto ou em andamento
 		else
 		{
-			$this->load->model('Funcionario_model', 'funcionario_model');
+			$where['id_organizacao'] = get('id_empresa', $obj['token']);
+			$where['id_funcionario'] = get('id_funcionario', $obj['token']);
 
-			$funcionario_fk = get('id_funcionario', $obj['token']);
-			$setores = $this->funcionario_model->get_setor($funcionario_fk);
-			// var_dump($setores);die();
-
-
-			$query = 'ordens_servicos.setor_fk = ' . $setores[0]->setor_fk;
-
-			for ($i=1; $i < count($setores); $i++)
-			{ 
-				$query .= ' OR ordens_servicos.setor_fk = ' . $setores[$i]->setor_fk;
-			}
-
-
-			$ordens_servico = $this->ordem_servico_model->getJsonForMobile($where, $query);
-			var_dump($ordens_servico);
-			die();
+			$ordens_servico = $this->ordem_servico_model->getJsonForMobile($where);
 			$ordens = array();
-
+			
+			// Monta o array com cada tupla retornada do banco
 			foreach($ordens_servico as $os)
 			{
-				array_push($ordens,$os);
+				array_push($ordens, $os);
 			}
 
-			$this->response->add_data("ordens",$ordens);
+			$this->response->add_data("ordens", $ordens);
 		}
 
 		$this->response->send();
