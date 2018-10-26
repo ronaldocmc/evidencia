@@ -539,7 +539,7 @@ get_historico = (id) =>
     dataHora = (d.toLocaleString());  
 
     $.ajax({
-        url: base_url + '/ordem_servico/json_especifico/' + id + '/' + 1,
+        url: base_url + '/Ordem_Servico/json_especifico/' + id + '/' + 1,
         dataType: "json",
         success: function (response) {
 
