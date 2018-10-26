@@ -299,10 +299,9 @@ class Relatorio_model extends CI_Model
     }
 
 
-    public function update_relatorios_os_verificada($os, $status)
+    public function update_relatorios_os_verificada($where = array(), $status)
     {
         $data = array('os_verificada' => $status);
-        $where = array('os_fk' => $os);
         $this->db->update('relatorios_os', $data, $where);
     }
 

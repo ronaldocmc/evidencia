@@ -692,9 +692,20 @@ private function create_relatorio($filtro)
 
     // vamos filtrar as OS que pertencerão a este relatório.
     $ordens_servicos = $this->ordem_servico_model->get_os_novo_relatorio($filtro);
+    $ordens_servicos_em_aberto = [];
+    foreach($ordens_servicos as $os)
+    {
+        if($os->situacao_atual_pk == '1')
+        {
+            $ordens_servicos_em_aberto[] = $os;
+        }
+
+    }
+    $ordens_servicos = $ordens_servicos_em_aberto;
 
     //vamos bloquear a criação de relatórios sem ordens de serviço.
-    if(count($ordens_servicos) == 0){
+    if(count($ordens_servicos) == 0)
+    {
         return "Não é possível criar um relatório sem ordens de serviço.";
     }
 
@@ -718,7 +729,7 @@ private function create_relatorio($filtro)
     {
             //UMA ORDEM DEVE PERTENCER A APENAS UM RELATÓRIO DO MESMO DIA.
             //TEMOS QUE VERIFICAR SE A ORDEM JÁ NÃO ESTÁ ATRIBUÍDA A UM RELATÓRIO HOJE.
-        if($os->situacao_atual_pk == 1){
+        //if($os->situacao_atual_pk == '1'){
 
             $this->relatorio_model->insert_relatorios_os(
                 array(
@@ -736,7 +747,7 @@ private function create_relatorio($filtro)
                     )
             );
 
-        }
+        //}
     }
     if($id_relatorio)
     {
@@ -971,14 +982,18 @@ private function create_relatorio($filtro)
                         // O seu registro é retirado do relatório
                         //$this->relatorio_model->delete_relatorio_os($os->os_fk);
                        //2 significa que não foi concluída.
-                       $this->relatorio_model->update_relatorios_os_verificada($os->os_fk, 2); 
+                       $this->relatorio_model->update_relatorios_os_verificada(
+                        ['os_fk' => $os->os_fk, 'os_verificada' => 0], 2
+                       ); 
                         // Insere an tabela para controle das OS não concluidas no relatório
                         // $this->relatorio_model->insert_os_nao_concluida($os->os_fk, $os->relatorio_fk);
                     }
                     // Caso esteja finalizada, seu status na tabela de relatorio_os é alterado para verificado
                     else
                     {
-                        $this->relatorio_model->update_relatorios_os_verificada($os->os_fk, 1);
+                        $this->relatorio_model->update_relatorios_os_verificada(
+                            ['os_fk' => $os->os_fk, 'os_verificada' => 0], 1
+                        );
                     }
                 }
                 //após verificar todas as ordens, setamos o status do relatório para 1 para indicar que o relatório foi entregue.
