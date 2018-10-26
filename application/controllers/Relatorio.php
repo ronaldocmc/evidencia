@@ -455,7 +455,6 @@ class Relatorio extends CRUD_Controller
         //VERIFICANDO SE EXISTE UM RELATÓRIO PARA O FUNCIONÁRIO QUE ESTÁ EM ANDAMENTO:
         $relatorios_em_andamento = $this->relatorio_model->get_objects(
             ['status' => 0, 'funcionario_fk' => $this->input->post('funcionario_fk')]);
-
         //ou seja, se existir relatórios em andamento:
         if(count($relatorios_em_andamento) > 0){ 
             $response->set_code(Response::BAD_REQUEST);

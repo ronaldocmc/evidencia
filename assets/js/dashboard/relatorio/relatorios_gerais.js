@@ -98,6 +98,9 @@ $("#gerar_pdf").click(function() {
 		else if (response.code == 400) {
 			alerts('failed','Erro!',response.data.message);
 		}
+		else{
+			alerts('failed', 'Erro!', 'Tem de conexão excedido.<br>Por favor, recarregue a página.');
+		}
 
 	}, "json");
 });
