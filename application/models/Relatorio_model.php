@@ -161,6 +161,29 @@ class Relatorio_model extends CI_Model
 
     }
 
+    public function get_objects($where = NULL)
+    {
+        $this->db->select("*");
+        $this->db->from('relatorios');
+        if ($where !== NULL) {
+            if (is_array($where)) {
+                foreach ($where as $field=>$value) {
+                    $this->db->where($field, $value);
+                }
+            } else {
+                $this->db->where(self::PRI_INDEX, $where);
+            }
+        }
+        $result = $this->db->get()->result();
+        if ($result) {
+            return ($result);
+        } else {
+            return false;
+        }
+
+
+    }
+
     public function get_filtro_relatorio_data($id_relatorio){
         $this->db->select('*');
         $this->db->from('filtros_relatorios_data');
