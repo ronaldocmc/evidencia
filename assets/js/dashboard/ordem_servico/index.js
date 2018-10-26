@@ -739,10 +739,10 @@ send_historico = (imagem) =>
               ordens_servico[i]['servico_nome'],
               $('#situacao_pk_historico option:selected').text(),
               ordens_servico[i]['setor_nome'],
-              '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-              '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-              'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-              'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+              '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+              '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+              '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
+              '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
               ]).draw();
             pre_loader_hide();
             remove_image();
@@ -904,10 +904,10 @@ send = (imagem) =>
                   os.servico_nome,
                   os.situacao_nome,
                   os.setor_nome,
-                  '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                  '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_servico"><div class="d-none d-sm-block">' +
-                  'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(ordens_servico.length - 1)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                  'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                  '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                  '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_servico" title="Histórico">' +
+                  '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(ordens_servico.length - 1)+'" data-target="#d_servico" title="Desativar">' +
+                  '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                   ]).draw(false);
                  alerts('success', 'Sucesso', response.data.mensagem);
                  remove_image();
@@ -931,10 +931,10 @@ send = (imagem) =>
                 os.servico_nome,
                 os.situacao_nome,
                 os.setor_nome,
-                '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_servico"><div class="d-none d-sm-block">' +
-                'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_servico" title="Histórico">' +
+                '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
+                '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                 ]).draw();
               alerts('success', 'Sucesso', response.data.mensagem); 
 
@@ -1172,10 +1172,10 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                    '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                    'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                    'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar"><div class="d-none d-sm-block">Editar</div>' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                     ]).draw(false);
             }else{
                 table.row.add([
@@ -1186,10 +1186,10 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                    '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button disabled  style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                    'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico"><div class="d-none d-sm-block">' +
-                    'Ativar</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                    '<div class="btn-group"><button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled  style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Ativar">' +
+                    '<div class="d-block d-sm-none"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
                     ]).draw(false);
             }
         });
@@ -1210,10 +1210,10 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                    '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                    'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                    'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                     ]).draw(false);
             }
         });
@@ -1234,10 +1234,10 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                    '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                    'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico"><div class="d-none d-sm-block">' +
-                    'Ativar</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                    '<div class="btn-group"><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Reativar"><div class="d-none d-sm-block">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
                     ]).draw(false);
             }
         });
@@ -1258,10 +1258,10 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                    '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                    'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                    'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                     ]).draw(false);
             }
         });
@@ -1282,10 +1282,10 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico"><div class="d-none d-sm-block">Editar</div>' +
-                    '<div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico"><div class="d-none d-sm-block">' +
-                    'Histórico</div><div class="d-block d-sm-none"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico"><div class="d-none d-sm-block">' +
-                    'Excluir</div><div class="d-block d-sm-none"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                     ]).draw(false);
             }
         });
