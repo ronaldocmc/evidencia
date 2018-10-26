@@ -175,11 +175,7 @@ class Relatorio_model extends CI_Model
             }
         }
         $result = $this->db->get()->result();
-        if ($result) {
-            return ($result);
-        } else {
-            return false;
-        }
+        return $result;
 
 
     }
