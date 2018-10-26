@@ -71,7 +71,7 @@ class RelatorioWS extends MY_Controller
             $token_decodificado = json_decode(token_decrypt($header_obj['token']));
             $id_funcionario = $token_decodificado->id_funcionario;
             
-            $this->update_relatorio($id_funcionario);
+            //$this->update_relatorio($id_funcionario);
 
             //get relatorio
             $ordens_servicos = $this->get_relatorio_do_funcionario($id_funcionario);
@@ -88,6 +88,37 @@ class RelatorioWS extends MY_Controller
             }
 
             
+
+        } else {
+            $this->response->set_code(Response::FORBIDDEN);
+            $this->response->set_data($attempt_result);
+        }
+
+        $this->response->send();
+        $this->__destruct();
+    }
+
+    /**
+    * FINALIZAR RELATÓRIO
+    **/
+    public function put()
+    {
+        $this->load->helper('attempt');
+        $this->load->helper('token');
+        $this->load->model('tentativa_model');
+        $this->load->model('atualizacao_model');
+        
+        $header_obj = apache_request_headers();
+            
+        $attempt_result = verify_attempt($this->input->ip_address());
+
+        if ($attempt_result === true) {
+           
+            $token_decodificado = json_decode(token_decrypt($header_obj['token']));
+            $id_funcionario = $token_decodificado->id_funcionario;
+            
+            $this->update_relatorio($id_funcionario); 
+            //se deu certo vai enviar o response dentro desse método            
 
         } else {
             $this->response->set_code(Response::FORBIDDEN);
@@ -138,6 +169,9 @@ class RelatorioWS extends MY_Controller
                 }
                 //se chegou aqui é porque não achou nenhuma ordem com status em andamento, então podemos setar o status do relatório para 1:
                 $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $relatorio->relatorio_pk]);
+                $this->response->set_code(Response::SUCCESS);
+                $this->response->set_data('Situação do relatório atualizado com sucesso.');
+                $this->response->send();
             }
 
         }else {

@@ -448,7 +448,21 @@ class Relatorio extends CRUD_Controller
 
     public function insert_novo_relatorio()
     {
+        $this->load->model('relatorio_model');
         $response = new Response();
+
+
+        //VERIFICANDO SE EXISTE UM RELATÓRIO PARA O FUNCIONÁRIO QUE ESTÁ EM ANDAMENTO:
+        $relatorios_em_andamento = $this->relatorio_model->get_objects(
+            ['status' => 0, 'funcionario_fk' => $this->input->post('funcionario_fk')]);
+
+        //ou seja, se existir relatórios em andamento:
+        if(count($relatorios_em_andamento) > 0){ 
+            $response->set_code(Response::BAD_REQUEST);
+            $response->set_data(['message' => 'Há um relatório em andamento para este funcionário que necessita ser finalizado.']); 
+            $response->send();
+            die();
+        }
 
         //pegamos os filtros que o usuário marcou na página anterior: qual(is) os setores, qual(is) os tipos de serviço e qual o funcionário responsável.
         $filtro = $this->input->post();
