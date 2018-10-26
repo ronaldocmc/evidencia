@@ -255,8 +255,8 @@ $('.submit').on('click',() => {
 
 send = (imagem) => {
   //pre_loader_show();
-  // btn_load($('#pula-para-confirmacao'));
-  // btn_load($('.submit'));
+  btn_load($('#pula-para-confirmacao'));
+  btn_load($('.submit'));
 
   const formData = new FormData();
   formData.append('pessoa_nome', $('#nome-input').val());
@@ -378,18 +378,22 @@ $(document).on('click', '.btn-editar', function (event) {
   $('#email-input').val(funcionarios[posicao_selecionada]['contato_email']);
   $('#telefone-input').val(funcionarios[posicao_selecionada]['contato_tel']);
   $('#celular-input').val(funcionarios[posicao_selecionada]['contato_cel']);
-  $('#funcao-input').val(funcionarios[posicao_selecionada]['funcao_pk']);
-  $('#departamento-input').val(funcionarios[posicao_selecionada]['departamento_fk']);
-  $('#logradouro-input').val(funcionarios[posicao_selecionada]['logradouro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
+  $('#funcao-input option[value=' + funcionarios[posicao_selecionada]['funcao_pk'] + ']').prop('selected', true);
+  $('#departamento-input option[value=' + funcionarios[posicao_selecionada]['departamento_pk'] + ']').prop('selected', true);
+  if(funcionarios[posicao_selecionada]['logradouro_nome'] != null){ 
+    $('#logradouro-input').val(funcionarios[posicao_selecionada]['logradouro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
+  }
   $('#numero-input').val(funcionarios[posicao_selecionada]['local_num']);
   $('#complemento-input').val(funcionarios[posicao_selecionada]['local_complemento']);
-  $('#bairro-input').val(funcionarios[posicao_selecionada]['bairro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
+  if(funcionarios[posicao_selecionada]['bairro_nome'] != null){
+    $('#bairro-input').val(funcionarios[posicao_selecionada]['bairro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
+  }
 
 
   if ($("#uf-input :selected").text() != funcionarios[$(this).val()]["estado_pk"])
   {
     $("#uf-input option").filter(function() {
-        return this.text == funcionarios[id_org]["estado_pk"]; 
+        return this.text == funcionarios['id_org']["estado_pk"]; 
     }).attr('selected', true);
 
     change_uf($("#uf-input").val(),$("#uf-input option:selected").text(),funcionarios[$(this).val()]["municipio_pk"]);
