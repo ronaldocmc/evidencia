@@ -589,7 +589,8 @@ public function update(){
              else
              {
                 if ($funcionario!==FALSE)
-                {
+                {  
+                    //print_r($funcionario); die();
                     $data_setor['setor_fk'] = $funcionario->setor_fk;
                     $data_setor['setor_fim_data'] = date("Y-m-d H:i:s");
                     $data_setor['setor_funcionario_status'] = 0;

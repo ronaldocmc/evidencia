@@ -519,7 +519,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <script type="text/javascript">
                             var funcionarios = <?php echo json_encode($funcionarios !== false ? $funcionarios : []) ?>;
                             var funcoes = <?php echo json_encode($funcoes !== false ? $funcoes : []) ?>;

@@ -211,29 +211,29 @@ class Pessoa extends CI_Controller {
             if ($this->CI->form_validation->run()) {
                 $data_update = $this->CI->input->post();
 
-                var_dump($data_update);
-                die();
 
+                // var_dump($data_update);
+                // die();
 
-                // $local = new Localizacao();
-                // $return_local = $local->insert();
+                $local = new Localizacao();
+                $return_local = $local->insert();
 
-                // if ($return_local->code != 200)
-                // {
-                //     return $return_local;
-                // }
-                // //Padronizando os dados para update
-                // if (isset($return_local->data['id']))
-                // {
-                //     $data_endereco = 
-                //     [
-                //         'local_fk' => $return_local->data['id']
-                //     ];
-                // }
-                // else
-                // {
-                //     $data_endereco = NULL;
-                // }
+                if ($return_local->code != 200)
+                {
+                    return $return_local;
+                }
+                //Padronizando os dados para update
+                if (isset($return_local->data['id']))
+                {
+                    $data_endereco = 
+                    [
+                        'local_fk' => $return_local->data['id']
+                    ];
+                }
+                else
+                {
+                    $data_endereco = NULL;
+                }
 
                 $data_pessoa = array(
                     'pessoa_nome' => $data_update['pessoa_nome'],
