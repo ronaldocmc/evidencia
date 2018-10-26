@@ -97,6 +97,7 @@ class Funcionario extends CRUD_Controller {
             }
         }
 
+
         $funcoes = $this->CI->funcao_model->get();
         foreach ($funcoes as $key => $f) {
             $funcoes_drop[$f->funcao_pk] = $f->funcao_nome; 
@@ -461,8 +462,10 @@ public function generate_recuperation($id_user, $contato_email){
     }
 }
 
-public function update(){
-    if ($this->session->has_userdata('user')) {
+public function update()
+{
+    if ($this->session->has_userdata('user')) 
+    {
         $this->config_form_validation();
 
         //Se o usuário inseriu os dados no form corretamente
@@ -474,14 +477,6 @@ public function update(){
             //Premissa que o usuário comum está logado, ele não precisa inserir a senha para realizar operações
             $accepted = TRUE;
 
-            if($this->session->user['is_superusuario'])
-            {
-                 //Utilizando o helper de autenticação de senha para realiar o insert
-                $this->load->helper('Password_helper');
-                $accepted = authenticate_operation($data['senha'],$this->session->user['password_user']);
-            }
-
-
             if ($accepted) 
             {
                 $return = $this->pessoa->update();
@@ -490,7 +485,6 @@ public function update(){
                 {
                     $data_funcionario = array(
                         'organizacao_fk' => $this->session->user['id_organizacao'],
-                        // 'departamento_fk'=> $data['departamento_fk'],
                         'funcionario_status' => 1
                     );
 
@@ -503,11 +497,22 @@ public function update(){
                         'organizacao_fk' => $this->session->user['id_organizacao']
                     ];
 
-                    $return_funcionario = $this->model->update($data_funcionario, $where );
+                    $return_funcionario = $this->model->update($data_funcionario, $where);
+                    if ($return_funcionario === FALSE)
+                    {
+                        $this->response->set_code(Response::DB_ERROR_INSERT);
+                        $this->response->set_data("Não foi possível alterar os dados do funcionário no sistema.");
+                        return;
+                    }
 
                     $return_funcao = $this->model->update_funcao($data_funcao, ['funcionario_fk' => $return_funcionario]);
+                    if ($return_funcao === FALSE)
+                    {
+                        $this->response->set_code(Response::DB_ERROR_INSERT);
+                        $this->response->set_data("Não foi possível alterar os dados da função do funcionario no sistema.");
+                        return;
+                    }
 
-                    $return_setor = TRUE;
 
                     $data_departamento = [
                         'departamento_fk' => $data['departamento_fk']
@@ -515,132 +520,100 @@ public function update(){
 
                     //Buscaremos o setor do funcionário selecionado para alteração de dados
                     $where = [
-                        'funcionario_fk' => $return_funcionario,
-                        'setor_fim_data' => NULL,
+                        'funcionario_fk' => $return_funcionario
                     ];
 
                     $func_depto_exists = $this->model->get_funcionarios_departamentos(['funcionario_fk' => $return_funcionario]);
-                    
-
                     if($func_depto_exists)
                     { 
                         $this->model->update_departamento($data_departamento, ['funcionario_fk' => $return_funcionario]);
                     }
                     else
                     {
-                        if($data['departamento_fk'] != ''){
-
-                           $this->model->insert_funcionarios_departamentos([
-                            'funcionario_fk' => $return_funcionario, 
-                            'departamento_fk' => $data['departamento_fk']
-                        ]);
-
+                        if($data['departamento_fk'] != '')
+                        {
+                            $this->model->insert_funcionarios_departamentos([
+                                'funcionario_fk' => $return_funcionario, 
+                                'departamento_fk' => $data['departamento_fk']
+                            ]);
                        }
-                   }
+                    }
 
                     //Retorna o funcionário selecionado e seus dados de setor
-                   $funcionario = $this->model->get_setor($where);
-                    //Verificando se o funcionario é de campo, caso seja então deve-se verificar o update de setor
-                   if($data['funcao_fk'] == 3)
-                   {
-                        //var_dump($funcionario===FALSE);
-                        //Se o setor enviado no formulário de alteração é diferente do setor atual então efetuamos o update
-                    if($funcionario===FALSE || $data['setor_fk'] !== $funcionario->setor_fk )
+                    $funcionario = $this->model->get_setor($where);
+
+                    //Verificando se o funcionario é fiscal, caso seja então deve-se alterar os setores
+                    if($data['funcao_fk'] == '3' || $data['funcao_fk'] == '6')
                     {
-                        $data_setor = array(
-                            'funcionario_fk' => $return_funcionario,
-                        );
+                        $this->CI->load->model('Funcionario_setor_model', 'funcionario_setor_model');
 
-                            //Dados para inserirmos o novo setor do funcionário de campo
-                        if ($data['setor_fk'] !== "")
+                        if ($data['setor_fk'] == '')
                         {
-                            $data_setor['setor_fk'] = $data['setor_fk'];
+                            $this->response->set_code(Response::BAD_REQUEST);
+                            $this->response->set_data('Fiscal deve ter setor(es) associado(s) a ele');
+                            $this->response->send();
+                            return;
+                        }
 
-                                //Efetuando a inserção com o novo setor, pois mantemos o registro do ultimo setor
-                            $success_insert = $this->model->insert_setor($data_setor);
+                        // Se o funcionário não tiver setores
+                        if($funcionario !== FALSE)
+                        {  
+                            $this->funcionario_setor_model->delete([
+                                'funcionario_fk' => $return_funcionario
+                            ]);
+                        }
+
+                        if (strpos($data['setor_fk'], ',') === false)
+                        {
+                            $data_setor = array(
+                                'funcionario_fk' => $result['funcionario_fk'],
+                                'setor_fk' => $data['setor_fk']
+                            );
+
+                            $success = $this->model->insert_setor($data_setor);
                         }
                         else
                         {
-                            $success_insert = TRUE;
+                            $novos_setores = explode(',', $data['setor_fk']);
+
+                            foreach ($novos_setores as $s) 
+                            {
+                                $this->funcionario_setor_model->insert([
+                                    'funcionario_fk' => $return_funcionario,
+                                    'setor_fk' => $s
+                                ]);
+                            } 
                         }
+                        
+                    }
 
-                            //Padronizando os dados para o update
-                        if ($success_insert === TRUE && $funcionario!==FALSE)
-                        {
-                            $data_setor['setor_fk'] = $funcionario->setor_fk;
-                            $data_setor['setor_fim_data'] = date("Y-m-d H:i:s");
-                            $data_setor['setor_funcionario_status'] = 0;
-
-                            $where['funcionario_setor_pk']= $funcionario->funcionario_setor_pk;
-
-                                //Alteramos o status e a data de fim do antigo setor
-                            $return_setor = $this->model->update_setor($data_setor, $where);
-                        }
-                        else if ($success_insert === FALSE)
-                        {
-                            $return_setor = FALSE;
-                        }
-                        else
-                        {
-                         $return_setor = TRUE;
-                     }
-                 }
-             }
-             else
-             {
-                if ($funcionario!==FALSE)
-                {  
-                    //print_r($funcionario); die();
-                    $data_setor['setor_fk'] = $funcionario->setor_fk;
-                    $data_setor['setor_fim_data'] = date("Y-m-d H:i:s");
-                    $data_setor['setor_funcionario_status'] = 0;
-
-                    $where['funcionario_setor_pk']= $funcionario->funcionario_setor_pk;
-
-                            //Alteramos o status e a data de fim do antigo setor
-                    $return_setor = $this->model->update_setor($data_setor, $where);
+                    $this->response->set_code(Response::SUCCESS);
+                    $this->response->set_data('Dados alterados com sucesso!');
                 }
                 else
                 {
-                 $return_setor = TRUE;
-             }
-         }
-
-         if(($return_funcionario !== FALSE)&&($return_funcao!==FALSE) && ($return_setor !== FALSE)){
-            $this->response->set_code(Response::SUCCESS);
-            $this->response->set_data("Dados do funcionário foram alterados com sucesso!");
-        }
-        else
+                    $return->send();
+                    return;
+                }
+            } 
+            else 
+            {
+                $this->response->set_code(Response::UNAUTHORIZED);
+                $this->response->set_data("Operação não autorizada! Senha informada incorreta.");
+            }
+        } 
+        else 
         {
-           $this->response->set_code(Response::DB_ERROR_INSERT);
-           $this->response->set_data("Não foi possível alterar os dados do funcionário no sistema.");
-       }
-   }
-   else
-   {
-    $return->send();
-    return;
-}
-} 
-else 
-{
-    $this->response->set_code(Response::UNAUTHORIZED);
-    $this->response->set_data("Operação não autorizada! Senha informada incorreta.");
-}
-} 
-else 
-{
-    $this->response->set_code(Response::BAD_REQUEST);
-    $this->response->set_data($this->form_validation->errors_array());
-}
+            $this->response->set_code(Response::BAD_REQUEST);
+            $this->response->set_data($this->form_validation->errors_array());
+        }
 
-$this->response->send();
-
-} 
-else 
-{
-    redirect(base_url('access/index'));
-}
+        $this->response->send();
+    } 
+    else 
+    {
+        redirect(base_url('access/index'));
+    }
 }
 
 public function activate(){
