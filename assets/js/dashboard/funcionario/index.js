@@ -255,8 +255,8 @@ $('.submit').on('click',() => {
 
 send = (imagem) => {
   //pre_loader_show();
-  btn_load($('#pula-para-confirmacao'));
-  btn_load($('.submit'));
+  // btn_load($('#pula-para-confirmacao'));
+  // btn_load($('.submit'));
 
   const formData = new FormData();
   formData.append('pessoa_nome', $('#nome-input').val());
@@ -290,8 +290,8 @@ send = (imagem) => {
     processData: false,
     contentType: false,
     success: function (response) {
-      btn_ativar($('#pula-para-confirmacao'));
-      btn_ativar($('.submit'));
+      // btn_ativar($('#pula-para-confirmacao'));
+      // btn_ativar($('.submit'));
 
       if (response.code !== 200) {
         show_errors(response);
@@ -364,6 +364,7 @@ $(document).on('click', '.btn-editar', function (event) {
   $('#titulo').html("Editar Funcionário");
   botao = ".submit";
   if (funcionarios[posicao_selecionada].setor_fk != null) {
+    $('#setor-input option:selected').prop('selected', false);
     for (var i = 0; i < funcionarios[posicao_selecionada].setor_fk.length; i++) {
       $('#setor-input option[value=' + funcionarios[posicao_selecionada].setor_fk[i] + ']').prop('selected', true);
     }  

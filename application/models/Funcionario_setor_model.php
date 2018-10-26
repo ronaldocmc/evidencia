@@ -27,6 +27,7 @@ class Funcionario_setor_model extends CI_Model {
         $this->db->join('setores', 'setores.setor_pk = '.self::TABLE_NAME.'.setor_fk');
         $this->db->join('organizacoes', 'organizacoes.organizacao_pk = setores.organizacao_fk');
         $this->db->from(self::TABLE_NAME);
+
         if ($where !== NULL) {
             if (is_array($where)) {
                 foreach ($where as $field=>$value) {
@@ -81,7 +82,7 @@ class Funcionario_setor_model extends CI_Model {
      * @return int Number of rows affected by the delete query
      */
     public function delete($where = array()) {
-        if (!is_array()) {
+        if (!is_array($where)) {
             $where = array(self::PRI_INDEX => $where);
         }
         $this->db->delete(self::TABLE_NAME, $where);
