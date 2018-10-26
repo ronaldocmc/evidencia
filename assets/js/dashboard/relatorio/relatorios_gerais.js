@@ -52,6 +52,8 @@ $("#btn-restaurar").click(function() {
 	var senha = $("#pass-modal-restaurar").val();
 
 	if(senha == ""){
+		alerts('failed','Erro!','Senha incorreta');
+		btn_ativar($('#btn-restaurar'));
 		return;
 	}
 
