@@ -87,6 +87,11 @@
                                                 <td>
                                                     <?php if($ordem_servico->ordem_servico_status == 1): ?>
                                                         <div class="btn-group">
+                                                            <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação">
+                                                                <div class="d-none d-sm-block">
+                                                                    <i class="fas fa-check fa-fw"></i>
+                                                                </div>
+                                                            </button>
                                                             <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
                                                                 <div class="d-none d-sm-block">
                                                                     <i class="fas fa-edit fa-fw"></i>
@@ -339,6 +344,104 @@
     </div>
     <!-- FIM MODAL NOVA ORDEM/ALTERAR ORDEM-->
 
+    <!-- MODAL ALTERAR SITUAÇÃO ATUAL ORDEM SERVIÇO -->
+    <div class="modal fade" id="atividade">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Alterar Situação da Ordem de serviço</h4>
+                    <h4 class="modal-title 2"></h4> 
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <table class="table hide">
+                            <thead>
+                                <th>Prioridade</th>
+                                <th>Procedência</th>
+                                <th>Serviço</th>
+                                <th>Setor</th>
+                            </thead>
+                            <tbody>
+                                <td id="ov_prioridade"></td>
+                                <td id="ov_procedencia"></td>
+                                <td id="ov_servico"></td>
+                                <td id="ov_setor"></td>
+                            </tbody>
+                        </table>
+                        <div class=card-group>
+                            <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                <div class="card-header">
+                                    <strong>Código:</strong>
+                                    
+                                </div>
+                                <div class="card-body card-block">
+                                    <p id="ov_codigo"></p>
+                                </div>
+                            </div>
+                            <div class = "card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                <div class="card-header">
+                                    <strong>Descrição:</strong>
+                                    <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="obtn-foto-historico" style="display:none;">
+                                        <i class="fa fa-camera" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body card-block" id="oendereco_historico">
+                                 <p id="ov_descricao"><p>
+                                 </div>
+                             </div>
+                             <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                <div class="card-header">
+                                    <strong>Endereço:</strong>
+                                    <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="obtn-mapa-historico" style="display:none;">
+                                        <i class="fa fa-map-marker"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body card-block" id="oendereco_historico">
+                                    <p id="ov_endereco"></p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div align="center" class="center">
+                            <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="ov_loading" alt="Carregando">
+                        </div>
+                        <div class="col-12 col-md-12" id="omapa_historico" style="margin-top: 20px; padding-top: 10px;">
+                            <div id="omap2"></div>
+                        </div>
+                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                            </ol>
+                            <div class="carousel-inner">
+                            </div>
+                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Anterior</span>
+                            </a>
+                            <a class="carousel-control-next" href="#ocarouselExampleIndicators" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Próximo</span>
+                            </a>
+                        </div>
+                        <div class="qa-message-list py-5" id="otimeline" style="margin-top: 20px; padding-top: 5px;">
+                        </div>
+                        <div class= "modal-footer">
+                            <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-atividade" onclick="send_data_historico()">
+                                <i class="fa fa-dot-circle-o"></i>
+                                Salvar
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-atividade" data-dismiss="modal">
+                                Fechar
+                            </button>
+                            <input type="hidden" id="historico_pk" value="" name="historico_pk">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- MODAL HISTÓRICO ORDEM SERVIÇO -->
     <div class="modal fade" id="ce_historico_servico">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -365,7 +468,16 @@
                             </tbody>
                         </table>
                         <div class=card-group>
-                            <div class = "card col-12 col-md-6" style="padding-left: 0px !important; padding-right: 0px !important;">
+                            <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                <div class="card-header">
+                                    <strong>Código:</strong>
+                                    
+                                </div>
+                                <div class="card-body card-block">
+                                    <p id="v_codigo"></p>
+                                </div>
+                            </div>
+                            <div class = "card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
                                 <div class="card-header">
                                     <strong>Descrição:</strong>
                                     <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="btn-foto-historico">
@@ -376,7 +488,7 @@
                                  <p id="v_descricao"><p>
                                  </div>
                              </div>
-                             <div class="card col-12 col-md-6" style="padding-left: 0px !important; padding-right: 0px !important;">
+                             <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
                                 <div class="card-header">
                                     <strong>Endereço:</strong>
                                     <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="btn-mapa-historico">

@@ -219,6 +219,8 @@ class Ordem_Servico_model extends CI_Model {
             }
         }
 
+        $this->db->order_by('historicos_ordens.historico_ordem_tempo', 'ASC');
+
          // echo $this->db->get_compiled_select();die();
         $result = $this->db->get()->result();
 
