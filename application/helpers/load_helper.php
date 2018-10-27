@@ -23,7 +23,7 @@ function load_view_ordem_servico($views = array(), $subdirectory, $enable_menu =
     foreach ($views as $view) {
         $CI->load->view($view['src'], $view['params'], false);
     }
-    $CI->load->view('dashboard/administrador/ordem_servico/scripts', null, false);
+    // $CI->load->view('dashboard/administrador/ordem_servico/scripts', null, false);
     $CI->load->view('dashboard/administrador/ordem_servico/footer', null, false);
-    //$CI->load->view('dashboard/commons/footer', null, false);
+    $CI->load->view('dashboard/commons/footer', null, false);
 }

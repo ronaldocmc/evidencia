@@ -130,7 +130,7 @@
                                     <li>
                                         <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
                                     </li>
-                                                                    <li>
+                                    <li>
                                         <a href="<?php echo base_url('situacao'); ?>">Situações</a>
                                     </li>
                                     <li>

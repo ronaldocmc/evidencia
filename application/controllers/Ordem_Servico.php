@@ -14,8 +14,7 @@ class Ordem_Servico extends CRUD_Controller {
 	public $response; 
 
 	function __construct() 
-	{	
-
+	{
 		//Realizando o carregamento dos models que são utilizados em diversas funções de inserção, atualização e remoção. 
 		parent::__construct();
 		$this->load->model('Ordem_Servico_model', 'ordem_servico_model');
@@ -35,7 +34,6 @@ class Ordem_Servico extends CRUD_Controller {
 
 	function index()
 	{
-
 		//Criando um array de ordens de serviço com todos os dados necessários a serem exibidos na view index
 		$ordens_servico = $this->ordem_servico_model->getHome([
 			'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
