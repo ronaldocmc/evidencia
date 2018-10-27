@@ -101,9 +101,10 @@ class Ordem_Servico_model extends CI_Model {
             ordens_servicos.ordem_servico_pk AS ordem_servico_pk,
             ordens_servicos.prioridade_fk AS prioridade,
             MIN(historicos_ordens.historico_ordem_tempo) AS data_inicial,
+            (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao
             ');
             // historico_final.historico_ordem_tempo AS data_final,
-            // historico_final.situacao_fk AS situacao_atual
+            // 
 
         // prioridade
         // tipo_servico
