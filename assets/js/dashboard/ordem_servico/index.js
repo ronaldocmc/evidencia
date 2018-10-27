@@ -15,9 +15,10 @@ function btn_ativar(button_submit){
 
 
 //Variáveis globais utilizadas no JS
-var main_map, other_map;
+var main_map, other_map, other_map_from_activity;
 var main_marker = null;
 var other_marker = null;
+var other_maker_from_activity = null;
 var posicao_selecionada = null;
 var primeiro_editar = false;
 var adicionar_imagem = 1; 
@@ -186,6 +187,8 @@ $(document).on('click','.btn-attr-ordem_servico_pk',function(){
     send_data_historico = () => {
         try {
             btn_load($('#btn-salvar-historico'));
+            btn_load($('#btn-salvar-atividade'));
+
             $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => { 
                 blobToBase64(blob,this.send_historico);
             });
@@ -256,9 +259,20 @@ function initMap()
         zoom: 13
     });
 
+    other_map_from_activity = new google.maps.Map(document.getElementById('omap2'), {
+        center: {lat: -22.121265, lng: -51.383400},
+        zoom: 13
+    });
+
+
     var geocoder2 = new google.maps.Geocoder();
     criarMarcacao2({lat: -22.121265, lng: -51.383400});
+
+    var geocoder3 = new google.maps.Geocoder();
+    criarMarcacao3({lat: -22.121265, lng: -51.383400});
+
     $('#mapa_historico').hide();
+    $('#omapa_historico').hide();
 
     //Função que preenhce o endereço conforme o clique do usuário do mapa
     function preencheCampos(endereco){
@@ -313,6 +327,17 @@ function initMap()
         other_marker = new google.maps.Marker({
           position: location,
           map: other_map
+      });
+    }
+
+    function criarMarcacao3(location) {
+        if(other_maker_from_activity != null){
+            other_maker_from_activity.setMap(null);
+        }
+
+        other_maker_from_activity = new google.maps.Marker({
+          position: location,
+          map: other_map_from_activity
       });
     }
 
@@ -417,11 +442,26 @@ function remove_data() {
     $("#v_procedencia").html('');
     $("#v_setor").html('');
     $("#v_servico").html('');
+    $('#v_codigo').html('');
 
     $('.carousel-inner').html('');
     $('.carousel-indicators').html('');
     $('#timeline').html('');
     $('#v_loading').show();
+}
+
+function remove_data_atividade() {
+    $("#ov_descricao").html('');
+    $("#ov_prioridade").html('');
+    $("#ov_procedencia").html('');
+    $("#ov_setor").html('');
+    $("#ov_servico").html('');
+    $("#ov_codigo").html('');
+
+    $('.carousel-inner').html('');
+    $('.carousel-indicators').html('');
+    $('#otimeline').html('');
+    $('#ov_loading').show();
 }
 
 //Função que exibe e oculta as fotos do histórico pertencente a uma determinada OS.
@@ -447,6 +487,28 @@ $(document).on('click', '#btn-foto-historico', function (event)
 });
 
 
+$(document).on('click', '#obtn-foto-historico', function (event) 
+{
+    if(adicionar_imagem == 1){
+
+        $('#ocarouselExampleIndicators').show();
+        $('#obtn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
+        $('#obtn-foto-historico').removeClass('btn-primary');
+        $('#obtn-foto-historico').addClass('btn-danger');
+        adicionar_imagem++;
+    }
+    else
+    {
+        $('#ocarouselExampleIndicators').hide();
+        $('#obtn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
+        $('#obtn-foto-historico').removeClass('btn-danger');
+        $('#obtn-foto-historico').addClass('btn-primary'); 
+        adicionar_imagem--;
+
+    }
+});
+
+
 //Função que  preenche os campos do "Editar Histórico"
 $(document).on('click', '.btn_historico', function (event) 
 {
@@ -463,6 +525,7 @@ $(document).on('click', '.btn_historico', function (event)
     $("#v_procedencia").html(ordens_servico[posicao_selecionada]['procedencia_nome']);
     $("#v_setor").html(ordens_servico[posicao_selecionada]['setor_nome']);
     $("#v_servico").html(ordens_servico[posicao_selecionada]['servico_nome']);
+    $("#v_codigo").html(ordens_servico[posicao_selecionada]['ordem_servico_cod']);
 
     var latlng = {lat: parseFloat(ordens_servico[posicao_selecionada]['coordenada_lat']), lng: parseFloat(ordens_servico[posicao_selecionada]['coordenada_long'])}
 
@@ -504,6 +567,67 @@ $(document).on('click', '.btn_historico', function (event)
     get_historico(ordens_servico[posicao_selecionada]['ordem_servico_pk']);
 });
 
+
+//Função que  preenche os campos do "Alterar Atividade"
+$(document).on('click', '.btn_atividade', function (event) 
+{
+    var imagem;
+    var local_ordem='';
+
+    $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
+    posicao_selecionada = $(this).val();
+
+    remove_data_atividade();
+
+    $("#ov_descricao").html(ordens_servico[posicao_selecionada]['ordem_servico_desc']);
+    $("#ov_prioridade").html(ordens_servico[posicao_selecionada]['prioridade_nome']);
+    $("#ov_procedencia").html(ordens_servico[posicao_selecionada]['procedencia_nome']);
+    $("#ov_setor").html(ordens_servico[posicao_selecionada]['setor_nome']);
+    $("#ov_servico").html(ordens_servico[posicao_selecionada]['servico_nome']);
+    $("#ov_codigo").html(ordens_servico[posicao_selecionada]['ordem_servico_cod']);
+
+    var latlng = {lat: parseFloat(ordens_servico[posicao_selecionada]['coordenada_lat']), lng: parseFloat(ordens_servico[posicao_selecionada]['coordenada_long'])}
+
+    geocoder2.geocode({'location': latlng}, function(results, status) {
+      if (status === 'OK') {
+        other_map_from_activity.setCenter(results[0].geometry.location);
+        criarMarcacao3(results[0].geometry.location);
+
+        let numero, rua, bairro, cidade, estado;
+        for(i = 0; i < results[0].address_components.length; i++){
+
+            switch(results[0].address_components[i].types[0]){
+                    case 'street_number':  //Número da Rua
+                    numero = results[0].address_components[i].long_name;
+                    break;
+                    case 'route':
+                        rua = results[0].address_components[i].long_name; //Logradouro
+                        break;
+                    case 'political': //Bairro
+                    bairro = (results[0].address_components[i].long_name);
+                    break;
+                    case 'administrative_area_level_2': //Cidade
+                    cidade = (results[0].address_components[i].long_name);
+                    break;  
+                    case 'administrative_area_level_1': //Estado
+                    estado = (results[0].address_components[i].short_name);
+                    break;    
+                }
+            }
+
+            local_ordem = rua + ", " + numero + ", " + bairro + " - " + cidade + " - " + estado; 
+            $('#ov_endereco').text(local_ordem);
+        } else {
+            console.log('Geocode was not successful for the following reason: ' + status);
+        }
+    });
+
+    //Função que faz uma requisição para o servidor dos dados de um histórico
+    get_atividade(ordens_servico[posicao_selecionada]['ordem_servico_pk']);
+});
+
+
+
 //Função que exibe e oculta as fotos do histórico pertencente a uma determinada OS.
 $(document).on('click', '#btn-mapa-historico', function (event) 
 {
@@ -527,8 +651,37 @@ $(document).on('click', '#btn-mapa-historico', function (event)
 });
 
 
+$(document).on('click', '#obtn-mapa-historico', function (event) 
+{
+
+    if(adicionar_mapa == 1){
+
+        $('#omapa_historico').show();
+        $('#obtn-mapa-historico').removeClass('btn-primary');
+        $('#obtn-mapa-historico').addClass('btn-danger');
+        adicionar_mapa++;
+
+    }
+    else
+    {
+        $('#omapa_historico').hide();
+        $('#obtn-mapa-historico').removeClass('btn-danger');
+        $('#obtn-mapa-historico').addClass('btn-primary'); 
+        adicionar_mapa--;
+
+    }
+});
+
+
 get_historico = (id) => 
 {
+
+
+    btn_load($('#btn-salvar-historico'));
+    $('.close').attr('disabled', 'disabled');
+    $('.close').css('cursor', 'default');
+    $('#fechar-historico').attr('disabled', 'disabled');
+    $('#fechar-historico').css('cursor', 'default');
 
     var html = "";
     var indicators = "";
@@ -542,6 +695,11 @@ get_historico = (id) =>
         url: base_url + '/Ordem_Servico/json_especifico/' + id + '/' + 1,
         dataType: "json",
         success: function (response) {
+            btn_ativar($('#btn-salvar-historico'));
+            $('.close').removeAttr('disabled');
+            $('.close').css('cursor', 'pointer');
+            $('#fechar-historico').removeAttr('disabled');
+            $('#fechar-historico').css('cursor', 'pointer');
 
             response.ordem.historico.map((historico, i) => {
                 indicators += '<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>';
@@ -622,6 +780,131 @@ get_historico = (id) =>
 
         }, //Fecha success
         error: function (response) {
+            $('.close').removeAttr('disabled');
+            $('.close').css('cursor', 'pointer');
+            $('#fechar-historico').removeAttr('disabled');
+            $('#fechar-historico').css('cursor', 'pointer');
+            alerts('failed', response.message, response.data);
+        }
+    });
+
+}
+
+
+get_atividade = (id) => 
+{
+
+
+    btn_load($('#btn-salvar-atividade'));
+    $('.close').attr('disabled', 'disabled');
+    $('.close').css('cursor', 'default');
+    $('#fechar-atividade').attr('disabled', 'disabled');
+    $('#fechar-atividade').css('cursor', 'default');
+
+    var html = "";
+    var indicators = "";
+    var active = "active";
+    var timeline = "";
+
+    var d = new Date();
+    dataHora = (d.toLocaleString());  
+
+    $.ajax({
+        url: base_url + '/Ordem_Servico/json_especifico/' + id + '/' + 1,
+        dataType: "json",
+        success: function (response) {
+            btn_ativar($('#btn-salvar-atividade'));
+            $('.close').removeAttr('disabled');
+            $('.close').css('cursor', 'pointer');
+            $('#fechar-atividade').removeAttr('disabled');
+            $('#fechar-atividade').css('cursor', 'pointer');
+
+
+            response.ordem.historico.map((historico, i) => {
+                if(i == response.ordem.historico.length -1){ //ou seja, for o último:
+                    indicators += '<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>';
+                    if (historico.comentario == null) {
+                        historico.comentario = "Nenhum comentário adicionado.";
+                    }
+
+                    if(historico.funcionario_foto == null){
+                        historico.funcionario_foto = './assets/uploads/perfil_images/default.png';
+                    }
+
+                    timeline += create_timeline(historico.comentario, historico.funcionario_foto, historico.funcionario, historico.situacao, historico.data);
+
+                    if (historico.foto != null) {
+                        html += create_carousel_item(historico.comentario, historico.foto, historico.funcionario, historico.situacao, historico.data, active);
+                        active = "";
+                    } else {
+                        html += create_carousel_item(historico.comentario, 'no-image.png', historico.funcionario, historico.situacao, historico.data, active);
+                    }
+                }
+            });
+
+            timeline += 
+            '<div class="message-item">'   +
+            '<div class="message-inner">' +
+            '<div class="message-head clearfix">' +
+            '<div class="user-detail">' +
+            '<h5 class="handle">' + "Alterar Situação" + '</h5>' +
+            '<div class="post-meta">' +
+            '<div class="asker-meta">' +
+            '<span class="qa-message-what">' + "Registrar hoje às " + dataHora + '</span>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="qa-message-content">' +
+            '<div class="col-8 col-md-12">' +
+            '<div style="width: 250px; margin-bottom: 10px">' +
+            '<label for="situacao_pk">Nova Situação</label>' +
+            '<select class="form-control" id="situacao_pk_historico" name="situacao_fk" required="true">' +
+            '</select>' +
+            '</div>' +
+            '</div>' + 
+            '<div class="col-md-12">' +
+            '<label for="ordem_servico_desc">Novo comentário</label>' +
+            '<textarea class="form-control" id="historico_comentario" name="comentario" ' +
+            'class="form-control" required="true" maxlength="200"></textarea>' +
+            '<small class="form-text text-muted">Por favor, informe a descrição da Ordem de Serviço</small>' +
+            '</div>' +
+            '</div>' +
+            '<div class="row form-group">' +
+            '<div class="col-12" id="image-upload-div" style="margin-left: 12px;">' +
+            '<div class="image-upload-wrap" style="height: 100px;"">' +
+            '<input class="file-upload-input" type="file" onchange="readURL(this);" accept="image/*" id="input-upload" required="false"/>' +
+            '<div class="drag-text">' +
+            '<h3 style="padding: 20px;">Ou clique/arraste e solte uma imagem aqui</h3>' +
+            '</div>' +
+            '</div>' +
+            '<div class="file-upload-content">' +
+            '<img id="img-input" class="file-upload-image" src="#" alt="your image" required="false"/>' +
+            '<div class="col-12">' +
+            '<button type="button" onclick="remove_image()" class="btn btn-danger">Remover</button>' +
+            '</div>'+
+            '</div>' +
+            '<small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>' +
+            '</div>' +
+            '</div>' +
+            '</div></div>';
+
+            $('.carousel-inner').html(html);
+            $('.carousel-indicators').html(indicators);
+            $('#ocarouselExampleIndicators').hide();
+            $('#otimeline').html(timeline);
+            $('#ov_loading').hide();
+            $('#ordem_servico_pk').val(id);
+            $('#historico_pk').val(ordens_servico[posicao_selecionada]['historico_ordem_pk']);
+            popula_situacoes();   
+            $('#atividade').show();
+
+        }, //Fecha success
+        error: function (response) {
+            $('.close').removeAttr('disabled');
+            $('.close').css('cursor', 'pointer');
+            $('#fechar-atividade').removeAttr('disabled');
+            $('#fechar-atividade').css('cursor', 'pointer');
             alerts('failed', response.message, response.data);
         }
     });
@@ -629,7 +912,7 @@ get_historico = (id) =>
 }
 
 function popula_situacoes(){
-    for (var i = 0; i < situacoes.length; i++) {
+    for (var i = situacoes.length-1; i >= 0; i--) {
         $("#situacao_pk_historico").append('<option value="' + parseInt(situacoes[i].situacao_pk) + '">' + situacoes[i].situacao_nome + '</option>');
     }
 }
@@ -694,6 +977,8 @@ send_historico = (imagem) =>
     contentType: false,
     success: function (response){
         btn_ativar($('#btn-salvar-historico'));
+        btn_ativar($('#btn-salvar-atividade'));
+        
         console.log(response);
         if (response.code == 400) {
             show_errors(response);
@@ -739,7 +1024,7 @@ send_historico = (imagem) =>
               ordens_servico[i]['servico_nome'],
               $('#situacao_pk_historico option:selected').text(),
               ordens_servico[i]['setor_nome'],
-              '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+              '<div class="btn-group">  <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
               '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
               '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
               '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -747,12 +1032,14 @@ send_historico = (imagem) =>
             pre_loader_hide();
             remove_image();
             $('#ce_historico_servico').modal('hide');
+            $('#atividade').modal('hide');
             alerts('success', "Sucesso!", response.data.mensagem); 
         }
 
             }, //Fecha success
             error: function (response) {
                 btn_ativar('#btn-salvar-historico');
+                
                 alerts('failed', "Erro!", response.data.mensagem);
                 remove_image();
             }
@@ -904,7 +1191,7 @@ send = (imagem) =>
                   os.servico_nome,
                   os.situacao_nome,
                   os.setor_nome,
-                  '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                  '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_ordem_servico" title="Editar">' +
                   '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_servico" title="Histórico">' +
                   '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(ordens_servico.length - 1)+'" data-target="#d_servico" title="Desativar">' +
                   '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -931,7 +1218,7 @@ send = (imagem) =>
                 os.servico_nome,
                 os.situacao_nome,
                 os.setor_nome,
-                '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                 '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_servico" title="Histórico">' +
                 '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                 '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -975,6 +1262,13 @@ send = (imagem) =>
     {
         $('.submit').attr('disabled', 'disabled');
         $('.submit').css('cursor', 'default');
+        $('.close').attr('disabled', 'disabled');
+        $('.close').css('cursor', 'default');
+        $('#fechar-historico').attr('disabled', 'disabled');
+        $('#fechar-historico').css('cursor', 'default');
+
+
+
         primeiro_editar = true;
 
         $('#titulo').val("Alterar dados ordem de serviço");
@@ -1040,6 +1334,10 @@ send = (imagem) =>
                 $('#ce_ordem_servico').modal('show');
                 $('.submit').removeAttr('disabled');
                 $('.submit').css('cursor', 'pointer');
+                $('.close').removeAttr('disabled');
+                $('.close').css('cursor', 'pointer');
+                $('#fechar-historico').removeAttr('disabled');
+                $('#fechar-historico').css('cursor', 'pointer');
                 // primeiro_editar = true;
 
 
@@ -1172,7 +1470,7 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar"><div class="d-none d-sm-block">Editar</div>' +
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar"><div class="d-none d-sm-block">Editar</div>' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -1186,7 +1484,7 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="btn-group"><button type="button" disabled style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled  style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Ativar">' +
                     '<div class="d-block d-sm-none"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
@@ -1210,7 +1508,7 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -1234,7 +1532,7 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="btn-group"><button type="button" disabled type="button" style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Reativar"><div class="d-none d-sm-block">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
@@ -1258,7 +1556,7 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -1282,7 +1580,7 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
