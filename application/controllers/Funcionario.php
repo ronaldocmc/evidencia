@@ -76,6 +76,11 @@ class Funcionario extends CRUD_Controller {
 
         // Percorre pelos funcionarios e pelos func_sets vendo os matches
         // e colocando nos funcionarios os setores dele
+
+        if($funcionarios == false){
+            $funcionarios = [];
+        }
+
         foreach ($funcionarios as $func) 
         {
             // Variável auxiliar para guardar os setores do funcionário
