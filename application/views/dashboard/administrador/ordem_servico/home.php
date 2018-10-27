@@ -415,7 +415,7 @@
                                 <i class="fa fa-dot-circle-o"></i>
                                 Salvar
                             </button>
-                            <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" data-dismiss="modal">
+                            <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-historico" data-dismiss="modal">
                                 Fechar
                             </button>
                             <input type="hidden" id="historico_pk" value="" name="historico_pk">

@@ -186,6 +186,7 @@ $(document).on('click','.btn-attr-ordem_servico_pk',function(){
     send_data_historico = () => {
         try {
             btn_load($('#btn-salvar-historico'));
+
             $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => { 
                 blobToBase64(blob,this.send_historico);
             });
@@ -530,6 +531,13 @@ $(document).on('click', '#btn-mapa-historico', function (event)
 get_historico = (id) => 
 {
 
+
+    btn_load($('#btn-salvar-historico'));
+    $('.close').attr('disabled', 'disabled');
+    $('.close').css('cursor', 'default');
+    $('#fechar-historico').attr('disabled', 'disabled');
+    $('#fechar-historico').css('cursor', 'default');
+
     var html = "";
     var indicators = "";
     var active = "active";
@@ -542,6 +550,11 @@ get_historico = (id) =>
         url: base_url + '/Ordem_Servico/json_especifico/' + id + '/' + 1,
         dataType: "json",
         success: function (response) {
+            btn_ativar($('#btn-salvar-historico'));
+            $('.close').removeAttr('disabled');
+            $('.close').css('cursor', 'pointer');
+            $('#fechar-historico').removeAttr('disabled');
+            $('#fechar-historico').css('cursor', 'pointer');
 
             response.ordem.historico.map((historico, i) => {
                 indicators += '<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>';
@@ -622,6 +635,10 @@ get_historico = (id) =>
 
         }, //Fecha success
         error: function (response) {
+            $('.close').removeAttr('disabled');
+            $('.close').css('cursor', 'pointer');
+            $('#fechar-historico').removeAttr('disabled');
+            $('#fechar-historico').css('cursor', 'pointer');
             alerts('failed', response.message, response.data);
         }
     });
@@ -694,6 +711,7 @@ send_historico = (imagem) =>
     contentType: false,
     success: function (response){
         btn_ativar($('#btn-salvar-historico'));
+        
         console.log(response);
         if (response.code == 400) {
             show_errors(response);
@@ -753,6 +771,7 @@ send_historico = (imagem) =>
             }, //Fecha success
             error: function (response) {
                 btn_ativar('#btn-salvar-historico');
+                
                 alerts('failed', "Erro!", response.data.mensagem);
                 remove_image();
             }
@@ -975,6 +994,13 @@ send = (imagem) =>
     {
         $('.submit').attr('disabled', 'disabled');
         $('.submit').css('cursor', 'default');
+        $('.close').attr('disabled', 'disabled');
+        $('.close').css('cursor', 'default');
+        $('#fechar-historico').attr('disabled', 'disabled');
+        $('#fechar-historico').css('cursor', 'default');
+
+
+
         primeiro_editar = true;
 
         $('#titulo').val("Alterar dados ordem de serviço");
@@ -1040,6 +1066,10 @@ send = (imagem) =>
                 $('#ce_ordem_servico').modal('show');
                 $('.submit').removeAttr('disabled');
                 $('.submit').css('cursor', 'pointer');
+                $('.close').removeAttr('disabled');
+                $('.close').css('cursor', 'pointer');
+                $('#fechar-historico').removeAttr('disabled');
+                $('#fechar-historico').css('cursor', 'pointer');
                 // primeiro_editar = true;
 
 
