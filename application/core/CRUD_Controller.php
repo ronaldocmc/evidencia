@@ -29,10 +29,18 @@ class CRUD_Controller extends CI_Controller
             $this->is_web = true;
             parent::__construct();
             $this->ci = &get_instance();
-            $this->pseudo_session['id_organizacao'] = $this->session->user['id_organizacao'];
-            $this->pseudo_session['id_user'] = $this->session->user['id_user'];
-            $this->verify_user();
-            $this->verify_authentication();
+            
+            if ($this->session->has_userdata('user'))
+            {
+                $this->pseudo_session['id_organizacao'] = $this->session->user['id_organizacao'];
+                $this->pseudo_session['id_user'] = $this->session->user['id_user'];
+                $this->verify_user();
+                $this->verify_authentication();
+            }        
+            else
+            {
+                redirect(base_url());
+            }
         } 
         else 
         { 
