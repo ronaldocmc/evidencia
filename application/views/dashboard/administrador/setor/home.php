@@ -70,7 +70,7 @@
                                                                         </div>
                                                                     </button>
                                                                 <?php else: ?>
-                                                                    <button type="button" class="btn btn-sm btn-success btn_reativar" value="<?=$key?>" title="Reativar">
+                                                                    <button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="<?=$key?>" data-target="#r-setor" title="Reativar">
                                                                         <div class="d-none d-sm-block">
                                                                             <i class="fas fa-power-off fa-fw"></i>
                                                                         </div>
@@ -213,7 +213,7 @@
                                </div>
                            <?php endif;?>
                                <div class="form-group">
-                                   <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value="">Desativar</button>
+                                   <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value=""><i class="fa fa-dot-circle-o" id="icone-do-desativar"></i> Desativar</button>
                                </div>
                            </form>
                        </div>
@@ -221,7 +221,6 @@
                </div>
             </div>
 
-            <?php if ($this->session->user['is_superusuario']): ?>
             <!-- MODAL REATIVA SETORES -->
             <div class="modal fade" id="r-setor" >
                <div class="modal-dialog modal-dialog-centered">
@@ -239,11 +238,13 @@
                                        <li>Criar novas ordens de serviços designadas a este setor</li>
                                    </ul>
                                </div>
+                               <?php if ($this->session->user['is_superusuario']): ?>
                                <div class="form-group">
                                    <input type="password" class="form-control" autocomplete="false" name="pass-modal-reativar" placeholder="Confirme sua senha" required="required" id="pass-modal-reativar" pattern="{8,}">
                                </div>
+                               <?php endif;?>
                                <div class="form-group">
-                                   <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value="">Reativar</button>
+                                   <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value=""><i class="fa fa-dot-circle-o" id="icone-do-desativar"></i> Reativar</button>
                                </div>
                            </form>
                        </div>
@@ -251,7 +252,6 @@
                </div>
            </div>
 
-            <?php endif;?>
             <script type="text/javascript">
                 var setores = <?php echo json_encode($setores !== false ? $setores : []); ?>;
 
