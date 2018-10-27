@@ -80,6 +80,50 @@ class Historico_model extends CI_Model {
         }
     }
 
+    public function get_id_last_historico($os_pk){
+        $this->db->select('(SELECT historicos_ordens.historico_ordem_pk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = '.$os_pk.' ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as id');
+        $this->db->from(self::TABLE_NAME);
+     
+        $this->db->where('ordem_servico_fk', $os_pk);
+        $result = $this->db->get()->row();
+        // $result=(array) $return;
+        if ($result) {
+            return $result->id;
+        } else {
+            return false;
+        }
+    }
+
+    public function get_imagem($id){
+        $this->db->select('imagem_situacao_caminho');
+        $this->db->from('imagens_situacoes');
+        $this->db->where('historico_ordem_fk', $id);
+        $result = $this->db->get()->row();
+        if ($result) {
+            return $result->imagem_situacao_caminho;
+        } else {
+            return false;
+        }
+    }
+
+    public function insert_imagem(Array $data) {
+        if ($this->db->insert('imagens_situacoes', $data)) {
+            $return = [
+                'id'=> $this->db->insert_id(),
+                'db_error' =>$this->db->error() 
+            ];
+
+        } else {
+
+            $return = [
+                'id'=> $this->db->insert_id(),
+                'db_error' =>$this->db->error() 
+            ];
+        }
+
+        return $return;
+    }
+
 
 
     /**

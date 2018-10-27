@@ -750,8 +750,14 @@ private function create_relatorio($filtro)
                     'os_fk' => $os->ordem_servico_pk
                 )
             );
+            //VAMOS PEGAR O ID DO ULTIMO HISTORICO DA ORDEM PARA PODERMOS PEGAR A IMAGEM:
+            $id_ultimo_historico = $this->historico_model->get_id_last_historico($os->ordem_servico_pk);
+            $imagem = $this->historico_model->get_imagem($id_ultimo_historico);
 
-            $this->historico_model->insert(
+            // echo 'id_ultimo_historico: '.$id_ultimo_historico.' imagem: '.$imagem; 
+            // die();
+
+            $return = $this->historico_model->insert(
                 array(
                     'ordem_servico_fk' => $os->ordem_servico_pk,
                     'funcionario_fk' => $funcionario->funcionario_pk,
@@ -759,6 +765,14 @@ private function create_relatorio($filtro)
                         'historico_ordem_comentario' => "Atribuída a(o) ".$funcionario->pessoa_nome,
                     )
             );
+
+            if($imagem != false){ //é porque existe imagem:
+                $this->historico_model->insert_imagem([
+                    'historico_ordem_fk' => $return['id'], 
+                    'imagem_situacao_caminho' => $imagem
+                ]);
+            }
+
 
         //}
     }

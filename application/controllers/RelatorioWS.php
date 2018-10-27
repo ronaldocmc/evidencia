@@ -212,8 +212,14 @@ class RelatorioWS extends MY_Controller
 
     private function get_ordens_relatorio($id_relatorio){
         $this->load->model('relatorio_model');
+        $this->load->model('Historico_model', 'historico_model');
 
         $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $id_relatorio]);
+
+        foreach($ordens_servicos as $os){
+            $id_ultimo_historico = $this->historico_model->get_id_last_historico($os->ordem_servico_pk);
+            $os->imagem_situacao_caminho = $this->historico_model->get_imagem($id_ultimo_historico);
+        }
 
         return $ordens_servicos;
     }
