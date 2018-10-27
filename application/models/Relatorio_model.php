@@ -27,7 +27,7 @@ class Relatorio_model extends CI_Model
      */
     public function get($where = null)
     {
-        $this->db->select('ordens_servicos.ordem_servico_pk,ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_cod, ordens_servicos.ordem_servico_status, servicos.servico_nome,  prioridades.prioridade_nome, procedencias.procedencia_nome, imagens_situacoes.imagem_situacao_caminho, coordenadas.coordenada_lat, coordenadas.coordenada_long, setores.setor_nome, (SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual,(SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial,
+        $this->db->select('ordens_servicos.ordem_servico_pk,ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_cod, ordens_servicos.ordem_servico_status, servicos.servico_nome,  prioridades.prioridade_nome, procedencias.procedencia_nome, coordenadas.coordenada_lat, coordenadas.coordenada_long, setores.setor_nome, (SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual,(SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial,
            (SELECT historicos_ordens.historico_ordem_tempo FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as data_criacao,
            tipos_servicos.tipo_servico_nome, 
            locais.local_complemento, locais.local_num, logradouros.logradouro_nome, bairros.bairro_nome, municipios.municipio_nome, municipios.estado_fk, coordenadas.local_fk, departamento_nome, relatorios_os.os_verificada as status_os
@@ -38,7 +38,7 @@ class Relatorio_model extends CI_Model
         $this->db->join('ordens_servicos', 'relatorios_os.os_fk = ordens_servicos.ordem_servico_pk');
         $this->db->join('servicos','servicos.servico_pk = ordens_servicos.servico_fk');
         $this->db->join('historicos_ordens','historicos_ordens.ordem_servico_fk =  ordens_servicos.ordem_servico_pk');
-        $this->db->join('imagens_situacoes', 'historicos_ordens.historico_ordem_pk = imagens_situacoes.historico_ordem_fk', 'LEFT');
+        //$this->db->join('imagens_situacoes', 'historicos_ordens.historico_ordem_pk = imagens_situacoes.historico_ordem_fk', 'LEFT');
         $this->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
         $this->db->join('situacoes','situacoes.situacao_pk = historicos_ordens.situacao_fk');
         $this->db->join('prioridades','prioridades.prioridade_pk = ordens_servicos.prioridade_fk');
