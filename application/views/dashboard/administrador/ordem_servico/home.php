@@ -1,4 +1,4 @@
- <script type="text/javascript">
+<!--  <script type="text/javascript">
     async function pre_loader_show(){
       $('.inner').show();
       // $('#preloader .inner').delay(1000).fadeIn();
@@ -7,7 +7,7 @@
     }
 
     pre_loader_show();
- </script>
+ </script> -->
  <!--MAIN CONTENT-->
  <div class="main-content">
     <div class="section__content section__content--p30">
