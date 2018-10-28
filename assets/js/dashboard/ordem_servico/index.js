@@ -192,9 +192,12 @@ $(document).on('click','.btn-attr-ordem_servico_pk',function(){
             $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => { 
                 blobToBase64(blob,this.send_historico);
             });
+
+
         } catch (err) {
           this.send_historico(null); 
       }    
+
   }
 
 //Função que converte um blob em base64, utiliza callback porque precisa ser sincrona
@@ -512,6 +515,7 @@ $(document).on('click', '#obtn-foto-historico', function (event)
 //Função que  preenche os campos do "Editar Histórico"
 $(document).on('click', '.btn_historico', function (event) 
 {
+    document.getElementById("ce_historico_servico").focus();
     var imagem;
     var local_ordem='';
 
@@ -571,9 +575,9 @@ $(document).on('click', '.btn_historico', function (event)
 //Função que  preenche os campos do "Alterar Atividade"
 $(document).on('click', '.btn_atividade', function (event) 
 {
+    document.getElementById("atividade").focus();
     var imagem;
     var local_ordem='';
-
     $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
     posicao_selecionada = $(this).val();
 
@@ -897,7 +901,7 @@ get_atividade = (id) =>
             $('#ordem_servico_pk').val(id);
             $('#historico_pk').val(ordens_servico[posicao_selecionada]['historico_ordem_pk']);
             popula_situacoes();   
-            $('#atividade').show();
+            $('#atividade').modal('show');
 
         }, //Fecha success
         error: function (response) {
@@ -958,7 +962,7 @@ function create_carousel_item(description, src, funcionario, situacao, data, act
 //Função que realiza o envio de dados via ajax para o servidor, solicitando a inserção de um novo histórico
 send_historico = (imagem) => 
 {
-  pre_loader_show();
+  //pre_loader_show();
   const formData = new FormData();
 
   formData.append('comentario', $('#historico_comentario').val());
@@ -983,27 +987,27 @@ send_historico = (imagem) =>
         if (response.code == 400) {
             show_errors(response);
             alerts('failed', response.data, 'O formulário apresenta algum(ns) erro(s)');
-            pre_loader_hide();
+            //pre_loader_hide();
         } else if(response.code == 401){
             show_errors(response);
             alerts('failed', response.data, 'Acesso não autorizado');
-            pre_loader_hide();
+            //pre_loader_hide();
         } else if(response.code == 403){
             show_errors(response);
             alerts('failed', response.data, 'Acesso proíbido');
-            pre_loader_hide();
+            //pre_loader_hide();
         } else if(response.code == 404){
             show_errors(response);
             alerts('failed', response.data, 'Dados não encontrado');
-            pre_loader_hide();
+            //pre_loader_hide();
         } else if(response.code == 501){
             show_errors(response);
             alerts('failed', response.data, 'Erro na edição de dados');
-            pre_loader_hide();
+            //pre_loader_hide();
         } else if(response.code == 503){
             show_errors(response);
             alerts('failed', response.data, 'Erro na edição de dados');
-            pre_loader_hide();
+            //pre_loader_hide();
         }
         else if(response.code == 200)
         {
@@ -1029,19 +1033,26 @@ send_historico = (imagem) =>
               '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
               '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
               ]).draw();
-            pre_loader_hide();
+            //pre_loader_hide();
             remove_image();
-            $('#ce_historico_servico').modal('hide');
+   
             $('#atividade').modal('hide');
+            $('.modal-backdrop').hide();
+            
             alerts('success', "Sucesso!", response.data.mensagem); 
+
         }
 
             }, //Fecha success
             error: function (response) {
-                btn_ativar('#btn-salvar-historico');
+                btn_ativar($('#btn-salvar-historico'));
                 
                 alerts('failed', "Erro!", response.data.mensagem);
                 remove_image();
+
+                
+                $('#atividade').modal('hide');
+                $('.modal-backdrop').hide();
             }
     }); // Fecha AJAX
 }
@@ -1070,7 +1081,7 @@ function get_abreviacao(servico, tipo_servico) {
 send = (imagem) => 
 {
 
-  pre_loader_show();
+  //pre_loader_show();
   const formData = new FormData();
   if(is_superusuario){
     formData.append('senha', $("#senha").val());
@@ -1117,27 +1128,27 @@ send = (imagem) =>
         if (response.code == 400) {
           show_errors(response);
           alerts('failed', response.message, JSON.stringify(response.data));
-          pre_loader_hide();
+          //pre_loader_hide();
       } else if(response.code == 401){
           show_errors(response);
           alerts('failed', response.message, 'Acesso não autorizado');
-          pre_loader_hide();
+          //pre_loader_hide();
       } else if(response.code == 403){
           show_errors(response);
           alerts('failed', response.message, 'Acesso proíbido');
-          pre_loader_hide();
+          //pre_loader_hide();
       } else if(response.code == 404){
           show_errors(response);
           alerts('failed', response.message, 'Dados não encontrado');
-          pre_loader_hide();
+          //pre_loader_hide();
       } else if(response.code == 501){
           show_errors(response);
           alerts('failed', response.message, 'Erro na edição de dados');
-          pre_loader_hide();
+          //pre_loader_hide();
       } else if(response.code == 503){
           show_errors(response);
           alerts('failed', response.message, 'Erro na edição de dados');
-          pre_loader_hide();
+          //pre_loader_hide();
       }
       else if(response.code == 200)
       { 
@@ -1226,16 +1237,19 @@ send = (imagem) =>
               alerts('success', 'Sucesso', response.data.mensagem); 
 
           }
-          pre_loader_hide();
+          //pre_loader_hide();
           remove_image();
           $('#ce_ordem_servico').modal('hide');
           primeiro_editar = false; 
+
+
       }
 
       }, //Fecha success
       error: function (response) {
           alerts('failed', response.data.message, response.data.join(' , '));
           remove_image();
+          $('#ce_historico_servico').modal('hide');
       }
   }); // Fecha AJAX
 } //Fecha Send
@@ -1260,6 +1274,8 @@ send = (imagem) =>
     //Função que aguarda o clique no botão editar e preenche os campos do modal
     $(document).on('click', '.btn_editar', function (event) 
     {
+        document.getElementById("ce_ordem_servico").focus();
+
         $('.submit').attr('disabled', 'disabled');
         $('.submit').css('cursor', 'default');
         $('.close').attr('disabled', 'disabled');
@@ -1346,7 +1362,7 @@ send = (imagem) =>
             {
                 show_errors(response);
                 alerts('failed', response.message, 'Não foi possível obter o local');
-                pre_loader_hide();
+                //pre_loader_hide();
             }
         }); 
     });
