@@ -14,6 +14,7 @@ function initMap() {
 
     
     $(document).ready(function () {
+        $('#filtrar').prop('disabled',true);
         $('.carousel').carousel();
         $.ajax({
             url: base_url + '/ordem_servico/json',
@@ -136,6 +137,7 @@ function initMap() {
                         tipo_servico: ordem.tipo_servico,
                         servico: ordem.servico,
                         situacao: ordem.situacao,
+                        data_criacao: ordem.data_inicial,
                         prioridade: ordem.prioridade
                     });
 
@@ -143,12 +145,11 @@ function initMap() {
                         main_map.panTo(marker.getPosition());
                         request_data(this.id);
                         $('#v_evidencia').modal('show');
-                    });
-
-                    
+                    }); 
                     return marker;
                 });
 
+$('#filtrar').prop('disabled',false);
 }
 });
 });
@@ -287,6 +288,11 @@ var tipo_servico = $('#tipo_servico_pk');
 var servico = $('#servico_pk');
 var prioridade = $('#prioridade_pk');
 var situacao = $('#situacao_pk');
+var de = $('#de');
+var ate = $('#ate');
+var h_inicial = $('#h_inicial');
+var h_final = $('#h_final');
+
 
 
 departamento.change(function () {
@@ -378,13 +384,15 @@ function muda_tipo_servico() {
 
 $('#filtrar').click(function () {
     activeAll();
-    console.log("Listando");
-    console.log("Departamento: " + departamento.val());
-    console.log("Tipo_servico: " + tipo_servico.val());
-    console.log("Servico: " + servico.val());
-    console.log("Prioridade: " + prioridade.val());
-    console.log("Situação: " + situacao.val());
-
+    // console.log("Listando");
+    // console.log("Departamento: " + departamento.val());
+    // console.log("Tipo_servico: " + tipo_servico.val());
+    // console.log("Servico: " + servico.val());
+    // console.log("Prioridade: " + prioridade.val());
+    // console.log("Situação: " + situacao.val());
+    // console.log("Data de: " + de.val());
+    // console.log("Data Ate: " + ate.val());
+    
     markers.map((marker, i) => {
         filter(marker);
     });    
@@ -428,6 +436,19 @@ function filter(marker) {
         marker.setMap(null);
         marker.setVisible(false);
     }
+
+    let data_inicial = new Date(de.val() + "T" + h_inicial.val());
+    let data_final = new Date(ate.val() + "T" + h_final.val());
+
+    if(de.val() != "" && ate.val() != ""){
+
+        let data_ordem = new Date(marker.data_criacao);
+
+        if(data_ordem < data_inicial || data_ordem > data_final){
+            marker.setMap(null);
+            marker.setVisible(false);
+        }
+    }
 }
 
 }
@@ -459,9 +480,11 @@ function addMarkers(){
 
 
 
+
+
         switch(ordem.servico){
             case "1":
-            imagem +=  "Marker_Fossa.png";
+            imagem +=  "Marker_Rua.png";
             break;
             case "2":
             imagem +=  "Marker_Fossa.png";
