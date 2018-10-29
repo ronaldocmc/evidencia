@@ -47,41 +47,6 @@ function enviar(relatorio, filtro) {
 	window.open(base_url+'/relatorio/gera_relatorio_geral/'+relatorio+'/'+filtro+'/'+$("#situacao_pk").val())
 }
 
-$("#btn-restaurar").click(function() {
-	btn_load($('#btn-restaurar'));
-	var senha = $("#pass-modal-restaurar").val();
-
-	if(senha == ""){
-		alerts('failed','Erro!','Senha incorreta');
-		btn_ativar($('#btn-restaurar'));
-		return;
-	}
-
-	var data = 
-	{
-		'senha' : senha
-	}
-
-	$.post(base_url+'/Relatorio/restaurar_os',data).done(function (response) {
-		btn_ativar($('#btn-restaurar'));
-		if (response.code == 200) {
-			alerts('success','Sucesso!','Relatórios entregues com sucesso.');
-			$('#restaurar_os').modal('hide');
-		}
-		else if (response.code == 404) {
-			alerts('success','Sucesso!','Não há ordens de serviço para serem finalizadas.');
-			$('#restaurar_os').modal('hide');
-		}
-		else if (response.code == 401) {
-			alerts('failed','Erro!','Senha incorreta');
-		}
-
-		$("#pass-modal-restaurar").val("");
-		window.location.href = base_url+'/Relatorio/';
-	}, "json");
-});
-
-
 
 $("#gerar_pdf").click(function() {
 
