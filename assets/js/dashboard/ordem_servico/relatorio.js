@@ -25,8 +25,6 @@ function initMap() {
 
                     let imagem = '../assets/img/icons/Markers/Status/';
 
-
-
                     if(ordem.departamento == "1"){
                         imagem += "Coleta/";
                     }
@@ -137,7 +135,7 @@ function initMap() {
                         tipo_servico: ordem.tipo_servico,
                         servico: ordem.servico,
                         situacao: ordem.situacao,
-                        data_criacao: ordem.data_inicial,
+                        data_criacao: reformatDate(ordem.data_inicial),
                         prioridade: ordem.prioridade
                     });
 
@@ -211,16 +209,16 @@ function request_data(id) {
                     historico.comentario = "Nenhum comentário adicionado.";
                 }
                 if(historico.funcionario_foto != null){
-                    timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, historico.funcionario_foto, historico.situacao, historico.data);
+                    timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, historico.funcionario_foto, historico.situacao, reformatDate(historico.data));
                 }else{
-                    timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, 'default.png', historico.situacao, historico.data);
+                    timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, 'default.png', historico.situacao, reformatDate(historico.data));
                 }
-
+''
                 if (historico.foto != null) {
-                    html += create_carousel_item(historico.comentario, historico.foto, historico.funcionario, historico.situacao, historico.data, active);
+                    html += create_carousel_item(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                     active = "";
                 } else {
-                    html += create_carousel_item(historico.comentario, 'assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, historico.data, active);
+                    html += create_carousel_item(historico.comentario, 'assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                 }
 
             });
