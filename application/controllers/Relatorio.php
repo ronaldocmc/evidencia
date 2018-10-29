@@ -995,7 +995,7 @@ private function create_relatorio($filtro)
                     // Para cada OS, é pego o último registro do histórico
                     $hist = $this->historico_model->get_max_data_os($os->os_fk);
 
-                    // Se for em andamento, não foi finalizada, logo, deve ser insertido um novo histórico
+                    // Se for em andamento, não foi finalizada, logo, deve ser inserido um novo histórico
                     // a colocando em aberto novamente, informando que não foi finalizada no relatório
                     if ($hist[0]->situacao_fk == '2') //2 é EM ANDAMENTO
                     {
@@ -1022,11 +1022,12 @@ private function create_relatorio($filtro)
                             ['os_fk' => $os->os_fk, 'os_verificada' => 0], 1
                         );
                     }
-                }
-                //após verificar todas as ordens, setamos o status do relatório para 1 para indicar que o relatório foi entregue.
-                //tem que pegar o id do relatório da ordem, pq o usuário pode ter solicitado para restaurar as ordens de todos os relatórios.
+                    
+                    //após verificar todas as ordens, setamos o status do relatório para 1 para indicar que o relatório foi entregue.
+                    //tem que pegar o id do relatório da ordem, pq o usuário pode ter solicitado para restaurar as ordens de todos os relatórios.
 
-                $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $os->relatorio_fk]);
+                    $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $os->relatorio_fk]);
+                }
             }
             else
             {
