@@ -571,7 +571,7 @@ public function update()
                         if (strpos($data['setor_fk'], ',') === false)
                         {
                             $data_setor = array(
-                                'funcionario_fk' => $result['funcionario_fk'],
+                                'funcionario_fk' => $return_funcionario,
                                 'setor_fk' => $data['setor_fk']
                             );
 
