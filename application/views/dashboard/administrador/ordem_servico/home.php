@@ -87,9 +87,9 @@
                                                 <td>
                                                     <?php if($ordem_servico->ordem_servico_status == 1): ?>
                                                         <div class="btn-group">
-                                                            <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação">
+                                                            <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação">
                                                                 <div class="d-none d-sm-block">
-                                                                    <i class="fas fa-check fa-fw"></i>
+                                                                    <i class="fas fa-plus fa-fw"></i>
                                                                 </div>
                                                             </button>
                                                             <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
@@ -344,12 +344,12 @@
     </div>
     <!-- FIM MODAL NOVA ORDEM/ALTERAR ORDEM-->
 
-    <!-- MODAL ALTERAR SITUAÇÃO ATUAL ORDEM SERVIÇO -->
+    <!-- MODAL ADICIONAR SITUAÇÃO ATUAL ORDEM SERVIÇO -->
     <div class="modal fade" id="atividade">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Alterar Situação da Ordem de serviço</h4>
+                    <h4 class="modal-title">Adicionar Situação da Ordem de serviço</h4>
                     <h4 class="modal-title 2"></h4> 
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
