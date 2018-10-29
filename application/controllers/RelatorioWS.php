@@ -61,6 +61,7 @@ class RelatorioWS extends MY_Controller
         $this->load->helper('token');
         $this->load->model('tentativa_model');
         $this->load->model('atualizacao_model');
+        $this->load->model('relatorio_model');
         
         $header_obj = apache_request_headers();
             
@@ -200,6 +201,8 @@ class RelatorioWS extends MY_Controller
 
             // $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $relatorio->relatorio_pk]);
             // return $ordens_servicos;
+
+            $this->relatorio_model->update(['pegou_no_celular' => 1], ['relatorio_pk' => $relatorio->relatorio_pk]);
 
             return $this->get_ordens_relatorio($relatorio->relatorio_pk);
         }

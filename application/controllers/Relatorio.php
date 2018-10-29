@@ -812,7 +812,8 @@ private function create_relatorio($filtro)
     }
 
 
-    public function get_ordens_relatorio($id_relatorio){
+    public function get_ordens_relatorio($id_relatorio)
+    {
         $this->load->model('relatorio_model');
 
         $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $id_relatorio]);
@@ -821,22 +822,47 @@ private function create_relatorio($filtro)
     }
 
     /**
+    * Vamos verificar se o relatório já foi iniciado se o funcionário
+    * pegar o relatório através do celular.
+    **/
+    public function verifica_se_relatorio_ja_foi_iniciado($id_relatorio)
+    {
+        $relatorio = $this->relatorio_model->get_relatorio($id_relatorio);
+        if($relatorio->pegou_no_celular == 1)
+        {
+            return true; //já foi iniciado
+        }else
+        {
+            return false; //não foi iniciado
+        }
+    }
+
+
+    /**
     Recebe por parâmetro o id do relatório
     **/
-    public function change_employee($id){
+    public function change_employee($id)
+    {
         $this->load->model('relatorio_model');
 
         $response = new Response();
 
-        $resposta = $this->relatorio_model->update($this->input->post(), ['relatorio_pk' => $id]);
+        if(!$this->verifica_se_relatorio_ja_foi_iniciado($id))
+        {
+            $resposta = $this->relatorio_model->update($this->input->post(), ['relatorio_pk' => $id]);
 
-        if($resposta){
-            $response->set_code(Response::SUCCESS);
-            $response->set_data("Funcionário alterado com sucesso."); 
+            if($resposta){
+                $response->set_code(Response::SUCCESS);
+                $response->set_data("Funcionário alterado com sucesso."); 
+            }else{
+                $response->set_code(Response::DB_ERROR_UPDATE);
+                $response->set_data("Ocorreu um erro com o banco de dados.");
+            }
         }else{
-            $response->set_code(Response::DB_ERROR_UPDATE);
-            $response->set_data("Ocorreu um erro com o banco de dados.");
+            $response->set_code(Response::UNAUTHORIZED);
+            $response->set_data("O funcionário já recebeu o relatório no celular, portanto não é possível trocá-lo.");
         }
+
         $response->send();
     }
 
@@ -847,43 +873,52 @@ private function create_relatorio($filtro)
     2 - Devemos apagar os relatorios_os vinculados ao ID do relatorio;
     3 - Por fim destruimos o relatório.
     **/
-    public function destroy($id){
+    public function destroy($id)
+    {
         $this->load->model('relatorio_model');
         $this->load->model('historico_model');
 
         $response = new Response();
 
         $relatorio = $this->relatorio_model->get_relatorio($id);
+
         if($relatorio){
-            $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $relatorio->relatorio_pk]);
-            if($ordens_servicos){
+            if(!$this->verifica_se_relatorio_ja_foi_iniciado($id))
+            {
+                $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $relatorio->relatorio_pk]);
+                if($ordens_servicos){
 
 
-                foreach($ordens_servicos as $os){
-                    $this->historico_model->insert(
-                        array(
-                            'ordem_servico_fk' => $os->ordem_servico_pk,
-                            'funcionario_fk' => $this->session->user['id_funcionario'],
-                        'situacao_fk' => 1, //ABERTO
-                        'historico_ordem_comentario' => "Relatório destruído.",
-                    )
-                    );
+                    foreach($ordens_servicos as $os){
+                        $this->historico_model->insert(
+                            array(
+                                'ordem_servico_fk' => $os->ordem_servico_pk,
+                                'funcionario_fk' => $this->session->user['id_funcionario'],
+                            'situacao_fk' => 1, //ABERTO
+                            'historico_ordem_comentario' => "Relatório destruído.",
+                        )
+                        );
+                    }
+
                 }
 
+
+                //Deletar os filtros
+                $this->relatorio_model->delete_filtros_data(['relatorio_fk' => $relatorio->relatorio_pk]);
+
+                $this->relatorio_model->delete_filtros_setores(['relatorio_fk' => $relatorio->relatorio_pk]);
+                $this->relatorio_model->delete_filtros_tipos_servicos(['relatorio_fk' => $relatorio->relatorio_pk]);
+
+                $this->relatorio_model->delete_relatorios_os(['relatorio_fk' => $relatorio->relatorio_pk]);
+
+                $this->relatorio_model->delete(['relatorio_pk' => $relatorio->relatorio_pk]);
+                $response->set_code(Response::SUCCESS);
+                $response->set_data("Relatório deletado com sucesso.");
+
+            }else{
+               $response->set_code(Response::UNAUTHORIZED);
+               $response->set_data("O funcionário já recebeu o relatório no celular, portanto não é possível destruí-lo."); 
             }
-
-
-            //Deletar os filtros
-            $this->relatorio_model->delete_filtros_data(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-            $this->relatorio_model->delete_filtros_setores(['relatorio_fk' => $relatorio->relatorio_pk]);
-            $this->relatorio_model->delete_filtros_tipos_servicos(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-            $this->relatorio_model->delete_relatorios_os(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-            $this->relatorio_model->delete(['relatorio_pk' => $relatorio->relatorio_pk]);
-            $response->set_code(Response::SUCCESS);
-            $response->set_data("Relatório deletado com sucesso.");
 
         }else{
             $response->set_code(Response::NOT_FOUND);
