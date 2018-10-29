@@ -63,7 +63,7 @@
 
                                     <div class="py-4">
                                         <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo align-middle" data-toggle="modal" data-target="#restaurar_os"> 
-                                            Restaurar Ordens de Serviço
+                                            Receber Relatório
                                         </button>
                                     </div>
 
@@ -389,7 +389,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Restaurar Ordens de Serviço</h4>
+                <h4 class="modal-title">Receber Relatório</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
