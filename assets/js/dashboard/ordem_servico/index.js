@@ -725,53 +725,6 @@ get_historico = (id) =>
                 }
             });
 
-            timeline += 
-            '<div class="message-item">'   +
-            '<div class="message-inner">' +
-            '<div class="message-head clearfix">' +
-            '<div class="user-detail">' +
-            '<h5 class="handle">' + "Novo Histórico" + '</h5>' +
-            '<div class="post-meta">' +
-            '<div class="asker-meta">' +
-            '<span class="qa-message-what">' + "Registrar novo histórico hoje " + dataHora + '</span>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '<div class="qa-message-content">' +
-            '<div class="col-8 col-md-12">' +
-            '<div style="width: 250px; margin-bottom: 10px">' +
-            '<label for="situacao_pk">Situação Atual</label>' +
-            '<select class="form-control" id="situacao_pk_historico" name="situacao_fk" required="true">' +
-            '</select>' +
-            '</div>' +
-            '</div>' + 
-            '<div class="col-md-12">' +
-            '<label for="ordem_servico_desc">Novo comentário</label>' +
-            '<textarea class="form-control" id="historico_comentario" name="comentario" ' +
-            'class="form-control" required="true" maxlength="200"></textarea>' +
-            '<small class="form-text text-muted">Por favor, informe a descrição da Ordem de Serviço</small>' +
-            '</div>' +
-            '</div>' +
-            '<div class="row form-group">' +
-            '<div class="col-12" id="image-upload-div" style="margin-left: 12px;">' +
-            '<div class="image-upload-wrap" style="height: 100px;"">' +
-            '<input class="file-upload-input" type="file" onchange="readURL(this);" accept="image/*" id="input-upload" required="false"/>' +
-            '<div class="drag-text">' +
-            '<h3 style="padding: 20px;">Ou clique/arraste e solte uma imagem aqui</h3>' +
-            '</div>' +
-            '</div>' +
-            '<div class="file-upload-content">' +
-            '<img id="img-input" class="file-upload-image" src="#" alt="your image" required="false"/>' +
-            '<div class="col-12">' +
-            '<button type="button" onclick="remove_image()" class="btn btn-danger">Remover</button>' +
-            '</div>'+
-            '</div>' +
-            '<small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>' +
-            '</div>' +
-            '</div>' +
-            '</div></div>';
-
             $('.carousel-inner').html(html);
             $('.carousel-indicators').html(indicators);
             $('#carouselExampleIndicators').hide();
