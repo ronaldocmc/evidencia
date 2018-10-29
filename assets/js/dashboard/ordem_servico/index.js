@@ -192,9 +192,12 @@ $(document).on('click','.btn-attr-ordem_servico_pk',function(){
             $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => { 
                 blobToBase64(blob,this.send_historico);
             });
+
+
         } catch (err) {
           this.send_historico(null); 
       }    
+
   }
 
 //Função que converte um blob em base64, utiliza callback porque precisa ser sincrona
@@ -512,6 +515,7 @@ $(document).on('click', '#obtn-foto-historico', function (event)
 //Função que  preenche os campos do "Editar Histórico"
 $(document).on('click', '.btn_historico', function (event) 
 {
+    document.getElementById("ce_historico_servico").focus();
     var imagem;
     var local_ordem='';
 
@@ -571,9 +575,9 @@ $(document).on('click', '.btn_historico', function (event)
 //Função que  preenche os campos do "Alterar Atividade"
 $(document).on('click', '.btn_atividade', function (event) 
 {
+    document.getElementById("atividade").focus();
     var imagem;
     var local_ordem='';
-
     $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
     posicao_selecionada = $(this).val();
 
@@ -721,53 +725,6 @@ get_historico = (id) =>
                 }
             });
 
-            timeline += 
-            '<div class="message-item">'   +
-            '<div class="message-inner">' +
-            '<div class="message-head clearfix">' +
-            '<div class="user-detail">' +
-            '<h5 class="handle">' + "Novo Histórico" + '</h5>' +
-            '<div class="post-meta">' +
-            '<div class="asker-meta">' +
-            '<span class="qa-message-what">' + "Registrar novo histórico hoje " + dataHora + '</span>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '<div class="qa-message-content">' +
-            '<div class="col-8 col-md-12">' +
-            '<div style="width: 250px; margin-bottom: 10px">' +
-            '<label for="situacao_pk">Situação Atual</label>' +
-            '<select class="form-control" id="situacao_pk_historico" name="situacao_fk" required="true">' +
-            '</select>' +
-            '</div>' +
-            '</div>' + 
-            '<div class="col-md-12">' +
-            '<label for="ordem_servico_desc">Novo comentário</label>' +
-            '<textarea class="form-control" id="historico_comentario" name="comentario" ' +
-            'class="form-control" required="true" maxlength="200"></textarea>' +
-            '<small class="form-text text-muted">Por favor, informe a descrição da Ordem de Serviço</small>' +
-            '</div>' +
-            '</div>' +
-            '<div class="row form-group">' +
-            '<div class="col-12" id="image-upload-div" style="margin-left: 12px;">' +
-            '<div class="image-upload-wrap" style="height: 100px;"">' +
-            '<input class="file-upload-input" type="file" onchange="readURL(this);" accept="image/*" id="input-upload" required="false"/>' +
-            '<div class="drag-text">' +
-            '<h3 style="padding: 20px;">Ou clique/arraste e solte uma imagem aqui</h3>' +
-            '</div>' +
-            '</div>' +
-            '<div class="file-upload-content">' +
-            '<img id="img-input" class="file-upload-image" src="#" alt="your image" required="false"/>' +
-            '<div class="col-12">' +
-            '<button type="button" onclick="remove_image()" class="btn btn-danger">Remover</button>' +
-            '</div>'+
-            '</div>' +
-            '<small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>' +
-            '</div>' +
-            '</div>' +
-            '</div></div>';
-
             $('.carousel-inner').html(html);
             $('.carousel-indicators').html(indicators);
             $('#carouselExampleIndicators').hide();
@@ -847,7 +804,7 @@ get_atividade = (id) =>
             '<div class="message-inner">' +
             '<div class="message-head clearfix">' +
             '<div class="user-detail">' +
-            '<h5 class="handle">' + "Alterar Situação" + '</h5>' +
+            '<h5 class="handle">' + "Adicionar Situação" + '</h5>' +
             '<div class="post-meta">' +
             '<div class="asker-meta">' +
             '<span class="qa-message-what">' + "Registrar hoje às " + dataHora + '</span>' +
@@ -897,7 +854,7 @@ get_atividade = (id) =>
             $('#ordem_servico_pk').val(id);
             $('#historico_pk').val(ordens_servico[posicao_selecionada]['historico_ordem_pk']);
             popula_situacoes();   
-            $('#atividade').show();
+            $('#atividade').modal('show');
 
         }, //Fecha success
         error: function (response) {
@@ -958,7 +915,7 @@ function create_carousel_item(description, src, funcionario, situacao, data, act
 //Função que realiza o envio de dados via ajax para o servidor, solicitando a inserção de um novo histórico
 send_historico = (imagem) => 
 {
-  pre_loader_show();
+  //pre_loader_show();
   const formData = new FormData();
 
   formData.append('comentario', $('#historico_comentario').val());
@@ -983,27 +940,27 @@ send_historico = (imagem) =>
         if (response.code == 400) {
             show_errors(response);
             alerts('failed', response.data, 'O formulário apresenta algum(ns) erro(s)');
-            pre_loader_hide();
+            //pre_loader_hide();
         } else if(response.code == 401){
             show_errors(response);
             alerts('failed', response.data, 'Acesso não autorizado');
-            pre_loader_hide();
+            //pre_loader_hide();
         } else if(response.code == 403){
             show_errors(response);
             alerts('failed', response.data, 'Acesso proíbido');
-            pre_loader_hide();
+            //pre_loader_hide();
         } else if(response.code == 404){
             show_errors(response);
             alerts('failed', response.data, 'Dados não encontrado');
-            pre_loader_hide();
+            //pre_loader_hide();
         } else if(response.code == 501){
             show_errors(response);
             alerts('failed', response.data, 'Erro na edição de dados');
-            pre_loader_hide();
+            //pre_loader_hide();
         } else if(response.code == 503){
             show_errors(response);
             alerts('failed', response.data, 'Erro na edição de dados');
-            pre_loader_hide();
+            //pre_loader_hide();
         }
         else if(response.code == 200)
         {
@@ -1024,24 +981,31 @@ send_historico = (imagem) =>
               ordens_servico[i]['servico_nome'],
               $('#situacao_pk_historico option:selected').text(),
               ordens_servico[i]['setor_nome'],
-              '<div class="btn-group">  <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+              '<div class="btn-group">  <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
               '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
               '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
               '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
               ]).draw();
-            pre_loader_hide();
+            //pre_loader_hide();
             remove_image();
-            $('#ce_historico_servico').modal('hide');
+   
             $('#atividade').modal('hide');
+            $('.modal-backdrop').hide();
+            
             alerts('success', "Sucesso!", response.data.mensagem); 
+
         }
 
             }, //Fecha success
             error: function (response) {
-                btn_ativar('#btn-salvar-historico');
+                btn_ativar($('#btn-salvar-historico'));
                 
                 alerts('failed', "Erro!", response.data.mensagem);
                 remove_image();
+
+                
+                $('#atividade').modal('hide');
+                $('.modal-backdrop').hide();
             }
     }); // Fecha AJAX
 }
@@ -1070,7 +1034,7 @@ function get_abreviacao(servico, tipo_servico) {
 send = (imagem) => 
 {
 
-  pre_loader_show();
+  //pre_loader_show();
   const formData = new FormData();
   if(is_superusuario){
     formData.append('senha', $("#senha").val());
@@ -1117,27 +1081,27 @@ send = (imagem) =>
         if (response.code == 400) {
           show_errors(response);
           alerts('failed', response.message, JSON.stringify(response.data));
-          pre_loader_hide();
+          //pre_loader_hide();
       } else if(response.code == 401){
           show_errors(response);
           alerts('failed', response.message, 'Acesso não autorizado');
-          pre_loader_hide();
+          //pre_loader_hide();
       } else if(response.code == 403){
           show_errors(response);
           alerts('failed', response.message, 'Acesso proíbido');
-          pre_loader_hide();
+          //pre_loader_hide();
       } else if(response.code == 404){
           show_errors(response);
           alerts('failed', response.message, 'Dados não encontrado');
-          pre_loader_hide();
+          //pre_loader_hide();
       } else if(response.code == 501){
           show_errors(response);
           alerts('failed', response.message, 'Erro na edição de dados');
-          pre_loader_hide();
+          //pre_loader_hide();
       } else if(response.code == 503){
           show_errors(response);
           alerts('failed', response.message, 'Erro na edição de dados');
-          pre_loader_hide();
+          //pre_loader_hide();
       }
       else if(response.code == 200)
       { 
@@ -1191,7 +1155,7 @@ send = (imagem) =>
                   os.servico_nome,
                   os.situacao_nome,
                   os.setor_nome,
-                  '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                  '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_ordem_servico" title="Editar">' +
                   '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_servico" title="Histórico">' +
                   '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(ordens_servico.length - 1)+'" data-target="#d_servico" title="Desativar">' +
                   '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -1218,7 +1182,7 @@ send = (imagem) =>
                 os.servico_nome,
                 os.situacao_nome,
                 os.setor_nome,
-                '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                 '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_servico" title="Histórico">' +
                 '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                 '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -1226,16 +1190,19 @@ send = (imagem) =>
               alerts('success', 'Sucesso', response.data.mensagem); 
 
           }
-          pre_loader_hide();
+          //pre_loader_hide();
           remove_image();
           $('#ce_ordem_servico').modal('hide');
           primeiro_editar = false; 
+
+
       }
 
       }, //Fecha success
       error: function (response) {
           alerts('failed', response.data.message, response.data.join(' , '));
           remove_image();
+          $('#ce_historico_servico').modal('hide');
       }
   }); // Fecha AJAX
 } //Fecha Send
@@ -1260,6 +1227,8 @@ send = (imagem) =>
     //Função que aguarda o clique no botão editar e preenche os campos do modal
     $(document).on('click', '.btn_editar', function (event) 
     {
+        document.getElementById("ce_ordem_servico").focus();
+
         $('.submit').attr('disabled', 'disabled');
         $('.submit').css('cursor', 'default');
         $('.close').attr('disabled', 'disabled');
@@ -1346,7 +1315,7 @@ send = (imagem) =>
             {
                 show_errors(response);
                 alerts('failed', response.message, 'Não foi possível obter o local');
-                pre_loader_hide();
+                //pre_loader_hide();
             }
         }); 
     });
@@ -1470,7 +1439,7 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar"><div class="d-none d-sm-block">Editar</div>' +
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -1484,10 +1453,10 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" disabled style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="btn-group"><button type="button" disabled style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled  style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
-                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Ativar">' +
-                    '<div class="d-block d-sm-none"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
+                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Reativar">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
                     ]).draw(false);
             }
         });
@@ -1508,7 +1477,7 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -1532,9 +1501,9 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" disabled type="button" style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="btn-group"><button type="button" disabled style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
-                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Reativar"><div class="d-none d-sm-block">' +
+                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Reativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
                     ]).draw(false);
             }
@@ -1556,7 +1525,7 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
@@ -1580,7 +1549,7 @@ send = (imagem) =>
                     os.servico_nome,
                     os.situacao_nome,
                     os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação"><div class="d-none d-sm-block"><i class="fas fa-check fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'

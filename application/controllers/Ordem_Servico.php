@@ -107,7 +107,7 @@ class Ordem_Servico extends CRUD_Controller {
 			0 => true
 		]);
 
-		load_view_ordem_servico([
+		load_view([
 			0 => [
 				'src' => 'access/pre_loader',
 				'params' => null,

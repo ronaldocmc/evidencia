@@ -1,4 +1,4 @@
- <script type="text/javascript">
+<!--  <script type="text/javascript">
     async function pre_loader_show(){
       $('.inner').show();
       // $('#preloader .inner').delay(1000).fadeIn();
@@ -7,7 +7,7 @@
     }
 
     pre_loader_show();
- </script>
+ </script> -->
  <!--MAIN CONTENT-->
  <div class="main-content">
     <div class="section__content section__content--p30">
@@ -87,9 +87,9 @@
                                                 <td>
                                                     <?php if($ordem_servico->ordem_servico_status == 1): ?>
                                                         <div class="btn-group">
-                                                            <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Alterar Situação">
+                                                            <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação">
                                                                 <div class="d-none d-sm-block">
-                                                                    <i class="fas fa-check fa-fw"></i>
+                                                                    <i class="fas fa-plus fa-fw"></i>
                                                                 </div>
                                                             </button>
                                                             <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
@@ -344,12 +344,12 @@
     </div>
     <!-- FIM MODAL NOVA ORDEM/ALTERAR ORDEM-->
 
-    <!-- MODAL ALTERAR SITUAÇÃO ATUAL ORDEM SERVIÇO -->
+    <!-- MODAL ADICIONAR SITUAÇÃO ATUAL ORDEM SERVIÇO -->
     <div class="modal fade" id="atividade">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Alterar Situação da Ordem de serviço</h4>
+                    <h4 class="modal-title">Adicionar Situação da Ordem de serviço</h4>
                     <h4 class="modal-title 2"></h4> 
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
@@ -523,10 +523,6 @@
                         <div class="qa-message-list py-5" id="timeline" style="margin-top: 20px; padding-top: 5px;">
                         </div>
                         <div class= "modal-footer">
-                            <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-historico" onclick="send_data_historico()">
-                                <i class="fa fa-dot-circle-o"></i>
-                                Salvar
-                            </button>
                             <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-historico" data-dismiss="modal">
                                 Fechar
                             </button>

@@ -2,19 +2,19 @@ var posicao_selecionada = null;
 
 var botao = null;
 
-$(document).on('click','.btn_novo',function() {
+$(document).on('click', '.btn_novo', function () {
   botao = ".submit";
-  $('.modal-title').html("Novo Funcionário");  
+  $('.modal-title').html("Novo Funcionário");
 });
 
-$( ".press_enter" ).on( "keydown", function( event ) {
-  if(event.which == 13){
+$(".press_enter").on("keydown", function (event) {
+  if (event.which == 13) {
     $(botao).trigger("click");
   }
 });
 
 
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
   // if($('#departamento-input').children('option').val()==0 || $('#funcao-input').children('option').val()==0 )
   // {
   //   $('.new').prop('disabled',true);
@@ -31,18 +31,16 @@ jQuery(document).ready(function($) {
 });
 
 change_funcao = () => {
-  if ($('#funcao-input').val()==3)
-  {
+  if ($('#funcao-input').val() == 3) {
     $('#setor-input').removeAttr('disabled');
   }
-  else
-  {
-     $('#setor-input').prop('disabled','disabled')
+  else {
+    $('#setor-input').prop('disabled', 'disabled')
   }
 }
 
 
-$('#funcao-input').change(function(event) {
+$('#funcao-input').change(function (event) {
   change_funcao();
 });
 
@@ -51,14 +49,14 @@ remove_image = () => {
   removeUpload();
 }
 
-$(document).on('click','.btn-attr-pessoa_pk',function(){
+$(document).on('click', '.btn-attr-pessoa_pk', function () {
   $('#pessoa_pk').val(funcionarios[$(this).val()]['pessoa_pk']);
   posicao_selecionada = $(this).val();
   $('#opcao-editar').val('true');
 });
 
 
-function btn_load(button_submit){
+function btn_load(button_submit) {
   button_submit.attr('disabled', 'disabled');
   button_submit.css('cursor', 'default');
   button_submit.find('i').removeClass();
@@ -66,43 +64,43 @@ function btn_load(button_submit){
 }
 
 
-function btn_ativar(button_submit){
+function btn_ativar(button_submit) {
   button_submit.removeAttr('disabled');
   button_submit.css('cursor', 'pointer');
   button_submit.find('i').removeClass();
   button_submit.find('i').addClass('fa fa-dot-circle-o');
 }
 
-$(document).on('click','.btn-desativar',function(){
+$(document).on('click', '.btn-desativar', function () {
   botao = "#btn-deactivate";
-  $('.modal-title').html("Desativar Funcionário"); 
+  $('.modal-title').html("Desativar Funcionário");
 });
 
-$(document).on('click','.btn-reativar',function(){
+$(document).on('click', '.btn-reativar', function () {
   botao = "#btn-activate";
-  $('.modal-title').html("Reativar Funcionário"); 
+  $('.modal-title').html("Reativar Funcionário");
 });
 
 $('#btn-deactivate').click(() => {
-  var data = 
+  var data =
   {
     'pessoa_pk': $('#pessoa_pk').val(),
     'senha': $('#pass-modal-desativar').val()
   }
 
-    btn_load($('#btn-deactivate'));
-    $('#pass-modal-desativar').val('')
+  btn_load($('#btn-deactivate'));
+  $('#pass-modal-desativar').val('')
 
-  $.post(base_url+'/funcionario/deactivate',data).done(function (response) {
+  $.post(base_url + '/funcionario/deactivate', data).done(function (response) {
 
     btn_ativar($('#btn-deactivate'));
 
-    if (response.code == 200){
+    if (response.code == 200) {
       alerts('success', 'Sucesso!', 'Funcionário desativado com sucesso');
       funcionarios[posicao_selecionada]['funcionario_status'] = 0;
       $('#d_funcionario').modal('hide');
       pre_loader_hide();
-    }else{
+    } else {
       alerts('failed', 'Erro!', 'Houve um erro ao desativar.');
     }
     update_table();
@@ -110,7 +108,7 @@ $('#btn-deactivate').click(() => {
 });
 
 $('#btn-activate').click(() => {
-  var data = 
+  var data =
   {
     'pessoa_pk': $('#pessoa_pk').val(),
     'senha': $('#pass-modal-ativar').val()
@@ -120,22 +118,22 @@ $('#btn-activate').click(() => {
 
   $('#pass-modal-ativar').val('')
 
-  $.post(base_url+'/funcionario/activate',data).done(function (response) {
+  $.post(base_url + '/funcionario/activate', data).done(function (response) {
 
     btn_ativar($('#btn-activate'));
 
-    if (response.code == 200){
+    if (response.code == 200) {
       alerts('success', 'Sucesso!', 'Funcinário ativado com sucesso');
       funcionarios[posicao_selecionada]['funcionario_status'] = 1;
       $('#a_funcionario').modal('hide');
-    }else{
+    } else {
       alerts('failed', 'Erro!', 'Houve um erro ao ativar.');
     }
     update_table();
   });
 });
 
-$('#filter-ativo').on('change',function() {
+$('#filter-ativo').on('change', function () {
   update_table();
 });
 
@@ -145,38 +143,38 @@ update_table = () => {
   switch ($('#filter-ativo').val()) {
     case "todos":
       $.each(funcionarios, function (i, func) {
-        if(func.funcionario_status == 1){
+        if (func.funcionario_status == 1) {
           table.row.add([
             func.pessoa_nome,
             func.contato_email,
             func.funcao_nome,
-            '<div class="btn-group">'+
-              '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario" title="Editar">'+
-                  '<div class="d-none d-sm-block">'+
-                    '<i class="fas fa-edit fa-fw"></i>'+
-                  '</div>'+
-              '</button>'+
-              '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario" title="Desativar">'+
-                  '<div class="d-none d-sm-block">'+
-                    '<i class="fas fa-times fa-fw"></i>'+
-                  '</div>'+
-              '</button>'+
+            '<div class="btn-group">' +
+            '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario" title="Editar">' +
+            '<div class="d-none d-sm-block">' +
+            '<i class="fas fa-edit fa-fw"></i>' +
+            '</div>' +
+            '</button>' +
+            '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario" title="Desativar">' +
+            '<div class="d-none d-sm-block">' +
+            '<i class="fas fa-times fa-fw"></i>' +
+            '</div>' +
+            '</button>' +
             '</div>'
           ]).draw(false);
-        }else{
+        } else {
           table.row.add([
             func.pessoa_nome,
             func.contato_email,
             func.funcao_nome,
-            '<div class="btn-group">'+
-              '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="'+(i)+'" data-toggle="modal" data-target="#a_funcionario" title="Reativar">'+
-                  '<div class="d-none d-sm-block">'+
-                    '<i class="fas fa-power-off fa-fw"></i>'+
-                  '</div>'+
-              '</button>'+
+            '<div class="btn-group">' +
+            '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="' + (i) + '" data-toggle="modal" data-target="#a_funcionario" title="Reativar">' +
+            '<div class="d-none d-sm-block">' +
+            '<i class="fas fa-power-off fa-fw"></i>' +
+            '</div>' +
+            '</button>' +
             '</div>'
-            ]).draw(false);
-      }
+          ]).draw(false);
+        }
       });
       break;
     case "ativos":
@@ -187,67 +185,67 @@ update_table = () => {
             func.pessoa_nome,
             func.contato_email,
             func.funcao_nome,
-            '<div class="btn-group">'+
-              '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario" title="Editar">'+
-                  '<div class="d-none d-sm-block">'+
-                    '<i class="fas fa-edit fa-fw"></i>'+
-                  '</div>'+
-              '</button>'+
-              '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario" title="Desativar">'+
-                  '<div class="d-none d-sm-block">'+
-                    '<i class="fas fa-times fa-fw"></i>'+
-                  '</div>'+
-              '</button>'+
+            '<div class="btn-group">' +
+            '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario" title="Editar">' +
+            '<div class="d-none d-sm-block">' +
+            '<i class="fas fa-edit fa-fw"></i>' +
+            '</div>' +
+            '</button>' +
+            '<button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d_funcionario" title="Desativar">' +
+            '<div class="d-none d-sm-block">' +
+            '<i class="fas fa-times fa-fw"></i>' +
+            '</div>' +
+            '</button>' +
             '</div>'
           ]).draw(false);
         }
       });
       break;
     case "desativados":
-    table.clear().draw();
-    $.each(funcionarios, function (i, func) {
-      if (func.funcionario_status == 0) {
-        table.row.add([
+      table.clear().draw();
+      $.each(funcionarios, function (i, func) {
+        if (func.funcionario_status == 0) {
+          table.row.add([
             func.pessoa_nome,
             func.contato_email,
             func.funcao_nome,
-            '<div class="btn-group">'+
-              '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="'+(i)+'" data-toggle="modal" data-target="#a_funcionario" title="Reativar">'+
-                  '<div class="d-none d-sm-block">'+
-                    '<i class="fas fa-power-off fa-fw"></i>'+
-                  '</div>'+
-              '</button>'+
+            '<div class="btn-group">' +
+            '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="' + (i) + '" data-toggle="modal" data-target="#a_funcionario" title="Reativar">' +
+            '<div class="d-none d-sm-block">' +
+            '<i class="fas fa-power-off fa-fw"></i>' +
+            '</div>' +
+            '</button>' +
             '</div>'
-            ]).draw(false);
-      }
-    });
+          ]).draw(false);
+        }
+      });
       break;
   }
 }
 
 
-function send(){
+function send() {
   try {
-    $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => { 
-      this.send(blob); 
+    $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => {
+      this.send(blob);
     });
   } catch (err) {
-      this.send(null); 
+    this.send(null);
   }
 }
 
-function send_data(){
+function send_data() {
   try {
-    $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => { 
-      this.send(blob); 
+    $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => {
+      this.send(blob);
     });
   } catch (err) {
-      this.send(null); 
+    this.send(null);
   }
 }
 
 
-$('.submit').on('click',() => {
+$('.submit').on('click', () => {
   send_data();
 });
 
@@ -268,11 +266,11 @@ send = (imagem) => {
   formData.append('logradouro_nome', $('#logradouro-input').val());
   formData.append('local_num', $('#numero-input').val());
   formData.append('local_complemento', $('#complemento-input').val());
-  formData.append('estado_pk' ,$('#uf-input :selected').text());
+  formData.append('estado_pk', $('#uf-input :selected').text());
   formData.append('bairro', $('#bairro-input').val());
-  formData.append('setor_fk',$('#setor-input').val());
+  formData.append('setor_fk', $('#setor-input').val());
   formData.append('municipio_pk', $('#cidade-input').val());
-  formData.append('municipio_nome',$('#cidade-input :selected').text());
+  formData.append('municipio_nome', $('#cidade-input :selected').text());
   formData.append('departamento_fk', $('#departamento-input').val());
   formData.append('senha', $('#pass-modal-edit').val());
   formData.append('img', imagem);
@@ -313,12 +311,12 @@ send = (imagem) => {
             'estado_pk': $('#uf-input :selected').text(),
             'municipio_pk': $('#cidade-input').val(),
             'municipio_nome': $('#cidade-input :selected').text(),
-            'bairro_nome':$('#bairro-input').val(),
-            'funcao_fk' : $('#funcao-input').val(),
-            'funcao_nome' : funcoes[$('#funcao-input').val()],
-            'departamento_fk' : $('#departamento-input').val(),
+            'bairro_nome': $('#bairro-input').val(),
+            'funcao_fk': $('#funcao-input').val(),
+            'funcao_nome': funcoes[$('#funcao-input').val()],
+            'departamento_fk': $('#departamento-input').val(),
             'setor_fk': $('#setor-input').val(),
-            'funcionario_status' : 1,
+            'funcionario_status': 1,
             'pessoa_pk': ($('#pessoa_pk').val() == "") ? response.data.pessoa_fk : $('#pessoa_pk').val()
           }
         if ($('#pessoa_pk').val() == "") { //verifica se é um insert
@@ -334,10 +332,13 @@ send = (imagem) => {
       }
       //pre_loader_hide();
       remove_image();
-
+      btn_ativar($('#pula-para-confirmacao'));
+      btn_ativar($('.submit'));
     },
     error: function (response) {
       alerts('failed', response.message, response.data);
+      btn_ativar($('#pula-para-confirmacao'));
+      btn_ativar($('.submit'));
     }
   });
 }
@@ -367,7 +368,7 @@ $(document).on('click', '.btn-editar', function (event) {
     $('#setor-input option:selected').prop('selected', false);
     for (var i = 0; i < funcionarios[posicao_selecionada].setor_fk.length; i++) {
       $('#setor-input option[value=' + funcionarios[posicao_selecionada].setor_fk[i] + ']').prop('selected', true);
-    }  
+    }
   }
   else {
     $('#setor-input').val([]);
@@ -380,28 +381,26 @@ $(document).on('click', '.btn-editar', function (event) {
   $('#celular-input').val(funcionarios[posicao_selecionada]['contato_cel']);
   $('#funcao-input option[value=' + funcionarios[posicao_selecionada]['funcao_pk'] + ']').prop('selected', true);
   $('#departamento-input option[value=' + funcionarios[posicao_selecionada]['departamento_pk'] + ']').prop('selected', true);
-  if(funcionarios[posicao_selecionada]['logradouro_nome'] != null){ 
+  if (funcionarios[posicao_selecionada]['logradouro_nome'] != null) {
     $('#logradouro-input').val(funcionarios[posicao_selecionada]['logradouro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
   }
   $('#numero-input').val(funcionarios[posicao_selecionada]['local_num']);
   $('#complemento-input').val(funcionarios[posicao_selecionada]['local_complemento']);
-  if(funcionarios[posicao_selecionada]['bairro_nome'] != null){
+  if (funcionarios[posicao_selecionada]['bairro_nome'] != null) {
     $('#bairro-input').val(funcionarios[posicao_selecionada]['bairro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
   }
 
 
-  if ($("#uf-input :selected").text() != funcionarios[$(this).val()]["estado_pk"])
-  {
-    $("#uf-input option").filter(function() {
-        return this.text == funcionarios['id_org']["estado_pk"]; 
+  if ($("#uf-input :selected").text() != funcionarios[$(this).val()]["estado_pk"]) {
+    $("#uf-input option").filter(function () {
+      return this.text == funcionarios['id_org']["estado_pk"];
     }).attr('selected', true);
 
-    change_uf($("#uf-input").val(),$("#uf-input option:selected").text(),funcionarios[$(this).val()]["municipio_pk"]);
+    change_uf($("#uf-input").val(), $("#uf-input option:selected").text(), funcionarios[$(this).val()]["municipio_pk"]);
   }
-  else
-  {
+  else {
     $("#cidade-input").val(funcionarios[$(this).val()]["municipio_pk"]);
-  } 
+  }
   change_funcao();
 });
 
@@ -411,17 +410,17 @@ $(document).on('click', '.btn-editar', function (event) {
 // EXTRA
 
 function randomiza(n) {
-  var ranNum = Math.round(Math.random()*n);
+  var ranNum = Math.round(Math.random() * n);
   return ranNum;
 }
 
-function mod(dividendo,divisor) {
-  return Math.round(dividendo - (Math.floor(dividendo/divisor)*divisor));
+function mod(dividendo, divisor) {
+  return Math.round(dividendo - (Math.floor(dividendo / divisor) * divisor));
 }
 
 function gerarCPF() {
   comPontos = true; // TRUE para ativar e FALSE para desativar a pontuação.
-  
+
   var n = 9;
   var n1 = randomiza(n);
   var n2 = randomiza(n);
@@ -432,15 +431,15 @@ function gerarCPF() {
   var n7 = randomiza(n);
   var n8 = randomiza(n);
   var n9 = randomiza(n);
-  var d1 = n9*2+n8*3+n7*4+n6*5+n5*6+n4*7+n3*8+n2*9+n1*10;
-  d1 = 11 - ( mod(d1,11) );
-  if (d1>=10) d1 = 0;
-  var d2 = d1*2+n9*3+n8*4+n7*5+n6*6+n5*7+n4*8+n3*9+n2*10+n1*11;
-  d2 = 11 - ( mod(d2,11) );
-  if (d2>=10) d2 = 0;
+  var d1 = n9 * 2 + n8 * 3 + n7 * 4 + n6 * 5 + n5 * 6 + n4 * 7 + n3 * 8 + n2 * 9 + n1 * 10;
+  d1 = 11 - (mod(d1, 11));
+  if (d1 >= 10) d1 = 0;
+  var d2 = d1 * 2 + n9 * 3 + n8 * 4 + n7 * 5 + n6 * 6 + n5 * 7 + n4 * 8 + n3 * 9 + n2 * 10 + n1 * 11;
+  d2 = 11 - (mod(d2, 11));
+  if (d2 >= 10) d2 = 0;
   retorno = '';
-  if (comPontos) cpf = ''+n1+n2+n3+'.'+n4+n5+n6+'.'+n7+n8+n9+'-'+d1+d2;
-  else cpf = ''+n1+n2+n3+n4+n5+n6+n7+n8+n9+d1+d2;
+  if (comPontos) cpf = '' + n1 + n2 + n3 + '.' + n4 + n5 + n6 + '.' + n7 + n8 + n9 + '-' + d1 + d2;
+  else cpf = '' + n1 + n2 + n3 + n4 + n5 + n6 + n7 + n8 + n9 + d1 + d2;
 
   $('#cpf-input').val(cpf);
   $('#nome-input').val("Pessoa Teste " + n1 + n2 + n3);
