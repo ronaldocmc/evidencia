@@ -6,7 +6,7 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">Gerenciamento de Relatórios</h2>
                         <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo" data-toggle="modal" data-target="#restaurar_os"> 
-                            Restaurar Ordens de Serviço
+                            Receber Relatórios
                         </button>
                     </div>
                         <div class="col-md-12 mt-3">
@@ -119,7 +119,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Restaurar Ordens de Serviço</h4>
+                <h4 class="modal-title">Receber Relatórios</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
