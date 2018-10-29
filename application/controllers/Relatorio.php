@@ -914,8 +914,6 @@ private function create_relatorio($filtro)
             }
         }
 
-        //print_r($relatorios); die();
-
         $this->session->set_flashdata('css', array(
             0 => base_url('assets/vendor/cropper/cropper.css'),
             1 => base_url('assets/vendor/input-image/input-image.css'),
