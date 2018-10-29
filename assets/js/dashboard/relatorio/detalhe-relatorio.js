@@ -42,7 +42,10 @@ $(document).on('click','#btn-trocar-funcionario',function(event) {
 		{
             btn_ativar($('#btn-trocar-funcionario'));
 			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
-		}
+		} else if(response.code == 401)
+        {
+            alerts('failed','Erro!', response.data);
+        }
 		else if(response.code == 200)
 		{
             alerts('success','Sucesso!','Aguarde enquanto recarregamos a página ...');
@@ -71,6 +74,10 @@ $(document).on('click','#btn-deletar-relatorio',function(event) {
 		{
 			alerts('failed','Erro!','Relatório não encontrado.');
 		}
+        else if(response.code == 401)
+        {
+            alerts('failed','Erro!',response.data);
+        }
 		else if(response.code == 200)
 		{
 			window.location.href = base_url;
