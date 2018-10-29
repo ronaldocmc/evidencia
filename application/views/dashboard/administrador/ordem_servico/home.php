@@ -523,10 +523,6 @@
                         <div class="qa-message-list py-5" id="timeline" style="margin-top: 20px; padding-top: 5px;">
                         </div>
                         <div class= "modal-footer">
-                            <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-historico" onclick="send_data_historico()">
-                                <i class="fa fa-dot-circle-o"></i>
-                                Salvar
-                            </button>
                             <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-historico" data-dismiss="modal">
                                 Fechar
                             </button>
