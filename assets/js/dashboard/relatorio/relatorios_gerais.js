@@ -14,6 +14,30 @@ function btn_ativar(button_submit){
 }
 
 
+function lastWeek(){
+    var today = new Date();
+    var lastweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
+    return lastweek;
+}
+
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+$(document).ready(function (){
+	$('#data_inicial').val(formatDate(lastWeek()));
+	$('#data_final').val(formatDate(new Date()));
+});
+
+
 $("#gerar_pdf_dia").click(function () {
 	var relatorio = "data";
 	var filtro = $("#qtd_dias").val();
