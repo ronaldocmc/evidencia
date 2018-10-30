@@ -5,6 +5,8 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">Gerenciamento de Relatórios</h2>
+                        <a class="au-btn au-btn-icon au-btn--blue reset_multistep new" href="<?= base_url('Relatorio/novo_relatorio') ?>"> Novo Relatório
+                        </a>
                         <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo" data-toggle="modal" data-target="#restaurar_os"> 
                             Receber Relatórios
                         </button>
@@ -137,7 +139,7 @@
                     <input type="password" class="form-control" autocomplete="false" placeholder="Confirme sua senha" required="required" id="pass-modal-restaurar">
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-danger col-md-12" id="btn-restaurar"><i class="fa fa-dot-circle-o"></i> Restaurar</button>
+                    <button type="button" class="btn btn-danger col-md-12" id="btn-restaurar"><i class="fa fa-dot-circle-o"></i> Receber</button>
                 </div>
             </div>
         </div>
