@@ -61,6 +61,7 @@ class RelatorioWS extends MY_Controller
         $this->load->helper('token');
         $this->load->model('tentativa_model');
         $this->load->model('atualizacao_model');
+        $this->load->model('relatorio_model');
         
         $header_obj = apache_request_headers();
             
@@ -118,7 +119,8 @@ class RelatorioWS extends MY_Controller
             $id_funcionario = $token_decodificado->id_funcionario;
             
             $this->update_relatorio($id_funcionario); 
-            //se deu certo vai enviar o response dentro desse método            
+            //se deu certo vai enviar o response dentro desse método  
+            $this->response->set_code(Response::SUCCESS);          
 
         } else {
             $this->response->set_code(Response::FORBIDDEN);
@@ -172,6 +174,7 @@ class RelatorioWS extends MY_Controller
                 $this->response->set_code(Response::SUCCESS);
                 $this->response->set_data('Situação do relatório atualizado com sucesso.');
                 $this->response->send();
+                die();
             }
 
         }else {
@@ -200,6 +203,8 @@ class RelatorioWS extends MY_Controller
 
             // $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $relatorio->relatorio_pk]);
             // return $ordens_servicos;
+
+            $this->relatorio_model->update(['pegou_no_celular' => 1], ['relatorio_pk' => $relatorio->relatorio_pk]);
 
             return $this->get_ordens_relatorio($relatorio->relatorio_pk);
         }

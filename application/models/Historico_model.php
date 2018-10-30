@@ -94,6 +94,20 @@ class Historico_model extends CI_Model {
         }
     }
 
+
+    public function get_all_historico_decrescente($os_pk)
+    {
+        $query =  $this->db->query('
+            SELECT historicos_ordens.historico_ordem_pk, imagens_situacoes.imagem_situacao_caminho 
+            FROM historicos_ordens LEFT JOIN imagens_situacoes 
+            ON historicos_ordens.historico_ordem_pk = imagens_situacoes.historico_ordem_fk
+            WHERE historicos_ordens.ordem_servico_fk = '. $os_pk .'
+            ORDER BY historicos_ordens.historico_ordem_tempo DESC'
+        );
+
+        return $query->result();
+    }
+
     public function get_imagem($id){
         $this->db->select('imagem_situacao_caminho');
         $this->db->from('imagens_situacoes');

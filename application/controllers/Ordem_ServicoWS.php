@@ -405,15 +405,8 @@ class Ordem_ServicoWS extends MY_Controller
 			$where['id_funcionario'] = get('id_funcionario', $obj['token']);
 
 			$ordens_servico = $this->ordem_servico_model->getJsonForMobile($where);
-			$ordens = array();
-			
-			// Monta o array com cada tupla retornada do banco
-			foreach($ordens_servico as $os)
-			{
-				array_push($ordens, $os);
-			}
 
-			$this->response->add_data("ordens", $ordens);
+			$this->response->add_data("ordens", $ordens_servico);
 		}
 
 		$this->response->send();
