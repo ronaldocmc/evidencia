@@ -152,6 +152,33 @@ $('#filtrar').prop('disabled',false);
 });
 });
 
+// $(document).ready(function(){
+//       $("#myCarousel").on("slide.bs.carousel", function(e) {
+//             var $e = $(e.relatedTarget);
+
+//             var idx = $e.index();
+//             var itemsPerSlide = 1;
+//             var totalItems = $(".carousel-item").length;
+
+//             if (idx >= totalItems - (itemsPerSlide - 1)) {
+//               var it = itemsPerSlide - (totalItems - idx);
+//               for (var i = 0; i < it; i++) {
+
+//                 // append slides to end
+//                 if (e.direction == "left") {
+//                   $(".carousel-item")
+//                   .eq(i)
+//                   .appendTo(".carousel-inner");
+//               } else {
+//                   $(".carousel-item")
+//                   .eq(0)
+//                   .appendTo($(this).find(".carousel-inner"));
+//               }
+//             }
+//         }
+//     });
+// });
+
 function remove_data() {
     $("#v_descricao").html('');
     $("#v_prioridade").html('');
@@ -159,11 +186,21 @@ function remove_data() {
     $("#v_setor").html('');
     $("#v_servico").html('');
 
+    $('#myCarousel').removeClass('carousel slide');
+    $('#myCarousel').attr("id","card-imagens");
+    $('#myCarousel').attr("data-ride","");
+
     $('.carousel-inner').html('');
-    $('.carousel-indicators').html('');
+    // $('.carousel-indicators').html('');
     $('#timeline').html('');
     $('#v_loading').show();
 }
+
+$("#v_evidencia").on("hidden.bs.modal", function () {
+    // put your default event here
+    $('#myCarousel').removeClass('carousel slide');
+    $('#myCarousel').attr("id","card-imagens");
+});
 
 function toDataURL(url, callback) {
     var xhr = new XMLHttpRequest();
@@ -183,12 +220,11 @@ function toDataURL(url, callback) {
 function request_data(id) {
     remove_data();
 
+
     $.ajax({
         url: base_url + '/ordem_servico/json_especifico/' + id + '/' + 0,
         dataType: "json",
         success: function (response) {
-
-
 
             $("#v_descricao").html(response.ordem.descricao);
             $("#v_prioridade").html(response.ordem.prioridade);
@@ -198,13 +234,20 @@ function request_data(id) {
 
             var html = "";
             var indicators = "";
-            var active = "active";
+            var active = " active";
             var timeline = "";
 
+            console.log(response.ordem.historico);
+
+            if(response.ordem.historico.length > 2){
+                $('#card-imagens').addClass('carousel slide');
+                $('#card-imagens').attr("data-ride","carousel");
+                $('#card-imagens').attr("id","myCarousel");
+                
+            }
 
             response.ordem.historico.map((historico, i) => {
 
-                indicators += '<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>';
                 if (historico.comentario == null) {
                     historico.comentario = "Nenhum comentário adicionado.";
                 }
@@ -213,25 +256,28 @@ function request_data(id) {
                 }else{
                     timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, 'default.png', historico.situacao, reformatDate(historico.data));
                 }
-''
                 if (historico.foto != null) {
-                    html += create_carousel_item(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                    active = "";
+                    html += create_cards(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    active ="";
                 } else {
-                    html += create_carousel_item(historico.comentario, 'assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    html += create_cards(historico.comentario, 'no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    active ="";
                 }
 
             });
 
                 // console.log(html);
 
+
                 $('#v_loading').hide();
                 $('.carousel-inner').html(html);
-                $('.carousel-indicators').html(indicators);
+                // $('.carousel-indicators').html(indicators);
                 $('#timeline').html(timeline);
             }
         });
 }
+
+
 
 function create_timeline(comentario, src, funcionario, funcionario_foto, situacao, data) {
     return '<div class="message-item">' +
@@ -246,10 +292,6 @@ function create_timeline(comentario, src, funcionario, funcionario_foto, situaca
     '<span class="qa-message-when">' +
     '<span class="qa-message-when-data">' + data + '</span>' +
     '</span>' +
-    '<span class="qa-message-who">' +
-    '<span class="qa-message-who-pad"> por </span>' +
-    '<span class="qa-message-who-data"><a href="#">' + funcionario + '</a></span>' +
-    '</span>' +
     '</div>' +
     '</div>' +
     '</div>' +
@@ -261,18 +303,21 @@ function create_timeline(comentario, src, funcionario, funcionario_foto, situaca
     '</div></div>';
 }
 
-function create_carousel_item(description, src, funcionario, situacao, data, active) {
+function create_cards(description, src, funcionario, situacao, data, active) {
 
-    return '<div align="center" class="carousel-item ' + active + '">' +
-    '<img class="d-block" style="height: 400px;" src="../'  + src + '" alt="Evidência">' +
-    '<div class="carousel-caption d-none d-lg-block">' +
-    '<p>' + description + '</p>' +
-    '<p>Funcionário: ' + funcionario + '</p>' +
-    '<p>Situação: ' + situacao + '</p>' +
-    '<p>Data: ' + data + '</p>' +
+    return '<div class="carousel-item col-md-4' + active + '">' +
+    '<div class="card">' +
+    '<img class="card-img-top img-fluid" src="' + "." + src +'">'+
+    '<div class="card-body">' +
+    '<h4 class="card-title">'+ situacao + '</h4>' +
+    '<p class="card-text">'+ description +'</p>' +  
+    '<p class="card-text"><small class="text-muted">'+ data + '</small></p>' +
+    '<p class="card-text"><small class="text-muted"><b>'+ funcionario + '</b></small></p>' +
+    '</div>' +
     '</div>' +
     '</div>';
 }
+
 
 function criarMarcacao(location) {
     main_marker = new google.maps.Marker({
