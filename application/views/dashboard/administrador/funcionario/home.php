@@ -165,7 +165,7 @@
                                                     <div class="col-12 col-md-10">
                                                         <input type="text" id="cpf-input" name="pessoa_cpf" placeholder="CPF" class="form-control cpf-input" required>
                                                         <small class="form-text text-muted">Por favor, informe o CPF do funcionário</small>
-                                                        <a href="#" class="btn btn-primary" onclick="gerarCPF()">Gerar</a>
+                                                            
                                                     </div>
                                                 </div>
                                             </div>
