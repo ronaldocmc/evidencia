@@ -119,7 +119,8 @@ class RelatorioWS extends MY_Controller
             $id_funcionario = $token_decodificado->id_funcionario;
             
             $this->update_relatorio($id_funcionario); 
-            //se deu certo vai enviar o response dentro desse método            
+            //se deu certo vai enviar o response dentro desse método  
+            $this->response->set_code(Response::SUCCESS);          
 
         } else {
             $this->response->set_code(Response::FORBIDDEN);
