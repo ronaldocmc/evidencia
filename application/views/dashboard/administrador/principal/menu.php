@@ -36,18 +36,20 @@
                                     <li>
                                         <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
                                     </li>
-                                    <li>
-                                        <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('situacao'); ?>">Situações</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('servico'); ?>">Serviços</a>
-                                    </li>
+                                        <?php if(SHOW_HIDE_MENU): ?>
+                                        <li>
+                                            <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo base_url('situacao'); ?>">Situações</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo base_url('servico'); ?>">Serviços</a>
+                                        </li>
+                                    <?php endif; ?>
                                 <?php endif; ?>
 
                                 <li>
@@ -57,7 +59,7 @@
                         </li>
                         <li>
                             <a href="<?php echo base_url('relatorio/mapa') ?>">
-                            <i class="fas fa-map-marker-alt"></i>Mapas</a>
+                            <i class="fas fa-map-marker-alt"></i>Mapa</a>
                         </li>
                         <li>
                             <a class="js-arrow" href="#">
@@ -69,12 +71,14 @@
                                 <li>
                                     <a href="<?= base_url('relatorio') ?>">Listar Relatórios</a>
                                 </li>
+                                <?php if(SHOW_HIDE_MENU): ?>
                                 <li>
                                     <a href="<?= base_url('relatorio/relatorios_gerais') ?>">Relatórios Gerais</a>
                                 </li>
                                 <li>
                                     <a href="<?= base_url('relatorio/relatorio_especifico') ?>">Relatório Específico</a>
                                 </li>
+                            <?php endif; ?>
                             </ul>
                         </li>
                         <li class="has-sub">
@@ -127,18 +131,20 @@
                                     <li>
                                         <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
                                     </li>
-                                    <li>
-                                        <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('situacao'); ?>">Situações</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('servico'); ?>">Serviços</a>
-                                    </li>
+                                    <?php if(SHOW_HIDE_MENU): ?>
+                                        <li>
+                                            <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo base_url('situacao'); ?>">Situações</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo base_url('servico'); ?>">Serviços</a>
+                                        </li>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                                 <li>
                                     <a href="<?php echo base_url('Ordem_Servico'); ?>">Ordens de Serviço</a>
@@ -147,7 +153,7 @@
                         </li>
                         <li>
                             <a href="<?php echo base_url('relatorio/mapa') ?>">
-                            <i class="fas fa-map-marker-alt"></i>Mapas</a>
+                            <i class="fas fa-map-marker-alt"></i>Mapa</a>
                         </li>
                         <li>
                             <a class="js-arrow" href="#">
@@ -159,12 +165,14 @@
                                  <li>
                                     <a href="<?= base_url('relatorio') ?>">Listar Relatórios</a>
                                 </li>
-                                <li>
-                                    <a href="<?= base_url('relatorio/relatorios_gerais') ?>">Relatórios Gerais</a>
-                                </li>
-                                <li>
-                                    <a href="<?= base_url('relatorio/relatorio_especifico') ?>">Relatório Específico</a>
-                                </li>
+                                <?php if(SHOW_HIDE_MENU): ?>
+                                    <li>
+                                        <a href="<?= base_url('relatorio/relatorios_gerais') ?>">Relatórios Gerais</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('relatorio/relatorio_especifico') ?>">Relatório Específico</a>
+                                    </li>
+                            <?php endif; ?>
                             </ul>
                         </li>
                         <li class="has-sub">

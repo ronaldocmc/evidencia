@@ -14,21 +14,6 @@ $(".press_enter").on("keydown", function (event) {
 });
 
 
-jQuery(document).ready(function ($) {
-  // if($('#departamento-input').children('option').val()==0 || $('#funcao-input').children('option').val()==0 )
-  // {
-  //   $('.new').prop('disabled',true);
-  //   $('.new').addClass('btn disabled');
-  //   if($('#departamento-input').children('option').val()==0)
-  //   {
-  //     alerts('failed','Não há departamentos cadastrados','Cadastre departamentos primeiro e depois registre funcionários');
-  //   }
-  //   else
-  //   {
-  //      alerts('failed','Não há funções cadastrados','Cadastre funções primeiro e depois registre funcionários');
-  //   }
-  // }
-});
 
 change_funcao = () => {
   if ($('#funcao-input').val() == 3) {

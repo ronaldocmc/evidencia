@@ -11,8 +11,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="overview-wrap">
-                        <h2 class="title-1">ordens de serviço</h2>
-                        <!-- <button id="filtrar" class="au-btn au-btn-icon au-btn--blue reset_multistep">Filtrar</button> -->
+                        <h2 class="title-1">mapa</h2>
+                            <!-- <button id="filtrar" class="au-btn au-btn-icon au-btn--blue reset_multistep">Filtrar</button> -->
                         <!-- <button class="au-btn au-btn-icon au-btn--blue reset_multistep" data-toggle="modal" data-target="#ce_ordem_servico">
                             <i class="zmdi zmdi-plus"></i>nova ordem de serviço
                         </button> -->

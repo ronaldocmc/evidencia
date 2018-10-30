@@ -42,17 +42,17 @@
                             <?php 
                             foreach($setores as $setor):
                                 ?>
-                                <input type="checkbox" id="setor-<?= $setor->setor_pk ?>" name="setor[]" value="<?= $setor->setor_pk ?>"><label for="setor-<?= $setor->setor_pk ?>"><?= $setor->setor_nome ?></label>  <br>
+                                <input type="checkbox" id="setor-<?= $setor->setor_pk ?>" name="setor[]" value="<?= $setor->setor_pk ?>"><label for="setor-<?= $setor->setor_pk ?>"> <?= $setor->setor_nome ?></label>  <br>
                                 <?php
                             endforeach;
                             ?>
                         </div>
                         <div class="col-md-6">
-                            <h5><b>Escolhe o(s) tipo(s) de serviço(s):</b></h5> <br>
+                            <h5><b>Escolha o(s) tipo(s) de serviço(s):</b></h5> <br>
                             <?php 
                             foreach($tipos_servicos as $tipo):
                                 ?>
-                                <input type="checkbox" id="tipo-servico-<?= $tipo->tipo_servico_pk ?>" name="tipo[]>" value="<?= $tipo->tipo_servico_pk ?>"><label for="tipo-servico-<?= $tipo->tipo_servico_pk ?>"><?= $tipo->tipo_servico_nome ?></label> <br>
+                                <input type="checkbox" id="tipo-servico-<?= $tipo->tipo_servico_pk ?>" name="tipo[]>" value="<?= $tipo->tipo_servico_pk ?>"><label for="tipo-servico-<?= $tipo->tipo_servico_pk ?>"> <?= $tipo->tipo_servico_nome ?></label> <br>
                             <?php endforeach; ?>
                         </div>
                     </div>

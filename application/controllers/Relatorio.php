@@ -560,6 +560,8 @@ public function detalhes_relatorio($id_relatorio)
 
         $ordens_servicos = $this->get_ordens_relatorio($id_relatorio);
 
+        //var_dump($ordens_servicos); die();
+
         //arrumando a data:
         if($ordens_servicos != false){
             foreach($ordens_servicos as $os){
@@ -697,6 +699,9 @@ private function valida_filtro($filtro){
 
 private function create_relatorio($filtro)
 {
+
+    set_time_limit(180);
+
     $this->load->model('Ordem_Servico_model', 'ordem_servico_model');
     $this->load->model('Relatorio_model', 'relatorio_model');
     $this->load->model('Funcionario_model', 'funcionario_model');
@@ -728,54 +733,61 @@ private function create_relatorio($filtro)
     //Vamos inserir os filtros escolhidos pelo usuário:
     $this->relatorio_model->insert_filtro_data($filtro['data_inicial'], $filtro['data_final'], $id_relatorio);
 
-    foreach($filtro['setor'] as $setor){
+    foreach($filtro['setor'] as $setor)
+    {
         $this->relatorio_model->insert_filtro_setor($id_relatorio, $setor);
     }
 
-    foreach($filtro['tipo'] as $tipo){
+    foreach($filtro['tipo'] as $tipo)
+    {
         $this->relatorio_model->insert_filtro_tipo($id_relatorio, $tipo);
     }
 
     $funcionario = $this->funcionario_model->get(['funcionario_pk' => $filtro['funcionario_fk']])[0];
 
-        // vamos atribuir apenas as ordens de serviço que estiverem com a situação atual == 1, ou seja, que estão em ABERTO.
+    // vamos atribuir apenas as ordens de serviço que estiverem com a situação atual == 1, ou seja, que estão em ABERTO.
     foreach($ordens_servicos as $os)
     {
-            //UMA ORDEM DEVE PERTENCER A APENAS UM RELATÓRIO DO MESMO DIA.
-            //TEMOS QUE VERIFICAR SE A ORDEM JÁ NÃO ESTÁ ATRIBUÍDA A UM RELATÓRIO HOJE.
-        //if($os->situacao_atual_pk == '1'){
+        $tem_imagem = false;
 
-            $this->relatorio_model->insert_relatorios_os(
-                array(
-                    'relatorio_fk' => $id_relatorio,
-                    'os_fk' => $os->ordem_servico_pk
-                )
-            );
-            //VAMOS PEGAR O ID DO ULTIMO HISTORICO DA ORDEM PARA PODERMOS PEGAR A IMAGEM:
-            $id_ultimo_historico = $this->historico_model->get_id_last_historico($os->ordem_servico_pk);
-            $imagem = $this->historico_model->get_imagem($id_ultimo_historico);
+        //UMA ORDEM DEVE PERTENCER A APENAS UM RELATÓRIO DO MESMO DIA.
+        //TEMOS QUE VERIFICAR SE A ORDEM JÁ NÃO ESTÁ ATRIBUÍDA A UM RELATÓRIO HOJE.
+        $this->relatorio_model->insert_relatorios_os(
+            array(
+                'relatorio_fk' => $id_relatorio,
+                'os_fk' => $os->ordem_servico_pk
+            )
+        );
 
-            // echo 'id_ultimo_historico: '.$id_ultimo_historico.' imagem: '.$imagem; 
-            // die();
+        // Pegamos todos os históricos para ver qual deles tem a última foto
+        $historicos = $this->historico_model->get_all_historico_decrescente($os->ordem_servico_pk);
 
-            $return = $this->historico_model->insert(
-                array(
-                    'ordem_servico_fk' => $os->ordem_servico_pk,
-                    'funcionario_fk' => $funcionario->funcionario_pk,
-                        'situacao_fk' => 2, //EM ANDAMENTO
-                        'historico_ordem_comentario' => "Atribuída a(o) ".$funcionario->pessoa_nome,
-                    )
-            );
-
-            if($imagem != false){ //é porque existe imagem:
-                $this->historico_model->insert_imagem([
-                    'historico_ordem_fk' => $return['id'], 
-                    'imagem_situacao_caminho' => $imagem
-                ]);
+        foreach ($historicos as $h)
+        {
+            if($h->imagem_situacao_caminho != null)
+            {
+                $tem_imagem = true;
+                break;
             }
+        }
 
+        $return = $this->historico_model->insert(
+            array(
+                'ordem_servico_fk' => $os->ordem_servico_pk,
+                'funcionario_fk' => $funcionario->funcionario_pk,
+                    'situacao_fk' => 2, //EM ANDAMENTO
+                    'historico_ordem_comentario' => "Atribuída a(o) ".$funcionario->pessoa_nome,
+                )
+        );
 
-        //}
+        if ($tem_imagem)
+        {
+            $this->historico_model->insert_imagem([
+                'historico_ordem_fk' => $return['id'], 
+                'imagem_situacao_caminho' => $h->imagem_situacao_caminho
+            ]);
+        }
+
     }
     if($id_relatorio)
     {
@@ -813,7 +825,8 @@ private function create_relatorio($filtro)
     }
 
 
-    public function get_ordens_relatorio($id_relatorio){
+    public function get_ordens_relatorio($id_relatorio)
+    {
         $this->load->model('relatorio_model');
 
         $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $id_relatorio]);
@@ -822,22 +835,47 @@ private function create_relatorio($filtro)
     }
 
     /**
+    * Vamos verificar se o relatório já foi iniciado se o funcionário
+    * pegar o relatório através do celular.
+    **/
+    public function verifica_se_relatorio_ja_foi_iniciado($id_relatorio)
+    {
+        $relatorio = $this->relatorio_model->get_relatorio($id_relatorio);
+        if($relatorio->pegou_no_celular == 1)
+        {
+            return true; //já foi iniciado
+        }else
+        {
+            return false; //não foi iniciado
+        }
+    }
+
+
+    /**
     Recebe por parâmetro o id do relatório
     **/
-    public function change_employee($id){
+    public function change_employee($id)
+    {
         $this->load->model('relatorio_model');
 
         $response = new Response();
 
-        $resposta = $this->relatorio_model->update($this->input->post(), ['relatorio_pk' => $id]);
+        if(!$this->verifica_se_relatorio_ja_foi_iniciado($id))
+        {
+            $resposta = $this->relatorio_model->update($this->input->post(), ['relatorio_pk' => $id]);
 
-        if($resposta){
-            $response->set_code(Response::SUCCESS);
-            $response->set_data("Funcionário alterado com sucesso."); 
+            if($resposta){
+                $response->set_code(Response::SUCCESS);
+                $response->set_data("Funcionário alterado com sucesso."); 
+            }else{
+                $response->set_code(Response::DB_ERROR_UPDATE);
+                $response->set_data("Ocorreu um erro com o banco de dados.");
+            }
         }else{
-            $response->set_code(Response::DB_ERROR_UPDATE);
-            $response->set_data("Ocorreu um erro com o banco de dados.");
+            $response->set_code(Response::UNAUTHORIZED);
+            $response->set_data("O funcionário já recebeu o relatório no celular, portanto não é possível trocá-lo.");
         }
+
         $response->send();
     }
 
@@ -848,43 +886,52 @@ private function create_relatorio($filtro)
     2 - Devemos apagar os relatorios_os vinculados ao ID do relatorio;
     3 - Por fim destruimos o relatório.
     **/
-    public function destroy($id){
+    public function destroy($id)
+    {
         $this->load->model('relatorio_model');
         $this->load->model('historico_model');
 
         $response = new Response();
 
         $relatorio = $this->relatorio_model->get_relatorio($id);
+
         if($relatorio){
-            $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $relatorio->relatorio_pk]);
-            if($ordens_servicos){
+            if(!$this->verifica_se_relatorio_ja_foi_iniciado($id))
+            {
+                $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $relatorio->relatorio_pk]);
+                if($ordens_servicos){
 
 
-                foreach($ordens_servicos as $os){
-                    $this->historico_model->insert(
-                        array(
-                            'ordem_servico_fk' => $os->ordem_servico_pk,
-                            'funcionario_fk' => $this->session->user['id_funcionario'],
-                        'situacao_fk' => 1, //ABERTO
-                        'historico_ordem_comentario' => "Relatório destruído.",
-                    )
-                    );
+                    foreach($ordens_servicos as $os){
+                        $this->historico_model->insert(
+                            array(
+                                'ordem_servico_fk' => $os->ordem_servico_pk,
+                                'funcionario_fk' => $this->session->user['id_funcionario'],
+                            'situacao_fk' => 1, //ABERTO
+                            'historico_ordem_comentario' => "Relatório destruído.",
+                        )
+                        );
+                    }
+
                 }
 
+
+                //Deletar os filtros
+                $this->relatorio_model->delete_filtros_data(['relatorio_fk' => $relatorio->relatorio_pk]);
+
+                $this->relatorio_model->delete_filtros_setores(['relatorio_fk' => $relatorio->relatorio_pk]);
+                $this->relatorio_model->delete_filtros_tipos_servicos(['relatorio_fk' => $relatorio->relatorio_pk]);
+
+                $this->relatorio_model->delete_relatorios_os(['relatorio_fk' => $relatorio->relatorio_pk]);
+
+                $this->relatorio_model->delete(['relatorio_pk' => $relatorio->relatorio_pk]);
+                $response->set_code(Response::SUCCESS);
+                $response->set_data("Relatório deletado com sucesso.");
+
+            }else{
+               $response->set_code(Response::UNAUTHORIZED);
+               $response->set_data("O funcionário já recebeu o relatório no celular, portanto não é possível destruí-lo."); 
             }
-
-
-            //Deletar os filtros
-            $this->relatorio_model->delete_filtros_data(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-            $this->relatorio_model->delete_filtros_setores(['relatorio_fk' => $relatorio->relatorio_pk]);
-            $this->relatorio_model->delete_filtros_tipos_servicos(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-            $this->relatorio_model->delete_relatorios_os(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-            $this->relatorio_model->delete(['relatorio_pk' => $relatorio->relatorio_pk]);
-            $response->set_code(Response::SUCCESS);
-            $response->set_data("Relatório deletado com sucesso.");
 
         }else{
             $response->set_code(Response::NOT_FOUND);
