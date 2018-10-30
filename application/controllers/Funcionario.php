@@ -547,10 +547,18 @@ public function update()
                     //Retorna o funcionário selecionado e seus dados de setor
                     $funcionario = $this->model->get_setor($where);
 
+                    // Se o funcionário tiver setores
+                    $this->CI->load->model('Funcionario_setor_model', 'funcionario_setor_model');
+                    if($funcionario !== FALSE)
+                    {  
+                        $this->funcionario_setor_model->delete([
+                            'funcionario_fk' => $return_funcionario
+                        ]);
+                    }
+                    
                     //Verificando se o funcionario é fiscal, caso seja então deve-se alterar os setores
-                    if($data['funcao_fk'] == '3' || $data['funcao_fk'] == '6')
+                    if($data['funcao_fk'] == '3')
                     {
-                        $this->CI->load->model('Funcionario_setor_model', 'funcionario_setor_model');
 
                         if ($data['setor_fk'] == '')
                         {
@@ -558,14 +566,6 @@ public function update()
                             $this->response->set_data('Fiscal deve ter setor(es) associado(s) a ele');
                             $this->response->send();
                             return;
-                        }
-
-                        // Se o funcionário não tiver setores
-                        if($funcionario !== FALSE)
-                        {  
-                            $this->funcionario_setor_model->delete([
-                                'funcionario_fk' => $return_funcionario
-                            ]);
                         }
 
                         if (strpos($data['setor_fk'], ',') === false)
