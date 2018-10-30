@@ -173,6 +173,7 @@ class RelatorioWS extends MY_Controller
                 $this->response->set_code(Response::SUCCESS);
                 $this->response->set_data('Situação do relatório atualizado com sucesso.');
                 $this->response->send();
+                die();
             }
 
         }else {
