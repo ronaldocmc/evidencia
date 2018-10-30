@@ -48,7 +48,7 @@
                             ?>
                         </div>
                         <div class="col-md-6">
-                            <h5><b>Escolhe o(s) tipo(s) de serviço(s):</b></h5> <br>
+                            <h5><b>Escolha o(s) tipo(s) de serviço(s):</b></h5> <br>
                             <?php 
                             foreach($tipos_servicos as $tipo):
                                 ?>

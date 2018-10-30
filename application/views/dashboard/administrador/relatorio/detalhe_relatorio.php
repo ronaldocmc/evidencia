@@ -26,7 +26,22 @@
                         <div class="row py-2">
                             <div class="col-lg-12">
                                 <div class="au-card d-flex flex-column">
-                                    <h2 class="title-1 m-b-25">Relatório do <?= $funcionario->pessoa_nome ?> do dia <?= date("d/m/Y", strtotime($relatorio->data_criacao)) ?></h2>
+                                    <h2 class="title-1 m-b-25"> Relatório do <?= $funcionario->pessoa_nome ?> do dia <?= date("d/m/Y", strtotime($relatorio->data_criacao)) ?>
+                                    <?php 
+
+                                    if($relatorio->status == 1)
+                                    {
+                                        $font_size = 12;
+                                        $label = "ENTREGUE";
+                                        $class = "success";
+                                    }else{
+                                        $font_size = 9;
+                                        $label = "EM ANDAMENTO";
+                                        $class = "warning";
+                                    }
+                                    ?>
+
+                                     <span style="font-size:<?= $font_size ?>pt;" class="badge badge-pill badge-<?= $class ?>"><?= $label ?></span></h2>
                                     <div class="card-group">
 
                                         <div class="card">
@@ -348,7 +363,7 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" id="btn-trocar-funcionario"><i class="fa fa-dot-circle-o"></i> Salvar</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btn-trocar-funcionario"><i class="fa fa-dot-circle-o"></i> Trocar</button>
                     <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
@@ -377,7 +392,7 @@
                     </div>
 
                     <div class="form-group">
-                     <button type="button" class="btn btn-confirmar-senha" id="btn-deletar-relatorio" name="post" value=""><i class="fa fa-dot-circle-o"></i> Apagar</button>
+                     <button type="button" class="btn btn-confirmar-senha" id="btn-deletar-relatorio" name="post" value=""><i class="fa fa-dot-circle-o"></i> Destruir</button>
                  </div>
              </form>
          </div>
@@ -407,7 +422,7 @@
                     <input type="password" class="form-control" autocomplete="false" placeholder="Confirme sua senha" required="required" id="pass-modal-restaurar">
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-danger col-md-12" id="btn-restaurar"><i class="fa fa-dot-circle-o"></i> Restaurar</button>
+                    <button type="button" class="btn btn-danger col-md-12" id="btn-restaurar"><i class="fa fa-dot-circle-o"></i> Receber</button>
                 </div>
             </div>
         </div>

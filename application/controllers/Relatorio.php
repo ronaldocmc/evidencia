@@ -559,6 +559,8 @@ public function detalhes_relatorio($id_relatorio)
 
         $ordens_servicos = $this->get_ordens_relatorio($id_relatorio);
 
+        //var_dump($ordens_servicos); die();
+
         //arrumando a data:
         if($ordens_servicos != false){
             foreach($ordens_servicos as $os){
@@ -696,6 +698,9 @@ private function valida_filtro($filtro){
 
 private function create_relatorio($filtro)
 {
+
+    set_time_limit(180);
+
     $this->load->model('Ordem_Servico_model', 'ordem_servico_model');
     $this->load->model('Relatorio_model', 'relatorio_model');
     $this->load->model('Funcionario_model', 'funcionario_model');
