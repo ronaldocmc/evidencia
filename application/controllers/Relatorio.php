@@ -727,54 +727,61 @@ private function create_relatorio($filtro)
     //Vamos inserir os filtros escolhidos pelo usuário:
     $this->relatorio_model->insert_filtro_data($filtro['data_inicial'], $filtro['data_final'], $id_relatorio);
 
-    foreach($filtro['setor'] as $setor){
+    foreach($filtro['setor'] as $setor)
+    {
         $this->relatorio_model->insert_filtro_setor($id_relatorio, $setor);
     }
 
-    foreach($filtro['tipo'] as $tipo){
+    foreach($filtro['tipo'] as $tipo)
+    {
         $this->relatorio_model->insert_filtro_tipo($id_relatorio, $tipo);
     }
 
     $funcionario = $this->funcionario_model->get(['funcionario_pk' => $filtro['funcionario_fk']])[0];
 
-        // vamos atribuir apenas as ordens de serviço que estiverem com a situação atual == 1, ou seja, que estão em ABERTO.
+    // vamos atribuir apenas as ordens de serviço que estiverem com a situação atual == 1, ou seja, que estão em ABERTO.
     foreach($ordens_servicos as $os)
     {
-            //UMA ORDEM DEVE PERTENCER A APENAS UM RELATÓRIO DO MESMO DIA.
-            //TEMOS QUE VERIFICAR SE A ORDEM JÁ NÃO ESTÁ ATRIBUÍDA A UM RELATÓRIO HOJE.
-        //if($os->situacao_atual_pk == '1'){
+        $tem_imagem = false;
 
-            $this->relatorio_model->insert_relatorios_os(
-                array(
-                    'relatorio_fk' => $id_relatorio,
-                    'os_fk' => $os->ordem_servico_pk
-                )
-            );
-            //VAMOS PEGAR O ID DO ULTIMO HISTORICO DA ORDEM PARA PODERMOS PEGAR A IMAGEM:
-            $id_ultimo_historico = $this->historico_model->get_id_last_historico($os->ordem_servico_pk);
-            $imagem = $this->historico_model->get_imagem($id_ultimo_historico);
+        //UMA ORDEM DEVE PERTENCER A APENAS UM RELATÓRIO DO MESMO DIA.
+        //TEMOS QUE VERIFICAR SE A ORDEM JÁ NÃO ESTÁ ATRIBUÍDA A UM RELATÓRIO HOJE.
+        $this->relatorio_model->insert_relatorios_os(
+            array(
+                'relatorio_fk' => $id_relatorio,
+                'os_fk' => $os->ordem_servico_pk
+            )
+        );
 
-            // echo 'id_ultimo_historico: '.$id_ultimo_historico.' imagem: '.$imagem; 
-            // die();
+        // Pegamos todos os históricos para ver qual deles tem a última foto
+        $historicos = $this->historico_model->get_all_historico_decrescente($os->ordem_servico_pk);
 
-            $return = $this->historico_model->insert(
-                array(
-                    'ordem_servico_fk' => $os->ordem_servico_pk,
-                    'funcionario_fk' => $funcionario->funcionario_pk,
-                        'situacao_fk' => 2, //EM ANDAMENTO
-                        'historico_ordem_comentario' => "Atribuída a(o) ".$funcionario->pessoa_nome,
-                    )
-            );
-
-            if($imagem != false){ //é porque existe imagem:
-                $this->historico_model->insert_imagem([
-                    'historico_ordem_fk' => $return['id'], 
-                    'imagem_situacao_caminho' => $imagem
-                ]);
+        foreach ($historicos as $h)
+        {
+            if($h->imagem_situacao_caminho != null)
+            {
+                $tem_imagem = true;
+                break;
             }
+        }
 
+        $return = $this->historico_model->insert(
+            array(
+                'ordem_servico_fk' => $os->ordem_servico_pk,
+                'funcionario_fk' => $funcionario->funcionario_pk,
+                    'situacao_fk' => 2, //EM ANDAMENTO
+                    'historico_ordem_comentario' => "Atribuída a(o) ".$funcionario->pessoa_nome,
+                )
+        );
 
-        //}
+        if ($tem_imagem)
+        {
+            $this->historico_model->insert_imagem([
+                'historico_ordem_fk' => $return['id'], 
+                'imagem_situacao_caminho' => $h->imagem_situacao_caminho
+            ]);
+        }
+
     }
     if($id_relatorio)
     {
