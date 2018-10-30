@@ -262,17 +262,19 @@
                                                 </div>
                                             </div>
                                             <div class="row form-group">
+                                                <div class="col-12 col-md-4">
+                                                    <label for="referencia-input" class=" form-control-label">Ponto de Referência</label>
+                                                    <input type="text" id="referencia-input" name="referencia" class="form-control referencia">
+                                                    <small class="form-text text-muted">Insira um ponto de referência para buscar o local</small>
+                                                </div>
                                                 <div class="col-12 col-md-8">
                                                     <label for="logradouro_nome">Logradouro</label>
                                                     <input class="form-control input-dropdown loading endereco" type="text" id="logradouro-input" name="logradouro_nome" autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]'>
                                                     <ul class="dropdown-menu" data-return = "#logradouro_pk" data-next="#numero-input">
                                                     </ul>
-                                                    <small class="form-text text-muted">Insira o logradouro ou um ponto de referência para buscar o local</small>
+                                                    <small class="form-text text-muted">Insira o logradouro para buscar o local</small>
                                                 </div>
-                                                <div class="col-12 col-md-4">
-                                                    <label for="referencia-input" class=" form-control-label">Ponto de Referência</label>
-                                                    <input type="text" id="referencia-input" name="referencia" class="form-control referencia">
-                                                </div>
+                                                
                                             </div>
                                             <div class="row form-group">
                                                <div class="col-12 col-md-2">
