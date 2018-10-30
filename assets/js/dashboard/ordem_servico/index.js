@@ -715,13 +715,13 @@ get_historico = (id) =>
                     historico.funcionario_foto = './assets/uploads/perfil_images/default.png';
                 }
 
-                timeline += create_timeline(historico.comentario, historico.funcionario_foto, historico.funcionario, historico.situacao, historico.data);
+                timeline += create_timeline(historico.comentario, historico.funcionario_foto, historico.funcionario, historico.situacao, reformatDate(historico.data));
 
                 if (historico.foto != null) {
-                    html += create_carousel_item(historico.comentario, historico.foto, historico.funcionario, historico.situacao, historico.data, active);
+                    html += create_carousel_item(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                     active = "";
                 } else {
-                    html += create_carousel_item(historico.comentario, 'no-image.png', historico.funcionario, historico.situacao, historico.data, active);
+                    html += create_carousel_item(historico.comentario, 'no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                 }
             });
 
