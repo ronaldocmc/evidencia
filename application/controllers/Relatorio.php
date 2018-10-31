@@ -51,6 +51,7 @@ class Relatorio extends CRUD_Controller
             3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
             4 => base_url('assets/css/modal_map.css'),
             5 => base_url('assets/css/timeline.css'),
+            6 => base_url('assets/css/style_card.css'),
         ]);
 
         $this->session->set_flashdata('scripts',[

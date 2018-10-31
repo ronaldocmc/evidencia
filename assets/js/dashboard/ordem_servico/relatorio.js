@@ -152,15 +152,14 @@ $('#filtrar').prop('disabled',false);
 });
 });
 
+
 function remove_data() {
     $("#v_descricao").html('');
     $("#v_prioridade").html('');
     $("#v_procedencia").html('');
     $("#v_setor").html('');
     $("#v_servico").html('');
-
-    $('.carousel-inner').html('');
-    $('.carousel-indicators').html('');
+    $('#card_slider').html('');
     $('#timeline').html('');
     $('#v_loading').show();
 }
@@ -183,28 +182,46 @@ function toDataURL(url, callback) {
 function request_data(id) {
     remove_data();
 
+
     $.ajax({
         url: base_url + '/ordem_servico/json_especifico/' + id + '/' + 0,
         dataType: "json",
         success: function (response) {
 
-
-
             $("#v_descricao").html(response.ordem.descricao);
             $("#v_prioridade").html(response.ordem.prioridade);
             $("#v_procedencia").html('App');
-            $("#v_setor").html('1');
             $("#v_servico").html(response.ordem.servico);
 
             var html = "";
             var indicators = "";
-            var active = "active";
+            var active = " active";
             var timeline = "";
 
 
+            if(response.ordem.historico.length > 2){
+                html +=     '<div id="myCarousel" class="carousel slide"data-ride="carousel">' +
+                '<div class="carousel-inner row w-100 mx-auto"></div>' +
+                '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
+                '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
+                '<span class="sr-only">Previous</span>' +
+                '</a>' +
+                '<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">' +
+                '<span class="carousel-control-next-icon" style="color: black;" aria-hidden="true"></span>' +
+                '<span class="sr-only">Next</span>'+
+                '</a>'+
+                '</div>';
+            }else{
+
+                html += '<div id="card_imagens">' +
+                '<div class="carousel-inner row w-100 mx-auto"></div>' +
+                '</div>';
+            }
+
+            $('#card_slider').html(html);
+
             response.ordem.historico.map((historico, i) => {
 
-                indicators += '<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>';
                 if (historico.comentario == null) {
                     historico.comentario = "Nenhum comentário adicionado.";
                 }
@@ -213,25 +230,25 @@ function request_data(id) {
                 }else{
                     timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, 'default.png', historico.situacao, reformatDate(historico.data));
                 }
-''
                 if (historico.foto != null) {
-                    html += create_carousel_item(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                    active = "";
+                    html += create_cards(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    active ="";
                 } else {
-                    html += create_carousel_item(historico.comentario, 'assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    html += create_cards(historico.comentario, './assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    active ="";
                 }
 
             });
 
-                // console.log(html);
 
                 $('#v_loading').hide();
                 $('.carousel-inner').html(html);
-                $('.carousel-indicators').html(indicators);
                 $('#timeline').html(timeline);
             }
         });
 }
+
+
 
 function create_timeline(comentario, src, funcionario, funcionario_foto, situacao, data) {
     return '<div class="message-item">' +
@@ -246,10 +263,6 @@ function create_timeline(comentario, src, funcionario, funcionario_foto, situaca
     '<span class="qa-message-when">' +
     '<span class="qa-message-when-data">' + data + '</span>' +
     '</span>' +
-    '<span class="qa-message-who">' +
-    '<span class="qa-message-who-pad"> por </span>' +
-    '<span class="qa-message-who-data"><a href="#">' + funcionario + '</a></span>' +
-    '</span>' +
     '</div>' +
     '</div>' +
     '</div>' +
@@ -261,18 +274,21 @@ function create_timeline(comentario, src, funcionario, funcionario_foto, situaca
     '</div></div>';
 }
 
-function create_carousel_item(description, src, funcionario, situacao, data, active) {
+function create_cards(description, src, funcionario, situacao, data, active) {
 
-    return '<div align="center" class="carousel-item ' + active + '">' +
-    '<img class="d-block" style="height: 400px;" src="../'  + src + '" alt="Evidência">' +
-    '<div class="carousel-caption d-none d-lg-block">' +
-    '<p>' + description + '</p>' +
-    '<p>Funcionário: ' + funcionario + '</p>' +
-    '<p>Situação: ' + situacao + '</p>' +
-    '<p>Data: ' + data + '</p>' +
+    return '<div class="carousel-item col-md-4' + active + '">' +
+    '<div class="card">' +
+    '<img class="card-img-top img-fluid" src="' + "." + src +'">'+
+    '<div class="card-body">' +
+    '<h4 class="card-title">'+ situacao + '</h4>' +
+    '<p class="card-text">'+ description +'</p>' +  
+    '<p class="card-text"><small class="text-muted">'+ data + '</small></p>' +
+    '<p class="card-text"><small class="text-muted"><b>'+ funcionario + '</b></small></p>' +
+    '</div>' +
     '</div>' +
     '</div>';
 }
+
 
 function criarMarcacao(location) {
     main_marker = new google.maps.Marker({
@@ -449,113 +465,5 @@ function filter(marker) {
     }
 }
 
-}
-
-function addMarkers(){
-    markers_situacao = ordens_servico.map(function (ordem, i) {
-
-        let imagem = '../assets/img/icons/Markers/Status/';
-
-        if(ordem.departamento == "1"){
-            imagem += "Coleta/";
-        }
-
-        if(ordem.departamento == "2"){
-            imagem += "Limpeza/";
-        }
-
-        if(ordem.prioridade == "1"){
-            imagem += "Baixa/";
-        }
-
-        if(ordem.prioridade == "2"){
-            imagem += "Alta/";
-        }
-
-        if(ordem.prioridade == "4"){
-            imagem += "Media/";
-        }
-
-
-
-
-
-        switch(ordem.servico){
-            case "1":
-            imagem +=  "Marker_Rua.png";
-            break;
-            case "2":
-            imagem +=  "Marker_Fossa.png";
-            break;
-            case "3":
-            imagem +=  "Marker_Animal_Morto.png";
-            break;
-            case "4":
-            imagem +=  "Marker_Sofa.png";
-            break;
-            case "5":
-            imagem +=  "Marker_Galhos.png";
-            break;
-            case "6": 
-            imagem += "Marker_Lixo.png";
-            break;
-            case "7": 
-            imagem += "Marker_Lixao.png";
-            break;
-            case "8": 
-            imagem += "Marker_Eletro.png";
-            break;
-            case "9": 
-            imagem += "Marker_Feira.png";
-            break;
-            case "10": 
-            imagem += "Marker_Mobiliario.png";
-            break;
-            case "11": 
-            imagem += "Marker_Madeira.png";
-            break;
-            case "12": 
-            imagem += "Marker_Carpinagem.png";
-            break;
-            case "13": 
-            imagem += "Marker_Carpinagem.png";
-            break;
-            case "14": 
-            imagem += "Marker_Entulho.png";
-            break;
-            case "15": 
-            imagem += "Marker_Escola.png";
-            break;
-            case "16": 
-            imagem += "Marker_Grama.png";
-            break;
-            case "17": 
-            imagem = "";
-            break;
-            case "18": 
-            imagem += "Marker_Cacamba.png";
-            break;
-
-        }
-
-        var marker = new google.maps.Marker({
-            position: { lat: parseFloat(ordem.latitude), lng: parseFloat(ordem.longitude) },
-            map: main_map,
-            icon: imagem,
-            id: ordem.id,
-            departamento: ordem.departamento,
-            tipo_servico: ordem.tipo_servico,
-            servico: ordem.servico,
-            situacao: ordem.situacao,
-            prioridade: ordem.prioridade
-        });
-
-        marker.addListener('click', function () {
-            main_map.panTo(marker.getPosition());
-            request_data(this.id);
-            $('#v_evidencia').modal('show');
-        });
-        return marker;
-    });
 }
 
