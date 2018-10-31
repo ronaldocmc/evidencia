@@ -193,19 +193,7 @@
                     </div>
 
 
-                    <div class="container-fluid" style="margin-top: 50px;">
-                        <!-- <div id="myCarousel" class="carousel slide"data-ride="carousel"> -->
-                            <div id="card-imagens">
-                            <div class="carousel-inner row w-100 mx-auto"></div>
-                            <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                              <span class="sr-only">Previous</span>
-                          </a>
-                          <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-                              <span class="carousel-control-next-icon" style="color: black;" aria-hidden="true"></span>
-                              <span class="sr-only">Next</span>
-                          </a>
-                      </div>
+                    <div class="container-fluid" id="card_slider" style="margin-top: 50px;">
                   </div>
 <!--                     <div class="container-fluid">
                       <div id="myCarousel" class="carousel slide" data-ride="carousel">
