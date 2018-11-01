@@ -27,10 +27,10 @@ class Relatorio_model extends CI_Model
      */
     public function get($where = null)
     {
-        $this->db->select('ordens_servicos.ordem_servico_pk,ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_cod, ordens_servicos.ordem_servico_status, servicos.servico_nome,  prioridades.prioridade_nome, procedencias.procedencia_nome, imagens_situacoes.imagem_situacao_caminho, coordenadas.coordenada_lat, coordenadas.coordenada_long, setores.setor_nome, (SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual,(SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial,
+        $this->db->select('ordens_servicos.ordem_servico_pk,ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_cod, ordens_servicos.ordem_servico_status, servicos.servico_nome,  prioridades.prioridade_nome, procedencias.procedencia_nome, coordenadas.coordenada_lat, coordenadas.coordenada_long, setores.setor_nome, (SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual,(SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial,
            (SELECT historicos_ordens.historico_ordem_tempo FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as data_criacao,
            tipos_servicos.tipo_servico_nome, 
-           locais.local_complemento, locais.local_num, logradouros.logradouro_nome, bairros.bairro_nome, municipios.municipio_nome, municipios.estado_fk, coordenadas.local_fk, departamento_nome
+           locais.local_complemento, locais.local_num, logradouros.logradouro_nome, bairros.bairro_nome, municipios.municipio_nome, municipios.estado_fk, coordenadas.local_fk, departamento_nome, relatorios_os.os_verificada as status_os
 
            ')
         ;
@@ -38,7 +38,7 @@ class Relatorio_model extends CI_Model
         $this->db->join('ordens_servicos', 'relatorios_os.os_fk = ordens_servicos.ordem_servico_pk');
         $this->db->join('servicos','servicos.servico_pk = ordens_servicos.servico_fk');
         $this->db->join('historicos_ordens','historicos_ordens.ordem_servico_fk =  ordens_servicos.ordem_servico_pk');
-        $this->db->join('imagens_situacoes', 'historicos_ordens.historico_ordem_pk = imagens_situacoes.historico_ordem_fk', 'LEFT');
+        //$this->db->join('imagens_situacoes', 'historicos_ordens.historico_ordem_pk = imagens_situacoes.historico_ordem_fk', 'LEFT');
         $this->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
         $this->db->join('situacoes','situacoes.situacao_pk = historicos_ordens.situacao_fk');
         $this->db->join('prioridades','prioridades.prioridade_pk = ordens_servicos.prioridade_fk');
@@ -87,6 +87,28 @@ class Relatorio_model extends CI_Model
         }
     }
 
+    public function get_os_nao_verificadas($id_relatorio = NULL)
+    {
+        $this->db->select('*');
+        $this->db->from('relatorios_os');
+        $this->db->join('relatorios', 'relatorios_os.relatorio_fk = relatorios.relatorio_pk');
+        $this->db->where('relatorios.status', '0');
+        $this->db->where('relatorios_os.os_verificada', '0');
+        if($id_relatorio != NULL){
+            $this->db->where('relatorios.relatorio_pk', $id_relatorio);
+        }
+
+        $result =  $this->db->get()->result();
+        
+        if ($result) 
+        {
+            return ($result);
+        } 
+        else 
+        {
+            return false;
+        }
+    }
 
     public function get_relatorios(){
         $this->db->select('*');
@@ -139,6 +161,25 @@ class Relatorio_model extends CI_Model
 
     }
 
+    public function get_objects($where = NULL)
+    {
+        $this->db->select("*");
+        $this->db->from('relatorios');
+        if ($where !== NULL) {
+            if (is_array($where)) {
+                foreach ($where as $field=>$value) {
+                    $this->db->where($field, $value);
+                }
+            } else {
+                $this->db->where(self::PRI_INDEX, $where);
+            }
+        }
+        $result = $this->db->get()->result();
+        return $result;
+
+
+    }
+
     public function get_filtro_relatorio_data($id_relatorio){
         $this->db->select('*');
         $this->db->from('filtros_relatorios_data');
@@ -177,10 +218,12 @@ class Relatorio_model extends CI_Model
         }
     }
 
-    public function get_relatorio_id_do_dia($id_funcionario){
+    public function get_relatorio_do_funcionario($id_funcionario){
        $this->db->select('relatorio_pk');
        $this->db->from('relatorios');
-       $this->db->where('DAY(data_criacao) = DAY(NOW())');
+       //$this->db->where('DAY(data_criacao) = DAY(NOW())');
+       $this->db->order_by('data_criacao', 'DESC');
+       $this->db->where('status = 0');
        $this->db->where('funcionario_fk', $id_funcionario);
 
         $result = $this->db->get()->row();
@@ -263,6 +306,13 @@ class Relatorio_model extends CI_Model
     }
 
 
+    public function update_relatorios_os_verificada($where = array(), $status)
+    {
+        $data = array('os_verificada' => $status);
+        $this->db->update('relatorios_os', $data, $where);
+    }
+
+
     public function delete_relatorios_os($where = array())
     {
         if (!is_array($where)) {
@@ -315,6 +365,15 @@ class Relatorio_model extends CI_Model
             $where = array(self::PRI_INDEX => $where);
         }
         $this->db->delete(self::TABLE_NAME, $where);
+        return $this->db->affected_rows();
+    }
+
+
+    public function delete_relatorio_os($os)
+    {
+        $where = array('os_fk' => $os);
+        $this->db->delete('relatorios_os', $where);
+
         return $this->db->affected_rows();
     }
 }

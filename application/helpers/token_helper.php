@@ -52,34 +52,12 @@ function verify_token_timestamp($timestamp)
     return false;
 }
 
-// function token_encrypt($Buffer)
-// {
-//     $BlockSize = mcrypt_get_block_size(
-//         MCRYPT_RIJNDAEL_128, MCRYPT_MODE_ECB);
-//     $PadSize = $BlockSize - (strlen($Buffer) % $BlockSize);
-//     $Buffer .= str_repeat(chr($PadSize), $PadSize);
-//     $Buffer = mcrypt_encrypt(MCRYPT_RIJNDAEL_128,
-//         KEY, $Buffer, MCRYPT_MODE_ECB);
-//     return base64_encode($Buffer);
-// }
-
-// function token_decrypt($Buffer)
-// {
-//     $Buffer = base64_decode($Buffer);
-//     $Buffer = mcrypt_decrypt(MCRYPT_RIJNDAEL_128,
-//         KEY, $Buffer, MCRYPT_MODE_ECB);
-//     $Length = strlen($Buffer);
-//     $PadSize = ord($Buffer[$Length - 1]);
-//     $Buffer = substr($Buffer, 0, strlen($Buffer) - $PadSize);
-//     return $Buffer;
-// }
-
 function token_encrypt($string){
     $output = false;
  
     $encrypt_method = "AES-256-CBC";
-    $secret_key = 'This is my secret key';
-    $secret_iv = 'This is my secret iv';
+    $secret_key = '2925612f39ae98f805b86ce5400b70df';
+    $secret_iv = 'e3317304c70e3f69a9ef8895c69de64b';
  
     // hash
     $key = hash('sha256', $secret_key);
@@ -95,8 +73,8 @@ function token_decrypt($string){
     $output = false;
  
     $encrypt_method = "AES-256-CBC";
-    $secret_key = 'This is my secret key';
-    $secret_iv = 'This is my secret iv';
+    $secret_key = '2925612f39ae98f805b86ce5400b70df';
+    $secret_iv = 'e3317304c70e3f69a9ef8895c69de64b';
  
     // hash
     $key = hash('sha256', $secret_key);

@@ -3,11 +3,11 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(dirname(__FILE__)."\Response.php");   
+require_once(dirname(__FILE__)."/Response.php");   
 
-require_once APPPATH."core\CRUD_Controller.php"; 
-require_once dirname(__FILE__) . "\Response.php";
-require_once 'vendor\autoload.php';
+require_once APPPATH."core/CRUD_Controller.php"; 
+require_once dirname(__FILE__) . "/Response.php";
+require_once 'vendor/autoload.php';
 
 class Relatorio extends CRUD_Controller 
 {
@@ -21,11 +21,11 @@ class Relatorio extends CRUD_Controller
 
     function mapa()
     {
-        $this->load->model('prioridade_model');
-        $this->load->model('situacao_model');
-        $this->load->model('departamento_model');
-        $this->load->model('servico_model');
-        $this->load->model('tipo_servico_model');
+        $this->load->model('Prioridade_model', 'prioridade_model');
+        $this->load->model('Situacao_model', 'situacao_model');
+        $this->load->model('Departamento_model', 'departamento_model');
+        $this->load->model('Servico_model', 'servico_model');
+        $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
         $this->load->helper('form');
 
         $prioridades = $this->prioridade_model->get([
@@ -51,6 +51,7 @@ class Relatorio extends CRUD_Controller
             3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
             4 => base_url('assets/css/modal_map.css'),
             5 => base_url('assets/css/timeline.css'),
+            6 => base_url('assets/css/style_card.css'),
         ]);
 
         $this->session->set_flashdata('scripts',[
@@ -341,8 +342,6 @@ class Relatorio extends CRUD_Controller
             'situacao' => $situacao
         ]);
 
-
-
         $this->form_validation->set_rules(
             'relatorio',
             'relatorio',
@@ -361,7 +360,6 @@ class Relatorio extends CRUD_Controller
             'trim|required'
         );
 
-        // var_dump($this->input->post());die();
 
         if (true)
         {
@@ -399,9 +397,6 @@ class Relatorio extends CRUD_Controller
 
             $data['ordens'] = $this->ordem_servico_model->get_os_relatorio($where);
 
-            echo "<pre>";
-            // var_dump($data['ordens']);die();
-
             $data['data'] = date('d/m/Y');
             $data['empresa'] = 'Prudenco';
 
@@ -421,59 +416,98 @@ class Relatorio extends CRUD_Controller
 
     public function novo_relatorio()
     {
+        $this->load->model('Servico_model', 'servico_model');
+        $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
+        $this->load->model('Setor_model', 'setor_model');
+        $this->load->model('Funcionario_model', 'funcionario_model');
 
-      $this->load->model('setor_model');
-      $this->load->model('tipo_servico_model');
-      $this->load->model('servico_model');
-      $this->load->model('funcionario_model');
+        $this->session->flashdata('css', [
+            0 => base_url('assets/css/modal_desativar.css')
+        ]);
 
-      $this->session->set_flashdata('scripts',[
-        0 => base_url('assets/js/constants.js'),
-        1 => base_url('assets/js/jquery.noty.packaged.min.js'),
-        2 => base_url('assets/js/dashboard/relatorio/relatorios_gerais.js'),
-    ]);
-      load_view([
-        0 => [
-            'src' => 'dashboard/administrador/relatorio/novo_relatorio',
-            'params' => [
-                'setores' => $this->setor_model->get(),
-                'tipos_servicos' => $this->tipo_servico_model->get(),
-                'servicos' => $this->servico_model->get(),
-                //pegamos os motoristas de caminhão
-                'motoristas_de_caminhao' => $this->funcionario_model->get(['funcionarios_funcoes.funcao_fk'=>'6']),
-                'message' => $this->session->flashdata('error'),
+        $this->session->set_flashdata('scripts',[
+            0 => base_url('assets/js/constants.js'),
+            1 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            2 => base_url('assets/js/dashboard/relatorio/relatorios_gerais.js'),
+            3 => base_url('assets/js/utils.js')
+        ]);
+
+        load_view([
+            0 => [
+                'src' => 'dashboard/administrador/relatorio/novo_relatorio',
+                'params' => [
+                    'setores' => $this->setor_model->get(),
+                    'tipos_servicos' => $this->tipo_servico_model->get(),
+                    'servicos' => $this->servico_model->get(),
+                    //pegamos os motoristas de caminhão
+                    'motoristas_de_caminhao' => $this->funcionario_model->get(['funcionarios_funcoes.funcao_fk'=>'6']),
+                    'message' => $this->session->flashdata('error'),
+                ]
             ]
-        ]
-    ],'administrador');    
-  }
+        ],'administrador');    
+    } 
 
-  public function insert_novo_relatorio()
-  {
+    public function insert_novo_relatorio()
+    {
+        $this->load->model('relatorio_model');
+        $response = new Response();
+
+
+        //VERIFICANDO SE EXISTE UM RELATÓRIO PARA O FUNCIONÁRIO QUE ESTÁ EM ANDAMENTO:
+        $relatorios_em_andamento = $this->relatorio_model->get_objects(
+            ['status' => 0, 'funcionario_fk' => $this->input->post('funcionario_fk')]);
+        //ou seja, se existir relatórios em andamento:
+        if(count($relatorios_em_andamento) > 0){ 
+            $response->set_code(Response::BAD_REQUEST);
+            $response->set_data(['message' => 'Há um relatório em andamento para este funcionário que necessita ser finalizado.']); 
+            $response->send();
+            die();
+        }
 
         //pegamos os filtros que o usuário marcou na página anterior: qual(is) os setores, qual(is) os tipos de serviço e qual o funcionário responsável.
-    $filtro = $this->input->post();
+        $filtro = $this->input->post();
 
-    $message = $this->valida_filtro($filtro);
-    if($message == "true"){
+        $message = $this->valida_filtro($filtro);
+        if($message == "true"){
         //criamos o relatório e suas respectivas ordens de serviço, de acordo com o filtro.
-        $id_relatorio = $this->create_relatorio($filtro);  
-        redirect('relatorio/detalhes_relatorio/'.$id_relatorio); 
-    }else{
-        $this->session->set_flashdata('error', $message);
-        redirect('relatorio/novo_relatorio');
+            $resposta = $this->create_relatorio($filtro);  
+
+        //$response recebe o ID do relatório se deu tudo certo, ou a mensagem do erro.
+            if(is_int($resposta)){
+                $id_relatorio = $resposta;
+                //redirect('relatorio/detalhes_relatorio/'.$id_relatorio); 
+                $response->set_code(Response::SUCCESS);
+                $response->set_data([
+                    'id' => $id_relatorio, 
+                    'message' => 'Relatório criado com sucesso!<br>Aguarde enquanto estamos recarregando a página ...'
+                ]); 
+            }else{
+                //$this->session->set_flashdata('error', $resposta);
+                //redirect('relatorio/novo_relatorio');
+                $response->set_code(Response::BAD_REQUEST);
+                $response->set_data(['message' => $resposta]); 
+            }
+
+        }else{
+            //$this->session->set_flashdata('error', $message);
+            //redirect('relatorio/novo_relatorio');
+            $response->set_code(Response::BAD_REQUEST);
+            $response->set_data(['message' => $message]); 
+        }
+
+        $response->send();
+
+
     }
 
-    
-}
+    public function get_string_filtro_data($filtro_data){
+        return 'Relatório contendo as ordens de serviço emitidas do dia '.date('d/m/Y', strtotime($filtro_data->filtros_relatorios_data_inicio)).' até '.date('d/m/Y', strtotime($filtro_data->filtros_relatorios_data_fim));
+    }
 
-public function get_string_filtro_data($filtro_data){
-    return 'Relatório contendo as ordens de serviço emitidas do dia '.date('d/m/Y', strtotime($filtro_data->filtros_relatorios_data_inicio)).' até '.date('d/m/Y', strtotime($filtro_data->filtros_relatorios_data_fim));
-}
+    public function get_string_filtro_setores($filtro_setores){
+       $string = '';
 
-public function get_string_filtro_setores($filtro_setores){
-     $string = '';
-
-    for($i = 0; $i < count($filtro_setores); $i++){
+       for($i = 0; $i < count($filtro_setores); $i++){
         if($i == 0){ //se for o primeiro registro
         }else if($i == count($filtro_setores) -1){ //se for o ultimo registro:
             $string.= ' e ';
@@ -487,9 +521,9 @@ public function get_string_filtro_setores($filtro_setores){
 }
 
 public function get_string_filtro_tipos_servicos($filtro_tipos_servicos){
-     $string = '';
+   $string = '';
 
-    for($i = 0; $i < count($filtro_tipos_servicos); $i++){
+   for($i = 0; $i < count($filtro_tipos_servicos); $i++){
         if($i == 0){ //se for o primeiro registro
         }else if($i == count($filtro_tipos_servicos) -1){ //se for o ultimo registro:
             $string.= ' e ';
@@ -526,10 +560,19 @@ public function detalhes_relatorio($id_relatorio)
 
         $ordens_servicos = $this->get_ordens_relatorio($id_relatorio);
 
+        //var_dump($ordens_servicos); die();
+
         //arrumando a data:
         if($ordens_servicos != false){
             foreach($ordens_servicos as $os){
                 $os->data_criacao = date('d/m/Y H:i:s', strtotime($os->data_criacao));
+
+                //Se não tiver sido entregue, vamos mostrar: Não Finalizado, se tiver, vamos printar a situação atual
+                if($os->status_os == 2){
+                    $os->status_os_string = 'Não Finalizado';
+                }else{
+                    $os->status_os_string = $os->situacao_atual;
+                }
             }
         }
 
@@ -592,8 +635,8 @@ public function detalhes_relatorio($id_relatorio)
 
         load_view([
             0 => [
-             'src' => 'dashboard/administrador/relatorio/detalhe_relatorio',
-             'params' => [
+               'src' => 'dashboard/administrador/relatorio/detalhe_relatorio',
+               'params' => [
                 'ordens_servicos' => $ordens_servicos,
                 'funcionario' => $funcionario,
                 'funcionarios' => $funcionarios,
@@ -621,7 +664,7 @@ private function validateDate($date) {
 }
 
 private function valida_filtro($filtro){
-   
+
     if(isset($filtro['setor'])){
         if(isset($filtro['tipo'])){
             if($this->validateDate($filtro['data_inicial'])){
@@ -656,55 +699,95 @@ private function valida_filtro($filtro){
 
 private function create_relatorio($filtro)
 {
-    $this->load->model('ordem_servico_model');
-    $this->load->model('relatorio_model');
-    $this->load->model('funcionario_model');
-    $this->load->model('historico_model');
+
+    set_time_limit(180);
+
+    $this->load->model('Ordem_Servico_model', 'ordem_servico_model');
+    $this->load->model('Relatorio_model', 'relatorio_model');
+    $this->load->model('Funcionario_model', 'funcionario_model');
+    $this->load->model('Historico_model', 'historico_model');
 
     $resposta = $this->valida_filtro($filtro);
 
     // vamos filtrar as OS que pertencerão a este relatório.
     $ordens_servicos = $this->ordem_servico_model->get_os_novo_relatorio($filtro);
+    $ordens_servicos_em_aberto = [];
+    foreach($ordens_servicos as $os)
+    {
+        if($os->situacao_atual_pk == '1')
+        {
+            $ordens_servicos_em_aberto[] = $os;
+        }
+
+    }
+    $ordens_servicos = $ordens_servicos_em_aberto;
+
+    //vamos bloquear a criação de relatórios sem ordens de serviço.
+    if(count($ordens_servicos) == 0)
+    {
+        return "Não é possível criar um relatório sem ordens de serviço.";
+    }
 
     $id_relatorio = $this->relatorio_model->insert(['funcionario_fk' => $filtro['funcionario_fk']]);
 
     //Vamos inserir os filtros escolhidos pelo usuário:
     $this->relatorio_model->insert_filtro_data($filtro['data_inicial'], $filtro['data_final'], $id_relatorio);
 
-    foreach($filtro['setor'] as $setor){
+    foreach($filtro['setor'] as $setor)
+    {
         $this->relatorio_model->insert_filtro_setor($id_relatorio, $setor);
     }
 
-    foreach($filtro['tipo'] as $tipo){
+    foreach($filtro['tipo'] as $tipo)
+    {
         $this->relatorio_model->insert_filtro_tipo($id_relatorio, $tipo);
     }
 
     $funcionario = $this->funcionario_model->get(['funcionario_pk' => $filtro['funcionario_fk']])[0];
 
-        // vamos atribuir apenas as ordens de serviço que estiverem com a situação atual == 1, ou seja, que estão em ABERTO.
+    // vamos atribuir apenas as ordens de serviço que estiverem com a situação atual == 1, ou seja, que estão em ABERTO.
     foreach($ordens_servicos as $os)
     {
-            //UMA ORDEM DEVE PERTENCER A APENAS UM RELATÓRIO DO MESMO DIA.
-            //TEMOS QUE VERIFICAR SE A ORDEM JÁ NÃO ESTÁ ATRIBUÍDA A UM RELATÓRIO HOJE.
-        if($os->situacao_atual_pk == 1){
+        $tem_imagem = false;
 
-            $this->relatorio_model->insert_relatorios_os(
-                array(
-                    'relatorio_fk' => $id_relatorio,
-                    'os_fk' => $os->ordem_servico_pk
-                )
-            );
+        //UMA ORDEM DEVE PERTENCER A APENAS UM RELATÓRIO DO MESMO DIA.
+        //TEMOS QUE VERIFICAR SE A ORDEM JÁ NÃO ESTÁ ATRIBUÍDA A UM RELATÓRIO HOJE.
+        $this->relatorio_model->insert_relatorios_os(
+            array(
+                'relatorio_fk' => $id_relatorio,
+                'os_fk' => $os->ordem_servico_pk
+            )
+        );
 
-            $this->historico_model->insert(
-                array(
-                    'ordem_servico_fk' => $os->ordem_servico_pk,
-                    'funcionario_fk' => $funcionario->funcionario_pk,
-                        'situacao_fk' => 2, //EM ANDAMENTO
-                        'historico_ordem_comentario' => "Atribuída a(o) ".$funcionario->pessoa_nome,
-                    )
-            );
+        // Pegamos todos os históricos para ver qual deles tem a última foto
+        $historicos = $this->historico_model->get_all_historico_decrescente($os->ordem_servico_pk);
 
+        foreach ($historicos as $h)
+        {
+            if($h->imagem_situacao_caminho != null)
+            {
+                $tem_imagem = true;
+                break;
+            }
         }
+
+        $return = $this->historico_model->insert(
+            array(
+                'ordem_servico_fk' => $os->ordem_servico_pk,
+                'funcionario_fk' => $funcionario->funcionario_pk,
+                    'situacao_fk' => 2, //EM ANDAMENTO
+                    'historico_ordem_comentario' => "Atribuída a(o) ".$funcionario->pessoa_nome,
+                )
+        );
+
+        if ($tem_imagem)
+        {
+            $this->historico_model->insert_imagem([
+                'historico_ordem_fk' => $return['id'], 
+                'imagem_situacao_caminho' => $h->imagem_situacao_caminho
+            ]);
+        }
+
     }
     if($id_relatorio)
     {
@@ -717,13 +800,13 @@ private function create_relatorio($filtro)
 }
 
     /**
-    Retorna o relatório do dia do funcionário
+    Retorna o relatório que está em aberto do funcionário
     **/
-    public function get_relatorio_do_dia($id_funcionario){
+    public function get_relatorio_do_funcionario($id_funcionario){
         $this->load->model('relatorio_model');
 
-        //precisamos descobrir o id do relatório do dia:
-        $relatorio = $this->relatorio_model->get_relatorio_id_do_dia($id_funcionario);
+        //precisamos descobrir o id do relatório que está em aberto do funcionário:
+        $relatorio = $this->relatorio_model->get_relatorio_do_funcionario($id_funcionario);
         
         //se o relatório existir:
         if($relatorio)
@@ -742,7 +825,8 @@ private function create_relatorio($filtro)
     }
 
 
-    public function get_ordens_relatorio($id_relatorio){
+    public function get_ordens_relatorio($id_relatorio)
+    {
         $this->load->model('relatorio_model');
 
         $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $id_relatorio]);
@@ -751,22 +835,47 @@ private function create_relatorio($filtro)
     }
 
     /**
+    * Vamos verificar se o relatório já foi iniciado se o funcionário
+    * pegar o relatório através do celular.
+    **/
+    public function verifica_se_relatorio_ja_foi_iniciado($id_relatorio)
+    {
+        $relatorio = $this->relatorio_model->get_relatorio($id_relatorio);
+        if($relatorio->pegou_no_celular == 1)
+        {
+            return true; //já foi iniciado
+        }else
+        {
+            return false; //não foi iniciado
+        }
+    }
+
+
+    /**
     Recebe por parâmetro o id do relatório
     **/
-    public function change_employee($id){
+    public function change_employee($id)
+    {
         $this->load->model('relatorio_model');
 
         $response = new Response();
 
-        $resposta = $this->relatorio_model->update($this->input->post(), ['relatorio_pk' => $id]);
+        if(!$this->verifica_se_relatorio_ja_foi_iniciado($id))
+        {
+            $resposta = $this->relatorio_model->update($this->input->post(), ['relatorio_pk' => $id]);
 
-        if($resposta){
-            $response->set_code(Response::SUCCESS);
-            $response->set_data("Funcionário alterado com sucesso."); 
+            if($resposta){
+                $response->set_code(Response::SUCCESS);
+                $response->set_data("Funcionário alterado com sucesso."); 
+            }else{
+                $response->set_code(Response::DB_ERROR_UPDATE);
+                $response->set_data("Ocorreu um erro com o banco de dados.");
+            }
         }else{
-            $response->set_code(Response::DB_ERROR_UPDATE);
-            $response->set_data("Ocorreu um erro com o banco de dados.");
+            $response->set_code(Response::UNAUTHORIZED);
+            $response->set_data("O funcionário já recebeu o relatório no celular, portanto não é possível trocá-lo.");
         }
+
         $response->send();
     }
 
@@ -777,43 +886,52 @@ private function create_relatorio($filtro)
     2 - Devemos apagar os relatorios_os vinculados ao ID do relatorio;
     3 - Por fim destruimos o relatório.
     **/
-    public function destroy($id){
+    public function destroy($id)
+    {
         $this->load->model('relatorio_model');
         $this->load->model('historico_model');
 
         $response = new Response();
 
         $relatorio = $this->relatorio_model->get_relatorio($id);
+
         if($relatorio){
-            $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $relatorio->relatorio_pk]);
-            if($ordens_servicos){
+            if(!$this->verifica_se_relatorio_ja_foi_iniciado($id))
+            {
+                $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $relatorio->relatorio_pk]);
+                if($ordens_servicos){
 
 
-                foreach($ordens_servicos as $os){
-                    $this->historico_model->insert(
-                        array(
-                            'ordem_servico_fk' => $os->ordem_servico_pk,
-                            'funcionario_fk' => $this->session->user['id_funcionario'],
-                        'situacao_fk' => 1, //ABERTO
-                        'historico_ordem_comentario' => "Relatório destruído.",
-                    )
-                    );
+                    foreach($ordens_servicos as $os){
+                        $this->historico_model->insert(
+                            array(
+                                'ordem_servico_fk' => $os->ordem_servico_pk,
+                                'funcionario_fk' => $this->session->user['id_funcionario'],
+                            'situacao_fk' => 1, //ABERTO
+                            'historico_ordem_comentario' => "Relatório destruído.",
+                        )
+                        );
+                    }
+
                 }
 
+
+                //Deletar os filtros
+                $this->relatorio_model->delete_filtros_data(['relatorio_fk' => $relatorio->relatorio_pk]);
+
+                $this->relatorio_model->delete_filtros_setores(['relatorio_fk' => $relatorio->relatorio_pk]);
+                $this->relatorio_model->delete_filtros_tipos_servicos(['relatorio_fk' => $relatorio->relatorio_pk]);
+
+                $this->relatorio_model->delete_relatorios_os(['relatorio_fk' => $relatorio->relatorio_pk]);
+
+                $this->relatorio_model->delete(['relatorio_pk' => $relatorio->relatorio_pk]);
+                $response->set_code(Response::SUCCESS);
+                $response->set_data("Relatório deletado com sucesso.");
+
+            }else{
+               $response->set_code(Response::UNAUTHORIZED);
+               $response->set_data("O funcionário já recebeu o relatório no celular, portanto não é possível destruí-lo."); 
             }
-
-
-            //Deletar os filtros
-            $this->relatorio_model->delete_filtros_data(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-            $this->relatorio_model->delete_filtros_setores(['relatorio_fk' => $relatorio->relatorio_pk]);
-            $this->relatorio_model->delete_filtros_tipos_servicos(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-            $this->relatorio_model->delete_relatorios_os(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-            $this->relatorio_model->delete(['relatorio_pk' => $relatorio->relatorio_pk]);
-            $response->set_code(Response::SUCCESS);
-            $response->set_data("Relatório deletado com sucesso.");
 
         }else{
             $response->set_code(Response::NOT_FOUND);
@@ -831,12 +949,18 @@ private function create_relatorio($filtro)
         $this->load->model('relatorio_model');
         $relatorios = $this->relatorio_model->get_relatorios();
 
-        //arrumar a data:
-        foreach($relatorios as $relatorio){
-            $relatorio->data_criacao = date('d/m/Y H:i:s', strtotime($relatorio->data_criacao));
+        if ($relatorios !== false)
+        {
+            //arrumar a data:
+            foreach($relatorios as $relatorio){
+                $relatorio->data_criacao = date('d/m/Y H:i:s', strtotime($relatorio->data_criacao));
+                if($relatorio->status == 0){
+                    $relatorio->status_string = 'Em Andamento';
+                }else{
+                    $relatorio->status_string = 'Entregue';
+                }
+            }
         }
-
-        //print_r($relatorios); die();
 
         $this->session->set_flashdata('css', array(
             0 => base_url('assets/vendor/cropper/cropper.css'),
@@ -877,6 +1001,91 @@ private function create_relatorio($filtro)
     }
 
     
+    public function restaurar_os($id_relatorio = NULL)
+    {
+        $this->load->model('Relatorio_model', 'relatorio_model');
+        $response = new Response();
+
+        $this->form_validation->set_rules(
+            'senha',
+            'senha',
+            'required'
+        );
+
+        $this->load->model('Acesso_model', 'acesso_model');
+
+        // Verifica a senha do funcionário
+        $acesso = $this->acesso_model->get([
+            'pessoa_fk' => $this->session->user['id_user'],
+            'acesso_senha' => hash(ALGORITHM_HASH,$this->input->post('senha').SALT)
+        ]); 
+
+        if ($acesso === false)
+        {
+            $response->set_code(Response::UNAUTHORIZED);
+            $response->send();
+            return;
+        }
+        else
+        {
+            $ordens_servico = $this->relatorio_model->get_os_nao_verificadas($id_relatorio);
+
+            // Verifica se há OS não finalizadas
+            if ($ordens_servico !== false)
+            {
+                $this->load->model('Historico_model', 'historico_model');
+
+                foreach ($ordens_servico as $os) 
+                {
+
+                    // Para cada OS, é pego o último registro do histórico
+                    $hist = $this->historico_model->get_max_data_os($os->os_fk);
+
+                    // Se for em andamento, não foi finalizada, logo, deve ser inserido um novo histórico
+                    // a colocando em aberto novamente, informando que não foi finalizada no relatório
+                    if ($hist[0]->situacao_fk == '2') //2 é EM ANDAMENTO
+                    {
+                       $return =  $this->historico_model->insert([
+                            'ordem_servico_fk' => $os->os_fk,
+                            'funcionario_fk' => $this->session->user['id_funcionario'],
+                            'situacao_fk' => '1',
+                            'historico_ordem_comentario' => 'Não foi feito no relatório'
+                        ]);
+
+                        // O seu registro é retirado do relatório
+                        //$this->relatorio_model->delete_relatorio_os($os->os_fk);
+                       //2 significa que não foi concluída.
+                       $this->relatorio_model->update_relatorios_os_verificada(
+                        ['os_fk' => $os->os_fk, 'os_verificada' => 0], 2
+                       ); 
+                        // Insere an tabela para controle das OS não concluidas no relatório
+                        // $this->relatorio_model->insert_os_nao_concluida($os->os_fk, $os->relatorio_fk);
+                    }
+                    // Caso esteja finalizada, seu status na tabela de relatorio_os é alterado para verificado
+                    else
+                    {
+                        $this->relatorio_model->update_relatorios_os_verificada(
+                            ['os_fk' => $os->os_fk, 'os_verificada' => 0], 1
+                        );
+                    }
+                    
+                    //após verificar todas as ordens, setamos o status do relatório para 1 para indicar que o relatório foi entregue.
+                    //tem que pegar o id do relatório da ordem, pq o usuário pode ter solicitado para restaurar as ordens de todos os relatórios.
+
+                    $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $os->relatorio_fk]);
+                }
+            }
+            else
+            {
+                $response->set_code(Response::NOT_FOUND);
+                $response->send();
+                return;
+            }
+            
+            $response->set_code(Response::SUCCESS);
+        }
+        $response->send();
+    }
 
 }
 

@@ -10,8 +10,8 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once dirname(__FILE__) . "\Response.php";
-require_once APPPATH . "core\MY_Controller.php";
+require_once dirname(__FILE__) . "/Response.php";
+require_once APPPATH . "core/MY_Controller.php";
 
 class AtualizacaoWS extends MY_Controller
 {
@@ -73,16 +73,7 @@ class AtualizacaoWS extends MY_Controller
             $token_decodificado = json_decode(token_decrypt($header_obj['token']));
             $last_update = $token_decodificado->last_update;
 
-            $last_update = "01/01/2018";
-
-            // var_dump($token_decodificado);die();
-
-            // var_dump($last_update);die();;
-
-            $empresa_fk = $token_decodificado->id_empresa;
-            
-            $atualizar = $this->atualizacao_model->get($empresa_fk, $last_update);
-            // $atualizar = $this->atualizacao_model->get($empresa_fk, $last_update);
+            $atualizar = $this->atualizacao_model->get($token_decodificado->id_empresa, $last_update, $token_decodificado->id_funcionario);
             
             $this->response->add_data('atualizacao',$atualizar);
             
@@ -161,108 +152,4 @@ class AtualizacaoWS extends MY_Controller
         $this->response->send();
         $this->__destruct();
     }
-
-    // public function get()
-    // {
-    //     echo "Legal";
-    //     die();
-    //     if(verify_token())
-    //     {
-    //         if(is_get_request())
-    //         {
-    //             create_token();
-
-    //             $id = $_GET['id_user'];
-
-    //             if($id == "undefined"){
-    //                 $this->data_json['users'] = $this->model->get();
-    //             }else{
-    //                 $this->data_json['users'] = $this->model->get($id);
-    //             }
-
-    //             $this->response->set_data($this->data_json);
-    //         }
-    //         else
-    //         {
-    //             $this->response->set_code(Response::INVALID_METHOD);
-    //         }
-    //     }
-    //     $this->response->send();
-    //     $this->__destruct();
-    // }
-
-    // public function insert()
-    // {
-    //     if(verify_token())
-    //     {
-    //         if(is_post_request())
-    //         {
-    //             create_token();
-
-    //             $data['login_user'] = $_POST['login_user'];
-    //             $data['password_user'] = $_POST['password_user'];
-
-    //             if(!$this->model->insert($data))
-    //             {
-    //                 $this->response->set_code(Response::DB_ERROR_INSERT);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             $this->response->set_code(Response::INVALID_METHOD);
-    //         }
-    //     }
-    //     $this->response->send();
-    //     $this->__destruct();
-    // }
-
-    // public function update()
-    // {
-    //     if(verify_token())
-    //     {
-    //         if(is_post_request())
-    //         {
-    //             create_token();
-
-    //             $data['login_user'] = $_POST['login_user'];
-    //             $data['password_user'] = $_POST['password_user'];
-    //             $id_user = $_POST['id_user'];
-
-    //             if(!$this->model->update($data,$id_user))
-    //             {
-    //                 $this->response->set_code(Response::DB_ERROR_UPDATE);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             $this->response->set_code(Response::INVALID_METHOD);
-    //         }
-    //     }
-    //     $this->response->send();
-    //     $this->__destruct();
-    // }
-
-    // public function delete()
-    // {
-    //     if(verify_token())
-    //     {
-    //         if(is_delete_request())
-    //         {
-    //             create_token();
-
-    //             $id_user = $_POST['id_user'];
-
-    //             if(!$this->model->delete($id_user))
-    //             {
-    //                 $this->response->set_code(Response::DB_ERROR_DELETE);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             $this->response->set_code(Response::INVALID_METHOD);
-    //         }
-    //     }
-    //     $this->response->send();
-    //     $this->__destruct();
-    // }
 }

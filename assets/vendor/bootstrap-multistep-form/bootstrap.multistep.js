@@ -4,6 +4,7 @@ var current_fs, next_fs, previous_fs; //fieldsets
 var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
 var editar = false;
+
 $(document).ready(function() {
 	distance = 100/$('.msform').children('.card-step').length +"%";
 	$(".progressbar li").css({'width': distance });
@@ -14,7 +15,6 @@ $(document).ready(function() {
 		//object.prop('id', ''+index) ;
 		object.id = index+1;
 		quantidade_de_cards++;
-		console.log(object);
 	});	
 
 	$('form .card-step').each( function (index, object){
@@ -95,7 +95,7 @@ $(".next").click(function(){
 	var editar = $('#opcao-editar').val();
 	
 	current_fs = $(this).closest('.card-step');
-	console.log(current_fs);
+	
 	i = 0; 		
 	current_fs.find('select, textarea, input').each(function(){
 		if($(this)[0].checkValidity())
@@ -262,7 +262,15 @@ $('#pula-para-confirmacao').click(function(){
 	var i = 0;
 	current_id = $('ul.progressbar li.active').attr('id');
 	clicked_id = quantidade_de_cards; //é o id do card de confirmação
-	console.log('current id:'+current_id+" clicked id:"+clicked_id);
+	let element_exists = document.getElementById("pass-modal-edit");
+	console.log('element exists: '+element_exists);
+
+	if(element_exists == null){
+		is_superusuario = false;
+	}else{
+		is_superusuario = true;
+	}
+	
 	if(current_id == quantidade_de_cards) // ou seja, ele está no card de confirmação:
 	{ 
 		//devemos salvar:
@@ -270,24 +278,26 @@ $('#pula-para-confirmacao').click(function(){
 	}
 	else //se ele não estiver no card de confirmação:
 	{
+		if(is_superusuario){
 
-		alerts('warning','', 'Você deve confirmar a senha para salvar as alterações.');
-	
+			alerts('warning','', 'Você deve confirmar a senha para salvar as alterações.');
+		
 
-		if(current_id != clicked_id){
-			//estamos pegando o card do índice que estmaos e do card que o cara clicou
-			$('form .card-step').each( function (index, object){
-				
-				if(current_id == object.id)
-				{
-					current_fs = $(object);
-				}
-			 	if(clicked_id == object.id)
-				{
-					next_fs = $(object);
-				}
+			if(current_id != clicked_id){
+				//estamos pegando o card do índice que estmaos e do card que o cara clicou
+				$('form .card-step').each( function (index, object){
+					
+					if(current_id == object.id)
+					{
+						current_fs = $(object);
+					}
+				 	if(clicked_id == object.id)
+					{
+						next_fs = $(object);
+					}
 
-			});
+				});
+		}
 
 			//checando as validações dos campos do card atual:
 			current_fs.find('select, textarea, input').each(function(){
@@ -350,11 +360,11 @@ $('#pula-para-confirmacao').click(function(){
 
 $('ul.progressbar li').click(function(){
 	//se for editar:
-	console.log($('#opcao-editar'));
 	editar = $('#opcao-editar').val();
 	if(editar == "false") editar = false;
 	if(editar == "true") editar = true;
-	console.log(editar);
+	
+
 
 	
 	if(editar){

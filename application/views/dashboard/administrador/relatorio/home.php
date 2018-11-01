@@ -5,9 +5,12 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">Gerenciamento de Relatórios</h2>
-                        <a class="au-btn au-btn-icon au-btn--blue" href="<?= base_url('relatorio/novo_relatorio') ?>">
-                            <i class="zmdi zmdi-plus"></i>novo relatório</a>
-                        </div>
+                        <a class="au-btn au-btn-icon au-btn--blue reset_multistep new" href="<?= base_url('Relatorio/novo_relatorio') ?>"> Novo Relatório
+                        </a>
+                        <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo" data-toggle="modal" data-target="#restaurar_os"> 
+                            Receber Relatórios
+                        </button>
+                    </div>
                         <div class="col-md-12 mt-3">
                             <div class="collapse" id="collapseHelp">
                                 <div class="card card-body">
@@ -51,6 +54,7 @@
                                             <th>Funcionário</th>
                                             <th>Função do Funcionário</th>
                                             <th>Quantidade</th>
+                                            <th>Situação</th>
                                             <th>Data de Criação</th>
                                             <th>Detalhes</th>
                                         </tr>
@@ -74,11 +78,14 @@
                                                        <?= $r->quantidade_os ?>
                                                    </td>
                                                    <td>
+                                                     <?= $r->status_string ?>
+                                                   </td>
+                                                   <td>
                                                        <?= $r->data_criacao ?>
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a target="_blank" class="btn btn-sm btn-primary" href="<?= base_url('relatorio/detalhes_relatorio/'.$r->relatorio_pk) ?>">
+                                                            <a class="btn btn-sm btn-primary" href="<?= base_url('relatorio/detalhes_relatorio/'.$r->relatorio_pk) ?>">
                                                                    <div class="d-none d-sm-block">
                                                                        Detalhes
                                                                    </div>
@@ -110,7 +117,34 @@
                 </div>
             </div>
 
-    
+<div class="modal fade" id="restaurar_os">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Receber Relatórios</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <h4 style="text-align: center" class="text-danger">
+                        <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO
+                    </h4>
+                    <p>Ao confirmar esta operação:</p>
+                    <ul style="margin-left: 15px">
+                        <li>Todas as ordens de serviço não concluídas em relatórios de funcionários terão seu status alterados para aberto;</li>
+                        <li>Tais ordens de serviço serão removidas do relatório, para que sejam delegadas novamente.</li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" autocomplete="false" placeholder="Confirme sua senha" required="required" id="pass-modal-restaurar">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-danger col-md-12" id="btn-restaurar"><i class="fa fa-dot-circle-o"></i> Receber</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
             <script type="text/javascript">
                 var relatorios = <?php echo json_encode($relatorios !== false ? $relatorios : []) ?>;

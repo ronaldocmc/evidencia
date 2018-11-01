@@ -1,3 +1,17 @@
+function btn_load(button_submit){
+    button_submit.attr('disabled', 'disabled');
+    button_submit.css('cursor', 'default');
+    button_submit.find('i').removeClass();
+    button_submit.find('i').addClass('fa fa-refresh fa-spin');
+}
+
+
+function btn_ativar(button_submit){
+    button_submit.removeAttr('disabled');
+    button_submit.css('cursor', 'pointer');
+    button_submit.find('i').removeClass();
+    button_submit.find('i').addClass('fa fa-dot-circle-o');
+}
 
 //Variáveis globais utilizadas no JS
 var main_map;
@@ -13,6 +27,8 @@ var adicionar_imagem = 1;
 
 
 $(document).on('click','#btn-trocar-funcionario',function(event) {
+    btn_load($('#btn-trocar-funcionario'));
+
 	var id_relatorio = $('#id-relatorio').val();
 
 	var data = 
@@ -20,24 +36,33 @@ $(document).on('click','#btn-trocar-funcionario',function(event) {
 		'funcionario_fk': $('#novo-funcionario').val()
 	}
 
-	$.post(base_url+'/Relatorio/change_employee/'+id_relatorio,data).done(function (response) {
-		if (response.code == 501)
+	$.post(base_url+'/Relatorio/change_employee/'+id_relatorio,data).done(function (response) {	
+
+        if (response.code == 501)
 		{
+            btn_ativar($('#btn-trocar-funcionario'));
 			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
-		}
+		} else if(response.code == 401)
+        {
+            alerts('failed','Erro!', response.data);
+        }
 		else if(response.code == 200)
 		{
+            alerts('success','Sucesso!','Aguarde enquanto recarregamos a página ...');
 			location.reload();
+            btn_ativar($('#btn-trocar-funcionario'));
 		}
 	});
 });
 
 
 $(document).on('click','#btn-deletar-relatorio',function(event) {
+    btn_load($('#btn-deletar-relatorio'));
 	var id_relatorio = $('#id-relatorio').val();
 	var data = {}
 	$.post(base_url+'/Relatorio/destroy/'+id_relatorio, data).done(function (response) {
-		if (response.code == 501)
+		btn_ativar($('#btn-deletar-relatorio'));
+        if (response.code == 501)
 		{
 			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
 		}
@@ -49,6 +74,10 @@ $(document).on('click','#btn-deletar-relatorio',function(event) {
 		{
 			alerts('failed','Erro!','Relatório não encontrado.');
 		}
+        else if(response.code == 401)
+        {
+            alerts('failed','Erro!',response.data);
+        }
 		else if(response.code == 200)
 		{
 			window.location.href = base_url;
@@ -154,3 +183,38 @@ function initMap()
       });
     //main_map.setCenter('('+location.lat+', '+location.lng+')');
 	}
+
+$("#btn-restaurar").click(function() {
+    btn_load($('#btn-restaurar'));
+    var id_relatorio = $('#id-relatorio').val();
+    var senha = $("#pass-modal-restaurar").val();
+
+    if(senha == ""){
+        alerts('failed','Erro!','Senha incorreta');
+        btn_ativar($('#btn-restaurar'));
+        return;
+    }
+
+    var data = 
+    {
+        'senha' : senha
+    }
+
+    $.post(base_url+'/Relatorio/restaurar_os/'+id_relatorio,data).done(function (response) {
+        btn_ativar($('#btn-deletar-relatorio'));
+        if (response.code == 200) {
+            alerts('success','Sucesso!','Relatório entregue com sucesso.');
+            $('#restaurar_os').modal('hide');
+        }
+        else if (response.code == 404) {
+            alerts('success','Sucesso!','Não há ordens de serviço para serem finalizadas.');
+            $('#restaurar_os').modal('hide');
+        }
+        else if (response.code == 401) {
+            alerts('failed','Erro!','Senha incorreta');
+        }
+
+        $("#pass-modal-restaurar").val("");
+        window.location.href = base_url+'/Relatorio/detalhes_relatorio/'+id_relatorio;
+    }, "json");
+});

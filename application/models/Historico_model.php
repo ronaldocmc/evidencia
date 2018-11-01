@@ -44,10 +44,10 @@ class Historico_model extends CI_Model {
         }
     }
 
-        public function get_first_and_last_historico($where = NULL) {
+    public function get_first_and_last_historico($where = NULL) {
         $this->db->select('(SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial_pk, (SELECT historicos_ordens.historico_ordem_pk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as historico_ordem_pk');
         $this->db->from(self::TABLE_NAME);
-         $this->db->join('ordens_servicos','ordens_servicos.ordem_servico_pk = '.self::TABLE_NAME. '.'.'ordem_servico_fk');
+        $this->db->join('ordens_servicos','ordens_servicos.ordem_servico_pk = '.self::TABLE_NAME. '.'.'ordem_servico_fk');
         if ($where !== NULL) {
             if (is_array($where)) {
                 foreach ($where as $field=>$value) {
@@ -65,6 +65,81 @@ class Historico_model extends CI_Model {
             return false;
         }
     }
+
+    public function get_last_historico($os_pk){
+        $this->db->select('(SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = '.$os_pk.' ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as ultimo_historico');
+        $this->db->from(self::TABLE_NAME);
+     
+        $this->db->where('ordem_servico_fk', $os_pk);
+        $result = $this->db->get()->row();
+        // $result=(array) $return;
+        if ($result) {
+            return $result->ultimo_historico;
+        } else {
+            return false;
+        }
+    }
+
+    public function get_id_last_historico($os_pk){
+        $this->db->select('(SELECT historicos_ordens.historico_ordem_pk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = '.$os_pk.' ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as id');
+        $this->db->from(self::TABLE_NAME);
+     
+        $this->db->where('ordem_servico_fk', $os_pk);
+        $result = $this->db->get()->row();
+        // $result=(array) $return;
+        if ($result) {
+            return $result->id;
+        } else {
+            return false;
+        }
+    }
+
+
+    public function get_all_historico_decrescente($os_pk)
+    {
+        $query =  $this->db->query('
+            SELECT historicos_ordens.historico_ordem_pk, imagens_situacoes.imagem_situacao_caminho 
+            FROM historicos_ordens LEFT JOIN imagens_situacoes 
+            ON historicos_ordens.historico_ordem_pk = imagens_situacoes.historico_ordem_fk
+            WHERE historicos_ordens.ordem_servico_fk = '. $os_pk .'
+            ORDER BY historicos_ordens.historico_ordem_tempo DESC'
+        );
+
+        return $query->result();
+    }
+
+    public function get_imagem($id){
+        $this->db->select('imagem_situacao_caminho');
+        $this->db->from('imagens_situacoes');
+        $this->db->where('historico_ordem_fk', $id);
+        $result = $this->db->get()->row();
+        if ($result) {
+            return $result->imagem_situacao_caminho;
+        } else {
+            return false;
+        }
+    }
+
+    public function insert_imagem(Array $data) {
+        if ($this->db->insert('imagens_situacoes', $data)) {
+            $return = [
+                'id'=> $this->db->insert_id(),
+                'db_error' =>$this->db->error() 
+            ];
+
+        } else {
+
+            $return = [
+                'id'=> $this->db->insert_id(),
+                'db_error' =>$this->db->error() 
+            ];
+        }
+
+        return $return;
+    }
+
+
+
     /**
      * Inserts new data into database
      *
@@ -97,9 +172,9 @@ class Historico_model extends CI_Model {
      * @return int Number of affected rows by the update query
      */
     public function update($where = array(), Array $data) {
-            if (!is_array($where)) {
-                $where = array(self::PRI_INDEX => $where);
-            }
+        if (!is_array($where)) {
+            $where = array(self::PRI_INDEX => $where);
+        }
         $this->db->update(self::TABLE_NAME, $data, $where);
 
         // var_dump($this->db->affected_rows()); die();
@@ -121,14 +196,15 @@ class Historico_model extends CI_Model {
 
 
     public function get_max_data_os($os) {
-        $this->db->select(self::TABLE_NAME.'.'.self::PRI_INDEX);
-        $this->db->select_max('historicos_ordens.historico_ordem_tempo');
+        $this->db->select('*');
 
         $this->db->from(self::TABLE_NAME);
 
         $this->db->where(self::TABLE_NAME.'.ordem_servico_fk', $os);
-
-        $result =  $this->db->get()->row();
+        $this->db->order_by('historicos_ordens.historico_ordem_pk', 'DESC');
+        $this->db->limit(1);
+        
+        $result =  $this->db->get()->result();
         if ($result) 
         {
             return ($result);
@@ -138,6 +214,49 @@ class Historico_model extends CI_Model {
             return false;
         }
     }
-}
+
+
+    public function getHistoricoForMobile($where)
+    {
+        $this->db->select('
+            populacao.pessoa_nome AS funcionario,
+            historicos_ordens.historico_ordem_tempo AS data,
+            situacoes.situacao_nome AS situacao,
+            historicos_ordens.historico_ordem_comentario AS comentario,
+            imagens_situacoes.imagem_situacao_caminho as foto,
+            imagens_perfil.imagem_caminho as funcionario_foto
+            ');
+
+        $this->db->from('historicos_ordens');
+        $this->db->join('funcionarios','historicos_ordens.funcionario_fk = funcionarios.funcionario_pk');
+        $this->db->join('populacao', 'funcionarios.pessoa_fk = populacao.pessoa_pk');
+        $this->db->join('situacoes', 'situacoes.situacao_pk = historicos_ordens.situacao_fk');
+        $this->db->join('imagens_situacoes', 'imagens_situacoes.historico_ordem_fk = historicos_ordens.historico_ordem_pk','LEFT');
+        $this->db->join('imagens_perfil', 'populacao.pessoa_pk = imagens_perfil.pessoa_fk','LEFT');
         
- ?>
+        $this->db->order_by('historicos_ordens.historico_ordem_pk', 'DESC');
+        $this->db->limit(1);
+
+        if ($where !== NULL) {
+            if (is_array($where)) {
+                foreach ($where as $field=>$value) {
+                    $this->db->where($field, $value);
+                }
+            } else {
+                $this->db->where('historicos_ordens.ordem_servico_fk', $where);
+            }
+        }
+
+
+         // echo $this->db->get_compiled_select();die();
+        $result = $this->db->get()->result();
+
+        if ($result) {
+            return ($result);
+        } else {
+            return false;
+        }
+    }
+}
+
+?>

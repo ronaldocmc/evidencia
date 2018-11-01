@@ -25,12 +25,12 @@ class Atualizacao_model extends CI_Model
      *                      If string, value will be used to match against PRI_INDEX
      * @return mixed Single record if ID is given, or array of results
      */
-    public function get($organizacao_fk, $timestamp = null)
+    public function get($organizacao_fk, $timestamp = null, $funcionario_fk)
     {
         $atualizar['servico'] = $this->get_servico($organizacao_fk, $timestamp);
         $atualizar['tipo_servico'] = $this->get_tipo_servico($organizacao_fk, $timestamp);
         $atualizar['prioridade'] = $this->get_prioridade($organizacao_fk, $timestamp);
-        $atualizar['situacao'] = $this->get_situacao($organizacao_fk, $timestamp);
+        $atualizar['setores'] = $this->get_setores($funcionario_fk);
 
         return $atualizar;
     }
@@ -117,6 +117,23 @@ class Atualizacao_model extends CI_Model
 
         $this->db->join('servico_atualizacao', 'servico_atualizacao.geral_atualizacao_fk = geral_atualizacao.geral_atualizacao_pk');
         $this->db->join('servicos', 'servicos.servico_pk = servico_atualizacao.servico_fk');
+
+        return $this->db->get()->result();
+    }
+
+
+    public function get_setores($funcionario_fk)
+    {
+        $this->db->select('
+            setores.setor_pk,
+            setores.setor_nome'
+        );
+        $this->db->from('setores');
+        
+        $this->db->join('funcionarios_setores', 'funcionarios_setores.setor_fk = setores.setor_pk');
+        $this->db->join('funcionarios', 'funcionarios.funcionario_pk = funcionarios_setores.funcionario_fk');
+
+        $this->db->where('funcionarios.funcionario_pk', $funcionario_fk);
 
         return $this->db->get()->result();
     }

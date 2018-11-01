@@ -84,63 +84,9 @@ class Ordem_Servico_model extends CI_Model {
         }
     }
 
-    public function getJsonForMobile($where = NULL) {
-
-        $this->db->select(
-            self::TABLE_NAME. '.'.self::PRI_INDEX. ' AS id,
-            coordenadas.coordenada_lat AS latitude,
-            coordenadas.coordenada_long AS longitude,
-            ordens_servicos.ordem_servico_desc AS descricao,
-            ordens_servicos.prioridade_fk AS prioridade,
-            MIN(historicos_ordens.historico_ordem_tempo) AS data_inicial,
-            (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao,
-            locais.local_complemento, locais.local_num,
-            logradouros.logradouro_nome,
-            bairros.bairro_nome
-            ');
-
-        $this->db->from(self::TABLE_NAME);
-
-        $this->db->join('coordenadas',
-            'coordenadas.coordenada_pk = '.self::TABLE_NAME.'.coordenada_fk');
-
-        $this->db->join('servicos','servicos.servico_pk = '.self::TABLE_NAME.'.servico_fk');
-
-        $this->db->join('tipos_servicos',
-            'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
-
-        $this->db->join('departamentos',
-            'departamentos.departamento_pk = tipos_servicos.departamento_fk');
-
-
-        $this->db->join('historicos_ordens','historicos_ordens.ordem_servico_fk = '.self::TABLE_NAME. '.'.self::PRI_INDEX);
-       
-        $this->db->join('locais','locais.local_pk = coordenadas.local_fk');
-        
-        $this->db->join('logradouros','locais.logradouro_fk = logradouros.logradouro_pk');
-
-        $this->db->join('bairros','locais.bairro_fk = bairros.bairro_pk');
-
-        $this->db->group_by(self::TABLE_NAME. '.'.self::PRI_INDEX);
-
-        if ($where !== NULL) {
-            if (is_array($where)) {
-                foreach ($where as $field=>$value) {
-                    $this->db->where($field, $value);
-                }
-            } else {
-                $this->db->where(self::PRI_INDEX, $where);
-            }
-        }
-
-        // $this->db->where('(SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) !=', '32');
-        //echo $this->db->get_compiled_select();die();
-        $result = $this->db->get()->result();
-        if ($result) {
-            return ($result);
-        } else {
-            return false;
-        }
+    public function getJsonForMobile($where) {
+        $ordens = $this->db->query("CALL getForMobile('".$where['id_organizacao']."',".$where['id_funcionario'].")");
+        return $ordens->result();
     }
 
 
@@ -155,9 +101,10 @@ class Ordem_Servico_model extends CI_Model {
             ordens_servicos.ordem_servico_pk AS ordem_servico_pk,
             ordens_servicos.prioridade_fk AS prioridade,
             MIN(historicos_ordens.historico_ordem_tempo) AS data_inicial,
+            (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao
             ');
             // historico_final.historico_ordem_tempo AS data_final,
-            // historico_final.situacao_fk AS situacao_atual
+            // 
 
         // prioridade
         // tipo_servico
@@ -262,6 +209,7 @@ class Ordem_Servico_model extends CI_Model {
         $this->db->join('imagens_perfil', 'populacao.pessoa_pk = imagens_perfil.pessoa_fk','LEFT');
 
 
+
         if ($where !== NULL) {
             if (is_array($where)) {
                 foreach ($where as $field=>$value) {
@@ -271,6 +219,8 @@ class Ordem_Servico_model extends CI_Model {
                 $this->db->where('historicos_ordens.ordem_servico_fk', $where);
             }
         }
+
+        $this->db->order_by('historicos_ordens.historico_ordem_tempo', 'ASC');
 
          // echo $this->db->get_compiled_select();die();
         $result = $this->db->get()->result();
@@ -452,7 +402,9 @@ class Ordem_Servico_model extends CI_Model {
 
         // $query.="SELECT DISTINCT ".self::TABLE_NAME.'.'.self::PRI_INDEX;
         // $query.=" FROM ".self::TABLE_NAME;
-        $query.= "SELECT ordens_servicos.ordem_servico_pk,ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_status, servicos.servico_nome, servicos.servico_pk, servicos.situacao_padrao_fk, prioridades.prioridade_pk, prioridades.prioridade_nome, procedencias.procedencia_pk, procedencias.procedencia_nome, servicos.tipo_servico_fk, historicos_ordens.historico_ordem_pk, coordenadas.local_fk, coordenadas.coordenada_lat, coordenadas.coordenada_long, setores.setor_pk, setores.setor_nome, (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual_pk,(SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial_pk ,(SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_nome,
+        $query.= "SELECT ordens_servicos.ordem_servico_pk,ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_status, servicos.servico_nome, servicos.servico_pk, servicos.situacao_padrao_fk, prioridades.prioridade_pk, prioridades.prioridade_nome, procedencias.procedencia_pk, procedencias.procedencia_nome, servicos.tipo_servico_fk, historicos_ordens.historico_ordem_pk, coordenadas.local_fk, coordenadas.coordenada_lat, coordenadas.coordenada_long, setores.setor_pk, setores.setor_nome, 
+            (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual_pk,
+            (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial_pk ,(SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_nome,
             (SELECT historicos_ordens.historico_ordem_tempo FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as data_criacao
             FROM ordens_servicos ";
 
@@ -467,7 +419,8 @@ class Ordem_Servico_model extends CI_Model {
         $query.="INNER JOIN tipos_servicos
             ON tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk ";
 
-        $query.= "WHERE historico_ordem_tempo BETWEEN '".$where['data_inicial']."' AND '".$where['data_final']."'";
+        $query.= "WHERE historico_ordem_tempo BETWEEN '".$where['data_inicial']." 00:00:01' AND '".$where['data_final']." 23:59:59'";
+        $query.= " AND ordem_servico_status = 1";
 
         $query.= $this->fill_query('setor_fk', $where['setor']);
         $query.= $this->fill_query('tipos_servicos.tipo_servico_pk', $where['tipo']);
@@ -497,6 +450,27 @@ class Ordem_Servico_model extends CI_Model {
         }
         return $query;
     }
+
+
+    public function get_abreviacoes($servico)
+    {
+        $this->db->select(
+            'servicos.servico_abreviacao,
+            tipos_servicos.tipo_servico_abreviacao'
+        );
+
+        $this->db->from('tipos_servicos');
+        $this->db->join('servicos', 'servicos.tipo_servico_fk = tipos_servicos.tipo_servico_pk');
+        $this->db->where('servicos.servico_pk', $servico);
+
+        $result = $this->db->get()->result();
+
+        $abreviacao = $result[0]->tipo_servico_abreviacao . $result[0]->servico_abreviacao . "-";
+        return $abreviacao;
+    }
+
+
+
 }
 
 

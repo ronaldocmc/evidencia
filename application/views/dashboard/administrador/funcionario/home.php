@@ -75,30 +75,20 @@
                                                        <div class="btn-group">
 
                                                            <?php if ($f->funcionario_status == 1): ?>
-                                                               <button class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal"
-                                                                   data-target="#ce_funcionario">
+                                                               <button class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#ce_funcionario" title="Editar">
                                                                    <div class="d-none d-sm-block">
-                                                                       Editar
-                                                                   </div>
-                                                                   <div class="d-block d-sm-none">
                                                                        <i class="fas fa-edit fa-fw"></i>
                                                                    </div>
                                                                </button>
-                                                               <button class="btn btn-sm btn-danger btn-desativar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#d_funcionario">
+                                                               <button class="btn btn-sm btn-danger btn-desativar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#d_funcionario" title="Desativar">
                                                                    <div class="d-none d-sm-block">
-                                                                       Desativar
-                                                                   </div>
-                                                                   <div class="d-block d-sm-none">
                                                                        <i class="fas fa-times fa-fw"></i>
                                                                    </div>
                                                                </button>
                                                                <?php else: ?>
-                                                                <button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#a_funcionario">
+                                                                <button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#a_funcionario" title="Reativar">
                                                                     <div class="d-none d-sm-block">
-                                                                        Ativar
-                                                                    </div>
-                                                                    <div class="d-block d-sm-none">
-                                                                        <i class="fas fa-times fa-fw"></i>
+                                                                        <i class="fas fa-power-off fa-fw"></i>
                                                                     </div>
                                                                 </button>
                                                             <?php endif;?>
@@ -175,7 +165,7 @@
                                                     <div class="col-12 col-md-10">
                                                         <input type="text" id="cpf-input" name="pessoa_cpf" placeholder="CPF" class="form-control cpf-input" required>
                                                         <small class="form-text text-muted">Por favor, informe o CPF do funcionário</small>
-                                                        <a href="#" class="btn btn-primary" onclick="gerarCPF()">Gerar</a>
+                                                            
                                                     </div>
                                                 </div>
                                             </div>
@@ -529,7 +519,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <script type="text/javascript">
                             var funcionarios = <?php echo json_encode($funcionarios !== false ? $funcionarios : []) ?>;
                             var funcoes = <?php echo json_encode($funcoes !== false ? $funcoes : []) ?>;

@@ -13,6 +13,7 @@
 
                         <button class="au-btn au-btn-icon au-btn--blue" data-toggle="modal" data-target="#delegar_para_outra_pessoa" >
                             <i class="zmdi zmdi-refresh"></i>Trocar Funcionário</button>
+
                             <button class="au-btn au-btn-icon btn au-btn--blue pull-right" data-toggle="modal" data-target="#d-relatorio" >
                                 <i class="zmdi zmdi-delete"></i>Destruir Relatório</button>
                             </div>
@@ -25,7 +26,22 @@
                         <div class="row py-2">
                             <div class="col-lg-12">
                                 <div class="au-card d-flex flex-column">
-                                    <h2 class="title-1 m-b-25">Relatório do <?= $funcionario->pessoa_nome ?> do dia <?= date("d/m/Y", strtotime($relatorio->data_criacao)) ?></h2>
+                                    <h2 class="title-1 m-b-25"> Relatório do <?= $funcionario->pessoa_nome ?> do dia <?= date("d/m/Y", strtotime($relatorio->data_criacao)) ?>
+                                    <?php 
+
+                                    if($relatorio->status == 1)
+                                    {
+                                        $font_size = 12;
+                                        $label = "ENTREGUE";
+                                        $class = "success";
+                                    }else{
+                                        $font_size = 9;
+                                        $label = "EM ANDAMENTO";
+                                        $class = "warning";
+                                    }
+                                    ?>
+
+                                     <span style="font-size:<?= $font_size ?>pt;" class="badge badge-pill badge-<?= $class ?>"><?= $label ?></span></h2>
                                     <div class="card-group">
 
                                         <div class="card">
@@ -60,13 +76,16 @@
                                         
                                     </div>
 
-                                    <div>
-                                        <br><br>
+                                    <div class="py-4">
+                                        <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo align-middle" data-toggle="modal" data-target="#restaurar_os"> 
+                                            Receber Relatório
+                                        </button>
                                     </div>
 
 
+
                                     <div class="table-responsive table--no-card m-b-40">
-                                       <table id="ordens_servico" class="table table-striped table-datatable">
+                                     <table id="ordens_servico" class="table table-striped table-datatable">
                                         <thead>
                                             <tr>
                                                 <th>Código</th>
@@ -74,7 +93,8 @@
                                                 <th>Prioridade</th>
                                                 <th>Endereço</th>
                                                 <th>Serviço</th>
-                                                <th>Setor</th> 
+                                                <th>Setor</th>
+                                                <th>Situação Atual</th> 
                                                 <th>Opções</th>                
 
                                             </tr>
@@ -107,6 +127,9 @@
 
                                                         <td>
                                                             <?=$ordem_servico->setor_nome?>
+                                                        </td>
+                                                        <td>
+                                                            <?= $ordem_servico->status_os_string ?>
                                                         </td>
                                                         <td>
                                                             <div class="btn-group">
@@ -340,7 +363,7 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" id="btn-trocar-funcionario"><i class="fa fa-dot-circle-o"></i> Salvar</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btn-trocar-funcionario"><i class="fa fa-dot-circle-o"></i> Trocar</button>
                     <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
@@ -350,16 +373,16 @@
 
     <!-- MODAL DELETA RELATÓRIO -->
     <div class="modal fade" id="d-relatorio" >
-       <div class="modal-dialog modal-dialog-centered">
-           <div class="modal-content">
-               <div class="modal-header">
-                   <h4 class="modal-title">Destruir Relatório</h4>
-                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-               </div>
-               <div class="modal-body">
+     <div class="modal-dialog modal-dialog-centered">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h4 class="modal-title">Destruir Relatório</h4>
+                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+             </div>
+             <div class="modal-body">
                 <form>
-                   <div class="form-group">
-                       <h4 style="text-align: center" class="text-danger">
+                 <div class="form-group">
+                     <h4 style="text-align: center" class="text-danger">
                         <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
                         <p>Ao destruir o relatório, as seguintes alterações serão feitas:</p>
                         <ul style="margin-left: 15px">
@@ -369,12 +392,41 @@
                     </div>
 
                     <div class="form-group">
-                       <button type="button" class="btn btn-confirmar-senha" id="btn-deletar-relatorio" name="post" value=""><i class="fa fa-dot-circle-o"></i> Apagar</button>
-                   </div>
-               </form>
-           </div>
-       </div>
-   </div>
+                     <button type="button" class="btn btn-confirmar-senha" id="btn-deletar-relatorio" name="post" value=""><i class="fa fa-dot-circle-o"></i> Destruir</button>
+                 </div>
+             </form>
+         </div>
+     </div>
+ </div>
+</div>
+
+<div class="modal fade" id="restaurar_os">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Receber Relatório</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <h4 style="text-align: center" class="text-danger">
+                        <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO
+                    </h4>
+                    <p>Ao confirmar esta operação:</p>
+                    <ul style="margin-left: 15px">
+                        <li>Todas as ordens de serviço não concluídas do relatório deste funcionário terão seu status alterados para aberto;</li>
+                        <li>Tais ordens de serviço serão removidas do relatório, para que sejam delegadas novamente.</li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" autocomplete="false" placeholder="Confirme sua senha" required="required" id="pass-modal-restaurar">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-danger col-md-12" id="btn-restaurar"><i class="fa fa-dot-circle-o"></i> Receber</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
