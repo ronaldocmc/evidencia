@@ -280,18 +280,6 @@ class Relatorio_model extends CI_Model
         }
     }
 
-    public function insert_os_nao_concluida($os, $relatorio)
-    {
-        if( $this->db->insert('relatorio_os_nao_concluidas', ['relatorio_fk' => $relatorio, 'ordem_servico_fk' => $os])) 
-        {
-            return true;
-        } 
-        else 
-        {
-            return false;
-        }
-    }
-
     /**
      * Updates selected record in the database
      *
