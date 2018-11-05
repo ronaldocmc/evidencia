@@ -47,9 +47,9 @@
                         <div class="form-group">
                           <input type="password" class="form-control" autocomplete="false" name="password" placeholder="Digite sua senha" required="required" id="email_modal">
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                          <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-                       </div>
+                       </div> -->
                        <div class="form-group">
                         <button type="button" class="btn btn-primary btn-lg btn-block login-btn" id="btn-login" onclick="verify_data()" name="post">Entrar</button>
                       </div>
@@ -142,7 +142,7 @@
 <script src="<?php echo base_url('assets/js/jquery.noty.packaged.min.js') ?>"></script>
 
 <!--Importando o Recaptcha para verificação de usuário real-->
-<script src="https://www.google.com/recaptcha/api.js?render=<?php echo RECAPTCHA_SITE_KEY ?>"></script>
+<!-- <script src="https://www.google.com/recaptcha/api.js?render=<?php echo RECAPTCHA_SITE_KEY ?>"></script> -->
 
 <!--Importando funções Jquery responsáveis pela verificação de dados e execução da entrada do usuário-->
 <script src="<?php echo base_url('assets/js/access/access.js') ?>"></script>
