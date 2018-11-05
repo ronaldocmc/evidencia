@@ -120,6 +120,8 @@ class Relatorio_model extends CI_Model
 
         $this->db->order_by('relatorios.data_criacao', 'DESC');
 
+        $this->db->where('relatorios.status != 2');
+
         $relatorios = $this->db->get()->result();
 
         //quero pegar agora, as ordens vinculadas a este relatório, quantas estão finalizadas, quantas estão em andamento ainda, ...
@@ -127,31 +129,7 @@ class Relatorio_model extends CI_Model
         {
             foreach($relatorios as $relatorio)
             {
-
                 $relatorio->quantidade_os = $this->db->where(['relatorio_fk'=>$relatorio->relatorio_pk])->from("relatorios_os")->count_all_results();
-
-                //quantidade de  OS concluída:
-                // $this->db->select('*');
-                // $this->db->from('historicos_ordens');
-                // $this->db->join('relatorios_os', 'relatorios_os.os_fk = historios_ordens.ordem_servico_fk');
-                // $this->db->where('relatorios_os.relatorio_fk', $relatorio->relatorio_pk);
-
-                // $historicos_ordens = $this->db->get()->result();
-
-                // $quantidade_finalizada = 0;
-
-                // foreach($historicos_ordens as $historico_ordem){
-                //     if($historico_ordem->situacao_fk == 5){ //5 é finalizado
-                //         $quantidade_finalizada++;
-                //     }
-                // }
-
-                // if($relatorio->quantidade_os == 0 ){
-                //     $relatorio->progresso = 100;
-                // }else{
-                //     $relatorio->progresso = ($quantidade_finalizada/$relatorio->quantidade_os) * 100;
-                    
-                // }
             }
 
             return $relatorios;
@@ -322,36 +300,11 @@ class Relatorio_model extends CI_Model
         return $this->db->affected_rows();
     }
 
-
-    public function delete_filtros_data($where = array())
+    public function disable($relatorio_pk)
     {
-        if (!is_array($where)) {
-            $where = array('relatorio_fk' => $where);
-        }
-        $this->db->delete('filtros_relatorios_data', $where);
+        $this->db->update(self::TABLE_NAME, ['status' => 2], $relatorio_pk);
         return $this->db->affected_rows();
     }
-
-    public function delete_filtros_setores($where = array())
-    {
-        if (!is_array($where)) {
-            $where = array('relatorio_fk' => $where);
-        }
-        $this->db->delete('filtros_relatorios_setores', $where);
-        return $this->db->affected_rows();
-    }
-
-    public function delete_filtros_tipos_servicos($where = array())
-    {
-        if (!is_array($where)) {
-            $where = array('relatorio_fk' => $where);
-        }
-        $this->db->delete('filtros_relatorios_tipos_servicos', $where);
-        return $this->db->affected_rows();
-    }
-
-
-
 
     /**
      * Deletes specified record from the database
