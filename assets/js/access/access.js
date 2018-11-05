@@ -97,7 +97,7 @@ login_send = (e, s) => {
 
     t = 'token';
     //Enviando os dados via post (AJAX)
-    $.post(base_url+'/access/login/', { login: e, password: s, 'g-recaptcha-response': t }).done(function (response) {
+    $.post(base_url+'access/login/', { login: e, password: s, 'g-recaptcha-response': t }).done(function (response) {
       console.log(response);
       if (response.code == 200) {
         window.location.reload();
