@@ -25,9 +25,8 @@ var adicionar_imagem = 1;
 var adicionar_mapa = 1; 
 //-----------------------------------//
 $(document).ready(function() {
-    $("#data_brasileira").click();
-    $("#data_brasileira").click();
-    pre_loader_hide();
+    $("#data").click();
+    $("#data").click();
 });
 
 
@@ -1561,6 +1560,3 @@ send = (imagem) =>
 }
 
 }
-
-
-
