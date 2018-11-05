@@ -26,9 +26,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 if(is_cli()){
 	$config['base_url'] = 'localhost/evidencia';
 }else{
-	$root = "http://".$_SERVER['HTTP_HOST'];
-	//$root .= dirname($_SERVER['SCRIPT_NAME']);
-	$config['base_url'] = $root;
+	// $root = "http://".$_SERVER['HTTP_HOST'];
+	// //$root .= dirname($_SERVER['SCRIPT_NAME']);
+	// $config['base_url'] = $root;
+	$config['base_url'] = 'http://evidencia-v2.azurewebsites.net/';
 }
 
 /*
