@@ -1,22 +1,12 @@
-  <script type="text/javascript">
-    async function pre_loader_show(){
-      $('.inner').show();
-      // $('#preloader .inner').delay(1000).fadeIn();
-      $('#preloader .inner').delay(10).fadeIn();
-      $('#preloader').delay(5).fadeIn('slow');
-  }
 
-  pre_loader_show();
-</script> -->
-<!--MAIN CONTENT-->
-<div class="main-content">
+ <!--MAIN CONTENT-->
+ <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de ordens de serviço</h2>
-                        <!-- <input type="hidden" id="ordem_servico_pk" name="ordem_servico_pk" class="form-control"> -->
                         <button class="au-btn au-btn-icon au-btn--blue reset_multistep" data-toggle="modal" data-target="#ce_ordem_servico" id="btn-nova-ordem">
                             <i class="zmdi zmdi-plus"></i>nova ordem de serviço
                         </button>
@@ -47,7 +37,7 @@
                                 <thead>
                                     <tr>
                                         <th>Código</th>
-                                        <th id="data_brasileira">Data</th>
+                                        <th id="data">Data</th>
                                         <th>Prioridade</th>
                                         <th>Endereço</th>
                                         <th>Serviço</th>
@@ -64,7 +54,7 @@
                                                     <?=$ordem_servico->ordem_servico_cod?>
                                                 </td>
                                                 <td>
-                                                    <span style="display: none"><?=$ordem_servico->data_criacao?></span><?=date('d/m/Y H:i:s', strtotime($ordem_servico->data_criacao))?>
+                                                    <?= $ordem_servico->data_criacao ?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->prioridade_nome?>
