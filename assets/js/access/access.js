@@ -1,5 +1,5 @@
 
-const google = "6LfwtV4UAAAAANnXXJhkM87IgNRNQghpwW467CEc";
+// const google = "6LfwtV4UAAAAANnXXJhkM87IgNRNQghpwW467CEc";
 const base_url = window.location .protocol + "//" + window.location.host + "/" + window.location.pathname.split('/')[1];
 
 $(document).ready(function () {
@@ -93,7 +93,7 @@ login_send = (e, s) => {
   pre_loader_show();
   var t;
   //Solicitando autenticação recaptcha para o usuário (Não sou robo).
-  grecaptcha.execute(google, { action: 'homepage' }).then(function (token) {
+  //grecaptcha.execute(google, { action: 'homepage' }).then(function (token) {
     t = token;
     //Enviando os dados via post (AJAX)
     $.post(base_url+'/access/login/', { login: e, password: s, 'g-recaptcha-response': t }).done(function (response) {
@@ -114,7 +114,7 @@ login_send = (e, s) => {
         $('.area-acesso').append(alerts_access('response', 'Acesso Proíbido', 'Você não tem permissão para acessar o sistema WEB'));
     }
 }, "json");
-});
+//});
 }
 
 //Função que envia uma requisição para recuperação de senha
