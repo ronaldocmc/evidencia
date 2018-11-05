@@ -225,7 +225,8 @@ class Access extends CI_Controller {
             $captcha_response = TRUE;
             $attempt_response = TRUE;
         }else{
-        	$captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
+        	//$captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
+            $captcha_response = TRUE;
         	$attempt_response = verify_attempt($this->input->ip_address());
         }
     	if ($captcha_response === TRUE && $attempt_response === TRUE)
