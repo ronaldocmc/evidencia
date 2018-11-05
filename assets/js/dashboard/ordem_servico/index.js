@@ -27,9 +27,8 @@ var adicionar_mapa_historico = 1;
 // var adicionar_mapa_situacao = 1; 
 //-----------------------------------//
 $(document).ready(function() {
-    $("#data_brasileira").click();
-    $("#data_brasileira").click();
-    pre_loader_hide();
+    $("#data").click();
+    $("#data").click();
 });
 
 
@@ -1607,6 +1606,3 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
 }
 
 }
-
-
-

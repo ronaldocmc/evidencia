@@ -39,6 +39,11 @@ class Ordem_Servico extends CRUD_Controller {
 			'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
 		]);
 
+		foreach ($ordens_servico as $os) 
+		{
+			$os->data_criacao = date('d/m/Y H:i:s', strtotime($os->data_criacao));
+		}
+
 		//Criando um array de departamentos pertencentes a organização do usuário 
 		$departamentos = $this->departamento_model->get([
 			'organizacao_fk' => $this->session->user['id_organizacao']
@@ -66,12 +71,11 @@ class Ordem_Servico extends CRUD_Controller {
 
 		//Criando um array de prodecencias de serviços (Interno/Externo) com dados necessário a serem exibidos na view index
 		$procedencias = $this->procedencia_model->get(['procedencias.organizacao_fk' => $this->session->user['id_organizacao']
-	]);
+		]);
 
 		//Criando um array de setores (A, B, C, D) com dados necessário a serem exibidos na view index
 		$setores = $this->setor_model->get(['setores.organizacao_fk' => $this->session->user['id_organizacao']
-	]);
-
+		]);
 
 		//Carregando arquivos CSS no flashdata da session para as views 
 		$this->session->set_flashdata('css',[
