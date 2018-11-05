@@ -899,46 +899,41 @@ private function create_relatorio($filtro)
             if(!$this->verifica_se_relatorio_ja_foi_iniciado($id))
             {
                 $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $relatorio->relatorio_pk]);
-                if($ordens_servicos){
-
-
-                    foreach($ordens_servicos as $os){
+                if($ordens_servicos)
+                {
+                    foreach($ordens_servicos as $os)
+                    {
                         $this->historico_model->insert(
                             array(
                                 'ordem_servico_fk' => $os->ordem_servico_pk,
                                 'funcionario_fk' => $this->session->user['id_funcionario'],
-                            'situacao_fk' => 1, //ABERTO
-                            'historico_ordem_comentario' => "Relatório destruído.",
-                        )
+                                'situacao_fk' => 1, //ABERTO
+                                'historico_ordem_comentario' => "Relatório destruído.",
+                            )
                         );
                     }
 
                 }
 
-
-                //Deletar os filtros
-                $this->relatorio_model->delete_filtros_data(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-                $this->relatorio_model->delete_filtros_setores(['relatorio_fk' => $relatorio->relatorio_pk]);
-                $this->relatorio_model->delete_filtros_tipos_servicos(['relatorio_fk' => $relatorio->relatorio_pk]);
-
                 $this->relatorio_model->delete_relatorios_os(['relatorio_fk' => $relatorio->relatorio_pk]);
 
-                $this->relatorio_model->delete(['relatorio_pk' => $relatorio->relatorio_pk]);
+                $this->relatorio_model->disable(['relatorio_pk' => $relatorio->relatorio_pk]);
                 $response->set_code(Response::SUCCESS);
                 $response->set_data("Relatório deletado com sucesso.");
-
-            }else{
+            }
+            else
+            {
                $response->set_code(Response::UNAUTHORIZED);
                $response->set_data("O funcionário já recebeu o relatório no celular, portanto não é possível destruí-lo."); 
             }
 
-        }else{
+        }
+        else
+        {
             $response->set_code(Response::NOT_FOUND);
             $response->set_data("Relatório não encontrado.");
         }
         $response->send();
-
     }
 
     /**
@@ -952,11 +947,15 @@ private function create_relatorio($filtro)
         if ($relatorios !== false)
         {
             //arrumar a data:
-            foreach($relatorios as $relatorio){
+            foreach($relatorios as $relatorio)
+            {
                 $relatorio->data_criacao = date('d/m/Y H:i:s', strtotime($relatorio->data_criacao));
-                if($relatorio->status == 0){
+                if($relatorio->status == 0)
+                {
                     $relatorio->status_string = 'Em Andamento';
-                }else{
+                }
+                else if($relatorio->status == 1)
+                {
                     $relatorio->status_string = 'Entregue';
                 }
             }
