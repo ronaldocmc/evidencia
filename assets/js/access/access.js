@@ -94,7 +94,8 @@ login_send = (e, s) => {
   var t;
   //Solicitando autenticação recaptcha para o usuário (Não sou robo).
   //grecaptcha.execute(google, { action: 'homepage' }).then(function (token) {
-    t = token;
+
+    t = 'token';
     //Enviando os dados via post (AJAX)
     $.post(base_url+'/access/login/', { login: e, password: s, 'g-recaptcha-response': t }).done(function (response) {
       console.log(response);
