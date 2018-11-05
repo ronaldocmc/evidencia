@@ -915,18 +915,11 @@ private function create_relatorio($filtro)
 
                 }
 
-                //Deletar os filtros
-                $this->relatorio_model->delete_filtros_data(['relatorio_fk' => $relatorio->relatorio_pk]);
-
-                $this->relatorio_model->delete_filtros_setores(['relatorio_fk' => $relatorio->relatorio_pk]);
-                $this->relatorio_model->delete_filtros_tipos_servicos(['relatorio_fk' => $relatorio->relatorio_pk]);
-
                 $this->relatorio_model->delete_relatorios_os(['relatorio_fk' => $relatorio->relatorio_pk]);
 
-                $this->relatorio_model->delete(['relatorio_pk' => $relatorio->relatorio_pk]);
+                $this->relatorio_model->disable(['relatorio_pk' => $relatorio->relatorio_pk]);
                 $response->set_code(Response::SUCCESS);
                 $response->set_data("Relatório deletado com sucesso.");
-
             }
             else
             {
@@ -961,7 +954,7 @@ private function create_relatorio($filtro)
                 {
                     $relatorio->status_string = 'Em Andamento';
                 }
-                else
+                else if($relatorio->status == 1)
                 {
                     $relatorio->status_string = 'Entregue';
                 }
