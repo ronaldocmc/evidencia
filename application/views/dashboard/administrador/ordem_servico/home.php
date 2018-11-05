@@ -1,15 +1,15 @@
-<!--  <script type="text/javascript">
+  <script type="text/javascript">
     async function pre_loader_show(){
       $('.inner').show();
       // $('#preloader .inner').delay(1000).fadeIn();
       $('#preloader .inner').delay(10).fadeIn();
       $('#preloader').delay(5).fadeIn('slow');
-    }
+  }
 
-    pre_loader_show();
- </script> -->
- <!--MAIN CONTENT-->
- <div class="main-content">
+  pre_loader_show();
+</script> -->
+<!--MAIN CONTENT-->
+<div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
             <div class="row">
@@ -411,21 +411,8 @@
                         <div class="col-12 col-md-12" id="omapa_historico" style="margin-top: 20px; padding-top: 10px;">
                             <div id="omap2"></div>
                         </div>
-                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                            <ol class="carousel-indicators">
-                            </ol>
-                            <div class="carousel-inner">
-                            </div>
-                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Anterior</span>
-                            </a>
-                            <a class="carousel-control-next" href="#ocarouselExampleIndicators" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Próximo</span>
-                            </a>
-                        </div>
-                        <div class="qa-message-list py-5" id="otimeline" style="margin-top: 20px; padding-top: 5px;">
+                        <!-- <div class="container-fluid" id="card_slider_ordem" style="margin-top: 50px;"></div> -->
+                        <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
                         </div>
                         <div class= "modal-footer">
                             <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-atividade" onclick="send_data_historico()">
@@ -469,7 +456,7 @@
                                 <td id="v_setor"></td>
                             </tbody>
                         </table>
-                        <div class=card-group>
+<!--                         <div class=card-group>
                             <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
                                 <div class="card-header">
                                     <strong>Código:</strong>
@@ -487,10 +474,10 @@
                                     </button>
                                 </div>
                                 <div class="card-body card-block" id="endereco_historico">
-                                 <p id="v_descricao"><p>
-                                 </div>
-                             </div>
-                             <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                   <p id="v_descricao"><p>
+                                   </div>
+                               </div>
+                               <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
                                 <div class="card-header">
                                     <strong>Endereço:</strong>
                                     <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="btn-mapa-historico">
@@ -501,26 +488,19 @@
                                     <p id="v_endereco"></p>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
+                        <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="btn-mapa-historico"></button>
+                        <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="btn-foto-historico">
+                            <i class="fa fa-camera" aria-hidden="true"></i>
+                        </button>
                         <div align="center" class="center">
                             <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading" alt="Carregando">
                         </div>
                         <div class="col-12 col-md-12" id="mapa_historico" style="margin-top: 20px; padding-top: 10px;">
                             <div id="map2"></div>
                         </div>
-                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                            <ol class="carousel-indicators">
-                            </ol>
-                            <div class="carousel-inner">
-                            </div>
-                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Anterior</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Próximo</span>
-                            </a>
+                        <div class="col-12 col-md-12" style="margin-top: 20px; padding-top: 10px;">
+                            <div class="container-fluid" id="card_slider_historico"></div>
                         </div>
                         <div class="qa-message-list py-5" id="timeline" style="margin-top: 20px; padding-top: 5px;">
                         </div>
@@ -536,47 +516,12 @@
         </div>
     </div>
 
-<!-- MODAL DELETA TIPO SERVICO -->
-<div class="modal fade" id="d_servico">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Desativar Ordem de Serviço</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <h4 style="text-align: center" class="text-danger">
-                            <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
-                            <p>Ao desativar uma ordem de serviço, as seguintes ações também serão feitas:</p>
-                            <ul style="margin-left: 15px">
-                                <li>Não será possível editar ou visualizar a ordem de serviço.</li>
-                                <li>A ordem de serviço não será exibida em demais módulos.</li>
-                            </ul>
-                        </div>
-                        <?php if ($this->session->user['is_superusuario'] === true): ?>
-                            <div class="form-group">
-                                <input type="password" class="form-control" autocomplete="false" name="pass-modal-desativar" placeholder="Confirme sua senha"
-                                required="required" id="pass-modal-desativar" minlength="8">
-                            </div>
-                        <?php endif;?>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value="">
-                            <i class="fa fa-dot-circle-o"></i> Desativar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--MODAL REATIVA tipos_servicos -->
-    <div class="modal fade" id="r_servico">
+    <!-- MODAL DELETA TIPO SERVICO -->
+    <div class="modal fade" id="d_servico">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Reativar Ordem de Serviço</h4>
+                    <h4 class="modal-title">Desativar Ordem de Serviço</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -584,40 +529,75 @@
                         <div class="form-group">
                             <h4 style="text-align: center" class="text-danger">
                                 <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
-                                <p>Ao reativar um serviço, as seguintes ações também serão feitas:</p>
+                                <p>Ao desativar uma ordem de serviço, as seguintes ações também serão feitas:</p>
                                 <ul style="margin-left: 15px">
-                                    <li>Novas ordens de serviço poderão utilizar novamente o serviço ativado.</li>
-
+                                    <li>Não será possível editar ou visualizar a ordem de serviço.</li>
+                                    <li>A ordem de serviço não será exibida em demais módulos.</li>
                                 </ul>
                             </div>
-                            <?php if ($this->session->user['is_superusuario']): ?>
+                            <?php if ($this->session->user['is_superusuario'] === true): ?>
                                 <div class="form-group">
-                                    <input type="password" class="form-control" autocomplete="false" name="pass-modal-reativar" placeholder="Confirme sua senha"
-                                    required="required" id="pass-modal-reativar">
+                                    <input type="password" class="form-control" autocomplete="false" name="pass-modal-desativar" placeholder="Confirme sua senha"
+                                    required="required" id="pass-modal-desativar" minlength="8">
                                 </div>
                             <?php endif;?>
                             <div class="form-group">
-                                <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Reativar</button>
-                            </div>
-                        </form>
+                                <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value="">
+                                    <i class="fa fa-dot-circle-o"></i> Desativar</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div> 
+
+            <!--MODAL REATIVA tipos_servicos -->
+            <div class="modal fade" id="r_servico">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Reativar Ordem de Serviço</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <h4 style="text-align: center" class="text-danger">
+                                        <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
+                                        <p>Ao reativar um serviço, as seguintes ações também serão feitas:</p>
+                                        <ul style="margin-left: 15px">
+                                            <li>Novas ordens de serviço poderão utilizar novamente o serviço ativado.</li>
+
+                                        </ul>
+                                    </div>
+                                    <?php if ($this->session->user['is_superusuario']): ?>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control" autocomplete="false" name="pass-modal-reativar" placeholder="Confirme sua senha"
+                                            required="required" id="pass-modal-reativar">
+                                        </div>
+                                    <?php endif;?>
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Reativar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
 
 
-        <script type="text/javascript">
-            var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
-            var prioridades = <?php echo json_encode($prioridades !== false ? $prioridades : []); ?>;
-            var situacoes = <?php echo json_encode($situacoes !== false ? $situacoes : []); ?>;
-            var tipos_servico = <?php echo json_encode($tipos_servico !== false ? $tipos_servico : []); ?>;
-            var is_superusuario = <?php if($superusuario){ echo "true"; }else{ echo "false";} ?>;
-            var procedencias = <?php echo json_encode($procedencias !== false ? $procedencias : []); ?>;
-            var ordens_servico = <?php echo json_encode($ordens_servico !== false ? $ordens_servico : []); ?>;
-</script>
+                <script type="text/javascript">
+                    var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
+                    var prioridades = <?php echo json_encode($prioridades !== false ? $prioridades : []); ?>;
+                    var situacoes = <?php echo json_encode($situacoes !== false ? $situacoes : []); ?>;
+                    var tipos_servico = <?php echo json_encode($tipos_servico !== false ? $tipos_servico : []); ?>;
+                    var is_superusuario = <?php if($superusuario){ echo "true"; }else{ echo "false";} ?>;
+                    var procedencias = <?php echo json_encode($procedencias !== false ? $procedencias : []); ?>;
+                    var ordens_servico = <?php echo json_encode($ordens_servico !== false ? $ordens_servico : []); ?>;
+                </script>
 
-<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-</script>
+                <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+                </script>
 
 
-<!-- END MAIN CONTENT-->
+<!-- END MAIN CONTENT

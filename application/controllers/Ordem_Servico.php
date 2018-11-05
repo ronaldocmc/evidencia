@@ -973,10 +973,14 @@ class Ordem_Servico extends CRUD_Controller {
 		$today = date('Y-m-d');
 		$date = date('Y-m-d H:i:s', strtotime('-90 days', strtotime($today)));
 
+
+		//Futuramente alterar esse get para o get do model que está em relatorio_model.
 		$ordens_servico['ordens'] = $this->ordem_servico_model->getJsonForWeb([
 			'departamentos.organizacao_fk' => $this->session->user['id_organizacao'],
 			'historicos_ordens.historico_ordem_tempo >= ' => $date	,
 		]);
+
+		// print_r($ordens_servico['ordens']); die();
 
 		echo json_encode($ordens_servico);
 	}
