@@ -135,13 +135,15 @@ function initMap() {
                         tipo_servico: ordem.tipo_servico,
                         servico: ordem.servico,
                         situacao: ordem.situacao,
-                        data_criacao: reformatDate(ordem.data_inicial),
-                        prioridade: ordem.prioridade
+                        data_criacao: ordem.data_inicial, //Usava o reformatDate();
+                        prioridade: ordem.prioridade,
+                        setor: ordem.setor,
+                        title: ordem.rua + ", " + ordem.numero + " - " + ordem.bairro + ". " + ordem.ponto_referencia
                     });
 
                     marker.addListener('click', function () {
                         main_map.panTo(marker.getPosition());
-                        request_data(this.id);
+                        request_data(this.id, marker.setor); 
                         $('#v_evidencia').modal('show');
                     }); 
                     return marker;
@@ -179,7 +181,7 @@ function toDataURL(url, callback) {
 }
 
 
-function request_data(id) {
+function request_data(id, setor) {
     remove_data();
 
 
@@ -187,10 +189,11 @@ function request_data(id) {
         url: base_url + '/ordem_servico/json_especifico/' + id + '/' + 0,
         dataType: "json",
         success: function (response) {
-
+       
             $("#v_descricao").html(response.ordem.descricao);
             $("#v_prioridade").html(response.ordem.prioridade);
             $("#v_procedencia").html('App');
+            $("#v_setor").html(setor);
             $("#v_servico").html(response.ordem.servico);
 
             var html = "";
@@ -241,11 +244,11 @@ function request_data(id) {
             });
 
 
-                $('#v_loading').hide();
-                $('.carousel-inner').html(html);
-                $('#timeline').html(timeline);
-            }
-        });
+            $('#v_loading').hide();
+            $('.carousel-inner').html(html);
+            $('#timeline').html(timeline);
+        }
+    });
 }
 
 
@@ -387,7 +390,6 @@ function muda_depto() {
 
     add_options_servico();
 
-
 }
 
 function muda_tipo_servico() {
@@ -398,6 +400,7 @@ function muda_tipo_servico() {
 
 $('#filtrar').click(function () {
     activeAll();
+
     // console.log("Listando");
     // console.log("Departamento: " + departamento.val());
     // console.log("Tipo_servico: " + tipo_servico.val());
@@ -414,6 +417,7 @@ $('#filtrar').click(function () {
     
 });
 
+//Função que ativa todos os markers no mapa
 function activeAll() {
     markers.map((marker, i) => {
         marker.setMap(main_map);
@@ -421,6 +425,7 @@ function activeAll() {
     });
 }
 
+//Funçao que remove todos os markers do mapa (Não utilizada por enquanto).
 function removeAll(){
     markers.map((marker, i) => {
         marker.setMap(main_map);
@@ -451,16 +456,30 @@ function filter(marker) {
         marker.setVisible(false);
     }
 
-    let data_inicial = new Date(de.val() + "T" + h_inicial.val());
-    let data_final = new Date(ate.val() + "T" + h_final.val());
+    //Variáveis de comparação que serão setadas de acordo com o que o usuário inserir
+    let data_inicial, data_final;
 
+    //Verifico se as horas foram preenchidas, caso contrário, será o padrão 6h00 e 22h00 
+    if(h_inicial.val() != "" && h_final.val() != ""){
+        data_inicial    = new Date(de.val() + "T" + h_inicial.val());
+        data_final = new Date(ate.val() + "T" + h_final.val());
+     }else{
+        data_inicial    = new Date(de.val() + "T" + "06:00:00");
+        data_final = new Date(ate.val() + "T" + "22:00:00");
+     }
+
+     //Verificando se a data foi preenchida para realizar a filtragem
     if(de.val() != "" && ate.val() != ""){
 
-        let data_ordem = new Date(marker.data_criacao);
+        //Criando o objeto Date para efetuar a comparação. 
+        let data_os = marker.data_criacao.replace(" ", "T");
+        let data_ordem = new Date(data_os);
 
-        if(data_ordem < data_inicial || data_ordem > data_final){
+        //Se a data da ordem for menor que a data inicial, não queremos. Se for maior que a final, também não queremos
+        if(data_ordem.getTime() < data_inicial.getTime() || data_ordem.getTime() > data_final.getTime()){
             marker.setMap(null);
             marker.setVisible(false);
+
         }
     }
 }

@@ -21,8 +21,10 @@ var other_marker = null;
 var other_maker_from_activity = null;
 var posicao_selecionada = null;
 var primeiro_editar = false;
-var adicionar_imagem = 1; 
-var adicionar_mapa = 1; 
+var adicionar_imagem_historico = 1; 
+var adicionar_mapa_historico = 1; 
+// var adicionar_imagem_situacao= 1; 
+// var adicionar_mapa_situacao = 1; 
 //-----------------------------------//
 $(document).ready(function() {
     $("#data").click();
@@ -446,8 +448,8 @@ function remove_data() {
     $("#v_servico").html('');
     $('#v_codigo').html('');
 
-    $('.carousel-inner').html('');
-    $('.carousel-indicators').html('');
+    $('#card_slider_historico').html('');
+    $('#card_slider_ordem').html('');
     $('#timeline').html('');
     $('#v_loading').show();
 }
@@ -460,52 +462,94 @@ function remove_data_atividade() {
     $("#ov_servico").html('');
     $("#ov_codigo").html('');
 
-    $('.carousel-inner').html('');
-    $('.carousel-indicators').html('');
+
     $('#otimeline').html('');
     $('#ov_loading').show();
 }
 
-//Função que exibe e oculta as fotos do histórico pertencente a uma determinada OS.
-$(document).on('click', '#btn-foto-historico', function (event) 
-{
-    if(adicionar_imagem == 1){
 
-        $('#carouselExampleIndicators').show();
-        $('#btn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
-        $('#btn-foto-historico').removeClass('btn-primary');
-        $('#btn-foto-historico').addClass('btn-danger');
-        adicionar_imagem++;
+//Funções que estendem a visualização do mapa e da imagem no registro histórico
+$(document).on('click', '#btn-mapa-historico', function (event) 
+{
+
+    if(adicionar_mapa_historico == 1){
+
+        $('#omapa_historico').show();
+        $('#obtn-mapa-historico').removeClass('btn-primary');
+        $('#obtn-mapa-historico').addClass('btn-danger');
+        adicionar_mapa_historico++;
+
     }
     else
     {
-        $('#carouselExampleIndicators').hide();
-        $('#btn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
-        $('#btn-foto-historico').removeClass('btn-danger');
-        $('#btn-foto-historico').addClass('btn-primary'); 
-        adicionar_imagem--;
+        $('#omapa_historico').hide();
+        $('#obtn-mapa-historico').removeClass('btn-danger');
+        $('#obtn-mapa-historico').addClass('btn-primary'); 
+        adicionar_mapa_historico--;
 
     }
 });
 
+// $(document).on('click', '#obtn-foto-historico', function (event) 
+// {
+//     if(adicionar_imagem_historico == 1){
 
-$(document).on('click', '#obtn-foto-historico', function (event) 
+//         $('#ocarouselExampleIndicators').show();
+//         $('#obtn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
+//         $('#obtn-foto-historico').removeClass('btn-primary');
+//         $('#obtn-foto-historico').addClass('btn-danger');
+//         adicionar_imagem_historico++;
+//     }
+//     else
+//     {
+//         $('#ocarouselExampleIndicators').hide();
+//         $('#obtn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
+//         $('#obtn-foto-historico').removeClass('btn-danger');
+//         $('#obtn-foto-historico').addClass('btn-primary'); 
+//         adicionar_imagem_historico--;
+
+//     }
+// });
+
+//Funções que estendem a visualização do mapa e da imagem para adicionar uma nova situação
+$(document).on('click', '#btn-mapa-historico', function (event) 
 {
-    if(adicionar_imagem == 1){
 
-        $('#ocarouselExampleIndicators').show();
-        $('#obtn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
-        $('#obtn-foto-historico').removeClass('btn-primary');
-        $('#obtn-foto-historico').addClass('btn-danger');
-        adicionar_imagem++;
+    if(adicionar_mapa_historico == 1){
+
+        $('#mapa_historico').show();
+        $('#btn-mapa-historico').removeClass('btn-primary');
+        $('#btn-mapa-historico').addClass('btn-danger');
+        adicionar_mapa_historico++;
+
     }
     else
     {
-        $('#ocarouselExampleIndicators').hide();
-        $('#obtn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
-        $('#obtn-foto-historico').removeClass('btn-danger');
-        $('#obtn-foto-historico').addClass('btn-primary'); 
-        adicionar_imagem--;
+        $('#mapa_historico').hide();
+        $('#btn-mapa-historico').removeClass('btn-danger');
+        $('#btn-mapa-historico').addClass('btn-primary'); 
+        adicionar_mapa_historico--;
+
+    }
+});
+
+$(document).on('click', '#btn-foto-historico', function (event) 
+{
+    if(adicionar_imagem_historico == 1){
+        
+        $('#card_slider_historico').show();
+        $('#btn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
+        $('#btn-foto-historico').removeClass('btn-primary');
+        $('#btn-foto-historico').addClass('btn-danger');
+        adicionar_imagem_historico++;
+    }
+    else
+    {
+        $('#card_slider_historico').hide();
+        $('#btn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
+        $('#btn-foto-historico').removeClass('btn-danger');
+        $('#btn-foto-historico').addClass('btn-primary'); 
+        adicionar_imagem_historico--;
 
     }
 });
@@ -631,49 +675,6 @@ $(document).on('click', '.btn_atividade', function (event)
 
 
 
-//Função que exibe e oculta as fotos do histórico pertencente a uma determinada OS.
-$(document).on('click', '#btn-mapa-historico', function (event) 
-{
-
-    if(adicionar_mapa == 1){
-
-        $('#mapa_historico').show();
-        $('#btn-mapa-historico').removeClass('btn-primary');
-        $('#btn-mapa-historico').addClass('btn-danger');
-        adicionar_mapa++;
-
-    }
-    else
-    {
-        $('#mapa_historico').hide();
-        $('#btn-mapa-historico').removeClass('btn-danger');
-        $('#btn-mapa-historico').addClass('btn-primary'); 
-        adicionar_mapa--;
-
-    }
-});
-
-
-$(document).on('click', '#obtn-mapa-historico', function (event) 
-{
-
-    if(adicionar_mapa == 1){
-
-        $('#omapa_historico').show();
-        $('#obtn-mapa-historico').removeClass('btn-primary');
-        $('#obtn-mapa-historico').addClass('btn-danger');
-        adicionar_mapa++;
-
-    }
-    else
-    {
-        $('#omapa_historico').hide();
-        $('#obtn-mapa-historico').removeClass('btn-danger');
-        $('#obtn-mapa-historico').addClass('btn-primary'); 
-        adicionar_mapa--;
-
-    }
-});
 
 
 get_historico = (id) => 
@@ -704,8 +705,29 @@ get_historico = (id) =>
             $('#fechar-historico').removeAttr('disabled');
             $('#fechar-historico').css('cursor', 'pointer');
 
+            if(response.ordem.historico.length > 2){
+                html +=     '<div id="myCarousel" class="carousel slide"data-ride="carousel">' +
+                '<div class="carousel-inner row w-100 mx-auto"></div>' +
+                '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
+                '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
+                '<span class="sr-only">Previous</span>' +
+                '</a>' +
+                '<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">' +
+                '<span class="carousel-control-next-icon" style="color: black;" aria-hidden="true"></span>' +
+                '<span class="sr-only">Next</span>'+
+                '</a>'+
+                '</div>';
+            }else{
+
+                html += '<div id="card_imagens">' +
+                '<div class="carousel-inner row w-100 mx-auto"></div>' +
+                '</div>';
+            }
+
+            
+            $('#card_slider_historico').html(html);
+
             response.ordem.historico.map((historico, i) => {
-                indicators += '<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>';
                 if (historico.comentario == null) {
                     historico.comentario = "Nenhum comentário adicionado.";
                 }
@@ -717,16 +739,17 @@ get_historico = (id) =>
                 timeline += create_timeline(historico.comentario, historico.funcionario_foto, historico.funcionario, historico.situacao, reformatDate(historico.data));
 
                 if (historico.foto != null) {
-                    html += create_carousel_item(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                    active = "";
+                    html += create_cards(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    active ="";
                 } else {
-                    html += create_carousel_item(historico.comentario, 'no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    html += create_cards(historico.comentario, './assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    active ="";
                 }
+
             });
 
             $('.carousel-inner').html(html);
-            $('.carousel-indicators').html(indicators);
-            $('#carouselExampleIndicators').hide();
+            $('#card_slider_historico').hide();
             $('#timeline').html(timeline);
             $('#v_loading').hide();
             $('#ordem_servico_pk').val(id);
@@ -759,7 +782,7 @@ get_atividade = (id) =>
 
     var html = "";
     var indicators = "";
-    var active = "active";
+    var active = " active";
     var timeline = "";
 
     var d = new Date();
@@ -776,9 +799,30 @@ get_atividade = (id) =>
             $('#fechar-atividade').css('cursor', 'pointer');
 
 
+            if(response.ordem.historico.length > 2){
+                html +=     '<div id="myCarousel" class="carousel slide"data-ride="carousel">' +
+                '<div class="carousel-inner row w-100 mx-auto"></div>' +
+                '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
+                '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
+                '<span class="sr-only">Previous</span>' +
+                '</a>' +
+                '<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">' +
+                '<span class="carousel-control-next-icon" style="color: black;" aria-hidden="true"></span>' +
+                '<span class="sr-only">Next</span>'+
+                '</a>'+
+                '</div>';
+            }else{
+
+                html += '<div id="card_imagens">' +
+                '<div class="carousel-inner row w-100 mx-auto"></div>' +
+                '</div>';
+            }
+
+            $('#card_slider_ordem').html(html);
+            $('#card_slider_historico').html(html);
+
             response.ordem.historico.map((historico, i) => {
-                if(i == response.ordem.historico.length -1){ //ou seja, for o último:
-                    indicators += '<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>';
+                if(i == response.ordem.historico.length -1){
                     if (historico.comentario == null) {
                         historico.comentario = "Nenhum comentário adicionado.";
                     }
@@ -790,10 +834,11 @@ get_atividade = (id) =>
                     timeline += create_timeline(historico.comentario, historico.funcionario_foto, historico.funcionario, historico.situacao, reformatDate(historico.data));
 
                     if (historico.foto != null) {
-                        html += create_carousel_item(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                        active = "";
+                        html += create_cards(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                        active ="";
                     } else {
-                        html += create_carousel_item(historico.comentario, 'no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                        html += create_cards(historico.comentario, './assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                        active ="";
                     }
                 }
             });
@@ -845,9 +890,8 @@ get_atividade = (id) =>
             '</div>' +
             '</div></div>';
 
-            $('.carousel-inner').html(html);
-            $('.carousel-indicators').html(indicators);
-            $('#ocarouselExampleIndicators').hide();
+            $('#card_slider_ordem').hide();
+            $('#card_slider_historico').hide();
             $('#otimeline').html(timeline);
             $('#ov_loading').hide();
             $('#ordem_servico_pk').val(id);
@@ -897,15 +941,17 @@ function create_timeline(comentario, src, funcionario, situacao, data) {
     '</div></div>';
 }
 
-function create_carousel_item(description, src, funcionario, situacao, data, active) {
+function create_cards(description, src, funcionario, situacao, data, active) {
 
-    return '<div class="carousel-item ' + active + '">' +
-    '<img class="d-block w-100" src="' + src +'" alt="Evidência">' +
-    '<div class="carousel-caption d-none d-lg-block">' +
-    '<p>' + description + '</p>' +
-    '<p>Funcionário: ' + funcionario + '</p>' +
-    '<p>Situação: ' + situacao + '</p>' +
-    '<p>Data: ' + data + '</p>' +
+    return '<div class="carousel-item col-md-4' + active + '">' +
+    '<div class="card">' +
+    '<img class="card-img-top img-fluid" src="' + "." + src +'">'+
+    '<div class="card-body">' +
+    '<h4 class="card-title">'+ situacao + '</h4>' +
+    '<p class="card-text">'+ description +'</p>' +  
+    '<p class="card-text"><small class="text-muted">'+ data + '</small></p>' +
+    '<p class="card-text"><small class="text-muted"><b>'+ funcionario + '</b></small></p>' +
+    '</div>' +
     '</div>' +
     '</div>';
 }
@@ -987,7 +1033,7 @@ send_historico = (imagem) =>
               ]).draw();
             //pre_loader_hide();
             remove_image();
-   
+
             $('#atividade').modal('hide');
             $('.modal-backdrop').hide();
             
@@ -1105,16 +1151,16 @@ send = (imagem) =>
       else if(response.code == 200)
       { 
         console.log(response);
-         
-         if ($('#ordem_servico_pk').val() != ""){
+
+        if ($('#ordem_servico_pk').val() != ""){
             cod = ordens_servico[posicao_selecionada]['ordem_servico_cod'];
             data_criacao = ordens_servico[posicao_selecionada]['data_criacao'];
-         }else{
+        }else{
             cod = response.data.ordem_servico_cod;
             data_criacao = response.data.data_criacao;
-         } 
+        } 
 
-         console.log(cod);
+        console.log(cod);
 
         os =
         {
@@ -1145,8 +1191,8 @@ send = (imagem) =>
       if ($('#ordem_servico_pk').val() == "") 
               { //verifica se é um insert
 
-                 ordens_servico.push(os);
-                 table.row.add([
+               ordens_servico.push(os);
+               table.row.add([
                   os.ordem_servico_cod,
                   os.data_criacao,
                   os.prioridade_nome,
@@ -1159,36 +1205,36 @@ send = (imagem) =>
                   '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(ordens_servico.length - 1)+'" data-target="#d_servico" title="Desativar">' +
                   '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                   ]).draw(false);
-                 alerts('success', 'Sucesso', response.data.mensagem);
-                 remove_image();
-             } 
-             else 
-             {
-                for (var i in ordens_servico) 
-                {
+               alerts('success', 'Sucesso', response.data.mensagem);
+               remove_image();
+           } 
+           else 
+           {
+            for (var i in ordens_servico) 
+            {
 
-                  if (ordens_servico[i]['ordem_servico_pk'] == $('#ordem_servico_pk').val()){
-                      os['situacao_atual_pk'] = ordens_servico[i]['situacao_atual_pk'];
-                      break;
-                  }
+              if (ordens_servico[i]['ordem_servico_pk'] == $('#ordem_servico_pk').val()){
+                  os['situacao_atual_pk'] = ordens_servico[i]['situacao_atual_pk'];
+                  break;
               }
-              ordens_servico[i] = (os);
-              table.row(i).data([
-                os.ordem_servico_cod,
-                os.data_criacao,
-                os.prioridade_nome,
-                os.endereco,
-                os.servico_nome,
-                os.situacao_nome,
-                os.setor_nome,
-                '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="'+ (i) +'" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-                '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_servico" title="Histórico">' +
-                '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
-                '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                ]).draw();
-              alerts('success', 'Sucesso', response.data.mensagem); 
-
           }
+          ordens_servico[i] = (os);
+          table.row(i).data([
+            os.ordem_servico_cod,
+            os.data_criacao,
+            os.prioridade_nome,
+            os.endereco,
+            os.servico_nome,
+            os.situacao_nome,
+            os.setor_nome,
+            '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="'+ (i) +'" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_servico" title="Histórico">' +
+            '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
+            '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
+            ]).draw();
+          alerts('success', 'Sucesso', response.data.mensagem); 
+
+      }
           //pre_loader_hide();
           remove_image();
           $('#ce_ordem_servico').modal('hide');
@@ -1319,18 +1365,18 @@ send = (imagem) =>
         }); 
     });
 
-    $( "#close-modal" ).click(function() {
-        $("#logradouro-input").addClass('loading');
-        $("#bairro-input").addClass('loading');
-        primeiro_editar = true;
-    });
+$( "#close-modal" ).click(function() {
+    $("#logradouro-input").addClass('loading');
+    $("#bairro-input").addClass('loading');
+    primeiro_editar = true;
+});
 
 
-    $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
-        $("#tipo_servico option").remove();
-        $("#servico_pk option").remove();
-        primeiro_editar = false; 
-    });
+$('#ce_ordem_servico').on('hide.bs.modal', function (event) {
+    $("#tipo_servico option").remove();
+    $("#servico_pk option").remove();
+    primeiro_editar = false; 
+});
 
     //Função que pega a posição selecionada na datatable para exclusão
     $(document).on('click', '.btn-excluir', function (event) 
@@ -1352,8 +1398,8 @@ send = (imagem) =>
         var data;
         btn_load($('#btn-desativar'));
         if(is_superusuario){
-         data = 
-         {
+           data = 
+           {
             'ordem_servico_pk': $('#ordem_servico_pk').val(),
             'senha': $('#pass-modal-desativar').val()
         }
@@ -1384,8 +1430,8 @@ send = (imagem) =>
         var data;
         btn_load($('#btn-reativar'));
         if(is_superusuario){
-         data = 
-         {
+           data = 
+           {
             'ordem_servico_pk': $('#ordem_servico_pk').val(),
             'senha': $('#pass-modal-reativar').val()
         }
