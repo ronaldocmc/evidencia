@@ -57,11 +57,14 @@ class Dashboard extends CRUD_Controller
 
         $organizacao = $this->session->user['id_organizacao'];       
 
-        //$dados = null;
-
         $this->load->model('dashboard_model');
 
-        // $this->db->trans_start();
+
+        $current_month = date("m");
+        $current_year = date("Y");
+
+        $ordens_por_mes = $this->dashboard_model->get_ordens_ano("01.".$current_month.".".$current_year, "31.".$current_month.".".$current_year,$organizacao);
+
         
         $ordens_por_semana = $this->dashboard_model->get_ordens_semana($organizacao);
         
@@ -71,21 +74,19 @@ class Dashboard extends CRUD_Controller
 
         $ordens_por_tipo_semana = $this->dashboard_model->get_ordens_tipo_semana($organizacao);
 
-        $ordens_por_mes = $this->dashboard_model->get_ordens_ano("01.01.2018", "31.12.2018",$organizacao);
-
+        
         $ordens_finalizadas = $this->dashboard_model->get_ordens_hoje_finalizadas();
         $quantidade_de_ordens_finalizadas = $ordens_finalizadas[0]->count;
 
 
         $hoje = $this->dashboard_model->get_ordens_hoje();
-        $quantidade_de_ordens_de_hoje = $hoje[0]->count;
+        $quantidade_de_ordens_de_hoje = $hoje;
 
-        $quantidade_de_ordens_abertas = $quantidade_de_ordens_de_hoje - $quantidade_de_ordens_finalizadas;
+        //$quantidade_de_ordens_abertas = $quantidade_de_ordens_de_hoje - $quantidade_de_ordens_finalizadas;
+        $quantidade_de_ordens_abertas = $this->dashboard_model->get_ordens_hoje();
         
         // $ultimas_ordens = $this->dashboard_model->get_ultimas_ordens($organizacao);
         
-        // $this->db->trans_complete();
-
         $quantidade_ordens_mes = $ordens_por_mes['total'];
         $quantidade_ordens_semana = $ordens_por_semana['total'];
 
@@ -132,7 +133,7 @@ class Dashboard extends CRUD_Controller
         $dados['quantidade_ordens_tipo'] = $quantidade_ordens_tipo;
 
         $dados['hoje'] = array(
-            "finalizados" => $quantidade_de_ordens_finalizadas,
+            "finalizados" => 0,
             "novas" => $quantidade_de_ordens_abertas
         );
         
