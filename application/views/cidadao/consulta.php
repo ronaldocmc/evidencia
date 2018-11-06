@@ -20,7 +20,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
         crossorigin="anonymous">
-
+    <link rel="shortcut icon" type="image/x-icon" href="<?= base_url('assets/images/icon/logo-mini.png') ?>" />
     <style>
         .form-control-borderless {
     border: none;
@@ -43,16 +43,12 @@
                     <div class="card-body p-0">
                         <div class="row p-1">
                             <div class="col-md-6">
-                                <img src="<?= base_url('assets/images/icon/logo.png') ?>">
+                                <!-- <img src="<?= base_url('assets/images/icon/logo.png') ?>"> -->
                             </div>
 
-                            <div class="col-md-6 text-right">
-                                <p class="font-weight-bold mb-1" id="os_code"></p>
-                                <p class="text-muted" id="os_day">
-                                    <?= Date('d/m/Y') ?>
-                                </p>
-                            </div>
                             <div class="text-center col-md-12">
+                                <img src="<?= base_url('assets/images/icon/logo.png') ?>">
+                                <hr>
                                 <h4 class="text-muted">Saiba o que a PRUDENCO está fazendo por você</h4>
                             </div>
 
@@ -67,7 +63,7 @@
                                                 <!--end of col-->
                                                 <div class="col">
                                                     <input id="os_protocol" autofocus class="form-control form-control-lg form-control-borderless"
-                                                        type="search" value="LIMPLR-2018/28" placeholder="Digite aqui o seu CPF ou o PROTOCOLO">
+                                                        type="search" value="LIMPLR-2018/28" placeholder="Digite aqui o número do protocolo">
                                                 </div>
                                                 <!--end of col-->
                                                 <div class="col-auto">
@@ -87,18 +83,18 @@
 
                         <section id="os_search">
                             <div class="text-center col-md-12">
-                                <h4>Nós queremos melhorar a nossa transparência com o cidadão.</h4>
+                                <h4>Nós queremos melhorar a nossa transparência com você.</h4>
                                 <p>Para isso, fizemos a área de acesso da população no nosso <a href="#">Sistema de
                                         Gerênciamento da Cidade - EVIDÊNCIA</a></p>
                                 <p>Aqui você pode ver todo o procedimento que fizemos ou estamos fazendo para resolver
-                                    o seu relato.</p>
+                                    o seu problema.</p>
                             </div>
                         </section>
 
 
                         <section id="os">
 
-                            <div class="col-md-12">
+                            <!-- <div class="col-md-12">
                                 <div class="alert alert-warning" role="alert">
                                     <h4 class="alert-heading">Evidência sem dono!</h4>
                                     <p>Essa evidência não foi associada a nenhum cidadão. Se foi você que fez esse
@@ -108,7 +104,7 @@
                                     <p class="mb-0"><a href="#" data-toggle="modal" data-target="#modalInfo">Por que
                                             me associar a uma evidência?</a></p>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="row pb-5 p-5">
                                 <div class="col-md-6">
@@ -252,7 +248,8 @@
                     html += `<td>${(value.comentario) ? value.comentario : "Nenhum comentário adicionado"}</td>`;
                     html += `<td>${new Date(value.data).toLocaleDateString("pt-BR")}</td>`;
                     if (value.foto) {
-                        html += `<td><img src="${value.foto}"/></td>`;
+                        // html += `<td><img src="${value.foto}"/></td>`;
+                        html += "<td></td>";
                     } else {
                         html += `<td></td>`;
                     }
