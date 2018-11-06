@@ -63,6 +63,8 @@ class MY_Controller extends CI_Controller
                 
                 $header_obj = apache_request_headers();
 
+                var_dump($header_obj); die();
+
                 // var_dump($header_obj);die();
 
                 
