@@ -27,7 +27,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $root = "http://".$_SERVER['HTTP_HOST'];
 $root.= dirname($_SERVER['SCRIPT_NAME']);
 
-$url = 'evidencia.azurewebsites.net/';
+$url = 'http://evidencia.azurewebsites.net/';
 
 if(ENVIRONMENT == 'development'){
 
@@ -36,15 +36,13 @@ if(ENVIRONMENT == 'development'){
 }
 else if(ENVIRONMENT == 'production'){
 
-	$config['base_url'] = 'http://'.$url;
+	$config['base_url'] = $url;
 
 }else if(ENVIRONMENT == 'testing'){
 
 	$config['base_url'] = $root;
 }
 
-print_r($_SERVER);
-echo 'ENvIRNOMNT '.ENVIRONMENT; die();
 /*
 |--------------------------------------------------------------------------
 | Index File
