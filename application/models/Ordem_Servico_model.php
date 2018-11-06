@@ -171,6 +171,7 @@ class Ordem_Servico_model extends CI_Model {
 
     public function getEspecifico($where = NULL){
         $this->db->select('
+        ordens_servicos.ordem_servico_pk,
         ordens_servicos.ordem_servico_desc AS descricao,
         servicos.servico_nome AS servico,
         prioridades.prioridade_nome AS prioridade,
@@ -204,6 +205,68 @@ class Ordem_Servico_model extends CI_Model {
         // echo $this->db->get_compiled_select();die();
         $result = $this->db->get()->row_array();
 
+        if ($result) {
+            return ($result);
+        } else {
+            return false;
+        }
+    }
+
+    public function getCidadao($where = null){
+        $this->db->select('
+        ordens_servicos.ordem_servico_pk,
+        ordens_servicos.ordem_servico_desc,
+        ordens_servicos.ordem_servico_cod,
+        ordens_servicos.ordem_servico_status,
+        servicos.servico_nome,
+        prioridades.prioridade_nome,
+        procedencias.procedencia_nome,
+        coordenadas.coordenada_lat,
+        coordenadas.coordenada_long,
+        setores.setor_nome,
+        (SELECT situacoes.situacao_pk FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual,
+        (SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual_nome,
+        (SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial,
+        (SELECT historicos_ordens.historico_ordem_tempo FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as data_criacao,
+        tipos_servicos.tipo_servico_nome,
+        locais.local_complemento,
+        locais.local_num,
+        logradouros.logradouro_nome,
+        bairros.bairro_nome,
+        municipios.municipio_nome,
+        municipios.estado_fk,
+        coordenadas.local_fk, departamento_nome')
+        ;
+        $this->db->from('ordens_servicos','LEFT');
+        $this->db->join('servicos','servicos.servico_pk = ordens_servicos.servico_fk','LEFT');
+        $this->db->join('historicos_ordens','historicos_ordens.ordem_servico_fk =  ordens_servicos.ordem_servico_pk','LEFT');
+        //$this->db->join('imagens_situacoes', 'historicos_ordens.historico_ordem_pk = imagens_situacoes.historico_ordem_fk', 'LEFT','LEFT');
+        $this->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk','LEFT');
+        $this->db->join('situacoes','situacoes.situacao_pk = historicos_ordens.situacao_fk','LEFT');
+        $this->db->join('prioridades','prioridades.prioridade_pk = ordens_servicos.prioridade_fk','LEFT');
+        $this->db->join('procedencias','procedencias.procedencia_pk = ordens_servicos.procedencia_fk','LEFT');
+        $this->db->join('setores','setores.setor_pk= ordens_servicos.setor_fk','LEFT');
+        $this->db->join('coordenadas','coordenadas.coordenada_pk = ordens_servicos.coordenada_fk','LEFT');
+        $this->db->join('locais', 'coordenadas.local_fk = locais.local_pk','LEFT');
+        $this->db->join('logradouros', 'locais.logradouro_fk = logradouros.logradouro_pk','LEFT');
+        $this->db->join('bairros', 'locais.bairro_fk = bairros.bairro_pk','LEFT');
+        $this->db->join('municipios', 'bairros.municipio_fk = municipios.municipio_pk','LEFT');
+        $this->db->join('departamentos', 'departamentos.departamento_pk = tipos_servicos.departamento_fk','LEFT');
+        $this->db->group_by('ordens_servicos.ordem_servico_pk','LEFT');
+
+        if ($where !== NULL) {
+            if (is_array($where)) {
+                foreach ($where as $field=>$value) {
+                    $this->db->where($field, $value);
+                }
+            } else {
+                $this->db->where(self::PRI_INDEX, $where);
+            }
+        }
+
+        // echo $this->db->get_compiled_select(); die();
+
+        $result = $this->db->get()->row();
         if ($result) {
             return ($result);
         } else {
@@ -252,6 +315,7 @@ class Ordem_Servico_model extends CI_Model {
         }
 
     }
+
 
     /**
      * Inserts new data into database
