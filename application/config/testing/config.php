@@ -24,6 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
+	print_r($_SERVER); die();
 	if($_SERVER['HTTP_HOST'] == 'localhost')
 	{
 		$_SERVER['CI_ENV'] = 'development';
