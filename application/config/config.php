@@ -31,16 +31,16 @@ $url = 'evidencia.azurewebsites.net/';
 
 if($_SERVER['HTTP_HOST'] == $url)
 {
-	ENVIRONMENT = 'production';
+	define(ENVIRONMENT,'production');
 	$config['base_url'] = 'http://'.$url;
 }else 
 	if(is_cli())
 	{
-		ENVIRONMENT = 'testing';
+		define(ENVIRONMENT,'testing');
 		$config['base_url'] = $root;
 	}else
 	{
-		ENVIRONMENT = 'development';
+		define(ENVIRONMENT,'development');
 		$config['base_url'] = $root;
 	}
 
