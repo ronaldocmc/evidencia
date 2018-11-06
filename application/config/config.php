@@ -23,16 +23,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-
 $root = "http://".$_SERVER['HTTP_HOST'];
 $root.= dirname($_SERVER['SCRIPT_NAME']);
 
 $url = 'evidencia.azurewebsites.net/';
 
-if($_SERVER['HTTP_HOST'] == $url)
+if($_SERVER['HTTP_HOST'] == 'localhost')
 {
-	define(ENVIRONMENT,'production');
-	$config['base_url'] = 'http://'.$url;
+	define(ENVIRONMENT,'development');
+		$config['base_url'] = $root;
 }else 
 	if(is_cli())
 	{
@@ -40,8 +39,8 @@ if($_SERVER['HTTP_HOST'] == $url)
 		$config['base_url'] = $root;
 	}else
 	{
-		define(ENVIRONMENT,'development');
-		$config['base_url'] = $root;
+		define(ENVIRONMENT,'production');
+		$config['base_url'] = 'http://'.$url;
 	}
 
 /*
