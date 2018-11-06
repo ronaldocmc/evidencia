@@ -28,6 +28,8 @@ $root.= dirname($_SERVER['SCRIPT_NAME']);
 
 $url = 'evidencia.azurewebsites.net/';
 
+print_r($_SERVER); die();
+
 if($_SERVER['HTTP_HOST'] == 'localhost')
 {
 	define(ENVIRONMENT,'development');
