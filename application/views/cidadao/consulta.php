@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
         crossorigin="anonymous">
     <link rel="shortcut icon" type="image/x-icon" href="<?= base_url('assets/images/icon/logo-mini.png') ?>" />
+
+    <script src="<?= base_url('assets/js/constants.js') ?>"></script>
     <style>
         .form-control-borderless {
     border: none;
@@ -106,15 +108,21 @@
                                 </div>
                             </div> -->
 
-                            <div class="row pb-5 p-5">
+                            <div class="col-md-12 p-5" id="finalizado">
+                                <div class="alert alert-success" role="alert">
+                                    <h4 class="alert-heading">Evidência finalizada!</h4>
+                                    <p>Essa evidência já foi finalizada</p>
+                                </div>
+                            </div>
+
+                            <div class="row p-5">
                                 <div class="col-md-6">
-                                    <p class="font-weight-bold mb-4">Informações</p>
                                     <span class="font-weight-bold">Localização: </span>
-                                    <p class="mb-1" id="os_local">Rua Padre João Goetz, 1111</p>
+                                    <p class="mb-1" id="os_local"></p>
                                     <!-- <p>Acme Inc</p> -->
                                     <p class="mb-1" id="os_city"></p>
                                     <span class="font-weight-bold">Descrição: </span>
-                                    <p class="mb-1" id="os_desc">Entulhos na frente da calçada da casa 1111</p>
+                                    <p class="mb-1" id="os_desc"></p>
                                 </div>
 
                                 <div class="col-md-6 text-right">
@@ -124,19 +132,17 @@
                                     <p class="mb-1"><span class="text-muted">Serviço: </span> <span id="os_serv"></span></p>
                                     <p class="mb-1"><span class="text-muted">Situação Atual: </span> <span id="os_sit"></span></p>
                                 </div>
-
-                                <div class="col-md-12">
-
-                                </div>
                             </div>
 
-                            <div class="col-md-12" id="finalizado">
-                                <div class="alert alert-success" role="alert">
-                                    <h4 class="alert-heading">Evidência finalizada!</h4>
-                                    <p>Essa evidência já foi finalizada</p>
-                                </div>
+                            <hr>
+
+                            <div class="row p-5">
+                                <h4 class="text-muted">Histórico de Fotos</h4>
+                                <div class="col-md-12" id="fotos"></div>
                             </div>
 
+
+                            <hr>
 
                             <div class="row p-5">
                                 <h4 class="text-muted">Histórico</h4>
@@ -147,7 +153,6 @@
                                                 <th class="border-0 text-uppercase small font-weight-bold">Situação</th>
                                                 <th class="border-0 text-uppercase small font-weight-bold">Comentário</th>
                                                 <th class="border-0 text-uppercase small font-weight-bold">Data</th>
-                                                <th class="border-0 text-uppercase small font-weight-bold">Imagem</th>
                                             </tr>
                                         </thead>
                                         <tbody id="os_historico">
@@ -212,12 +217,14 @@
 
     $(search).click(function () {
         var table = $('#os_historico');
+        var div_fotos = $('#fotos');
 
-        table.html("");
-
+        table.empty();
+        div_fotos.empty();
+        $('#finalizado').hide();
 
         $.ajax({
-            url: `Cidadao/getOs?protocol=${$('#os_protocol').val()}`,
+            url: `${base_url}/Cidadao/getOs?protocol=${$('#os_protocol').val()}`,
             method: 'GET'
         }).done(function (response) {
 
@@ -241,23 +248,22 @@
                     $('#finalizado').fadeIn(1000);
                 }
 
+                var fotos = "";
+
                 response.historico.forEach((value) => {
                     let html = '';
                     html += `<tr>`;
                     html += `<td>${value.situacao}</td>`;
                     html += `<td>${(value.comentario) ? value.comentario : "Nenhum comentário adicionado"}</td>`;
                     html += `<td>${new Date(value.data).toLocaleDateString("pt-BR")}</td>`;
-                    if (value.foto) {
-                        // html += `<td><img src="${value.foto}"/></td>`;
-                        html += "<td></td>";
-                    } else {
-                        html += `<td></td>`;
-                    }
                     html += `</tr>`;
+                    if (value.foto) {
+                        fotos += `<img width="150px" src="${value.foto}"/>`;
+                    }
 
                     table.append(html);
                 });
-
+                div_fotos.append(fotos);
             }
         });
     });
