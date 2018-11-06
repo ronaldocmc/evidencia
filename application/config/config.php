@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-$config['base_url'] = 'http://http://evidencia.azurewebsites.net';
+$config['base_url'] = 'http://evidencia.azurewebsites.net';
 
 /*
 |--------------------------------------------------------------------------
