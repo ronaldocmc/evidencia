@@ -99,6 +99,11 @@ class Ordem_Servico_model extends CI_Model {
             servicos.servico_pk AS servico,
             servicos.tipo_servico_fk AS tipo_servico,
             ordens_servicos.ordem_servico_pk AS ordem_servico_pk,
+            logradouros.logradouro_nome as rua,
+            locais.local_num as numero,
+            locais.local_referencia as ponto_referencia,
+            bairros.bairro_nome as bairro,
+            setores.setor_nome as setor,
             ordens_servicos.prioridade_fk AS prioridade,
             MIN(historicos_ordens.historico_ordem_tempo) AS data_inicial,
             (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao
@@ -120,6 +125,15 @@ class Ordem_Servico_model extends CI_Model {
         $this->db->join('coordenadas',
             'coordenadas.coordenada_pk = '.self::TABLE_NAME.'.coordenada_fk');
 
+        $this->db->join('locais',
+            'locais.local_pk = coordenadas.local_fk');
+
+        $this->db->join('logradouros',
+            'logradouros.logradouro_pk = locais.logradouro_fk');
+
+        $this->db->join('bairros',
+            'bairros.bairro_pk = locais.bairro_fk');
+
         $this->db->join('servicos','servicos.servico_pk = '.self::TABLE_NAME.'.servico_fk');
 
         $this->db->join('tipos_servicos',
@@ -129,6 +143,8 @@ class Ordem_Servico_model extends CI_Model {
             'departamentos.departamento_pk = tipos_servicos.departamento_fk');
 
         $this->db->join('historicos_ordens','historicos_ordens.ordem_servico_fk = '.self::TABLE_NAME. '.'.self::PRI_INDEX);
+
+        $this->db->join('setores', 'setores.setor_pk = '.self::TABLE_NAME.'.setor_fk');
 
         $this->db->group_by(self::TABLE_NAME. '.'.self::PRI_INDEX);
 
@@ -141,7 +157,11 @@ class Ordem_Servico_model extends CI_Model {
                 $this->db->where(self::PRI_INDEX, $where);
             }
         }
+        
         $result = $this->db->get()->result();
+        // $result = $this->db->get_compiled_select();
+        // print_r($result); die();
+
         if ($result) {
             return ($result);
         } else {

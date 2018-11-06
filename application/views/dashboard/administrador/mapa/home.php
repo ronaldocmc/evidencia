@@ -12,13 +12,13 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">mapa</h2>
-                            <!-- <button id="filtrar" class="au-btn au-btn-icon au-btn--blue reset_multistep">Filtrar</button> -->
+                        <!-- <button id="filtrar" class="au-btn au-btn-icon au-btn--blue reset_multistep">Filtrar</button> -->
                         <!-- <button class="au-btn au-btn-icon au-btn--blue reset_multistep" data-toggle="modal" data-target="#ce_ordem_servico">
                             <i class="zmdi zmdi-plus"></i>nova ordem de serviço
                         </button> -->
                     </div>
-                    <div class="col-md-12 py-3" style="margin-bottom: 15px;">
-                        <b>Filtros</b>
+                    <div class="col-md-12" style="margin-bottom: 10px;">
+                        <!-- <b>Filtros</b> -->
                     </div>
                     <div class="row">
                         <div class="col-md-3">
@@ -187,48 +187,31 @@
                         </tbody>
                         <p id="v_descricao"></p>
                     </table>
-
                     <div align="center" class="center">
                         <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading" alt="Carregando">
                     </div>
-
-
-                    <div class="container-fluid" id="card_slider" style="margin-top: 50px;">
-                  </div>
-<!--                     <div class="container-fluid">
-                      <div id="myCarousel" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner row w-100 mx-auto"></div>
-                        <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span class="sr-only">Anterior</span>
-                      </a>
-                      <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span class="sr-only">Próximo</span>
-                      </a>
-                  </div>
-              </div> -->
-              <div class="qa-message-list py-5" id="timeline">
-                <div>
+                    <div class="container-fluid" id="card_slider" style="margin-top: 30px;"></div>
+                    <div class="qa-message-list py-2" id="timeline">
+                        <div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 
 
-<script type="text/javascript">
-    var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
-    var prioridades = <?php echo json_encode($prioridades !== false ? $prioridades : []); ?>;
-    var situacoes = <?php echo json_encode($situacoes !== false ? $situacoes : []); ?>;
-    var departamentos = <?php echo json_encode($departamentos !== false ? $departamentos : []); ?>;
-    var tipos_servicos = <?php echo json_encode($tipos_servicos !== false ? $tipos_servicos : []); ?>;
-</script>
+        <script type="text/javascript">
+            var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
+            var prioridades = <?php echo json_encode($prioridades !== false ? $prioridades : []); ?>;
+            var situacoes = <?php echo json_encode($situacoes !== false ? $situacoes : []); ?>;
+            var departamentos = <?php echo json_encode($departamentos !== false ? $departamentos : []); ?>;
+            var tipos_servicos = <?php echo json_encode($tipos_servicos !== false ? $tipos_servicos : []); ?>;
+        </script>
 
-<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-</script>
+        <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+        </script>
 
 
-<!-- END MAIN CONTENT-->
+        <!-- END MAIN CONTENT-->
 <!-- END PAGE CONTAINER
