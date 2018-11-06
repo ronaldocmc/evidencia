@@ -24,21 +24,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
+	if($_SERVER['HTTP_HOST'] == 'localhost')
+	{
+		$_SERVER['CI_ENV'] = 'development';
+		
+	}else
+	{
+		$_SERVER['CI_ENV'] = 'production';
+		
+	}
+
+
 $root = "http://".$_SERVER['HTTP_HOST'];
 $root.= dirname($_SERVER['SCRIPT_NAME']);
 
 $url = 'http://evidencia.azurewebsites.net/';
 
-if(ENVIRONMENT == 'development'){
+
+if($_SERVER['CI_ENV'] == 'development'){
 
 	$config['base_url'] = $root;
 
 }
-else if(ENVIRONMENT == 'production'){
+else if($_SERVER['CI_ENV'] == 'production'){
 
 	$config['base_url'] = $url;
 
-}else if(ENVIRONMENT == 'testing'){
+}else if($_SERVER['CI_ENV'] == 'testing'){
 
 	$config['base_url'] = $root;
 }
