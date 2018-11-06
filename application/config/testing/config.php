@@ -42,6 +42,9 @@ else if(ENVIRONMENT == 'production'){
 
 	$config['base_url'] = $root;
 }
+
+print_r($_SERVER);
+echo 'ENvIRNOMNT '.ENVIRONMENT; die();
 /*
 |--------------------------------------------------------------------------
 | Index File
