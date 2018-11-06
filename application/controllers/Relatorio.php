@@ -697,6 +697,40 @@ private function valida_filtro($filtro){
 }
 
 
+public function count_os()
+{   
+    $response = new Response();
+    $filtro = $this->input->post();
+    $message = $this->valida_filtro($filtro);
+
+    if($message == "true")
+    {
+        $this->load->model('Ordem_Servico_model', 'ordem_servico_model');
+
+        $ordens_servicos = $this->ordem_servico_model->get_os_novo_relatorio($filtro);
+        $ordens_servicos_em_aberto = [];
+        foreach($ordens_servicos as $os)
+        {
+            if($os->situacao_atual_pk == '1')
+            {
+                $ordens_servicos_em_aberto[] = $os;
+            }
+
+        }
+        $ordens_servicos = $ordens_servicos_em_aberto;
+
+        $response->set_data(count($ordens_servicos));
+    }
+    else
+    {
+        $response->set_code(Response::BAD_REQUEST);
+        $response->set_data(['message' => $message]); 
+    }
+    $response->send();
+    return;
+}
+
+
 private function create_relatorio($filtro)
 {
 
@@ -965,23 +999,16 @@ private function create_relatorio($filtro)
             0 => base_url('assets/vendor/cropper/cropper.css'),
             1 => base_url('assets/vendor/input-image/input-image.css'),
             2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            3 => base_url('assets/css/modal_desativar.css'),
-            4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            3 => base_url('assets/css/modal_desativar.css')
         ));
 
         $this->session->set_flashdata('scripts', array(
             0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            3 => base_url('assets/vendor/cropper/cropper.js'),
-            4 => base_url('assets/vendor/input-image/input-image.js'),
-            5 => base_url('assets/vendor/datatables/datatables.min.js'),
-            6 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            7 => base_url('assets/js/masks.js'),
-            8 => base_url('assets/js/utils.js'),
-            9 => base_url('assets/js/constants.js'),
-            10 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            14 =>base_url('assets/js/dashboard/relatorio/home.js'),
+            2 => base_url('assets/js/utils.js'),
+            3 => base_url('assets/js/constants.js'),
+            4 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            5 =>base_url('assets/js/dashboard/relatorio/home.js')
         ));
 
         $this->load->helper('form');

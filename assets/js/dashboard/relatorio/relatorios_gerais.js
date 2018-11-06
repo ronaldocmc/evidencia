@@ -72,13 +72,31 @@ function enviar(relatorio, filtro) {
 }
 
 
-$("#gerar_pdf").click(function() {
+$("#gerar_relatorio").click(function() {
 
-	btn_load($('#gerar_pdf'));
+	btn_load($('#gerar_relatorio'));
+	var form = $('form#submit-form').serialize();
+
+	$.post(base_url+'/Relatorio/count_os',form).done(function (response) {
+		btn_ativar($('#gerar_relatorio'));
+		if (response.code == 200) {
+			$("#confirmar_criacao").modal('show');
+			$("#p_qtd").text("Esse relatório terá "+ response.data + " ordens de serviço!");
+		}
+		else if (response.code == 400) {
+			alerts('failed','Erro!',response.data.message);
+		}
+
+	}, "json");
+});
+
+$("#confirmar").click(function() {
+
+	btn_load($('#confirmar'));
 	var form = $('form#submit-form').serialize();
 
 	$.post(base_url+'/Relatorio/insert_novo_relatorio',form).done(function (response) {
-		btn_ativar($('#gerar_pdf'));
+		btn_ativar($('#confirmar'));
 		console.log(response);
 		if (response.code == 200) {
 			alerts('success','Sucesso!', response.data.message);
