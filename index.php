@@ -57,11 +57,6 @@
 
 	
 
-	if(is_cli())
-	{
-		define(ENVIRONMENT,'testing');
-		
-	}else 
 		if($_SERVER['HTTP_HOST'] == 'localhost')
 		{
 			define(ENVIRONMENT,'development');
