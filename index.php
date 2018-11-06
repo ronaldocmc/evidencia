@@ -55,28 +55,23 @@
  */
 	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 
-	$root = "http://".$_SERVER['HTTP_HOST'];
-	$root.= dirname($_SERVER['SCRIPT_NAME']);
+	
 
-	$url = 'evidencia.azurewebsites.net/';
-
-	print_r($_SERVER);
-	echo 'ENVIRONMENT   '.ENVIRONMENT;  die();
-
-	if($_SERVER['HTTP_HOST'] == 'localhost')
+	if(is_cli())
 	{
-		define(ENVIRONMENT,'development');
-		$config['base_url'] = $root;
+		define(ENVIRONMENT,'testing');
+		
 	}else 
-		if(is_cli())
+		if($_SERVER['HTTP_HOST'] == 'localhost')
 		{
-			define(ENVIRONMENT,'testing');
-			$config['base_url'] = $root;
+			define(ENVIRONMENT,'development');
+			
 		}else
 		{
 			define(ENVIRONMENT,'production');
-			$config['base_url'] = 'http://'.$url;
+			
 		}
+
 
 /*
  *---------------------------------------------------------------
