@@ -70,7 +70,7 @@ class AtualizacaoWS extends MY_Controller
 
         if ($attempt_result === true) {
            
-            $token_decodificado = json_decode(token_decrypt($header_obj['token']));
+            $token_decodificado = json_decode(token_decrypt($header_obj['Token']));
             $last_update = $token_decodificado->last_update;
 
             $atualizar = $this->atualizacao_model->get($token_decodificado->id_empresa, $last_update, $token_decodificado->id_funcionario);
@@ -109,7 +109,7 @@ class AtualizacaoWS extends MY_Controller
         if ($attempt_result === true) {
             $obj = apache_request_headers();
 
-            $new_token = verify_token($obj['token'], $this->response);
+            $new_token = verify_token($obj['Token'], $this->response);
 
             if ($new_token) {
                 $dados['token'] = $new_token;

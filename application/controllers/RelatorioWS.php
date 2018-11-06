@@ -69,7 +69,7 @@ class RelatorioWS extends MY_Controller
 
         if ($attempt_result === true) {
            
-            $token_decodificado = json_decode(token_decrypt($header_obj['token']));
+            $token_decodificado = json_decode(token_decrypt($header_obj['Token']));
             $id_funcionario = $token_decodificado->id_funcionario;
             
             //$this->update_relatorio($id_funcionario);
@@ -115,7 +115,7 @@ class RelatorioWS extends MY_Controller
 
         if ($attempt_result === true) {
            
-            $token_decodificado = json_decode(token_decrypt($header_obj['token']));
+            $token_decodificado = json_decode(token_decrypt($header_obj['Token']));
             $id_funcionario = $token_decodificado->id_funcionario;
             
             $this->update_relatorio($id_funcionario); 
