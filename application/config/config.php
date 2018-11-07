@@ -24,7 +24,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-$config['base_url'] = 'http://evidencia.azurewebsites.net';
+
+
+$localhost = 'http://localhost/evidencia_v2';
+$azure     = 'http://evidencia.azurewebsites.net';
+
+switch(ENVIRONMENT)
+{
+	case 'production':
+		$config['base_url'] = $azure;
+		break;
+	case 'testing':
+	case 'development':
+		$config['base_url'] = $localhost;
+		break;
+}
+
 
 /*
 |--------------------------------------------------------------------------
