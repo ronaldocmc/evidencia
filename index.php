@@ -52,8 +52,23 @@
  *     production
  *
  * NOTE: If you change these, also change the error_reporting() code below
- */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+ */	
+function is_cli()
+{
+	return (PHP_SAPI === 'cli' OR defined('STDIN'));
+}
+
+
+//define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+
+if(is_cli()){
+	define('ENVIRONMENT', 'testing');
+} else if($_SERVER['SERVER_NAME'] == 'localhost'){
+	define('ENVIRONMENT', 'development');	
+} else {
+	define('ENVIRONMENT', 'production');
+}
+
 
 /*
  *---------------------------------------------------------------
@@ -66,8 +81,9 @@
 switch (ENVIRONMENT)
 {
 	case 'development':
-		error_reporting(-1);
-		ini_set('display_errors', 1);
+		//error_reporting(-1);
+		//ini_set('display_errors', 1);
+		ini_set('display_errors', 0);
 	break;
 
 	case 'testing':
