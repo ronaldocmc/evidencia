@@ -24,15 +24,19 @@
 
     <script src="<?= base_url('assets/js/constants.js') ?>"></script>
     <style>
-        .form-control-borderless {
-    border: none;
-}
+    .form-control-borderless {
+        border: none;
+    }
 
-.form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
-    border: none;
-    outline: none;
-    box-shadow: none;
-}
+    .form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+    }
+
+    body{
+        background-color: #e5e5e5;
+    }
     </style>
 </head>
 
@@ -44,9 +48,6 @@
                 <div class="card">
                     <div class="card-body p-0">
                         <div class="row p-1">
-                            <div class="col-md-6">
-                                <!-- <img src="<?= base_url('assets/images/icon/logo.png') ?>"> -->
-                            </div>
 
                             <div class="text-center col-md-12">
                                 <img src="<?= base_url('assets/images/icon/logo.png') ?>">
@@ -64,8 +65,9 @@
                                                 </div>
                                                 <!--end of col-->
                                                 <div class="col">
+                                                    <!-- LIMPLR-2018/28 -> para testes -->
                                                     <input id="os_protocol" autofocus class="form-control form-control-lg form-control-borderless"
-                                                        type="search" value="LIMPLR-2018/28" placeholder="Digite aqui o número do protocolo">
+                                                        type="search" placeholder="Digite aqui o número do protocolo">
                                                 </div>
                                                 <!--end of col-->
                                                 <div class="col-auto">
@@ -78,6 +80,10 @@
                                     <!--end of col-->
                                 </div>
                             </div>
+
+                        </div>
+
+                        <div id="loading">
 
                         </div>
 
@@ -137,7 +143,7 @@
                             <hr>
 
                             <div class="row p-5">
-                                <h4 class="text-muted">Histórico de Fotos</h4>
+                                <h4 class="text-muted" id="title_fotos">Histórico de Fotos</h4>
                                 <div class="col-md-12" id="fotos"></div>
                             </div>
 
@@ -210,6 +216,19 @@
 </html>
 
 <script>
+    function contaFotos(response) {
+        var temFoto = true;
+
+        response.historico.forEach((value) => {
+            if (!value.foto) {
+                temFoto = false;
+                return;
+            }
+        });
+
+        return temFoto;
+    }
+
     $(document).ready(() => {
         $('#os').hide();
         $('#finalizado').hide();
@@ -223,12 +242,19 @@
         div_fotos.empty();
         $('#finalizado').hide();
 
+        $('#loading').
+        html('<div align="center" class="center">' +
+                '<img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">'+
+              '</div>'
+            );
+
         $.ajax({
             url: `${base_url}/Cidadao/getOs?protocol=${$('#os_protocol').val()}`,
             method: 'GET'
         }).done(function (response) {
 
             if (response.code == 200) {
+                $('#loading').html('');
                 $(os_search).hide();
                 $(os).fadeIn(500);
 
@@ -263,7 +289,14 @@
 
                     table.append(html);
                 });
-                div_fotos.append(fotos);
+
+                if (contaFotos(response)) {
+                    $('#title_fotos').html('Histórico de Fotos');
+                    div_fotos.append(fotos);
+                }
+                else {
+                    $('#title_fotos').html('Essa evidência não possui fotos.');
+                }
             }
         });
     });
