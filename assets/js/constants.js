@@ -1,9 +1,9 @@
-host = window.location.host;
+var host = window.location.host;
 
 if(host == 'localhost'){
-	const base_url = window.location .protocol + "//" + host + "/" + window.location.pathname.split('/')[1];
+	var base_url = window.location.protocol + "//" + host + "/" + window.location.pathname.split('/')[1];
 } else{
-	const base_url = window.location .protocol + "//" + host + "/";
+	var base_url = window.location.protocol + "//" + host + "/";
 }
 
 
