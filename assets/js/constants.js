@@ -1,11 +1,9 @@
 host = window.location.host;
 
-const base_url;
-
 if(host == 'localhost'){
-	base_url = window.location .protocol + "//" + host + "/" + window.location.pathname.split('/')[1];
+	const base_url = window.location .protocol + "//" + host + "/" + window.location.pathname.split('/')[1];
 } else{
-	base_url = window.location .protocol + "//" + host + "/";
+	const base_url = window.location .protocol + "//" + host + "/";
 }
 
 
