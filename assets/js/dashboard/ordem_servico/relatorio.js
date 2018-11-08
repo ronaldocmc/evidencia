@@ -234,7 +234,7 @@ function request_data(id, setor) {
                     timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, 'default.png', historico.situacao, reformatDate(historico.data));
                 }
                 if (historico.foto != null) {
-                    html += create_cards(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    html += create_cards(historico.comentario, base_url + historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                     active ="";
                 } else {
                     html += create_cards(historico.comentario, './assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
@@ -257,7 +257,7 @@ function create_timeline(comentario, src, funcionario, funcionario_foto, situaca
     return '<div class="message-item">' +
     '<div class="message-inner">' +
     '<div class="message-head clearfix">' +
-    '<div class="avatar pull-left"><a href="#"><img class="message-foto-perfil" src="../assets/uploads/perfil_images/min/' + funcionario_foto + '"></a></div>' +
+    '<div class="avatar pull-left"><a href="#"><img class="message-foto-perfil" src="' + base_url +'./assets/uploads/perfil_images/min/' + funcionario_foto + '"></a></div>' +
     '<div class="user-detail">' +
     '<h5 class="handle">' + funcionario + '</h5>' +
     '<div class="post-meta">' +
