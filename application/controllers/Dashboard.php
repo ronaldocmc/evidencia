@@ -14,7 +14,29 @@ class Dashboard extends CRUD_Controller
     }
 
     public function index() {
+        $this->load->model('funcionario_model');
+        $this->load->helper('date_helper');
 
+        $organizacao = $this->session->user['id_organizacao'];       
+
+        $this->load->model('dashboard_model');
+        $dados['primeiro_nome'] = $this->primeiro_nome($this->session->user['name_user']);
+
+
+        $this->session->set_flashdata('scripts',[
+            0 => base_url('assets/js/dashboard/dashboard/index.js'),
+        ]);
+        load_view([
+            0 => [
+                'src'=>'dashboard/administrador/principal/dashboard',
+                'params' =>  $dados
+            ]
+        ],'administrador');
+    }
+
+    private function primeiro_nome($nome){
+        $array = explode(' ', $nome);
+        return $array[0];
     }
 
 
