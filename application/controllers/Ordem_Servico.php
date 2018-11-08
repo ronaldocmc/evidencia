@@ -256,7 +256,7 @@ class Ordem_Servico extends CRUD_Controller {
 	{	
     	//Definindo a pasta e o nome da imagem
 		$path = "./assets/uploads/imagens_situacoes/";
-		$name = hash(ALGORITHM_HASH, $id_ordem . uniqid(rand(), true));
+		$name = hash(ALGORITHM_HASH, $id_ordem . uniqid(rand(), true)).".jpg";
 
         //Recebemos uma imagem em base 64, portanto e necessário remover o cabeçalho dela. 
 		list($type, $base64_image) = explode(';', $base64_image);
