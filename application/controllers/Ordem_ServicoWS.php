@@ -380,6 +380,7 @@ class Ordem_ServicoWS extends MY_Controller
 		// Pega os headers para acessar o token
 		$obj = apache_request_headers();
 
+
 		// Decripta o token
 		$empresa = get('id_empresa', $obj['Token']);
 		
