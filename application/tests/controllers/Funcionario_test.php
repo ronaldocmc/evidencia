@@ -2,7 +2,7 @@
 class Funcionario_test extends TestCase
 {
 
-	$access_test;
+	//$access_test;
 
 	function get($url) { 
 		$process = curl_init($url); 
