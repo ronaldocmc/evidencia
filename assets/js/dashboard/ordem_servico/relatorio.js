@@ -230,15 +230,15 @@ function request_data(id, setor) {
                     historico.comentario = "Nenhum comentário adicionado.";
                 }
                 if(historico.funcionario_foto != null){
-                    timeline += create_timeline(historico.comentario, historico.funcionario, historico.funcionario_foto, historico.situacao, reformatDate(historico.data));
+                    timeline += create_timeline(historico.comentario, historico.funcionario, base_url + historico.funcionario_foto.replace('./', '/'), historico.situacao, reformatDate(historico.data));
                 }else{
-                    timeline += create_timeline(historico.comentario, historico.funcionario, 'default.png', historico.situacao, reformatDate(historico.data));
+                    timeline += create_timeline(historico.comentario, historico.funcionario, base_url + '/assets/uploads/perfil_images/default.png', historico.situacao, reformatDate(historico.data));
                 }
                 if (historico.foto != null) {
-                    html += create_cards(historico.comentario, base_url + historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    html += create_cards(historico.comentario,  base_url + historico.foto.replace('./', '/'), historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                     active ="";
                 } else {
-                    html += create_cards(historico.comentario, './assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    html += create_cards(historico.comentario,  base_url + '/assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                     active ="";
                 }
 
@@ -258,7 +258,7 @@ function create_timeline(comentario, funcionario, funcionario_foto, situacao, da
     return '<div class="message-item">' +
     '<div class="message-inner">' +
     '<div class="message-head clearfix">' +
-    '<div class="avatar pull-left"><a href="#"><img class="message-foto-perfil" src="' + base_url +'./assets/uploads/perfil_images/min/' + funcionario_foto + '"></a></div>' +
+    '<div class="avatar pull-left"><a href="#"><img class="message-foto-perfil" src="' + funcionario_foto + '"></a></div>' +
     '<div class="user-detail">' +
     '<h5 class="handle">' + funcionario + '</h5>' +
     '<div class="post-meta">' +
@@ -282,7 +282,7 @@ function create_cards(description, src, funcionario, situacao, data, active) {
 
     return '<div class="carousel-item col-md-4' + active + '">' +
     '<div class="card">' +
-    '<img class="card-img-top img-fluid" src="' + "." + src +'">'+
+    '<img class="card-img-top img-fluid" src="' + src +'">'+
     '<div class="card-body">' +
     '<h4 class="card-title">'+ situacao + '</h4>' +
     '<p class="card-text">'+ description +'</p>' +  
