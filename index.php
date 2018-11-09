@@ -52,12 +52,12 @@
  *     production
  *
  * NOTE: If you change these, also change the error_reporting() code below
- */	
+ */
+
 function is_cli()
 {
 	return (PHP_SAPI === 'cli' OR defined('STDIN'));
 }
-
 
 //define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 
@@ -68,6 +68,7 @@ if(is_cli()){
 } else {
 	define('ENVIRONMENT', 'production');
 }
+
 
 
 /*

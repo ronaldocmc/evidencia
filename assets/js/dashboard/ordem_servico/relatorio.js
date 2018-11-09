@@ -192,9 +192,10 @@ function request_data(id, setor) {
        
             $("#v_descricao").html(response.ordem.descricao);
             $("#v_prioridade").html(response.ordem.prioridade);
-            $("#v_procedencia").html('App');
             $("#v_setor").html(setor);
             $("#v_servico").html(response.ordem.servico);
+
+            
 
             var html = "";
             var indicators = "";
@@ -222,16 +223,16 @@ function request_data(id, setor) {
             }
 
             $('#card_slider').html(html);
-
+            html = "";
             response.ordem.historico.map((historico, i) => {
 
                 if (historico.comentario == null) {
                     historico.comentario = "Nenhum comentário adicionado.";
                 }
                 if(historico.funcionario_foto != null){
-                    timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, historico.funcionario_foto, historico.situacao, reformatDate(historico.data));
+                    timeline += create_timeline(historico.comentario, historico.funcionario, historico.funcionario_foto, historico.situacao, reformatDate(historico.data));
                 }else{
-                    timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, 'default.png', historico.situacao, reformatDate(historico.data));
+                    timeline += create_timeline(historico.comentario, historico.funcionario, 'default.png', historico.situacao, reformatDate(historico.data));
                 }
                 if (historico.foto != null) {
                     html += create_cards(historico.comentario, base_url + historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
@@ -253,7 +254,7 @@ function request_data(id, setor) {
 
 
 
-function create_timeline(comentario, src, funcionario, funcionario_foto, situacao, data) {
+function create_timeline(comentario, funcionario, funcionario_foto, situacao, data) {
     return '<div class="message-item">' +
     '<div class="message-inner">' +
     '<div class="message-head clearfix">' +
