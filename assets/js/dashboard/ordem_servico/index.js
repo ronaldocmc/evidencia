@@ -436,14 +436,6 @@ function remove_data() {
 }
 
 function remove_data_atividade() {
-    $("#ov_descricao").html('');
-    $("#ov_prioridade").html('');
-    $("#ov_procedencia").html('');
-    $("#ov_setor").html('');
-    $("#ov_servico").html('');
-    $("#ov_codigo").html('');
-
-
     $('#otimeline').html('');
     $('#ov_loading').show();
 }
@@ -566,13 +558,6 @@ $(document).on('click', '.btn_atividade', function (event)
 
     remove_data_atividade();
 
-    $("#ov_descricao").html(ordens_servico[posicao_selecionada]['ordem_servico_desc']);
-    $("#ov_prioridade").html(ordens_servico[posicao_selecionada]['prioridade_nome']);
-    $("#ov_procedencia").html(ordens_servico[posicao_selecionada]['procedencia_nome']);
-    $("#ov_setor").html(ordens_servico[posicao_selecionada]['setor_nome']);
-    $("#ov_servico").html(ordens_servico[posicao_selecionada]['servico_nome']);
-    $("#ov_codigo").html(ordens_servico[posicao_selecionada]['ordem_servico_cod']);
-
     var latlng = {lat: parseFloat(ordens_servico[posicao_selecionada]['coordenada_lat']), lng: parseFloat(ordens_servico[posicao_selecionada]['coordenada_long'])}
 
     geocoder2.geocode({'location': latlng}, function(results, status) {
@@ -669,9 +654,9 @@ get_historico = (id) =>
                 }
 
                 if(historico.funcionario_foto == null){
-                    timeline += create_timeline(historico.comentario, './assets/uploads/perfil_images/default.png', historico.funcionario, historico.situacao, reformatDate(historico.data));
+                    timeline += create_timeline(historico.comentario, base_url + '/assets/uploads/perfil_images/default.png', historico.funcionario, historico.situacao, reformatDate(historico.data));
                 } else {
-                    timeline += create_timeline(historico.comentario, historico.funcionario_foto, historico.funcionario, historico.situacao, reformatDate(historico.data));
+                    timeline += create_timeline(historico.comentario, base_url + historico.funcionario_foto.replace('./', '/'), historico.funcionario, historico.situacao, reformatDate(historico.data));
                 }
 
                 if (historico.foto != null) {
@@ -731,28 +716,6 @@ get_atividade = (id) =>
             $('#fechar-atividade').removeAttr('disabled');
             $('#fechar-atividade').css('cursor', 'pointer');
 
-
-            if(response.ordem.historico.length > 2){
-                html +=     '<div id="myCarousel" class="carousel slide"data-ride="carousel">' +
-                '<div class="carousel-inner row w-100 mx-auto"></div>' +
-                '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
-                '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
-                '<span class="sr-only">Previous</span>' +
-                '</a>' +
-                '<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">' +
-                '<span class="carousel-control-next-icon" style="color: black;" aria-hidden="true"></span>' +
-                '<span class="sr-only">Next</span>'+
-                '</a>'+
-                '</div>';
-            }else{
-                html += '<div id="card_imagens">' +
-                '<div class="carousel-inner row w-100 mx-auto "></div>' +
-                '</div>';
-            }
-
-            // $('#card_slider_ordem').html(html);
-            $('#card_slider_historico').html(html);
-
             response.ordem.historico.map((historico, i) => {
                 if(i == response.ordem.historico.length -1){
                     if (historico.comentario == null) {
@@ -760,18 +723,13 @@ get_atividade = (id) =>
                     }
 
                     if(historico.funcionario_foto == null){
-                        historico.funcionario_foto = './assets/uploads/perfil_images/default.png';
+                        historico.funcionario_foto = base_url + '/assets/uploads/perfil_images/default.png';
+                    }
+                    else{
+                        historico.funcionario_foto = base_url + historico.funcionario_foto.replace('./', '/');
                     }
 
                     timeline += create_timeline(historico.comentario, historico.funcionario_foto, historico.funcionario, historico.situacao, reformatDate(historico.data));
-
-                    if (historico.foto != null) {
-                        html += create_cards(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                        active ="";
-                    } else {
-                        html += create_cards(historico.comentario, base_url + '/assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                        active ="";
-                    }
                 }
             });
 
@@ -822,8 +780,6 @@ get_atividade = (id) =>
             '</div>' +
             '</div></div>';
 
-            $('#card_slider_ordem').hide();
-            $('#card_slider_historico').hide();
             $('#otimeline').html(timeline);
             $('#ov_loading').hide();
             $('#ordem_servico_pk').val(id);
