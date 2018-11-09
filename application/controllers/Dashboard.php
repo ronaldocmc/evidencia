@@ -24,7 +24,7 @@ class Dashboard extends CRUD_Controller
 
 
         $this->session->set_flashdata('scripts',[
-            0 => base_url('assets/js/dashboard/dashboard/index.js'),
+            0 => base_url('assets/js/dashboard/dashboard/dashboard.js'),
         ]);
         load_view([
             0 => [

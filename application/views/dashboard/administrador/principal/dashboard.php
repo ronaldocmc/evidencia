@@ -6,6 +6,10 @@
 	font-size:10pt;
 }
 
+.status--warning {
+	color: #ffc107;
+}
+
 thead {
 	font-size: 10pt;
 }
@@ -116,67 +120,81 @@ tbody {
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-12 col-lg-12 m-b-40">
-						<div class="myDiv" id="myDiv"></div>
-					</div>
-				</div>
 
 			</div>
 			<!-- END ESTATISTICAS CHART -->
 			<div>
-			<div class="row">
-				<div class="col-md-12">
+				<div class="row">
+					<div class="col-md-12">
 						<h3 class="title-5 m-b-35">Tabelas</h3>
 						<hr>
 					</div>
 				</div>
 
 				<!-- ORDENS EM EXECUÇÃO -->
-				<div class="au-card  d-flex flex-column">
+				<div class="au-card d-flex flex-column">
 					<div class="row">
 
-						<div class="col-md-9">
-							<h2 class="title-2 text-center m-b-30 fs-16">Ordens em Execução</h2>
+						<div class="col-md-12">
+							<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Ordens em Execução</h2>
 						</div>
-						<div class=col-md-3>
-							<button type="button" class="btn btn-primary btn-sm">Tabela</button>
-							<button type="button" class="btn btn-outline-success btn-sm">Mapa</button>
-						</div>
+						<!-- <div class=col-md-3>
+							<ul class="nav nav-pills">
+								<li class="active"><button type="button" class="btn btn-primary btn-sm">Tabela</button></li>
+								<li><button type="button" class="btn btn-outline-success btn-sm">Mapa</button></li>
+							</ul> 
+
+							<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+								<li class="nav-item">
+									<a class="nav-link active btn-sm" id="tabela-mapa" data-toggle="pill" href="#" role="tab" aria-controls="pills-home"
+									aria-selected="true">Tabela</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link btn-sm" id="piltabela-mapa" data-toggle="pill" href="#" role="tab" aria-controls="pills-profile"
+									aria-selected="false">Mapa</a>
+								</li>
+							</ul>
+
+						</div> -->
 
 					</div class="table-section">
 
 					<div class="row">
 						<div class="col-md-12">
-							<div class="table-responsive table--no-card m-b-40">
-								<table id="ordens_servico" class="table table-striped table-datatable">
-									<thead>
-										<tr>
-											<th>Código</th>
-											<th>Prioridade</th>
-											<th>Serviço</th>
-											<th>Funcionário</th>
-											<th>Situação</th>                     
-										</tr>
-									</thead>
-									<tbody>
-										<tr class="table-success">
-											<td>COLACAP-2018/5</td>
-											<td>Alta</td>
-											<td>Coleta de animal pequeno.</td>
-											<td>Pietro Barcarollo Schiavinato</td>
-											<td>Finalizado</td>
-										</tr>
-										<tr>
-											<td>LIMPLR-2018/28</td>
-											<td>Alta</td>
-											<td>Limpeza de Rua</td>
-											<td>Ronaldo Messias</td>
-											<td>Em Andamento</td>
+							<div id="table-ordens">
+								<div class="table-responsive table-data2 table--no-card m-b-40">
+									<table class="table table-data2 table-datatable">
+										<thead>
+											<tr class="tr-shadow">
+												<th>Código</th>
+												<th>Prioridade</th>
+												<th>Serviço</th>
+												<th>Funcionário</th>
+												<th>Situação</th>                     
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>COLACAP-2018/5</td>
+												<td><span class="block-email">Alta</span></td>
+												<td>Coleta de animal pequeno.</td>
+												<td>Pietro Barcarollo Schiavinato</td>
+												<td><span class="status--process">Finalizado</span></td>
+											</tr>
+											<tr>
+												<td>LIMPLR-2018/28</td>
+												<td><span class="block-email">Alta</span></td>
+												<td>Limpeza de Rua</td>
+												<td>Ronaldo Messias</td>
+												<td><span class="status--warning">Em Andamento</span></td>
 
-										</tbody>
-									</table>
+											</tbody>
+										</table>
+									</div>
 								</div>
+
+								<div id="map" style="display:none;"></div>
+
 							</div>
 						</div>
 					</div>
@@ -187,49 +205,72 @@ tbody {
 						<div class="row">
 
 							<div class="col-md-9">
-								<h2 class="title-2 text-center m-b-30 fs-16">Funcionários</h2>
+								<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Funcionários</h2>
 							</div>
 							<div class=col-md-3>
+								<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+									<li class="nav-item">
+										<a class="nav-link btn-sm" id="tabela-funcionario" data-toggle="pill" href="#" role="tab" aria-controls="pills-home"
+										aria-selected="true">Tabela</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link btn-sm active" id="tabela-grafico" data-toggle="pill" href="#" role="tab" aria-controls="pills-profile"
+										aria-selected="false">Gráfico</a>
+									</li>
+								</ul>
+
+<!-- 
 								<button type="button" class="btn btn-primary btn-sm">Tabela</button>
-								<button type="button" class="btn btn-outline-warning btn-sm">Gráfico</button>
+								<button type="button" class="btn btn-outline-warning btn-sm">Gráfico</button> -->
 							</div>
 
 						</div>
 
 						<div class="row">
 							<div class="col-md-12">
-								<div class="table-responsive table--no-card m-b-40">
-									<table id="ordens_servico" class="table table-striped table-datatable">
-										<thead>
-											<tr>
-												<th>Nome</th>
-												<th>Performance</th>
-												<th>Setores</th>
-												<th>Serviços</th>
-												<th>Última ordem concluída a</th>
-												<th>Status</th>                     
-											</tr>
-										</thead>
-										<tbody>
-											<tr class="table-success">
-												<td>Gustavo de Deus</td>
-												<td data-toggle="tooltip" data-placement="top" title="5/5 (concluídas/total)">100%</td>
-												<td>A, B e C</td>
-												<td>Limpeza de Rua</td>
-												<td data-toggle="tooltip" data-placement="top" title="11:50">16 minutos atrás</td>
-												<td>Disponível</td>
-											</tr>
-											<tr >
-												<td>Pietro</td>
-												<td data-toggle="tooltip" data-placement="top" title="3/16 (concluídas/total)">12,3%</td>
-												<td>E,F,G</td>
-												<td>Coleta de Galho</td>
-												<td data-toggle="tooltip" data-placement="top" title="12:07">2 horas atrás</td>
-												<td>Ocupado</td>
+								<div id="table-funcionario" style="display: none;">
+									<div class="table-responsive table-data2 table--no-card m-b-40">
+										<table class="table table-striped table-datatable">
+											<thead>
+												<tr>
+													<th>Nome</th>
+													<th>Performance</th>
+													<th>Setores</th>
+													<th>Serviços</th>
+													<th>Última ordem concluída a</th>
+													<th>Status</th>                     
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Gustavo de Deus</td>
+													<td data-toggle="tooltip" data-placement="top" title="5/5 (concluídas/total)">100%</td>
+													<td>A, B e C</td>
+													<td>Limpeza de Rua</td>
+													<td data-toggle="tooltip" data-placement="top" title="11:50">16 minutos atrás</td>
+													<td><span class="status--process">Disponível</span></td>
+												</tr>
+												<tr >
+													<td>Pietro</td>
+													<td data-toggle="tooltip" data-placement="top" title="3/16 (concluídas/total)">12,3%</td>
+													<td>E,F,G</td>
+													<td>Coleta de Galho</td>
+													<td data-toggle="tooltip" data-placement="top" title="12:07">2 horas atrás</td>
+													<td><span class="status--denied">Ocupado</span></td>
 
-											</tbody>
-										</table>
+												</tbody>
+											</table>
+										</div>
 									</div>
+
+									<div class="heatmap" style="display: block;">
+										<!-- <div class="row">
+											<div class="col-md-12 col-lg-12 m-b-40"> -->
+										<div class="heatmap" id="heatmap"></div>
+											<!-- </div>
+										</div> -->
+									</div>
+
 								</div>
 							</div>
 
@@ -251,7 +292,6 @@ tbody {
 				</div>
 			</div>
 		</div>
-
 
 		<script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
 
@@ -326,5 +366,5 @@ tbody {
 			}
 
 
-			Plotly.newPlot('myDiv', data, layout);
+			Plotly.newPlot('heatmap', data, layout);
 		</script>
