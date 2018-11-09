@@ -21,7 +21,7 @@
         
 		"mikey179/vfsStream": "1.1.*",
         
-		"kenjis/ci-phpunit-test": "1.0.x@dev",
+		"kenjis/ci-phpunit-test": "^0.16.1",
         
 		"satooshi/php-coveralls": "^1.0",
         

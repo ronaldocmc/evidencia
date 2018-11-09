@@ -355,7 +355,7 @@ class Ordem_ServicoWS extends MY_Controller
 	public function upload_img($id_ordem,$base64_image)
 	{
 		$path = "./assets/uploads/imagens_situacoes/";
-		$name = hash(ALGORITHM_HASH, $id_ordem . uniqid(rand(), true));
+		$name = hash(ALGORITHM_HASH, $id_ordem . uniqid(rand(), true)).".jpg";
 
 		list($type, $base64_image) = explode(';', $base64_image);
 		list(, $base64_image)      = explode(',', $base64_image);
@@ -379,6 +379,7 @@ class Ordem_ServicoWS extends MY_Controller
 		
 		// Pega os headers para acessar o token
 		$obj = apache_request_headers();
+
 
 		// Decripta o token
 		$empresa = get('id_empresa', $obj['Token']);
