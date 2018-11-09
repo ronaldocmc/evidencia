@@ -622,12 +622,6 @@
 
     // Percent Chart 2
     var ctx = document.getElementById("percent-chart2");
-    var data = document.getElementById("chartjs-tooltip").getAttribute("data");
-    var labels = document.getElementById("chartjs-tooltip").getAttribute("labels");
-   
-    let data_array = data.split(",");
-    let labels_array = labels.split(",");
-
     if (ctx) {
       ctx.height = 209;
       var myChart = new Chart(ctx, {
@@ -636,7 +630,7 @@
           datasets: [
             {
               label: "My First dataset",
-              data: data_array,
+              data: [60, 40],
               backgroundColor: [
                 '#00b5e9',
                 '#fa4251'
@@ -654,7 +648,10 @@
               ]
             }
           ],
-          labels: labels_array,
+          labels: [
+            'Products',
+            'Services'
+          ]
         },
         options: {
           maintainAspectRatio: false,
@@ -696,7 +693,7 @@
       var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"],
+          labels: ["2010", "2011", "2012", "2013", "2014", "2015", "2016"],
           type: 'line',
           defaultFontFamily: 'Poppins',
           datasets: [{
@@ -764,7 +761,7 @@
               },
               scaleLabel: {
                 display: true,
-                labelString: 'Ordens Finalizadas',
+                labelString: 'Value',
                 fontFamily: "Poppins"
 
               },
