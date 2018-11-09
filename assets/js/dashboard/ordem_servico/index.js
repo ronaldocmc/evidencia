@@ -15,7 +15,7 @@ function btn_ativar(button_submit){
 
 
 //Variáveis globais utilizadas no JS
-var main_map, other_map, other_map_from_activity;
+var main_map, other_map;
 var main_marker = null;
 var other_marker = null;
 var other_maker_from_activity = null;
@@ -263,20 +263,12 @@ function initMap()
         zoom: 13
     });
 
-    other_map_from_activity = new google.maps.Map(document.getElementById('omap2'), {
-        center: {lat: -22.121265, lng: -51.383400},
-        zoom: 13
-    });
-
-
     var geocoder2 = new google.maps.Geocoder();
     criarMarcacao2({lat: -22.121265, lng: -51.383400});
 
     var geocoder3 = new google.maps.Geocoder();
-    criarMarcacao3({lat: -22.121265, lng: -51.383400});
 
     $('#mapa_historico').hide();
-    $('#omapa_historico').hide();
 
     //Função que preenhce o endereço conforme o clique do usuário do mapa
     function preencheCampos(endereco){
@@ -331,17 +323,6 @@ function initMap()
         other_marker = new google.maps.Marker({
           position: location,
           map: other_map
-      });
-    }
-
-    function criarMarcacao3(location) {
-        if(other_maker_from_activity != null){
-            other_maker_from_activity.setMap(null);
-        }
-
-        other_maker_from_activity = new google.maps.Marker({
-          position: location,
-          map: other_map_from_activity
       });
     }
 
@@ -468,48 +449,6 @@ function remove_data_atividade() {
 }
 
 
-//Funções que estendem a visualização do mapa e da imagem no registro histórico
-$(document).on('click', '#btn-mapa-historico', function (event) 
-{
-
-    if(adicionar_mapa_historico == 1){
-
-        $('#omapa_historico').show();
-        $('#obtn-mapa-historico').removeClass('btn-primary');
-        $('#obtn-mapa-historico').addClass('btn-danger');
-        adicionar_mapa_historico++;
-
-    }
-    else
-    {
-        $('#omapa_historico').hide();
-        $('#obtn-mapa-historico').removeClass('btn-danger');
-        $('#obtn-mapa-historico').addClass('btn-primary'); 
-        adicionar_mapa_historico--;
-
-    }
-});
-
-// $(document).on('click', '#obtn-foto-historico', function (event) 
-// {
-//     if(adicionar_imagem_historico == 1){
-
-//         $('#ocarouselExampleIndicators').show();
-//         $('#obtn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
-//         $('#obtn-foto-historico').removeClass('btn-primary');
-//         $('#obtn-foto-historico').addClass('btn-danger');
-//         adicionar_imagem_historico++;
-//     }
-//     else
-//     {
-//         $('#ocarouselExampleIndicators').hide();
-//         $('#obtn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
-//         $('#obtn-foto-historico').removeClass('btn-danger');
-//         $('#obtn-foto-historico').addClass('btn-primary'); 
-//         adicionar_imagem_historico--;
-
-//     }
-// });
 
 //Funções que estendem a visualização do mapa e da imagem para adicionar uma nova situação
 $(document).on('click', '#btn-mapa-historico', function (event) 
@@ -532,6 +471,7 @@ $(document).on('click', '#btn-mapa-historico', function (event)
 
     }
 });
+
 
 $(document).on('click', '#btn-foto-historico', function (event) 
 {
@@ -637,8 +577,6 @@ $(document).on('click', '.btn_atividade', function (event)
 
     geocoder2.geocode({'location': latlng}, function(results, status) {
       if (status === 'OK') {
-        other_map_from_activity.setCenter(results[0].geometry.location);
-        criarMarcacao3(results[0].geometry.location);
 
         let numero, rua, bairro, cidade, estado;
         for(i = 0; i < results[0].address_components.length; i++){
@@ -678,9 +616,7 @@ $(document).on('click', '.btn_atividade', function (event)
 
 
 get_historico = (id) => 
-{
-
-
+{   $('.carousel').carousel();
     btn_load($('#btn-salvar-historico'));
     $('.close').attr('disabled', 'disabled');
     $('.close').css('cursor', 'default');
@@ -689,7 +625,7 @@ get_historico = (id) =>
 
     var html = "";
     var indicators = "";
-    var active = "active";
+    var active = " active";
     var timeline = "";
 
     var d = new Date();
@@ -710,15 +646,14 @@ get_historico = (id) =>
                 '<div class="carousel-inner row w-100 mx-auto"></div>' +
                 '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
                 '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
-                '<span class="sr-only">Previous</span>' +
+                '<span class="sr-only"">Previous</span>' +
                 '</a>' +
                 '<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">' +
-                '<span class="carousel-control-next-icon" style="color: black;" aria-hidden="true"></span>' +
+                '<span class="carousel-control-next-icon" aria-hidden="true"></span>' +
                 '<span class="sr-only">Next</span>'+
                 '</a>'+
                 '</div>';
             }else{
-
                 html += '<div id="card_imagens">' +
                 '<div class="carousel-inner row w-100 mx-auto"></div>' +
                 '</div>';
@@ -727,31 +662,31 @@ get_historico = (id) =>
             
             $('#card_slider_historico').html(html);
 
+            // html = "";
             response.ordem.historico.map((historico, i) => {
                 if (historico.comentario == null) {
                     historico.comentario = "Nenhum comentário adicionado.";
                 }
 
                 if(historico.funcionario_foto == null){
-                    historico.funcionario_foto = './assets/uploads/perfil_images/default.png';
+                    timeline += create_timeline(historico.comentario, './assets/uploads/perfil_images/default.png', historico.funcionario, historico.situacao, reformatDate(historico.data));
+                } else {
+                    timeline += create_timeline(historico.comentario, historico.funcionario_foto, historico.funcionario, historico.situacao, reformatDate(historico.data));
                 }
-
-                timeline += create_timeline(historico.comentario, historico.funcionario_foto, historico.funcionario, historico.situacao, reformatDate(historico.data));
 
                 if (historico.foto != null) {
-                    html += create_cards(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                    active ="";
+                    html += create_cards(historico.comentario, base_url + historico.foto.replace('./', '/'), historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                        active = "";
                 } else {
-                    html += create_cards(historico.comentario, './assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                    active ="";
+                    html += create_cards(historico.comentario, base_url + '/assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                        active = "";
                 }
-
             });
 
-            $('.carousel-inner').html(html);
-            $('#card_slider_historico').hide();
-            $('#timeline').html(timeline);
             $('#v_loading').hide();
+            $('.carousel-inner').html(html);
+            $('#card_slider_historico').show();
+            $('#timeline').html(timeline);
             $('#ordem_servico_pk').val(id);
             $('#historico_pk').val(ordens_servico[posicao_selecionada]['historico_ordem_pk'])
             popula_situacoes();   
@@ -772,8 +707,6 @@ get_historico = (id) =>
 
 get_atividade = (id) => 
 {
-
-
     btn_load($('#btn-salvar-atividade'));
     $('.close').attr('disabled', 'disabled');
     $('.close').css('cursor', 'default');
@@ -812,13 +745,12 @@ get_atividade = (id) =>
                 '</a>'+
                 '</div>';
             }else{
-
                 html += '<div id="card_imagens">' +
-                '<div class="carousel-inner row w-100 mx-auto"></div>' +
+                '<div class="carousel-inner row w-100 mx-auto "></div>' +
                 '</div>';
             }
 
-            $('#card_slider_ordem').html(html);
+            // $('#card_slider_ordem').html(html);
             $('#card_slider_historico').html(html);
 
             response.ordem.historico.map((historico, i) => {
@@ -837,7 +769,7 @@ get_atividade = (id) =>
                         html += create_cards(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                         active ="";
                     } else {
-                        html += create_cards(historico.comentario, './assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                        html += create_cards(historico.comentario, base_url + '/assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                         active ="";
                     }
                 }
@@ -943,9 +875,9 @@ function create_timeline(comentario, src, funcionario, situacao, data) {
 
 function create_cards(description, src, funcionario, situacao, data, active) {
 
-    return '<div class="carousel-item col-md-4' + active + '">' +
+    return '<div class="carousel-item' + active + ' col-md-4">' +
     '<div class="card">' +
-    '<img class="card-img-top img-fluid" src="' + "." + src +'">'+
+    '<img class="card-img-top img-fluid" src="'+ src +'">'+
     '<div class="card-body">' +
     '<h4 class="card-title">'+ situacao + '</h4>' +
     '<p class="card-text">'+ description +'</p>' +  
@@ -1313,15 +1245,13 @@ send = (imagem) =>
         var data_local;
         var local = "";
 
-        // console.log("Local:" + " " + ordens_servico[posicao_selecionada]['local_fk']);
-
         $.get(
             base_url + '/ordem_servico/local', 
             {local_pk : ordens_servico[posicao_selecionada]['local_fk']}) 
         .done(function(response){
             if(response.code == 200){
                 data_local = response;
-                console.log(data_local);
+
                 $("#bairro-input").val(data_local.data.bairro_nome);
                 
 

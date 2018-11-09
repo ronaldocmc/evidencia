@@ -347,63 +347,90 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <table class="table hide">
-                            <thead>
-                                <th>Prioridade</th>
-                                <th>Procedência</th>
-                                <th>Serviço</th>
-                                <th>Setor</th>
-                            </thead>
-                            <tbody>
-                                <td id="ov_prioridade"></td>
-                                <td id="ov_procedencia"></td>
-                                <td id="ov_servico"></td>
-                                <td id="ov_setor"></td>
-                            </tbody>
-                        </table>
-                        <div class=card-group>
-                            <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Código:</strong>
-                                    
-                                </div>
-                                <div class="card-body card-block">
-                                    <p id="ov_codigo"></p>
-                                </div>
-                            </div>
-                            <div class = "card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Descrição:</strong>
-                                    <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="obtn-foto-historico" style="display:none;">
-                                        <i class="fa fa-camera" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body card-block" id="oendereco_historico">
-                                 <p id="ov_descricao"><p>
-                                 </div>
-                             </div>
-                             <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Endereço:</strong>
-                                    <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="obtn-mapa-historico" style="display:none;">
-                                        <i class="fa fa-map-marker"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body card-block" id="oendereco_historico">
-                                    <p id="ov_endereco"></p>
+                        <div class="row pb-2" style="text-align: center;">
+                            <div class="col-12">
+                                <div class="card-group">
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Código:</strong>
+                                            
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="ov_codigo"></p>
+                                        </div>
+                                    </div>
+                                    <div class = "card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Descrição:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                           <p id="ov_descricao"><p>
+                                        </div>
+                                    </div>
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Procedência:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="ov_procedencia"></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            
                         </div>
+                        <div class="row pb-2" style="text-align: center;">
+                            <div class="col-12">
+                                <div class="card-group">
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Prioridade:</strong>
+                                            
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="ov_prioridade"></p>
+                                        </div>
+                                    </div>
+                                    <div class = "card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Servico:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                           <p id="ov_servico"><p>
+                                        </div>
+                                    </div>
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Setor:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="ov_setor"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pb-2" style="text-align: center;">
+                            <div class="col-12">
+                                <div class="card-group">
+                                    <div class="card" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Endereço:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="ov_endereco"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div align="center" class="center">
                             <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="ov_loading" alt="Carregando">
                         </div>
-                        <div class="col-12 col-md-12" id="omapa_historico" style="margin-top: 20px; padding-top: 10px;">
-                            <div id="omap2"></div>
-                        </div>
-                        <!-- <div class="container-fluid" id="card_slider_ordem" style="margin-top: 50px;"></div> -->
+
                         <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
                         </div>
+
                         <div class= "modal-footer">
                             <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-atividade" onclick="send_data_historico()">
                                 <i class="fa fa-dot-circle-o"></i>
@@ -431,68 +458,96 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <table class="table hide">
-                            <thead>
-                                <th>Prioridade</th>
-                                <th>Procedência</th>
-                                <th>Serviço</th>
-                                <th>Setor</th>
-                            </thead>
-                            <tbody>
-                                <td id="v_prioridade"></td>
-                                <td id="v_procedencia"></td>
-                                <td id="v_servico"></td>
-                                <td id="v_setor"></td>
-                            </tbody>
-                        </table>
-<!--                         <div class=card-group>
-                            <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Código:</strong>
-                                    
-                                </div>
-                                <div class="card-body card-block">
-                                    <p id="v_codigo"></p>
-                                </div>
-                            </div>
-                            <div class = "card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Descrição:</strong>
-                                    <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="btn-foto-historico">
-                                        <i class="fa fa-camera" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body card-block" id="endereco_historico">
-                                   <p id="v_descricao"><p>
-                                   </div>
-                               </div>
-                               <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Endereço:</strong>
-                                    <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="btn-mapa-historico">
-                                        <i class="fa fa-map-marker"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body card-block" id="endereco_historico">
-                                    <p id="v_endereco"></p>
+                    <div>
+                        <div class="row pb-2" style="text-align: center;">
+                            <div class="col-12">
+                                <div class="card-group">
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Código:</strong>
+                                            
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="v_codigo"></p>
+                                        </div>
+                                    </div>
+                                    <div class = "card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Descrição:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                           <p id="v_descricao"><p>
+                                        </div>
+                                    </div>
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Procedência:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="v_procedencia"></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div> -->
-                        <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="btn-mapa-historico"></button>
-                        <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="btn-foto-historico">
-                            <i class="fa fa-camera" aria-hidden="true"></i>
-                        </button>
+                        </div>
+                        <div class="row pb-2" style="text-align: center;">
+                            <div class="col-12">
+                                <div class="card-group">
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Prioridade:</strong>
+                                            
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="v_prioridade"></p>
+                                        </div>
+                                    </div>
+                                    <div class = "card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Servico:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                           <p id="v_servico"><p>
+                                        </div>
+                                    </div>
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Setor:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="v_setor"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pb-2" style="text-align: center;">
+                            <div class="col-12">
+                                <div class="card-group">
+                                    <div class="card" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Endereço:</strong>
+                                            <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="btn-mapa-historico">
+                                                <i class="fa fa-map-marker"></i>
+                                            </button>
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="v_endereco"></p>
+                                        </div>
+                                        <div class="col-12 col-md-12 pb-1" id="mapa_historico">
+                                            <div id="map2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div align="center" class="center">
                             <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading" alt="Carregando">
                         </div>
-                        <div class="col-12 col-md-12" id="mapa_historico" style="margin-top: 20px; padding-top: 10px;">
-                            <div id="map2"></div>
-                        </div>
-                        <div class="col-12 col-md-12" style="margin-top: 20px; padding-top: 10px;">
-                            <div class="container-fluid" id="card_slider_historico"></div>
-                        </div>
-                        <div class="qa-message-list py-5" id="timeline" style="margin-top: 20px; padding-top: 5px;">
+                        <div class="container-fluid" id="card_slider_historico">
+                        </div>  
+                        <div class="qa-message-list" id="timeline" style="padding-top: 5px;">
                         </div>
                         <div class= "modal-footer">
                             <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-historico" data-dismiss="modal">
