@@ -230,7 +230,7 @@ function request_data(id, setor) {
                     historico.comentario = "Nenhum comentário adicionado.";
                 }
                 if(historico.funcionario_foto != null){
-                    timeline += create_timeline(historico.comentario, historico.funcionario, base_url + historico.funcionario_foto.replace('./', '/'), historico.situacao, reformatDate(historico.data));
+                    timeline += create_timeline(historico.comentario, historico.funcionario, base_url + '/assets/uploads/perfil_images/' + historico.funcionario_foto, historico.situacao, reformatDate(historico.data));
                 }else{
                     timeline += create_timeline(historico.comentario, historico.funcionario, base_url + '/assets/uploads/perfil_images/default.png', historico.situacao, reformatDate(historico.data));
                 }
