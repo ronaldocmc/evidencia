@@ -240,22 +240,19 @@ tbody {
 												</tr>
 											</thead>
 											<tbody>
-												<tr>
-													<td>Gustavo de Deus</td>
-													<td data-toggle="tooltip" data-placement="top" title="5/5 (concluídas/total)">100%</td>
-													<td>A, B e C</td>
-													<td>Limpeza de Rua</td>
-													<td data-toggle="tooltip" data-placement="top" title="11:50">16 minutos atrás</td>
-													<td><span class="status--process">Disponível</span></td>
-												</tr>
-												<tr >
-													<td>Pietro</td>
-													<td data-toggle="tooltip" data-placement="top" title="3/16 (concluídas/total)">12,3%</td>
-													<td>E,F,G</td>
-													<td>Coleta de Galho</td>
-													<td data-toggle="tooltip" data-placement="top" title="12:07">2 horas atrás</td>
-													<td><span class="status--denied">Ocupado</span></td>
+												<?php foreach($funcionarios as $f): ?>
 
+												<tr>
+													<td><?= $f['nome'] ?></td>
+													<td data-toggle="tooltip" data-placement="top" title="<?= $f['performance']['tooltip'] ?>"><?= $f['performance']['label'] ?></td>
+													<td><?= $f['setores'] ?></td>
+													<td><?= $f['servicos'] ?></td>
+													<td data-toggle="tooltip" data-placement="top" title="<?= $f['ultima_ordem']['tooltip'] ?>"><?= $f['ultima_ordem']['label'] ?></td>
+													<td><span class="<?= $f['status']['class'] ?>"><?= $f['status']['label'] ?></span></td>
+												</tr>
+
+												<?php endforeach; ?>
+												
 												</tbody>
 											</table>
 										</div>

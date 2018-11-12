@@ -27,7 +27,6 @@ class Dashboard extends CRUD_Controller
         $dados['ordens_em_execucao'] = $this->get_ordens_em_execucao();
         $dados['funcionarios'] = $this->get_funcionarios();
 
-
         $this->session->set_flashdata('css',[
             0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css')
         ]);
@@ -49,6 +48,121 @@ class Dashboard extends CRUD_Controller
             ]
         ],'administrador');
     }
+
+    private function contains($string, $substring){
+        return strpos($string, $substring) !== false;
+    }
+
+    private function get_funcionarios(){
+        $this->load->model('dashboard_model', 'model');
+        $funcionarios = array();
+
+
+        $res = $this->model->get_funcionarios();
+
+        foreach($res as $f){
+            $id_relatorio = $f->relatorio_id;
+
+            $setores = $this->model->get_setores_do_relatorio($id_relatorio);
+            $servicos = $this->model->get_servicos_do_relatorio($id_relatorio);
+
+
+            $string_setores  = $this->get_string($setores, 'explode', ' ', 1);
+            $string_servicos = $this->get_string($servicos);
+
+
+            $performance = $this->get_performance($id_relatorio);
+
+            $ultima_ordem = $this->get_ultima_ordem($id_relatorio);
+
+            $status = $this->get_status($performance);
+
+            $funcionarios[] = array(
+                'nome'        => $f->nome,
+                'performance' => $performance,
+                'setores'     => $string_setores,
+                'servicos'    => $string_servicos,
+                'ultima_ordem'=> $ultima_ordem,
+                'status'      => $status
+
+            );
+        }
+
+        return $funcionarios;
+    }
+
+    private function get_status($performance){
+
+       $status = array();
+
+       if ($this->contains($performance['label'], '100')){
+            $status = array(
+                'label' => 'Disponível',
+                'class' => 'status--process'
+            );
+        } else {
+            $status = array(
+                'label' => 'Ocupado',
+                'class' => 'status--denied'
+            );
+        }
+
+        return $status;
+    }
+
+    private function get_ultima_ordem($id_relatorio){
+        $this->load->model('dashboard_model', 'model');
+
+        $ultima_ordem = array();
+
+        $data = $this->model->get_ultima_ordem($id_relatorio);
+
+        $tooltip = date('H:i', strtotime($data));
+        $date_dif = strtotime(date('Y-m-d H:i:s')) - strtotime($data);
+
+        $date_dif = $this->model->date_dif($data);
+
+            if($date_dif > 60){ //é em horas
+                $value = round($date_dif/60);
+                $time = 'horas';
+                if($horas > 60){ //está em dias
+                    $value = round($horas/24);
+                    $time = 'dias';
+                }
+            }else { //é em minutos
+                $value = $date_dif;
+                $time = 'minutos';
+            }
+
+            $ultima_ordem    = array(
+                'tooltip' => $tooltip,
+                'label'   => $value.' '.$time.' atrás'
+            );
+
+            return $ultima_ordem;
+
+    }
+
+    private function get_performance($id_relatorio){
+        $this->load->model('dashboard_model', 'model');
+        $performance = array();
+
+
+        $porcentagem = 0;
+        $total_ordens = $this->model->get_ordens($id_relatorio);
+        $ordens_concluidas = $this->model->get_ordens_concluidas($id_relatorio);
+
+        $porcentagem = $this->porcentagem($ordens_concluidas, $total_ordens).' %';
+        $tooltip = $ordens_concluidas.'/'.$total_ordens.' (concluídas/total)';
+
+        $performance = array(
+            'tooltip' => $tooltip,
+            'label'   => $porcentagem
+        );
+
+        return $performance;
+    }
+
 
     private function get_ordens_em_execucao(){
         $this->load->model('dashboard_model', 'model');
@@ -79,12 +193,12 @@ class Dashboard extends CRUD_Controller
         );
         
         $charts['doughnut'] = array(
-           'title'   => 'Concluídas %',
-           'percent' => $this->get_ordens_hoje(),
-           'label'   => $labels,
-           'data'    => $this->get_data($labels),
-           'labels'  => $this->get_labels($labels)
-        );
+         'title'   => 'Concluídas %',
+         'percent' => $this->get_ordens_hoje(),
+         'label'   => $labels,
+         'data'    => $this->get_data($labels),
+         'labels'  => $this->get_labels($labels)
+     );
 
         return $charts;
     }
@@ -192,9 +306,9 @@ class Dashboard extends CRUD_Controller
     }
 
     private function get_string($array, $method = NULL, $condition = ' ', $piece = 0){
-       $string = '';
+     $string = '';
 
-       for($i = 0; $i < count($array); $i++){
+     for($i = 0; $i < count($array); $i++){
         if($i == 0){ //se for o primeiro registro
         }else if($i == count($array) -1){ //se for o ultimo registro:
             $string.= ' e ';
@@ -206,39 +320,39 @@ class Dashboard extends CRUD_Controller
             $string.= $array[$i]->nome;
         } else {
             if($method == 'explode') {
-               $explode_array = explode($condition, $array[$i]->nome);
+             $explode_array = explode($condition, $array[$i]->nome);
 
-               $string.= $explode_array[$piece]; 
-            }
-        }
-    }
+             $string.= $explode_array[$piece]; 
+         }
+     }
+ }
 
-        return $string;
-    }
+ return $string;
+}
 
-    private function get_ordens_concluidas(){
-        $this->load->model('dashboard_model', 'model');
+private function get_ordens_concluidas(){
+    $this->load->model('dashboard_model', 'model');
 
-        $response = array(
+    $response = array(
             'porcentagem' => '', //será retornado como string
             'text' => ''
         );
 
-        $em_andamento = $this->model->get_ordens_hoje_em_andamento(); 
-        $finalizadas  = $this->model->get_ordens_hoje_finalizadas();
+    $em_andamento = $this->model->get_ordens_hoje_em_andamento(); 
+    $finalizadas  = $this->model->get_ordens_hoje_finalizadas();
 
-        
 
-        $response['porcentagem'] = $this->porcentagem($finalizadas,$em_andamento).' %';
-        $response['text'] = $finalizadas.'/'.$em_andamento.' (concluídas/total)';
 
-        return $response;
-    }
+    $response['porcentagem'] = $this->porcentagem($finalizadas,$em_andamento).' %';
+    $response['text'] = $finalizadas.'/'.$em_andamento.' (concluídas/total)';
 
-    private function porcentagem($dividendo, $divisor) {
-        if($divisor == 0){
-            return 0;
-        } else {
+    return $response;
+}
+
+private function porcentagem($dividendo, $divisor) {
+    if($divisor == 0){
+        return 0;
+    } else {
             $porcentagem = $dividendo/$divisor; //intervalo de 0 a 1
 
             $porcentagem = round($porcentagem, 4);
@@ -347,18 +461,18 @@ class Dashboard extends CRUD_Controller
             array_push($quantidade_ordens_bairro,[
                 'bairro' => $ordens_por_bairro_ano[$i]['bairro_nome'],
                 'quantidade' =>$ordens_por_bairro_ano[$i]['total']
-                ]);
+            ]);
         }
 
         usort($quantidade_ordens_bairro,function( $a, $b ) {
-                 if( $a['quantidade'] == $b['quantidade'] ) return 0;
-                 return ( ( $a['quantidade'] > $b['quantidade'] ) ? -1 : 1 );
-        });
+           if( $a['quantidade'] == $b['quantidade'] ) return 0;
+           return ( ( $a['quantidade'] > $b['quantidade'] ) ? -1 : 1 );
+       });
 
         for($i = 0; $i < count($ordens_por_tipo_semana); $i++){
             $quantidade_ordens_tipo[$ordens_por_tipo_semana[$i]['tipo_servico_nome']] = $ordens_por_tipo_semana[$i]['total'];
         }
-            
+
         //Ordenando para o último dado do gráfico ser o do dia atual
         $fim = array_slice($ordens_por_semana,$dia_da_semana + 1);
         $inicio = array_slice($ordens_por_semana, 0,$dia_da_semana + 1);
