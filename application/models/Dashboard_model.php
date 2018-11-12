@@ -101,6 +101,7 @@ class Dashboard_model extends CI_Model {
         $this->db->from('relatorios');
         $this->db->join('funcionarios', 'relatorios.funcionario_fk = funcionarios.funcionario_pk');
         $this->db->join('populacao', 'funcionarios.pessoa_fk = populacao.pessoa_pk');
+        $this->db->where('relatorios.status', 0); //0 é em andamento
         $this->db->where('DAY(relatorios.data_criacao) = DAY(CURDATE())');
 
         //echo $this->db->get_compiled_select(); die();
@@ -316,7 +317,7 @@ class Dashboard_model extends CI_Model {
         $this->db->select('ROUND(time_to_sec((TIMEDIFF(NOW(), historico_ordem_tempo))) / 60) as dif');
         $this->db->from('historicos_ordens');
         $this->db->where('historico_ordem_tempo', $data);
-        
+
         $result = $this->db->get()->row();
         if ($result) {
             return ($result->dif);
