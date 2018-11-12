@@ -148,36 +148,56 @@ class RelatorioWS extends MY_Controller
         //Pegamos os relatórios em aberto:
         $relatorios_em_aberto = $this->relatorio_model->get_relatorios(['status' => 0, 'funcionario_fk' => $id_funcionario]);
 
-        if(count($relatorios_em_aberto) > 0){
+        if(count($relatorios_em_aberto) > 0)
+        {
+            date_default_timezone_set('America/Sao_Paulo');
+
             //Percorremos todos os relatórios
-            foreach($relatorios_em_aberto as $relatorio){
+            foreach($relatorios_em_aberto as $relatorio)
+            {
                 //pegando as ordens do relatório:
                 $ordens_relatorio = $this->get_ordens_relatorio($relatorio->relatorio_pk);
                 //se existir ordens:
-                if(count($ordens_relatorio) > 0){
+                if(count($ordens_relatorio) > 0)
+                {
                     //percorremos as ordens:
-                    foreach($ordens_relatorio as $os){
+                    foreach($ordens_relatorio as $os)
+                    {
                         //pegamos o último histórico (IMPORTANTE: O ULTIMO HISTÓRICO É O ID DA SITUACAO!!!):
                         $os->ultimo_historico = $this->historico_model->get_last_historico($os->ordem_servico_pk);
                        
-                        if($os->ultimo_historico == 2){ //SE O STATUS FOR EM ANDAMENTO:
+                        if($os->ultimo_historico == 2)
+                        { 
+                            //SE O STATUS FOR EM ANDAMENTO:
                             $this->response = new Response();
                             $this->response->set_code(Response::BAD_REQUEST);
                             $this->response->set_data('O relatório corrente ainda não foi concluído.');
                             $this->response->send();
                             die();
                         }
+                        else
+                        {
+                            $this->relatorio_model->update_relatorios_os_verificada(
+                                ['os_fk' => $os->os_fk, 'os_verificada' => 0], 1
+                            );
+                        }
                     }
                 }
                 //se chegou aqui é porque não achou nenhuma ordem com status em andamento, então podemos setar o status do relatório para 1:
+
                 $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $relatorio->relatorio_pk]);
+
+                $this->relatorio_model->set_data_entrega($relatorio->relatorio_pk);
+                
                 $this->response->set_code(Response::SUCCESS);
                 $this->response->set_data('Situação do relatório atualizado com sucesso.');
                 $this->response->send();
                 die();
             }
 
-        }else {
+        }
+        else 
+        {
             $this->response = new Response();
             $this->response->set_code(Response::NOT_FOUND);
             $this->response->set_data('Não encontramos nenhum relatório em andamento para você.');
