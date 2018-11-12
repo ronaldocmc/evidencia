@@ -67,7 +67,7 @@
                                                 <div class="col">
                                                     <!-- LIMPLR-2018/28 -> para testes -->
                                                     <input id="os_protocol" autofocus class="form-control form-control-lg form-control-borderless"
-                                                        type="search" placeholder="Digite aqui o número do protocolo">
+                                                        type="search" placeholder="Digite aqui o número do protocolo" required="true">
                                                 </div>
                                                 <!--end of col-->
                                                 <div class="col-auto">
