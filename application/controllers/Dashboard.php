@@ -23,10 +23,24 @@ class Dashboard extends CRUD_Controller
         $dados['primeiro_nome'] = $this->primeiro_nome($this->session->user['name_user']);
 
         $dados['cards'] = $this->get_cards();
+        $dados['charts'] = $this->get_charts();
+        $dados['ordens_em_execucao'] = $this->get_ordens_em_execucao();
+        $dados['funcionarios'] = $this->get_funcionarios();
+
+
+        $this->session->set_flashdata('css',[
+            0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css')
+        ]);
 
 
         $this->session->set_flashdata('scripts',[
             0 => base_url('assets/js/dashboard/dashboard/dashboard.js'),
+            1 => base_url('assets/vendor/masks/jquery.mask.min.js'),
+            2 => base_url('assets/vendor/datatables/datatables.min.js'),
+            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            4 => base_url('assets/js/utils.js'),
+            5 => base_url('assets/js/constants.js'),
+
         ]);
         load_view([
             0 => [
@@ -36,9 +50,43 @@ class Dashboard extends CRUD_Controller
         ],'administrador');
     }
 
-    private function primeiro_nome($nome){
-        $array = explode(' ', $nome);
-        return $array[0];
+    private function get_ordens_em_execucao(){
+        $this->load->model('dashboard_model', 'model');
+
+        return $this->model->get_ordens_em_execucao();
+    }
+
+    private function get_charts(){
+        $this->load->model('dashboard_model', 'model');
+
+        $charts = array();
+        $labels = array();
+        $charts['doughnut'] = array();
+
+        $em_andamento = $this->model->get_ordens_hoje_em_andamento();
+        $finalizadas  = $this->model->get_ordens_hoje_finalizadas();
+
+
+        $labels[] = array(
+            'color' => 'blue',
+            'label' => 'em andamento',
+            'data'  => ''.($em_andamento - $finalizadas)
+        );
+        $labels[] = array(
+            'color' => 'red',
+            'label' => 'concluidas',
+            'data'  => ''.$finalizadas
+        );
+        
+        $charts['doughnut'] = array(
+           'title'   => 'Concluídas %',
+           'percent' => $this->get_ordens_hoje(),
+           'label'   => $labels,
+           'data'    => $this->get_data($labels),
+           'labels'  => $this->get_labels($labels)
+        );
+
+        return $charts;
     }
 
     private function get_cards() {
@@ -82,6 +130,37 @@ class Dashboard extends CRUD_Controller
         return $cards;
 
     }
+
+
+    private function primeiro_nome($nome){
+        $array = explode(' ', $nome);
+        return $array[0];
+    }
+
+    private function get_data($labels){
+        $data = '';
+        for($i = 0; $i < count($labels); $i++){
+            if($i == count($labels) -1){ //é o último
+                $data.= $labels[$i]['data'];
+            }else { // não é o último
+                $data.= $labels[$i]['data'].',';
+            }
+        }
+        return $data;
+    }
+
+    private function get_labels($labels){
+        $data = '';
+        for($i = 0; $i < count($labels); $i++){
+            if($i == count($labels) -1){ //é o último
+                $data.= $labels[$i]['label'];
+            }else { // não é o último
+                $data.= $labels[$i]['label'].',';
+            }
+        }
+        return $data;
+    }
+
 
     private function get_setores() {
         $this->load->model('dashboard_model', 'model');

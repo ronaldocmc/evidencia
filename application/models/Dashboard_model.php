@@ -61,6 +61,27 @@ class Dashboard_model extends CI_Model {
         }
     }
 
+    public function get_ordens_ultima_situacao_em_andamento() {
+        $this->db->select('count(*) as quantidade');
+        $this->db->from('historicos_ordens');
+        $this->db->join('relatorios_os', 'relatorios_os.os_fk = historicos_ordens.ordem_servico_fk');
+        $this->db->join('relatorios', 'relatorios.relatorio_pk = relatorios_os.relatorio_fk');
+        $this->db->where('DAY(historico_ordem_tempo) = DAY(curdate())');
+        $this->db->where('relatorios.status', 0);
+        $this->db->where('historicos_ordens.situacao_fk', 2); 
+        $this->db->order_by('historicos_ordens.historico_ordem_tempo', 'DESC');
+        $this->db->limit(1);
+
+        //echo $this->db->get_compiled_select(); die();
+
+        $result = $this->db->get()->row();
+        if ($result) {
+            return ($result->quantidade);
+        } else {
+            return false;
+        }
+    }
+
     public function get_ordens_hoje_em_andamento() {
         $this->db->select('count(ordem_servico_fk) as count');
         $this->db->from('historicos_ordens');
@@ -141,6 +162,32 @@ class Dashboard_model extends CI_Model {
         $result = $this->db->get()->row();
         if ($result) {
             return ($result->quantidade);
+        } else {
+            return false;
+        }
+    }
+
+    public function get_ordens_em_execucao(){
+        $this->db->select('ordem_servico_cod as codigo, prioridade_nome as prioridade, servico_nome as servico, pessoa_nome as funcionario, situacao_nome as situacao');
+        $this->db->from('historicos_ordens');
+        $this->db->join('relatorios_os', 'relatorios_os.os_fk = historicos_ordens.ordem_servico_fk');
+        $this->db->join('ordens_servicos', 'historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk');
+        $this->db->join('prioridades', 'ordens_servicos.prioridade_fk = prioridades.prioridade_pk');
+        $this->db->join('servicos', 'ordens_servicos.servico_fk = servicos.servico_pk');
+        $this->db->join('funcionarios', 'historicos_ordens.funcionario_fk = funcionarios.funcionario_pk');
+        $this->db->join('populacao', 'funcionarios.pessoa_fk = populacao.pessoa_pk');
+        $this->db->join('situacoes', 'historicos_ordens.situacao_fk = situacoes.situacao_pk');
+        $this->db->join('relatorios', 'relatorios.relatorio_pk = relatorios_os.relatorio_fk');
+        $this->db->where('DAY(historico_ordem_tempo) = DAY(curdate())');
+        $this->db->where('relatorios.status', 0);
+        $this->db->where('historicos_ordens.situacao_fk != 1'); 
+        $this->db->order_by('historicos_ordens.historico_ordem_tempo', 'DESC');
+
+        //echo $this->db->get_compiled_select(); die();
+
+        $result = $this->db->get()->result();
+        if ($result) {
+            return ($result);
         } else {
             return false;
         }

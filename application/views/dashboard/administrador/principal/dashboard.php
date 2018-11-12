@@ -42,90 +42,93 @@ tbody {
 
 
 						foreach($cards as $card):
-						?>
+							?>
 							<div class="col-md-6 col-lg-<?= $grid ?>">
 								<div class="statistic__item statistic__item--<?= $card['color'] ?>
 								"
-									<?php if(array_key_exists('tooltip', $card)): ?>
-										data-toggle="tooltip" data-placement="top" title="<?= $card['tooltip'] ?>"
-									<?php endif; ?>
+								<?php if(array_key_exists('tooltip', $card)): ?>
+									data-toggle="tooltip" data-placement="top" title="<?= $card['tooltip'] ?>"
+								<?php endif; ?>
 								>
-									<h2 class="number"><?= $card['title'] ?></h2>
-									<span class="desc"><?= $card['label'] ?></span>
-									<div class="icon">
-										<i class="fas <?= $card['icon'] ?>"></i>
-									</div>
+								<h2 class="number"><?= $card['title'] ?></h2>
+								<span class="desc"><?= $card['label'] ?></span>
+								<div class="icon">
+									<i class="fas <?= $card['icon'] ?>"></i>
 								</div>
 							</div>
+						</div>
 
+					<?php endforeach; ?>
+				</div>
+			</div>
+		</div>
+		<!-- END STATISTIC-->
+		<!-- ESTATISTICAS CHART -->
+		<div class="statistic-chart">
+			<div class="row">
+				<div class="col-md-12">
+					<h3 class="title-5 m-b-35">estatísticas</h3>
+					<hr>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-6 col-lg-6">
+					<!-- CHART PERCENT-->
+
+					<?php $chart = $charts['doughnut']; ?>
+
+					<div class="chart-percent-2" style="max-height: 420px !important;">
+
+						<h3 class="title-3 m-b-30"><?= $chart['title'] ?><span style="font-size:12pt;"><small> (<?= $chart['percent'] ?> %)</small></span></h3>
+						<div class="chart-wrap">
+							<canvas id="percent-chart2"></canvas>
+							<div id="chartjs-tooltip" data="<?= $chart['data'] ?>" labels="<?= $chart['labels'] ?>">
+								<table></table>
+							</div>
+						</div>
+						<?php foreach($chart['label'] as $label): ?>
+							<div class="chart-note">
+								<div class="chart-info">
+									<span class="dot dot--<?= $label['color'] ?>"></span>
+									<span><?= $label['label'] ?></span>
+								</div>
+							</div>
 						<?php endforeach; ?>
 					</div>
+					<!-- END CHART PERCENT-->
+				</div>
+				<div class="col-md-6 col-lg-6">
+
+					<div class="chart-percent-2" style="max-height: 420px !important;">
+						<h3 class="title-2 m-b-40">Tipos Serviços</h3>
+						<div class="chart-wrap">
+							<canvas id="sales-chart"></canvas>
+						</div>
+						<div id="chartjs-tooltip"></div>
+						<div class="chart-info"></div>
+						<div class="chart-info"></div>
+					</div>
 				</div>
 			</div>
-			<!-- END STATISTIC-->
-			<!-- ESTATISTICAS CHART -->
-			<div class="statistic-chart">
-				<div class="row">
-					<div class="col-md-12">
-						<h3 class="title-5 m-b-35">estatísticas</h3>
-						<hr>
-					</div>
-				</div>
 
-				<div class="row">
-					<div class="col-md-6 col-lg-6">
-						<!-- CHART PERCENT-->
-						<div class="chart-percent-2" style="max-height: 420px !important;">
-							<h3 class="title-3 m-b-30">Concluídas % <span style="font-size:12pt;"><small>(23,4%)</small></span></h3>
-							<div class="chart-wrap">
-								<canvas id="percent-chart2"></canvas>
-								<div id="chartjs-tooltip" data="60,40" labels="em andamento, concluidas">
-									<table></table>
-								</div>
-							</div>
-							<div class="chart-info">
-								<div class="chart-note">
-									<span class="dot dot--blue"></span>
-									<span>em andamento</span>
-								</div>
-								<div class="chart-note">
-									<span class="dot dot--red"></span>
-									<span>concluídas</span>
-								</div>
-							</div>
-						</div>
-						<!-- END CHART PERCENT-->
-					</div>
-					<div class="col-md-6 col-lg-6">
-						<div class="chart-percent-2" style="max-height: 420px !important;">
-							<h3 class="title-2 m-b-40">Tipos Serviços</h3>
-							<div class="chart-wrap">
-								<canvas id="sales-chart"></canvas>
-							</div>
-							<div id="chartjs-tooltip"></div>
-							<div class="chart-info"></div>
-							<div class="chart-info"></div>
-						</div>
-					</div>
+		</div>
+		<!-- END ESTATISTICAS CHART -->
+		<div>
+			<div class="row">
+				<div class="col-md-12">
+					<h3 class="title-5 m-b-35">Tabelas</h3>
+					<hr>
 				</div>
-
 			</div>
-			<!-- END ESTATISTICAS CHART -->
-			<div>
+
+			<!-- ORDENS EM EXECUÇÃO -->
+			<div class="au-card d-flex flex-column">
 				<div class="row">
+
 					<div class="col-md-12">
-						<h3 class="title-5 m-b-35">Tabelas</h3>
-						<hr>
+						<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Ordens em Execução</h2>
 					</div>
-				</div>
-
-				<!-- ORDENS EM EXECUÇÃO -->
-				<div class="au-card d-flex flex-column">
-					<div class="row">
-
-						<div class="col-md-12">
-							<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Ordens em Execução</h2>
-						</div>
 						<!-- <div class=col-md-3>
 							<ul class="nav nav-pills">
 								<li class="active"><button type="button" class="btn btn-primary btn-sm">Tabela</button></li>
@@ -162,50 +165,57 @@ tbody {
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td>COLACAP-2018/5</td>
-												<td><span class="block-email">Alta</span></td>
-												<td>Coleta de animal pequeno.</td>
-												<td>Pietro Barcarollo Schiavinato</td>
-												<td><span class="status--process">Finalizado</span></td>
-											</tr>
-											<tr>
-												<td>LIMPLR-2018/28</td>
-												<td><span class="block-email">Alta</span></td>
-												<td>Limpeza de Rua</td>
-												<td>Ronaldo Messias</td>
-												<td><span class="status--warning">Em Andamento</span></td>
+											<?php foreach($ordens_em_execucao as $os): ?>
 
-											</tbody>
-										</table>
-									</div>
+												<tr>
+													<td><?= $os->codigo ?></td>
+													<td><span class="block-email">
+														<?= $os->prioridade ?></span></td>
+													<td><?= $os->servico ?></td>
+													<td><?= $os->funcionario ?></td>
+													<td><span class="
+															<?php 
+																if($os->situacao == 'Finalizado'){
+																	echo 'status--process';
+																} else {
+																	echo 'status--warning';
+																}
+															?>
+														">
+														<?= $os->situacao ?></span></td>
+												</tr>
+
+											<?php endforeach; ?>
+										</tbody>
+									</table>
 								</div>
-
-								<div id="map" style="display:none;"></div>
-
 							</div>
+
+							<div id="map" style="display:none;"></div>
+
 						</div>
 					</div>
-					<!-- END ORDENS EM EXECUÇÃO -->
+				</div>
+				<!-- END ORDENS EM EXECUÇÃO -->
 
-					<!-- FUNCIONÁRIOS -->
-					<div class="au-card d-flex flex-column m-t-50">
-						<div class="row">
+				<!-- FUNCIONÁRIOS -->
+				<div class="au-card d-flex flex-column m-t-50">
+					<div class="row">
 
-							<div class="col-md-9">
-								<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Funcionários</h2>
-							</div>
-							<div class=col-md-3>
-								<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-									<li class="nav-item">
-										<a class="nav-link btn-sm" id="tabela-funcionario" data-toggle="pill" href="#" role="tab" aria-controls="pills-home"
-										aria-selected="true">Tabela</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link btn-sm active" id="tabela-grafico" data-toggle="pill" href="#" role="tab" aria-controls="pills-profile"
-										aria-selected="false">Gráfico</a>
-									</li>
-								</ul>
+						<div class="col-md-9">
+							<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Funcionários</h2>
+						</div>
+						<div class=col-md-3>
+							<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+								<li class="nav-item">
+									<a class="nav-link btn-sm" id="tabela-funcionario" data-toggle="pill" href="#" role="tab" aria-controls="pills-home"
+									aria-selected="true">Tabela</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link btn-sm active" id="tabela-grafico" data-toggle="pill" href="#" role="tab" aria-controls="pills-profile"
+									aria-selected="false">Gráfico</a>
+								</li>
+							</ul>
 
 <!-- 
 								<button type="button" class="btn btn-primary btn-sm">Tabela</button>
