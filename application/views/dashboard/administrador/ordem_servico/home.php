@@ -1,12 +1,22 @@
+  <!--<script type="text/javascript">
+    async function pre_loader_show(){
+      $('.inner').show();
+      // $('#preloader .inner').delay(1000).fadeIn();
+      $('#preloader .inner').delay(10).fadeIn();
+      $('#preloader').delay(5).fadeIn('slow');
+  }
 
- <!--MAIN CONTENT-->
- <div class="main-content">
+  pre_loader_show();
+</script>
+MAIN CONTENT-->
+<div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de ordens de serviço</h2>
+                        <!-- <input type="hidden" id="ordem_servico_pk" name="ordem_servico_pk" class="form-control"> -->
                         <button class="au-btn au-btn-icon au-btn--blue reset_multistep" data-toggle="modal" data-target="#ce_ordem_servico" id="btn-nova-ordem">
                             <i class="zmdi zmdi-plus"></i>nova ordem de serviço
                         </button>
@@ -37,7 +47,7 @@
                                 <thead>
                                     <tr>
                                         <th>Código</th>
-                                        <th id="data">Data</th>
+                                        <th id="data_brasileira">Data</th>
                                         <th>Prioridade</th>
                                         <th>Endereço</th>
                                         <th>Serviço</th>
@@ -54,7 +64,7 @@
                                                     <?=$ordem_servico->ordem_servico_cod?>
                                                 </td>
                                                 <td>
-                                                    <?= $ordem_servico->data_criacao ?>
+                                                    <span style="display: none"><?=$ordem_servico->data_criacao?></span><?=date('d/m/Y H:i:s', strtotime($ordem_servico->data_criacao))?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->prioridade_nome?>
@@ -149,303 +159,369 @@
                         <button type="button" class="close" id="close-modal" data-dismiss="modal">&times;</button>
                     </div>
                     <!-- Modal body -->
-                    <form class="msform">
+                    <form class="msform" style="margin-top: 10px !important;">
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <input type="hidden" id="ordem_servico_pk" value="" name="ordem_servico_pk">
-                                            <div class="row form-group">
-                                                <div class="col-12">
-                                                    <label for="ordem_servico_desc">Descrição</label>
-                                                    <textarea class="form-control" id="ordem_servico_desc" name="ordem_servico_desc" class="form-control" required="true" maxlength="200"></textarea>
-                                                    <small class="form-text text-muted">Por favor, informe a descrição da Ordem de Serviço</small>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group">
-                                                <div class="col-7 col-md-4">
-                                                    <label for="departamento">Departamento</label>
-                                                    <select class="form-control" id="departamento" name="departamento" required="true">
-                                                        <?php if ($departamentos != null): ?>
-                                                            <?php foreach ($departamentos as $d): ?>
-                                                                <option value="<?= $d->departamento_pk ?>">
-                                                                    <?= $d->departamento_nome ?>
-                                                                </option>
-                                                            <?php endforeach ?>
-                                                        <?php endif ?>
-                                                    </select>
-                                                </div>
-                                                <div class="col-7 col-md-4">
-                                                    <label for="tipo_servico">Tipo de Serviço</label>
-                                                    <select class="form-control" id="tipo_servico" name="tipo_servico" required="true">
-                                                    </select>
-                                                </div>
-                                                <div class="col-7 col-md-4">
-                                                    <label for="servico_pk">Serviço</label>
-                                                    <select class="form-control" id="servico_pk" name="servico_pk" required="true">
-                                                    </select>
-                                                    <small class="form-text text-muted">Por favor, informe o Serviço</small>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group">
-                                                <div class="col-7 col-md-4" id="procedencias_options">
-                                                    <label for="procedencia_pk">Procedência</label>
-                                                    <select class="form-control" id="procedencia_pk" name="procedencia_pk" required="true">
-                                                        <?php if ($procedencias != null): ?>
-                                                            <?php foreach ($procedencias as $pr): ?>
-                                                                <option value="<?= $pr->procedencia_pk ?>">
-                                                                    <?= $pr->procedencia_nome ?>
-                                                                </option>
-                                                            <?php endforeach ?>
-                                                        <?php endif ?>
-                                                    </select>
-                                                    <small class="form-text text-muted" id="procedencia_small">Por favor, informe a procedência desta ordem</small>
-                                                </div>
-                                                <div class="col-7 col-md-4">
-                                                    <label for="prioridade_pk">Prioridade</label>
-                                                    <select class="form-control" id="prioridade_pk" name="prioridade_pk" required="true">
-                                                        <?php if ($prioridades != null): ?>
-                                                            <?php foreach ($prioridades as $p): ?>
-                                                                <option value="<?= $p->prioridade_pk ?>">
-                                                                    <?= $p->prioridade_nome ?>
-                                                                </option>
-                                                            <?php endforeach ?>
-                                                        <?php endif ?>
-                                                    </select>
-                                                    <small class="form-text text-muted">Por favor, informe a Prioridade</small>
-                                                </div>
-                                                <div class="col-7 col-md-4">
-                                                    <label for="situacao_pk">Situação Inicial</label>
-                                                    <select class="form-control" id="situacao_pk" name="situacao_pk" required="true">
-                                                        <?php if ($situacoes != null): ?>
-                                                            <?php foreach ($situacoes as $s): ?>
-                                                                <option value="<?= $s->situacao_pk ?>">
-                                                                    <?= $s->situacao_nome ?>
-                                                                </option>
-                                                            <?php endforeach ?>
-                                                        <?php endif ?>
-                                                    </select>
-                                                    <small class="form-text text-muted">Por favor, informe a Situação</small>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group">
-                                                <div class="col-3 col-md-3">
-                                                    <label for="uf-input" class=" form-control-label">Estado</label>
-                                                    <select class="form-control loading" id="uf-input" name="estado_pk" required="true"></select>
-                                                </div>
-                                                <div class="col-8 col-md-6">
-                                                    <label for="cidade-input" class="form-control-label">Cidade</label>
-                                                    <select class="form-control loading endereco" id="cidade-input" name="municipio_pk" required="true"></select>
-                                                </div>
-                                                <div class="col-3 col-md-3">
-                                                    <label for="setor_pk">Setor</label>
-                                                    <select class="form-control" id="setor_pk" name="setor_pk" required="true">
-                                                        <?php if ($setores != null): ?>
-                                                            <?php foreach ($setores as $se): ?>
-                                                                <option value="<?= $se->setor_pk ?>">
-                                                                    <?= $se->setor_nome ?>
-                                                                </option>
-                                                            <?php endforeach ?>
-                                                        <?php endif ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row form-group">
-                                                <div class="col-12 col-md-4">
-                                                    <label for="referencia-input" class=" form-control-label">Ponto de Referência</label>
-                                                    <input type="text" id="referencia-input" name="referencia" class="form-control referencia">
-                                                    <small class="form-text text-muted">Insira um ponto de referência para buscar o local</small>
-                                                </div>
-                                                <div class="col-12 col-md-8">
-                                                    <label for="logradouro_nome">Logradouro</label>
-                                                    <input class="form-control input-dropdown loading endereco" type="text" id="logradouro-input" name="logradouro_nome" autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]'>
-                                                    <ul class="dropdown-menu" data-return = "#logradouro_pk" data-next="#numero-input">
-                                                    </ul>
-                                                    <small class="form-text text-muted">Insira o logradouro para buscar o local</small>
-                                                </div>
-                                                
-                                            </div>
-                                            <div class="row form-group">
-                                               <div class="col-12 col-md-2">
-                                                <label for="numero-input" class=" form-control-label">N°</label>
-                                                <input type="number" id="numero-input" name="local_num" class="form-control numero-input endereco" min="0" required="true">
-                                            </div>
-                                            <div class="col-12 col-md-5">
-                                                <label for="complemento-input" class=" form-control-label">Complemento</label>
-                                                <input type="text" id="complemento-input" name="local_complemento" class="form-control endereco" maxlength="30">
-                                            </div>
-                                            <div class="col-12 col-md-5">
-                                                <label for="bairro-input" class="form-control-label loading">Bairro</label>
-                                                <input type="hidden" name="bairro_nome" id="bairro_pk">
-                                                <div class="dropdown" id="drop-bairro">
-                                                    <input class="form-control input-dropdown endereco" type="text" id="bairro-input" name="bairro" autocomplete="off" data-src = '["<?php echo base_url('localizacao/bairros'); ?>","https://viacep.com.br/ws"]' data-index='["bairro_pk","bairro"]' data-value='["bairro_nome","bairro"]' data-params  = '[[["cidade-input",null,"val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["logradouro-input",null,"val"],["json",null,"param"]]]' data-action='["get","get"]' data-arrayret='["data",null]'>
-                                                    <ul class="dropdown-menu" data-return = "#bairro_pk" data-next="#bairro-input">
-                                                    </ul>
-                                                </div>
+                                    <div class="card bg-light mb-3">
+                                      <div class="card-header"><h4 class="card-title"> Informações Gerais </h4></div>
+                                      <div class="card-body text-secondary">
+                                        <input type="hidden" id="ordem_servico_pk" value="" name="ordem_servico_pk">
+                                        <div class="row form-group">
+                                            <div class="col-12">
+                                                <label for="ordem_servico_desc">Descrição</label>
+                                                <textarea class="form-control" id="ordem_servico_desc" name="ordem_servico_desc" class="form-control" required="true" maxlength="200"></textarea>
+                                                <small class="form-text text-muted">Por favor, informe a descrição da Ordem de Serviço</small>
                                             </div>
                                         </div>
                                         <div class="row form-group">
-                                            <input type="hidden" id="latitude">
-                                            <input type="hidden" id="longitude">
-                                            <div class="col-12">
-                                                <div id="map"></div>
+                                            <div class="col-7 col-md-4">
+                                                <label for="departamento">Departamento</label>
+                                                <select class="form-control" id="departamento" name="departamento" required="true">
+                                                    <?php if ($departamentos != null): ?>
+                                                        <?php foreach ($departamentos as $d): ?>
+                                                            <option value="<?= $d->departamento_pk ?>">
+                                                                <?= $d->departamento_nome ?>
+                                                            </option>
+                                                        <?php endforeach ?>
+                                                    <?php endif ?>
+                                                </select>
                                             </div>
-                                            <small class="form-text text-muted">Visualize ou selecione o local no mapa</small>
-                                            <div class="col-12" id="image-upload-div">
-                                                <div class="image-upload-wrap">
-                                                    <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" id="input-upload" required="true"/>
-                                                    <div class="drag-text">
-                                                        <h3>Ou clique/arraste e solte uma imagem aqui</h3>
-                                                    </div>
-                                                </div>
-                                                <div class="file-upload-content">
-                                                    <img id="img-input" class="file-upload-image" src="#" alt="your image" required="true"/>
-                                                    <div class="col-12">
-                                                        <button type="button" onclick="remove_image()" class="btn btn-danger">Remover</button>
-                                                    </div>
-                                                </div>
-                                                <small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>
+                                            <div class="col-7 col-md-4">
+                                                <label for="tipo_servico">Tipo de Serviço</label>
+                                                <select class="form-control" id="tipo_servico" name="tipo_servico" required="true">
+                                                </select>
+                                            </div>
+                                            <div class="col-7 col-md-4">
+                                                <label for="servico_pk">Serviço</label>
+                                                <select class="form-control" id="servico_pk" name="servico_pk" required="true">
+                                                </select>
+                                                <small class="form-text text-muted">Por favor, informe o Serviço</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col-7 col-md-4" id="procedencias_options">
+                                                <label for="procedencia_pk">Procedência</label>
+                                                <select class="form-control" id="procedencia_pk" name="procedencia_pk" required="true">
+                                                    <?php if ($procedencias != null): ?>
+                                                        <?php foreach ($procedencias as $pr): ?>
+                                                            <option value="<?= $pr->procedencia_pk ?>">
+                                                                <?= $pr->procedencia_nome ?>
+                                                            </option>
+                                                        <?php endforeach ?>
+                                                    <?php endif ?>
+                                                </select>
+                                                <small class="form-text text-muted" id="procedencia_small">Por favor, informe a procedência desta ordem</small>
+                                            </div>
+                                            <div class="col-7 col-md-4">
+                                                <label for="prioridade_pk">Prioridade</label>
+                                                <select class="form-control" id="prioridade_pk" name="prioridade_pk" required="true">
+                                                    <?php if ($prioridades != null): ?>
+                                                        <?php foreach ($prioridades as $p): ?>
+                                                            <option value="<?= $p->prioridade_pk ?>">
+                                                                <?= $p->prioridade_nome ?>
+                                                            </option>
+                                                        <?php endforeach ?>
+                                                    <?php endif ?>
+                                                </select>
+                                                <small class="form-text text-muted">Por favor, informe a Prioridade</small>
+                                            </div>
+                                            <div class="col-7 col-md-4">
+                                                <label for="situacao_pk">Situação Inicial</label>
+                                                <select class="form-control" id="situacao_pk" name="situacao_pk" required="true">
+                                                    <?php if ($situacoes != null): ?>
+                                                        <?php foreach ($situacoes as $s): ?>
+                                                            <option value="<?= $s->situacao_pk ?>">
+                                                                <?= $s->situacao_nome ?>
+                                                            </option>
+                                                        <?php endforeach ?>
+                                                    <?php endif ?>
+                                                </select>
+                                                <small class="form-text text-muted">Por favor, informe a Situação</small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <?php if ($this->session->user['is_superusuario']): ?>
+                                <div class="card bg-light mb-3" id="info_cidadao">
+                                    <div class="card-header"><h4 class="card-title"> Informações Cidadão </h4></div>
+                                    <div class="card-body text-secondary">
+                                        <div class="row form-group">
+                                            <div class="col col-md-1">
+                                                <label for="nome-input" class=" form-control-label" required="true">
+                                                    <strong>Nome</strong>
+                                                </label>
+                                            </div>
+                                            <div class="col-12 col-md-11">
+                                                <input type="text" id="nome-input" name="pessoa_nome" placeholder="Nome Completo" class="form-control nome-input" required
+                                                maxlength="50" minlength="5" required>
+                                                <small class="form-text text-muted">Por favor, informe o nome completo do cidadão</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col-12 col-md-1">
+                                                <label for="cpf-input" class=" form-control-label">
+                                                    <strong>CPF</strong>
+                                                </label>
+                                            </div>
+                                            <div class="col-12 col-md-3">
+                                                <input type="text" id="cpf-input" name="pessoa_cpf" placeholder="CPF" class="form-control cpf-input" required>
+                                                <small class="form-text text-muted">Por favor, informe o CPF do cidadão</small>
+                                            </div>
+                                            <div class="col-12 col-md-1">
+                                                <label for="telefone-input" class=" form-control-label"><strong>Tel </strong></label>
+                                            </div>
+                                            <div class="col-12 col-md-3">
+                                                <input type="text" id="telefone-input" name="contato_tel" placeholder="Telefone" class="form-control telefone-input">
+                                                <small class="help-block form-text">Por favor, informe o telefone do cidadão</small>
+                                            </div>
+                                            <div class="col-12 col-md-1">
+                                                <label for="celular-input" class=" form-control-label"><strong>Cel</strong></label>
+                                            </div>
+                                            <div class="col-12 col-md-3">
+                                                <input type="text" id="celular-input" name="contato_cel" placeholder="Celular" class="form-control celular-input">
+                                                <small class="help-block form-text">Por favor, informe o celular do cidadão</small>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col-12 col-md-1">
+                                                <label for="email-input" class=" form-control-label">
+                                                    <strong>Email</strong>
+                                                </label>
+                                            </div>
+                                            <div class="col-12 col-md-11">
+                                                <input type="email" id="email-input" name="contato_email" placeholder="Email" class="form-control email-input" required="true">
+                                                <small class="help-block form-text">Por favor, informe o email do cidadão</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card bg-light mb-3">
+                                    <div class="card-header"><h4 class="card-title"> Localização </h4></div>
+                                    <div class="card-body text-secondary">
+                                     <div class="row form-group">
+                                        <div class="col-3 col-md-3">
+                                            <label for="uf-input" class=" form-control-label">Estado</label>
+                                            <select class="form-control loading" id="uf-input" name="estado_pk" required="true"></select>
+                                        </div>
+                                        <div class="col-8 col-md-6">
+                                            <label for="cidade-input" class="form-control-label">Cidade</label>
+                                            <select class="form-control loading endereco" id="cidade-input" name="municipio_pk" required="true"></select>
+                                        </div>
+                                        <div class="col-3 col-md-3">
+                                            <label for="setor_pk">Setor</label>
+                                            <select class="form-control" id="setor_pk" name="setor_pk" required="true">
+                                                <?php if ($setores != null): ?>
+                                                    <?php foreach ($setores as $se): ?>
+                                                        <option value="<?= $se->setor_pk ?>">
+                                                            <?= $se->setor_nome ?>
+                                                        </option>
+                                                    <?php endforeach ?>
+                                                <?php endif ?>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="row form-group">
-                                        <div class="col-12">
-                                            <label for="senha" class="form-control-label">Digite sua senha</label>
-                                            <input type="password" name="senha" id="senha" class="form-control" required>
+                                        <div class="col-12 col-md-4">
+                                            <label for="referencia-input" class=" form-control-label">Ponto de Referência</label>
+                                            <input type="text" id="referencia-input" name="referencia" class="form-control referencia">
+                                            <small class="form-text text-muted">Insira um ponto de referência para buscar o local</small>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <label for="logradouro_nome">Logradouro</label>
+                                            <input class="form-control input-dropdown loading endereco" type="text" id="logradouro-input" name="logradouro_nome" autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]'>
+                                            <ul class="dropdown-menu" data-return = "#logradouro_pk" data-next="#numero-input">
+                                            </ul>
+                                            <small class="form-text text-muted">Insira o logradouro para buscar o local</small>
                                         </div>
                                     </div>
-                                <?php endif ?>
-                                <div class="text-center">
-                                    <button type="button" class="btn btn-primary submit" onclick="send_data()">
-                                        <i class="fa fa-dot-circle-o"></i> Finalizar
-                                    </button>
+                                    <div class="row form-group">
+                                       <div class="col-12 col-md-2">
+                                        <label for="numero-input" class=" form-control-label">N°</label>
+                                        <input type="number" id="numero-input" name="local_num" class="form-control numero-input endereco" min="0" required="true">
+                                    </div>
+                                    <div class="col-12 col-md-5">
+                                        <label for="complemento-input" class=" form-control-label">Complemento</label>
+                                        <input type="text" id="complemento-input" name="local_complemento" class="form-control endereco" maxlength="30">
+                                    </div>
+                                    <div class="col-12 col-md-5">
+                                        <label for="bairro-input" class="form-control-label loading">Bairro</label>
+                                        <input type="hidden" name="bairro_nome" id="bairro_pk">
+                                        <div class="dropdown" id="drop-bairro">
+                                            <input class="form-control input-dropdown endereco" type="text" id="bairro-input" name="bairro" autocomplete="off" data-src = '["<?php echo base_url('localizacao/bairros'); ?>","https://viacep.com.br/ws"]' data-index='["bairro_pk","bairro"]' data-value='["bairro_nome","bairro"]' data-params  = '[[["cidade-input",null,"val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["logradouro-input",null,"val"],["json",null,"param"]]]' data-action='["get","get"]' data-arrayret='["data",null]'>
+                                            <ul class="dropdown-menu" data-return = "#bairro_pk" data-next="#bairro-input">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group" style="margin-top: 30px !important;">
+                                    <input type="hidden" id="latitude">
+                                    <input type="hidden" id="longitude">
+                                    <div class="col-12">
+                                        <div id="map"></div>
+                                        <small class="form-text text-muted">Visualize ou selecione o local no mapa</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-                <!-- Modal footer -->
-                <div class="modal-footer d-md-none">
-                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- FIM MODAL NOVA ORDEM/ALTERAR ORDEM-->
-
-    <!-- MODAL ADICIONAR SITUAÇÃO ATUAL ORDEM SERVIÇO -->
-    <div class="modal fade" id="atividade">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Adicionar Situação da Ordem de serviço</h4>
-                    <h4 class="modal-title 2"></h4> 
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <table class="table hide">
-                            <thead>
-                                <th>Prioridade</th>
-                                <th>Procedência</th>
-                                <th>Serviço</th>
-                                <th>Setor</th>
-                            </thead>
-                            <tbody>
-                                <td id="ov_prioridade"></td>
-                                <td id="ov_procedencia"></td>
-                                <td id="ov_servico"></td>
-                                <td id="ov_setor"></td>
-                            </tbody>
-                        </table>
-                        <div class=card-group>
-                            <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Código:</strong>
-                                    
-                                </div>
-                                <div class="card-body card-block">
-                                    <p id="ov_codigo"></p>
+                        <div class="card bg-light mb-3" id="card_imagem">
+                            <div class="card-header"><h4 class="card-title"> Imagem Evidência </h4></div>
+                            <div class="card-body text-secondary">
+                                <div class="row form-group">
+                                    <div class="col-12" id="image-upload-div">
+                                        <div class="image-upload-wrap">
+                                            <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" id="input-upload" required="true"/>
+                                            <div class="drag-text">
+                                                <h3>Ou clique/arraste e solte uma imagem aqui</h3>
+                                            </div>
+                                        </div>
+                                        <div class="file-upload-content">
+                                            <img id="img-input" class="file-upload-image" src="#" alt="your image" required="true"/>
+                                            <div class="col-12">
+                                                <button type="button" onclick="remove_image()" class="btn btn-danger">Remover</button>
+                                            </div>
+                                        </div>
+                                        <small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class = "card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Descrição:</strong>
-                                    <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="obtn-foto-historico" style="display:none;">
-                                        <i class="fa fa-camera" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body card-block" id="oendereco_historico">
-                                 <p id="ov_descricao"><p>
-                                 </div>
-                             </div>
-                             <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Endereço:</strong>
-                                    <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="obtn-mapa-historico" style="display:none;">
-                                        <i class="fa fa-map-marker"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body card-block" id="oendereco_historico">
-                                    <p id="ov_endereco"></p>
+                        </div><!-- fecha card body --> 
+                        <!-- fecha card principal -->
+                        <?php if ($this->session->user['is_superusuario']): ?>
+                            <div class="row form-group">
+                                <div class="col-12">
+                                    <label for="senha" class="form-control-label">Digite sua senha</label>
+                                    <input type="password" name="senha" id="senha" class="form-control" required>
                                 </div>
                             </div>
-                            
-                        </div>
-                        <div align="center" class="center">
-                            <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="ov_loading" alt="Carregando">
-                        </div>
-                        <div class="col-12 col-md-12" id="omapa_historico" style="margin-top: 20px; padding-top: 10px;">
-                            <div id="omap2"></div>
-                        </div>
-                        <!-- <div class="container-fluid" id="card_slider_ordem" style="margin-top: 50px;"></div> -->
-                        <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
-                        </div>
-                        <div class= "modal-footer">
-                            <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-atividade" onclick="send_data_historico()">
-                                <i class="fa fa-dot-circle-o"></i>
-                                Salvar
+                        <?php endif ?>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary submit" onclick="send_data()">
+                                <i class="fa fa-dot-circle-o"></i> Finalizar
                             </button>
-                            <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-atividade" data-dismiss="modal">
-                                Fechar
-                            </button>
-                            <input type="hidden" id="historico_pk" value="" name="historico_pk">
                         </div>
                     </div>
                 </div>
             </div>
+        </form>
+        <!-- Modal footer -->
+        <div class="modal-footer d-md-none">
+            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Fechar</button>
         </div>
     </div>
+</div>
+</div>
+<!-- FIM MODAL NOVA ORDEM/ALTERAR ORDEM-->
 
+<!-- MODAL ADICIONAR SITUAÇÃO ATUAL ORDEM SERVIÇO -->
+<div class="modal fade" id="atividade">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Adicionar Situação da Ordem de serviço</h4>
+                <h4 class="modal-title 2"></h4> 
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <table class="table hide">
+                        <thead>
+                            <th>Prioridade</th>
+                            <th>Procedência</th>
+                            <th>Serviço</th>
+                            <th>Setor</th>
+                        </thead>
+                        <tbody>
+                            <td id="ov_prioridade"></td>
+                            <td id="ov_procedencia"></td>
+                            <td id="ov_servico"></td>
+                            <td id="ov_setor"></td>
+                        </tbody>
+                    </table>
+                    <div class=card-group>
+                        <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                            <div class="card-header">
+                                <strong>Código:</strong>
 
-    <!-- MODAL HISTÓRICO ORDEM SERVIÇO -->
-    <div class="modal fade" id="ce_historico_servico">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Histórico da Ordem de serviço</h4>
-                    <h4 class="modal-title 2"></h4> 
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="card-body card-block">
+                                <p id="ov_codigo"></p>
+                            </div>
+                        </div>
+                        <div class = "card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                            <div class="card-header">
+                                <strong>Descrição:</strong>
+                                <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="obtn-foto-historico" style="display:none;">
+                                    <i class="fa fa-camera" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="card-body card-block" id="oendereco_historico">
+                               <p id="ov_descricao"><p>
+                               </div>
+                           </div>
+                           <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                            <div class="card-header">
+                                <strong>Endereço:</strong>
+                                <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="obtn-mapa-historico" style="display:none;">
+                                    <i class="fa fa-map-marker"></i>
+                                </button>
+                            </div>
+                            <div class="card-body card-block" id="oendereco_historico">
+                                <p id="ov_endereco"></p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div align="center" class="center">
+                        <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="ov_loading" alt="Carregando">
+                    </div>
+                    <div class="col-12 col-md-12" id="omapa_historico" style="margin-top: 20px; padding-top: 10px;">
+                        <div id="omap2"></div>
+                    </div>
+                    <!-- <div class="container-fluid" id="card_slider_ordem" style="margin-top: 50px;"></div> -->
+                    <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
+                    </div>
+                    <div class= "modal-footer">
+                        <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-atividade" onclick="send_data_historico()">
+                            <i class="fa fa-dot-circle-o"></i>
+                            Salvar
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-atividade" data-dismiss="modal">
+                            Fechar
+                        </button>
+                        <input type="hidden" id="historico_pk" value="" name="historico_pk">
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <table class="table hide">
-                            <thead>
-                                <th>Prioridade</th>
-                                <th>Procedência</th>
-                                <th>Serviço</th>
-                                <th>Setor</th>
-                            </thead>
-                            <tbody>
-                                <td id="v_prioridade"></td>
-                                <td id="v_procedencia"></td>
-                                <td id="v_servico"></td>
-                                <td id="v_setor"></td>
-                            </tbody>
-                        </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL HISTÓRICO ORDEM SERVIÇO -->
+<div class="modal fade" id="ce_historico_servico">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Histórico da Ordem de serviço</h4>
+                <h4 class="modal-title 2"></h4> 
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <table class="table hide">
+                        <thead>
+                            <th>Prioridade</th>
+                            <th>Procedência</th>
+                            <th>Serviço</th>
+                            <th>Setor</th>
+                        </thead>
+                        <tbody>
+                            <td id="v_prioridade"></td>
+                            <td id="v_procedencia"></td>
+                            <td id="v_servico"></td>
+                            <td id="v_setor"></td>
+                        </tbody>
+                    </table>
 <!--                         <div class=card-group>
                             <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
                                 <div class="card-header">
