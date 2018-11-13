@@ -23,7 +23,7 @@ class Pessoa_model extends CI_Model {
     public function get($where = NULL) {
         $this->db->select('*');
         $this->db->from(self::TABLE_NAME);
-        $this->db->join('contatos','contatos.pessoa_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX);
+        $this->db->join('contatos','contatos.pessoa_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX,'left');
         $this->db->join('imagens_perfil','imagens_perfil.pessoa_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX,'left');
         $this->db->join('enderecos_pessoas','enderecos_pessoas.pessoa_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX,'left');
         $this->db->join('locais', 'locais.local_pk = enderecos_pessoas.local_fk','left');
@@ -41,7 +41,13 @@ class Pessoa_model extends CI_Model {
                 $this->db->where(self::PRI_INDEX, $where);
             }
         }
+
+     
         $result = $this->db->get()->result();
+        // $result = $this->db->get_compiled_select();
+        // print_r($result);
+        // die();
+
         if ($result) {
             if ($where !== NULL) {
                 return array_shift($result);
@@ -61,8 +67,15 @@ class Pessoa_model extends CI_Model {
      * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
      * @return int Number of affected rows by the update query
      */
-    public function insert(Array $data_pessoa, Array $data_contato, $data_endereco, $imagem_path) {
+
+    public function update_contato(Array $data_contato, $where){
+        $success = $this->db->update('contatos', $data_contato);
+        return $success; 
+    }
+
+    public function insert(Array $data_pessoa, Array $data_contato, $data_endereco = NULL, $imagem_path = NULL) {
         $success['pessoa'] = $this->db->insert(self::TABLE_NAME, $data_pessoa);
+        $success['db_error'] = $this->db->error();
         $success['pessoa_pk'] = $this->db->insert_id();
 
         $this->db->flush_cache();
@@ -106,7 +119,7 @@ class Pessoa_model extends CI_Model {
      * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
      * @return int Number of affected rows by the update query
      */
-    public function update(Array $data_pessoa, Array $data_contato, $data_endereco, $imagem_path, $id) {
+    public function update(Array $data_pessoa, Array $data_contato, $data_endereco = NULL, $imagem_path = NULL, $id) {
         $this->db->where(self::TABLE_NAME.'.'.self::PRI_INDEX,$id);
         $success['pessoa'] = $this->db->update(self::TABLE_NAME, $data_pessoa);
         $this->db->flush_cache();

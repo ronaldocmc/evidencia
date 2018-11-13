@@ -29,6 +29,7 @@ var adicionar_mapa_historico = 1;
 $(document).ready(function() {
     $("#data").click();
     $("#data").click();
+    // $("#procedencia_pk").val("1");
 });
 
 
@@ -78,7 +79,15 @@ $("#procedencia_pk").change( function () {
     for(var i = 0; i < procedencias.length; i++ ){
         if(procedencias[i].procedencia_pk == procedencia_selected){
             $('#procedencias_options #procedencia_small').text(procedencias[i].procedencia_desc);
+            if(procedencia_selected == 2){
+                $('#info_cidadao').show();
+                $('#nome-input').attr("required", "true");
+            }else{
+                $('#nome-input').attr("required", "false");
+                $('#info_cidadao').hide();
+            }
         }
+
     }
 
 }).change();
@@ -385,7 +394,6 @@ $(".referencia").focusout(function() {
     } else {
         console.log('Geocode was not successful for the following reason: ' + status);
     }
-
 });
     }
 });
@@ -441,6 +449,27 @@ function remove_data_atividade() {
 }
 
 
+//Funções que estendem a visualização do mapa e da imagem no registro histórico
+$(document).on('click', '#btn-mapa-historico', function (event) 
+{
+
+    if(adicionar_mapa_historico == 1){
+      
+        $('#mapa_historico').show();
+        $('#btn-mapa-historico').removeClass('btn-primary');
+        $('#btn-mapa-historico').addClass('btn-danger');
+        adicionar_mapa_historico++;
+
+    }
+    else
+    {
+        $('#mapa_historico').hide();
+        $('#btn-mapa-historico').removeClass('btn-danger');
+        $('#btn-mapa-historico').addClass('btn-primary'); 
+        adicionar_mapa_historico--;
+
+    }
+});
 
 //Funções que estendem a visualização do mapa e da imagem para adicionar uma nova situação
 $(document).on('click', '#btn-mapa-historico', function (event) 
@@ -464,11 +493,10 @@ $(document).on('click', '#btn-mapa-historico', function (event)
     }
 });
 
-
 $(document).on('click', '#btn-foto-historico', function (event) 
 {
     if(adicionar_imagem_historico == 1){
-        
+      
         $('#card_slider_historico').show();
         $('#btn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
         $('#btn-foto-historico').removeClass('btn-primary');
@@ -666,6 +694,7 @@ get_historico = (id) =>
                     html += create_cards(historico.comentario, base_url + '/assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                         active = "";
                 }
+
             });
 
             $('#v_loading').hide();
@@ -715,7 +744,7 @@ get_atividade = (id) =>
             $('.close').css('cursor', 'pointer');
             $('#fechar-atividade').removeAttr('disabled');
             $('#fechar-atividade').css('cursor', 'pointer');
-
+          
             response.ordem.historico.map((historico, i) => {
                 if(i == response.ordem.historico.length -1){
                     if (historico.comentario == null) {
@@ -969,11 +998,18 @@ send = (imagem) =>
 
   //pre_loader_show();
   const formData = new FormData();
+
+
+  if($('#nome-input').val() == "" && $('#cpf-input').val() == "" && $('#email-input').val() == "" && $('#celular-input').val() == "" && $('#telefone-input').val() == ""){
+    $('#procedencia_pk').val("1");
+  }
+
+
   if(is_superusuario){
     formData.append('senha', $("#senha").val());
 }
 
-  // console.log( $('#servico_pk option:selected').val());
+  //console.log( $('#servico_pk option:selected').val());
   formData.append('descricao', $('#ordem_servico_desc').val());
   formData.append('servico_fk', $('#servico_pk option:selected').val());
   formData.append('prioridade_fk', $('#prioridade_pk').val());
@@ -988,12 +1024,21 @@ send = (imagem) =>
   formData.append('latitude', $('#latitude').val());
   formData.append('longitude', $('#longitude').val());
   formData.append('procedencia', $('#procedencia_pk').val());
-  formData.append('setor', $('#setor_pk').val());
+  formData.append('setor', $('#setor_pk').val());  
+  if($('#procedencia_pk').val() == "2"){
+
+    formData.append('pessoa_nome', $('#nome-input').val());
+    formData.append('pessoa_cpf', $('#cpf-input').val());
+    formData.append('contato_email',$('#email-input').val());
+    formData.append('contato_cel',$('#celular-input').val());
+    formData.append('contato_tel',$('#telefone-input').val());
+
+  }
+
   formData.append('abreviacao', get_abreviacao($('#servico_pk option:selected').val(), $('#tipo_servico option:selected').val()));
   formData.append('img', imagem);
 
-
-// console.log(formData);
+  console.log(formData);
   // procedencia
   var URL = ($('#ordem_servico_pk').val() == "") ? base_url + '/ordem_servico/insert' : base_url + '/ordem_servico/update_os';
   var ab, data_criacao; 
@@ -1058,7 +1103,8 @@ send = (imagem) =>
           'coordenada_lat' :  $('#latitude').val(),
           'coordenada_long' : $('#longitude').val(),
           'historico_ordem_pk' : response.data.historico_ordem_pk,
-          'local_fk' : response.data.local_pk,
+          'populacao_os' : response.data.populacao_os,
+          'local_fk' : response.data.local_fk,
           'ordem_servico_desc' : $('#ordem_servico_desc').val(),
           'ordem_servico_pk' : ($('#ordem_servico_pk').val() == "") ? response.data.ordem_servico_pk : $('#ordem_servico_pk').val(),
           'ordem_servico_status': 1,
@@ -1073,6 +1119,11 @@ send = (imagem) =>
           'situacao_atual_pk' : $('#situacao_pk').val(),
           'tipo_servico_fk' : $('#tipo_servico').val(),
           'setor_nome':$('#setor_pk option:selected').text(),
+          'contato_email': $('#email-input').val(),
+          'contato_cel': $('#celular-input').val(),
+          'contato_tel': $('#telefone-input').val(),
+          'pessoa_cpf': $('#cpf-input').val(),
+          'pessoa_nome': $('#nome-input').val(),
           'setor_pk':$('#setor_pk').val()
       }
 
@@ -1125,6 +1176,7 @@ send = (imagem) =>
       }
           //pre_loader_hide();
           remove_image();
+          $("#info_cidadao").hide();
           $('#ce_ordem_servico').modal('hide');
           primeiro_editar = false; 
 
@@ -1145,14 +1197,17 @@ send = (imagem) =>
     $('#btn-nova-ordem').on('click', function () 
     {
       primeiro_editar = true;
-      $("#image-upload-div").show();
-      $('#logradouro-input').removeClass('loading');  
-      $("#bairro-input").removeClass('loading');
-      $('#titulo').html("Nova ordem de serviço");
-      muda_depto();
-      $('#ce_ordem_servico').modal('show');
-      $('#ordem_servico_pk').val("");
-  });
+      if($('#procedencia_pk').val() == "2"){
+        $('#info_cidadao').show();
+    }
+    $("#image-upload-div").show();
+    $('#logradouro-input').removeClass('loading');  
+    $("#bairro-input").removeClass('loading');
+    $('#titulo').html("Nova ordem de serviço");
+    muda_depto();
+    $('#ce_ordem_servico').modal('show');
+    $('#ordem_servico_pk').val("");
+});
 
 
 
@@ -1177,6 +1232,7 @@ send = (imagem) =>
 
         $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
         posicao_selecionada = $(this).val();
+        console.log(posicao_selecionada);
 
         // console.log("PK:" + ordens_servico[$(this).val()]['ordem_servico_pk']);
 
@@ -1193,10 +1249,21 @@ send = (imagem) =>
         $('#situacao_pk').val(parseInt(ordens_servico[posicao_selecionada]['situacao_inicial_pk']));
         $('#prioridade_pk').val(parseInt(ordens_servico[posicao_selecionada]['prioridade_pk']));
         $('#procedencia_pk').val(parseInt(ordens_servico[posicao_selecionada]['procedencia_pk']));
+
+        if($('#procedencia_pk').val() == "2"){
+            $('#nome-input').val(ordens_servico[posicao_selecionada]['pessoa_nome']);
+            $('#cpf-input').val(ordens_servico[posicao_selecionada]['pessoa_cpf']);
+            $('#email-input').val(ordens_servico[posicao_selecionada]['contato_email']);
+            $('#celular-input').val(ordens_servico[posicao_selecionada]['contato_cel']);
+            $('#telefone-input').val(ordens_servico[posicao_selecionada]['contato_tel']);
+            $('#info_cidadao').show();
+
+        }
         $('#setor_pk').val(parseInt(ordens_servico[posicao_selecionada]['setor_pk']));
         $("#latitude").val(ordens_servico[posicao_selecionada]['coordenada_lat']);
         $("#longitude").val(ordens_servico[posicao_selecionada]['coordenada_long']);
         $("#image-upload-div").hide();
+        $("#card_imagem").hide();
 
         var data_local;
         var local = "";
@@ -1254,6 +1321,7 @@ send = (imagem) =>
 $( "#close-modal" ).click(function() {
     $("#logradouro-input").addClass('loading');
     $("#bairro-input").addClass('loading');
+    $("#info_cidadao").hide();
     primeiro_editar = true;
 });
 
