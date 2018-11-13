@@ -94,6 +94,7 @@ class Relatorio_model extends CI_Model
         $this->db->join('relatorios', 'relatorios_os.relatorio_fk = relatorios.relatorio_pk');
         $this->db->where('relatorios.status', '0');
         $this->db->where('relatorios_os.os_verificada', '0');
+
         if($id_relatorio != NULL){
             $this->db->where('relatorios.relatorio_pk', $id_relatorio);
         }
@@ -138,6 +139,7 @@ class Relatorio_model extends CI_Model
         }
 
     }
+
 
     public function get_objects($where = NULL)
     {
@@ -304,6 +306,11 @@ class Relatorio_model extends CI_Model
     {
         $this->db->update(self::TABLE_NAME, ['status' => 2], $relatorio_pk);
         return $this->db->affected_rows();
+    }
+
+    public function set_data_entrega($relatorio_pk)
+    {
+        $this->db->query('UPDATE relatorios SET data_entrega = NOW() WHERE relatorio_pk = ' . $relatorio_pk);
     }
 
     /**

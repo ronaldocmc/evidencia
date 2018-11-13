@@ -124,7 +124,7 @@ class Pessoa extends CI_Controller {
         $configUpload['upload_path'] = $path;
         $configUpload['allowed_types'] = '*';
         $configUpload['encrypt_name'] = true;
-        $configUpload['file_name'] = hash(ALGORITHM_HASH, $this->CI->session->user['id_user'] . uniqid(rand(), true));
+        $configUpload['file_name'] = hash(ALGORITHM_HASH, $this->CI->session->user['id_user'] . uniqid(rand(), true)) .".jpg";
 
         $this->CI->upload->initialize($configUpload);
 

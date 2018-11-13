@@ -21,7 +21,7 @@
                                 [
                                     'icone' => 'zmdi zmdi-calendar-note',
                                     'titulo' => $quantidade_ordens_semana,
-                                    'descricao' => 'na semana',
+                                    'descricao' => 'últimos 7 dias',
                                     'chart' => 'barra',
                                     'values' => $ordens_servico_semanas
                                 ], FALSE); ?>

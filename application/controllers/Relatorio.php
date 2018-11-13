@@ -697,6 +697,40 @@ private function valida_filtro($filtro){
 }
 
 
+public function count_os()
+{   
+    $response = new Response();
+    $filtro = $this->input->post();
+    $message = $this->valida_filtro($filtro);
+
+    if($message == "true")
+    {
+        $this->load->model('Ordem_Servico_model', 'ordem_servico_model');
+
+        $ordens_servicos = $this->ordem_servico_model->get_os_novo_relatorio($filtro);
+        $ordens_servicos_em_aberto = [];
+        foreach($ordens_servicos as $os)
+        {
+            if($os->situacao_atual_pk == '1')
+            {
+                $ordens_servicos_em_aberto[] = $os;
+            }
+
+        }
+        $ordens_servicos = $ordens_servicos_em_aberto;
+
+        $response->set_data(count($ordens_servicos));
+    }
+    else
+    {
+        $response->set_code(Response::BAD_REQUEST);
+        $response->set_data(['message' => $message]); 
+    }
+    $response->send();
+    return;
+}
+
+
 private function create_relatorio($filtro)
 {
 
@@ -958,6 +992,15 @@ private function create_relatorio($filtro)
                 {
                     $relatorio->status_string = 'Entregue';
                 }
+
+                if ($relatorio->data_entrega == null) 
+                {
+                    $relatorio->data_entrega = '-- --';
+                }
+                else
+                {
+                    $relatorio->data_entrega = date('d/m/Y H:i:s', strtotime($relatorio->data_entrega));
+                }
             }
         }
 
@@ -965,23 +1008,16 @@ private function create_relatorio($filtro)
             0 => base_url('assets/vendor/cropper/cropper.css'),
             1 => base_url('assets/vendor/input-image/input-image.css'),
             2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            3 => base_url('assets/css/modal_desativar.css'),
-            4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            3 => base_url('assets/css/modal_desativar.css')
         ));
 
         $this->session->set_flashdata('scripts', array(
             0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            3 => base_url('assets/vendor/cropper/cropper.js'),
-            4 => base_url('assets/vendor/input-image/input-image.js'),
-            5 => base_url('assets/vendor/datatables/datatables.min.js'),
-            6 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            7 => base_url('assets/js/masks.js'),
-            8 => base_url('assets/js/utils.js'),
-            9 => base_url('assets/js/constants.js'),
-            10 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            14 =>base_url('assets/js/dashboard/relatorio/home.js'),
+            2 => base_url('assets/js/utils.js'),
+            3 => base_url('assets/js/constants.js'),
+            4 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            5 =>base_url('assets/js/dashboard/relatorio/home.js')
         ));
 
         $this->load->helper('form');
@@ -1027,65 +1063,89 @@ private function create_relatorio($filtro)
         }
         else
         {
-            $ordens_servico = $this->relatorio_model->get_os_nao_verificadas($id_relatorio);
-
-            // Verifica se há OS não finalizadas
-            if ($ordens_servico !== false)
+            if (!$id_relatorio) 
             {
-                $this->load->model('Historico_model', 'historico_model');
+                $relatorios = $this->relatorio_model->get_objects(['relatorios.status' => 0]);
 
-                foreach ($ordens_servico as $os) 
+                if ($relatorios !== false) 
                 {
-
-                    // Para cada OS, é pego o último registro do histórico
-                    $hist = $this->historico_model->get_max_data_os($os->os_fk);
-
-                    // Se for em andamento, não foi finalizada, logo, deve ser inserido um novo histórico
-                    // a colocando em aberto novamente, informando que não foi finalizada no relatório
-                    if ($hist[0]->situacao_fk == '2') //2 é EM ANDAMENTO
+                    foreach ($relatorios as $r) 
                     {
-                       $return =  $this->historico_model->insert([
-                            'ordem_servico_fk' => $os->os_fk,
-                            'funcionario_fk' => $this->session->user['id_funcionario'],
-                            'situacao_fk' => '1',
-                            'historico_ordem_comentario' => 'Não foi feito no relatório'
-                        ]);
-
-                        // O seu registro é retirado do relatório
-                        //$this->relatorio_model->delete_relatorio_os($os->os_fk);
-                       //2 significa que não foi concluída.
-                       $this->relatorio_model->update_relatorios_os_verificada(
-                        ['os_fk' => $os->os_fk, 'os_verificada' => 0], 2
-                       ); 
-                        // Insere an tabela para controle das OS não concluidas no relatório
-                        // $this->relatorio_model->insert_os_nao_concluida($os->os_fk, $os->relatorio_fk);
+                        $this->restaurar_os_relatorio($r->relatorio_pk);
                     }
-                    // Caso esteja finalizada, seu status na tabela de relatorio_os é alterado para verificado
-                    else
-                    {
-                        $this->relatorio_model->update_relatorios_os_verificada(
-                            ['os_fk' => $os->os_fk, 'os_verificada' => 0], 1
-                        );
-                    }
-                    
-                    //após verificar todas as ordens, setamos o status do relatório para 1 para indicar que o relatório foi entregue.
-                    //tem que pegar o id do relatório da ordem, pq o usuário pode ter solicitado para restaurar as ordens de todos os relatórios.
-
-                    $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $os->relatorio_fk]);
                 }
             }
             else
             {
-                $response->set_code(Response::NOT_FOUND);
-                $response->send();
-                return;
+                $this->restaurar_os_relatorio($id_relatorio);
             }
-            
             $response->set_code(Response::SUCCESS);
         }
         $response->send();
     }
 
+
+    private function restaurar_os_relatorio($id_relatorio)
+    {
+        $this->load->model('Relatorio_model', 'relatorio_model');
+        $ordens_servico = $this->relatorio_model->get_os_nao_verificadas($id_relatorio);
+
+        // Verifica se há OS não finalizadas
+        if ($ordens_servico !== false)
+        {
+            $this->load->model('Historico_model', 'historico_model');
+            $completo = true;
+
+            foreach ($ordens_servico as $os) 
+            {
+                // Para cada OS, é pego o último registro do histórico
+                $hist = $this->historico_model->get_max_data_os($os->os_fk);
+
+                // Se for em andamento, não foi finalizada, logo, deve ser inserido um novo histórico
+                // a colocando em aberto novamente, informando que não foi finalizada no relatório
+                if ($hist[0]->situacao_fk == '2') //2 é EM ANDAMENTO
+                {
+                   $return =  $this->historico_model->insert([
+                        'ordem_servico_fk' => $os->os_fk,
+                        'funcionario_fk' => $this->session->user['id_funcionario'],
+                        'situacao_fk' => '1',
+                        'historico_ordem_comentario' => 'Não foi feito no relatório'
+                    ]);
+
+                    //2 significa que não foi concluída.
+                    $this->relatorio_model->update_relatorios_os_verificada(
+                        ['os_fk' => $os->os_fk, 'os_verificada' => 0], 2
+                    ); 
+
+                    $completo = false;
+                }
+                // Caso esteja finalizada, seu status na tabela de relatorio_os é alterado para verificado
+                else
+                {
+                    $this->relatorio_model->update_relatorios_os_verificada(
+                        ['os_fk' => $os->os_fk, 'os_verificada' => 0], 1
+                    );
+                }   
+            }
+            //após verificar todas as ordens, setamos o status do relatório para 1 ou 2 para indicar que o relatório foi entregue.
+            if ($completo) 
+            {
+                // Completo
+                $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $os->relatorio_fk]);
+            }
+            else
+            {
+                // Incompleto
+                $this->relatorio_model->update(['status' => 2], ['relatorio_pk' => $os->relatorio_fk]);
+            }
+
+            $this->relatorio_model->set_data_entrega($id_relatorio);
+        }
+        else
+        {
+            return;
+        }
+    }
 }
 
 ?>

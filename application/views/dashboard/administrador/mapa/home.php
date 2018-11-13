@@ -172,20 +172,19 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <table class="table hide">
+                    <table class="table hide" style="text-align: center;">
                         <thead>
-                            <th>Prioridade</th>
-                            <th>Procedência</th>
+                            <th>Código</th>
+                            <th>Descricao</th>
                             <th>Serviço</th>
                             <th>Setor</th>
                         </thead>
                         <tbody>
-                            <td id="v_prioridade"></td>
-                            <td id="v_procedencia"></td>
+                            <td id="v_codigo"></td>
+                            <td id="v_descricao"></td>
                             <td id="v_servico"></td>
                             <td id="v_setor"></td>
                         </tbody>
-                        <p id="v_descricao"></p>
                     </table>
                     <div align="center" class="center">
                         <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading" alt="Carregando">

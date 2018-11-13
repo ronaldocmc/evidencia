@@ -157,7 +157,7 @@ $('#filtrar').prop('disabled',false);
 
 function remove_data() {
     $("#v_descricao").html('');
-    $("#v_prioridade").html('');
+    $("#v_codigo").html('');
     $("#v_procedencia").html('');
     $("#v_setor").html('');
     $("#v_servico").html('');
@@ -189,12 +189,14 @@ function request_data(id, setor) {
         url: base_url + '/ordem_servico/json_especifico/' + id + '/' + 0,
         dataType: "json",
         success: function (response) {
+            console.log(response);
        
             $("#v_descricao").html(response.ordem.descricao);
-            $("#v_prioridade").html(response.ordem.prioridade);
-            $("#v_procedencia").html('App');
+            $("#v_codigo").html(response.ordem.codigo);
             $("#v_setor").html(setor);
             $("#v_servico").html(response.ordem.servico);
+
+            
 
             var html = "";
             var indicators = "";
@@ -222,22 +224,22 @@ function request_data(id, setor) {
             }
 
             $('#card_slider').html(html);
-
+            html = "";
             response.ordem.historico.map((historico, i) => {
 
                 if (historico.comentario == null) {
                     historico.comentario = "Nenhum comentário adicionado.";
                 }
                 if(historico.funcionario_foto != null){
-                    timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, historico.funcionario_foto, historico.situacao, reformatDate(historico.data));
+                    timeline += create_timeline(historico.comentario, historico.funcionario, base_url + '/assets/uploads/perfil_images/' + historico.funcionario_foto, historico.situacao, reformatDate(historico.data));
                 }else{
-                    timeline += create_timeline(historico.comentario, historico.foto, historico.funcionario, 'default.png', historico.situacao, reformatDate(historico.data));
+                    timeline += create_timeline(historico.comentario, historico.funcionario, base_url + '/assets/uploads/perfil_images/default.png', historico.situacao, reformatDate(historico.data));
                 }
                 if (historico.foto != null) {
-                    html += create_cards(historico.comentario, historico.foto, historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    html += create_cards(historico.comentario,  base_url + historico.foto.replace('./', '/'), historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                     active ="";
                 } else {
-                    html += create_cards(historico.comentario, './assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
+                    html += create_cards(historico.comentario,  base_url + '/assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
                     active ="";
                 }
 
@@ -253,11 +255,11 @@ function request_data(id, setor) {
 
 
 
-function create_timeline(comentario, src, funcionario, funcionario_foto, situacao, data) {
+function create_timeline(comentario, funcionario, funcionario_foto, situacao, data) {
     return '<div class="message-item">' +
     '<div class="message-inner">' +
     '<div class="message-head clearfix">' +
-    '<div class="avatar pull-left"><a href="#"><img class="message-foto-perfil" src="../assets/uploads/perfil_images/min/' + funcionario_foto + '"></a></div>' +
+    '<div class="avatar pull-left"><a href="#"><img class="message-foto-perfil" src="' + funcionario_foto + '"></a></div>' +
     '<div class="user-detail">' +
     '<h5 class="handle">' + funcionario + '</h5>' +
     '<div class="post-meta">' +
@@ -281,7 +283,7 @@ function create_cards(description, src, funcionario, situacao, data, active) {
 
     return '<div class="carousel-item col-md-4' + active + '">' +
     '<div class="card">' +
-    '<img class="card-img-top img-fluid" src="' + "." + src +'">'+
+    '<img class="card-img-top img-fluid" src="' + src +'">'+
     '<div class="card-body">' +
     '<h4 class="card-title">'+ situacao + '</h4>' +
     '<p class="card-text">'+ description +'</p>' +  

@@ -50,12 +50,11 @@
                                 <table class="table table-striped table-datatable">
                                     <thead>
                                         <tr>
-                                            <th>Relatório ID</th>
                                             <th>Funcionário</th>
-                                            <th>Função do Funcionário</th>
                                             <th>Quantidade</th>
                                             <th>Situação</th>
                                             <th>Data de Criação</th>
+                                            <th>Data de Entrega</th>
                                             <th>Detalhes</th>
                                         </tr>
                                     </thead>
@@ -66,13 +65,7 @@
                                             foreach ($relatorios as $key => $r): ?>
                                                <tr>
                                                    <td>
-                                                       <?=$r->relatorio_pk?>
-                                                   </td>
-                                                   <td>
                                                        <?=$r->pessoa_nome ?>
-                                                   </td>
-                                                   <td>
-                                                       <?=$r->funcao_nome?>
                                                    </td>
                                                    <td>
                                                        <?= $r->quantidade_os ?>
@@ -82,6 +75,9 @@
                                                    </td>
                                                    <td>
                                                        <?= $r->data_criacao ?>
+                                                    </td>
+                                                    <td>
+                                                       <?= $r->data_entrega ?>
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">

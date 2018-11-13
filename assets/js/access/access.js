@@ -5,23 +5,23 @@ const base_url = window.location .protocol + "//" + window.location.host + "/" +
 $(document).ready(function () {
 
   //Aplicando efeito nos elementos da área de login
-  $("#btn-login-large").on("mouseover", function () {
-    $("#avatar_id_large").css("background-color", "black");
-});
+//   $("#btn-login-large").on("mouseover", function () {
+//     $("#avatar_id_large").css("background-color", "black");
+// });
 
-  $("#btn-login-large").on("mouseout", function () {
-    $("#avatar_id_large").css("background-color", "#666");
-});
+//   $("#btn-login-large").on("mouseout", function () {
+//     $("#avatar_id_large").css("background-color", "#666");
+// });
 });
 
 //Aplicando efeito nos elementos da área de login modal
-$("#btn-login").on("mouseover", function () {
-  $("#avatar_id").css("background-color", "black");
-});
+// $("#btn-login").on("mouseover", function () {
+//   $("#avatar_id").css("background-color", "black");
+// });
 
-$("#btn-login").on("mouseout", function () {
-  $("#avatar_id").css("background-color", "#666");
-});
+// $("#btn-login").on("mouseout", function () {
+//   $("#avatar_id").css("background-color", "#666");
+// });
 
 
 //Ajustando o fechamento do modal quando a tela já está no tamanho padrão
@@ -31,7 +31,7 @@ $(window).on('resize', function () {
     $('#modal-acesso').modal('hide');
     $('#username_modal').val('');
     $('#password_modal').val('');
-};
+  };
 });
 
 

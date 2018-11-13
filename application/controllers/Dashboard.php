@@ -14,7 +14,169 @@ class Dashboard extends CRUD_Controller
     }
 
     public function index() {
+        //$this->load->model('funcionario_model');
+        $this->load->helper('date_helper');
 
+        $organizacao = $this->session->user['id_organizacao'];       
+
+        $this->load->model('dashboard_model');
+        $dados['primeiro_nome'] = $this->primeiro_nome($this->session->user['name_user']);
+
+        $dados['cards'] = $this->get_cards();
+
+
+        $this->session->set_flashdata('scripts',[
+            0 => base_url('assets/js/dashboard/dashboard/dashboard.js'),
+        ]);
+        load_view([
+            0 => [
+                'src'=>'dashboard/administrador/principal/dashboard',
+                'params' =>  $dados
+            ]
+        ],'administrador');
+    }
+
+    private function primeiro_nome($nome){
+        $array = explode(' ', $nome);
+        return $array[0];
+    }
+
+    private function get_cards() {
+
+        $cards = array();
+        $ordens_concluidas = $this->get_ordens_concluidas();
+        $revisores = $this->get_revisores();
+        $setores = $this->get_setores();
+
+        $cards[] = array(
+            'color' => 'green',
+            'title' => $this->get_ordens_hoje(),
+            'label' => 'novas',
+            'icon'  => 'fa-plus'
+        );
+
+        $cards[] = array(
+            'color' => 'orange',
+            'title' => $ordens_concluidas['porcentagem'],
+            'label' => 'concluídas',
+            'icon'  => 'fa-tasks',
+            'tooltip' => $ordens_concluidas['text']
+        );
+
+        $cards[] = array(
+            'color' => 'red',
+            'title' => $revisores['quantidade'],
+            'label' => 'revisores',
+            'icon'  => 'fa-users',
+            'tooltip' => $revisores['nomes']
+        );
+
+        $cards[] = array(
+            'color' => 'blue',
+            'title' => $setores['quantidade'],
+            'label' => 'setores',
+            'icon'  => 'fa-map-marker-alt',
+            'tooltip' => $setores['nomes']
+        );
+
+        return $cards;
+
+    }
+
+    private function get_setores() {
+        $this->load->model('dashboard_model', 'model');
+        $response = array(
+            'quantidade' => '',
+            'nomes' => ''
+        );
+
+        $setores = $this->model->get_setores_do_dia();
+        $response['quantidade'] = count($setores);
+        $response['nomes'] = $this->get_string($setores, 'explode', ' ', 1);
+
+        return $response;
+    }
+
+    private function get_revisores() {
+        $this->load->model('dashboard_model', 'model');
+
+        $response = array(
+            'quantidade' => '',
+            'nomes' => ''
+        );
+
+        $revisores = $this->model->get_revisores_do_dia();
+        $response['quantidade'] = count($revisores);
+        $response['nomes'] = $this->get_string($revisores, 'explode');
+
+        return $response;
+    }
+
+    private function get_string($array, $method = NULL, $condition = ' ', $piece = 0){
+       $string = '';
+
+       for($i = 0; $i < count($array); $i++){
+        if($i == 0){ //se for o primeiro registro
+        }else if($i == count($array) -1){ //se for o ultimo registro:
+            $string.= ' e ';
+        }else{ // se tiver no meio
+            $string.= ', ';
+        }
+
+        if($method == NULL){
+            $string.= $array[$i]->nome;
+        } else {
+            if($method == 'explode') {
+               $explode_array = explode($condition, $array[$i]->nome);
+
+               $string.= $explode_array[$piece]; 
+            }
+        }
+    }
+
+        return $string;
+    }
+
+    private function get_ordens_concluidas(){
+        $this->load->model('dashboard_model', 'model');
+
+        $response = array(
+            'porcentagem' => '', //será retornado como string
+            'text' => ''
+        );
+
+        $em_andamento = $this->model->get_ordens_hoje_em_andamento(); 
+        $finalizadas  = $this->model->get_ordens_hoje_finalizadas();
+
+        
+
+        $response['porcentagem'] = $this->porcentagem($finalizadas,$em_andamento).' %';
+        $response['text'] = $finalizadas.'/'.$em_andamento.' (concluídas/total)';
+
+        return $response;
+    }
+
+    private function porcentagem($dividendo, $divisor) {
+        if($divisor == 0){
+            return 0;
+        } else {
+            $porcentagem = $dividendo/$divisor; //intervalo de 0 a 1
+
+            $porcentagem = round($porcentagem, 4);
+
+            $porcentagem = $porcentagem * 100;
+            
+            $porcentagem = $porcentagem.'';
+            $porcentagem = str_replace('.', ',', $porcentagem);
+
+            return $porcentagem;
+        }
+    }
+
+    private function get_ordens_hoje(){
+        $this->load->model('dashboard_model', 'model');
+
+        return $this->model->get_ordens_hoje();
     }
 
 
@@ -57,11 +219,14 @@ class Dashboard extends CRUD_Controller
 
         $organizacao = $this->session->user['id_organizacao'];       
 
-        //$dados = null;
-
         $this->load->model('dashboard_model');
 
-        // $this->db->trans_start();
+
+        $current_month = date("m");
+        $current_year = date("Y");
+
+        $ordens_por_mes = $this->dashboard_model->get_ordens_ano("01.".$current_month.".".$current_year, "31.".$current_month.".".$current_year,$organizacao);
+
         
         $ordens_por_semana = $this->dashboard_model->get_ordens_semana($organizacao);
         
@@ -71,21 +236,19 @@ class Dashboard extends CRUD_Controller
 
         $ordens_por_tipo_semana = $this->dashboard_model->get_ordens_tipo_semana($organizacao);
 
-        $ordens_por_mes = $this->dashboard_model->get_ordens_ano("01.01.2018", "31.12.2018",$organizacao);
-
+        
         $ordens_finalizadas = $this->dashboard_model->get_ordens_hoje_finalizadas();
         $quantidade_de_ordens_finalizadas = $ordens_finalizadas[0]->count;
 
 
         $hoje = $this->dashboard_model->get_ordens_hoje();
-        $quantidade_de_ordens_de_hoje = $hoje[0]->count;
+        $quantidade_de_ordens_de_hoje = $hoje;
 
-        $quantidade_de_ordens_abertas = $quantidade_de_ordens_de_hoje - $quantidade_de_ordens_finalizadas;
+        //$quantidade_de_ordens_abertas = $quantidade_de_ordens_de_hoje - $quantidade_de_ordens_finalizadas;
+        $quantidade_de_ordens_abertas = $this->dashboard_model->get_ordens_hoje();
         
         // $ultimas_ordens = $this->dashboard_model->get_ultimas_ordens($organizacao);
         
-        // $this->db->trans_complete();
-
         $quantidade_ordens_mes = $ordens_por_mes['total'];
         $quantidade_ordens_semana = $ordens_por_semana['total'];
 
@@ -132,7 +295,7 @@ class Dashboard extends CRUD_Controller
         $dados['quantidade_ordens_tipo'] = $quantidade_ordens_tipo;
 
         $dados['hoje'] = array(
-            "finalizados" => $quantidade_de_ordens_finalizadas,
+            "finalizados" => 0,
             "novas" => $quantidade_de_ordens_abertas
         );
         

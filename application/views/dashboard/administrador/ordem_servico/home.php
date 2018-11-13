@@ -1,14 +1,5 @@
-  <!--<script type="text/javascript">
-    async function pre_loader_show(){
-      $('.inner').show();
-      // $('#preloader .inner').delay(1000).fadeIn();
-      $('#preloader .inner').delay(10).fadeIn();
-      $('#preloader').delay(5).fadeIn('slow');
-  }
 
-  pre_loader_show();
-</script>
-MAIN CONTENT-->
+ <!--MAIN CONTENT-->
 <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
@@ -149,6 +140,7 @@ MAIN CONTENT-->
                 </div>
             </div>
         </div>
+
         <!-- MODAL NOVA ORDEM SERVIÇO -->
         <div class="modal fade" id="ce_ordem_servico">
             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -412,163 +404,143 @@ MAIN CONTENT-->
 </div>
 <!-- FIM MODAL NOVA ORDEM/ALTERAR ORDEM-->
 
+
 <!-- MODAL ADICIONAR SITUAÇÃO ATUAL ORDEM SERVIÇO -->
-<div class="modal fade" id="atividade">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Adicionar Situação da Ordem de serviço</h4>
-                <h4 class="modal-title 2"></h4> 
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <table class="table hide">
-                        <thead>
-                            <th>Prioridade</th>
-                            <th>Procedência</th>
-                            <th>Serviço</th>
-                            <th>Setor</th>
-                        </thead>
-                        <tbody>
-                            <td id="ov_prioridade"></td>
-                            <td id="ov_procedencia"></td>
-                            <td id="ov_servico"></td>
-                            <td id="ov_setor"></td>
-                        </tbody>
-                    </table>
-                    <div class=card-group>
-                        <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                            <div class="card-header">
-                                <strong>Código:</strong>
+    <div class="modal fade" id="atividade">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Adicionar Situação da Ordem de serviço</h4>
+                    <h4 class="modal-title 2"></h4> 
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
 
-                            </div>
-                            <div class="card-body card-block">
-                                <p id="ov_codigo"></p>
-                            </div>
-                        </div>
-                        <div class = "card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                            <div class="card-header">
-                                <strong>Descrição:</strong>
-                                <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="obtn-foto-historico" style="display:none;">
-                                    <i class="fa fa-camera" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                            <div class="card-body card-block" id="oendereco_historico">
-                               <p id="ov_descricao"><p>
-                               </div>
-                           </div>
-                           <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                            <div class="card-header">
-                                <strong>Endereço:</strong>
-                                <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="obtn-mapa-historico" style="display:none;">
-                                    <i class="fa fa-map-marker"></i>
-                                </button>
-                            </div>
-                            <div class="card-body card-block" id="oendereco_historico">
-                                <p id="ov_endereco"></p>
-                            </div>
+                        <div align="center" class="center">
+                            <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="ov_loading" alt="Carregando">
                         </div>
 
-                    </div>
-                    <div align="center" class="center">
-                        <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="ov_loading" alt="Carregando">
-                    </div>
-                    <div class="col-12 col-md-12" id="omapa_historico" style="margin-top: 20px; padding-top: 10px;">
-                        <div id="omap2"></div>
-                    </div>
-                    <!-- <div class="container-fluid" id="card_slider_ordem" style="margin-top: 50px;"></div> -->
-                    <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
-                    </div>
-                    <div class= "modal-footer">
-                        <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-atividade" onclick="send_data_historico()">
-                            <i class="fa fa-dot-circle-o"></i>
-                            Salvar
-                        </button>
-                        <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-atividade" data-dismiss="modal">
-                            Fechar
-                        </button>
-                        <input type="hidden" id="historico_pk" value="" name="historico_pk">
+                        <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
+                        </div>
+
+                        <div class= "modal-footer">
+                            <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;" id="btn-salvar-atividade" onclick="send_data_historico()">
+                                <i class="fa fa-dot-circle-o"></i>
+                                Salvar
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-atividade" data-dismiss="modal">
+                                Fechar
+                            </button>
+                            <input type="hidden" id="historico_pk" value="" name="historico_pk">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 
 <!-- MODAL HISTÓRICO ORDEM SERVIÇO -->
-<div class="modal fade" id="ce_historico_servico">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Histórico da Ordem de serviço</h4>
-                <h4 class="modal-title 2"></h4> 
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <table class="table hide">
-                        <thead>
-                            <th>Prioridade</th>
-                            <th>Procedência</th>
-                            <th>Serviço</th>
-                            <th>Setor</th>
-                        </thead>
-                        <tbody>
-                            <td id="v_prioridade"></td>
-                            <td id="v_procedencia"></td>
-                            <td id="v_servico"></td>
-                            <td id="v_setor"></td>
-                        </tbody>
-                    </table>
-<!--                         <div class=card-group>
-                            <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Código:</strong>
-                                    
-                                </div>
-                                <div class="card-body card-block">
-                                    <p id="v_codigo"></p>
-                                </div>
-                            </div>
-                            <div class = "card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Descrição:</strong>
-                                    <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="btn-foto-historico">
-                                        <i class="fa fa-camera" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body card-block" id="endereco_historico">
-                                   <p id="v_descricao"><p>
-                                   </div>
-                               </div>
-                               <div class="card col-12 col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                <div class="card-header">
-                                    <strong>Endereço:</strong>
-                                    <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="btn-mapa-historico">
-                                        <i class="fa fa-map-marker"></i>
-                                    </button>
-                                </div>
-                                <div class="card-body card-block" id="endereco_historico">
-                                    <p id="v_endereco"></p>
+    <div class="modal fade" id="ce_historico_servico">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Histórico da Ordem de serviço</h4>
+                    <h4 class="modal-title 2"></h4> 
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="row pb-2" style="text-align: center;">
+                            <div class="col-12">
+                                <div class="card-group">
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Código:</strong>
+                                            
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="v_codigo"></p>
+                                        </div>
+                                    </div>
+                                    <div class = "card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Descrição:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                           <p id="v_descricao"><p>
+                                        </div>
+                                    </div>
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Procedência:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="v_procedencia"></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div> -->
-                        <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="btn-mapa-historico"></button>
-                        <button type="button" class="btn btn-sm btn-primary btn_foto pull-right" id="btn-foto-historico">
-                            <i class="fa fa-camera" aria-hidden="true"></i>
-                        </button>
+                        </div>
+                        <div class="row pb-2" style="text-align: center;">
+                            <div class="col-12">
+                                <div class="card-group">
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Prioridade:</strong>
+                                            
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="v_prioridade"></p>
+                                        </div>
+                                    </div>
+                                    <div class = "card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Servico:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                           <p id="v_servico"><p>
+                                        </div>
+                                    </div>
+                                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Setor:</strong>
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="v_setor"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pb-2" style="text-align: center;">
+                            <div class="col-12">
+                                <div class="card-group">
+                                    <div class="card" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <div class="card-header">
+                                            <strong>Endereço:</strong>
+                                            <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right" id="btn-mapa-historico">
+                                                <i class="fa fa-map-marker"></i>
+                                            </button>
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <p id="v_endereco"></p>
+                                        </div>
+                                        <div class="col-12 col-md-12 pb-1" id="mapa_historico">
+                                            <div id="map2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div align="center" class="center">
                             <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading" alt="Carregando">
                         </div>
-                        <div class="col-12 col-md-12" id="mapa_historico" style="margin-top: 20px; padding-top: 10px;">
-                            <div id="map2"></div>
-                        </div>
-                        <div class="col-12 col-md-12" style="margin-top: 20px; padding-top: 10px;">
-                            <div class="container-fluid" id="card_slider_historico"></div>
-                        </div>
-                        <div class="qa-message-list py-5" id="timeline" style="margin-top: 20px; padding-top: 5px;">
+                        <div class="container-fluid" id="card_slider_historico">
+                        </div>  
+                        <div class="qa-message-list" id="timeline" style="padding-top: 5px;">
                         </div>
                         <div class= "modal-footer">
                             <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-historico" data-dismiss="modal">
@@ -581,8 +553,9 @@ MAIN CONTENT-->
             </div>
         </div>
     </div>
+<!-- FECHA MODAL HISTÓRICO -->
 
-    <!-- MODAL DELETA TIPO SERVICO -->
+    <!-- modal histórico -->
     <div class="modal fade" id="d_servico">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -616,6 +589,7 @@ MAIN CONTENT-->
                     </div>
                 </div>
             </div>
+            <!-- FIM MODAL HISTÓRICO -->
 
             <!--MODAL REATIVA tipos_servicos -->
             <div class="modal fade" id="r_servico">
@@ -650,7 +624,7 @@ MAIN CONTENT-->
                         </div>
                     </div>
                 </div> 
-
+                <!-- FIM MODAL REATIVA -->
 
                 <script type="text/javascript">
                     var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
@@ -664,6 +638,5 @@ MAIN CONTENT-->
 
                 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
                 </script>
-
 
 <!-- END MAIN CONTENT

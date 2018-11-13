@@ -56,7 +56,7 @@ class Ordem_ServicoWS extends MY_Controller
 		$data_historico = [
 			'ordem_servico_fk' => $obj->ordem_servico_fk,
 			'historico_ordem_comentario' => $obj->comentario,
-			'funcionario_fk' => get('id_funcionario', $headers['token']),
+			'funcionario_fk' => get('id_funcionario', $headers['Token']),
 			'situacao_fk'	=> $obj->situacao_fk,
 		];	            		
 
@@ -174,7 +174,7 @@ class Ordem_ServicoWS extends MY_Controller
 				$return_coordenada = $this->ordem_servico_model->insert_coordenada($data_coordenadas);
 				$abreviacao = $this->ordem_servico_model->get_abreviacoes($data_ordem['servico_fk']);
 
-				$proximo_cod = $this->ordem_servico_model->get_cont_and_update(get('id_empresa', $headers['token']));
+				$proximo_cod = $this->ordem_servico_model->get_cont_and_update(get('id_empresa', $headers['Token']));
 				$abreviacao .= date('Y') . "/" . $proximo_cod;
 
 				// Configuração do horário para pegar o ano e gerar o código da OS
@@ -197,7 +197,7 @@ class Ordem_ServicoWS extends MY_Controller
             	{
 					
 					$situacao = $this->servico_model->get_current(['servico_pk' => $data_ordem['servico_fk']]);								
-					$id_funcionario = $this->funcionario_model->get(['funcionarios.pessoa_fk' => get('id_pessoa', $headers['token'])]);
+					$id_funcionario = $this->funcionario_model->get(['funcionarios.pessoa_fk' => get('id_pessoa', $headers['Token'])]);
 
             		$data_historico = [
             			'ordem_servico_fk' => $return_ordem['id'],
@@ -355,7 +355,7 @@ class Ordem_ServicoWS extends MY_Controller
 	public function upload_img($id_ordem,$base64_image)
 	{
 		$path = "./assets/uploads/imagens_situacoes/";
-		$name = hash(ALGORITHM_HASH, $id_ordem . uniqid(rand(), true));
+		$name = hash(ALGORITHM_HASH, $id_ordem . uniqid(rand(), true)).".jpg";
 
 		list($type, $base64_image) = explode(';', $base64_image);
 		list(, $base64_image)      = explode(',', $base64_image);
@@ -380,8 +380,9 @@ class Ordem_ServicoWS extends MY_Controller
 		// Pega os headers para acessar o token
 		$obj = apache_request_headers();
 
+
 		// Decripta o token
-		$empresa = get('id_empresa', $obj['token']);
+		$empresa = get('id_empresa', $obj['Token']);
 		
 		$where['departamentos.organizacao_fk'] = $empresa;
 
@@ -401,8 +402,8 @@ class Ordem_ServicoWS extends MY_Controller
 		// Caso contrário, chama um stored procedure que pega todas com o histórico aberto ou em andamento
 		else
 		{
-			$where['id_organizacao'] = get('id_empresa', $obj['token']);
-			$where['id_funcionario'] = get('id_funcionario', $obj['token']);
+			$where['id_organizacao'] = get('id_empresa', $obj['Token']);
+			$where['id_funcionario'] = get('id_funcionario', $obj['Token']);
 
 			$ordens_servico = $this->ordem_servico_model->getJsonForMobile($where);
 

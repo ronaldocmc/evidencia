@@ -224,7 +224,7 @@
                              </ul> -->
                          </div>
 
-                         <div id="loading-departamento-deactivate">
+                        <div id="loading-departamento-deactivate">
                             <div align="center" class="center">
                                 <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading" alt="Carregando">
                             </div>

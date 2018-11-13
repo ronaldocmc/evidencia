@@ -74,7 +74,7 @@
                     </form>
                     <div class="col-md-12">
                         <div class="row pt-5 d-flex justify-content-center">
-                            <button type="button" id="gerar_pdf" class="btn au-btn btn-primary form-control"><i class="fa fa-dot-circle-o"></i> Gerar Relatório
+                            <button type="button" id="gerar_relatorio" class="btn au-btn btn-primary form-control" data-toggle="modal" data-target="#confirmar_criacao"><i class="fa fa-dot-circle-o"></i> Gerar Relatório
                             </button>
                         </div>
                     </div>
@@ -87,11 +87,34 @@
                 <div class="copyright">
                     <p>Copyright © 2018 Colorlib. All rights reserved. Template by
                         <a href="https://colorlib.com">Colorlib</a>.</p>
-                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmar_criacao" >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                     <h4 class="modal-title">Confirmar Criação</h4>
+                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                         <div class="form-group">
+                             <b><p id="p_qtd"></p></b>
+                         </div>
+                         <div class="form-group">
+                            <button type="button" class="btn au-btn btn-primary form-control" id="confirmar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Confirmar</button>
+                         </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 

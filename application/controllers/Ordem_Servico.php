@@ -91,6 +91,7 @@ class Ordem_Servico extends CRUD_Controller {
 			4 => base_url('assets/vendor/cropper/cropper.css'),
 			5 => base_url('assets/vendor/input-image/input-image.css'),
 			6 => base_url('assets/css/timeline.css'),
+			7 => base_url('assets/css/style_card.css')
 		]);
 
 		//Carregando arquivos SCRIPT no flashdata da session para as views 
@@ -260,7 +261,7 @@ class Ordem_Servico extends CRUD_Controller {
 	{	
     	//Definindo a pasta e o nome da imagem
 		$path = "./assets/uploads/imagens_situacoes/";
-		$name = hash(ALGORITHM_HASH, $id_ordem . uniqid(rand(), true));
+		$name = hash(ALGORITHM_HASH, $id_ordem . uniqid(rand(), true)).".jpg";
 
         //Recebemos uma imagem em base 64, portanto e necessário remover o cabeçalho dela. 
 		list($type, $base64_image) = explode(';', $base64_image);
