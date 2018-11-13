@@ -157,7 +157,7 @@ $('#filtrar').prop('disabled',false);
 
 function remove_data() {
     $("#v_descricao").html('');
-    $("#v_prioridade").html('');
+    $("#v_codigo").html('');
     $("#v_procedencia").html('');
     $("#v_setor").html('');
     $("#v_servico").html('');
@@ -189,9 +189,10 @@ function request_data(id, setor) {
         url: base_url + '/ordem_servico/json_especifico/' + id + '/' + 0,
         dataType: "json",
         success: function (response) {
+            console.log(response);
        
             $("#v_descricao").html(response.ordem.descricao);
-            $("#v_prioridade").html(response.ordem.prioridade);
+            $("#v_codigo").html(response.ordem.codigo);
             $("#v_setor").html(setor);
             $("#v_servico").html(response.ordem.servico);
 

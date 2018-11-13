@@ -656,7 +656,7 @@ get_historico = (id) =>
                 if(historico.funcionario_foto == null){
                     timeline += create_timeline(historico.comentario, base_url + '/assets/uploads/perfil_images/default.png', historico.funcionario, historico.situacao, reformatDate(historico.data));
                 } else {
-                    timeline += create_timeline(historico.comentario, base_url + historico.funcionario_foto.replace('./', '/'), historico.funcionario, historico.situacao, reformatDate(historico.data));
+                    timeline += create_timeline(historico.comentario, base_url + '/assets/uploads/perfil_images/' + historico.funcionario_foto, historico.funcionario, historico.situacao, reformatDate(historico.data));
                 }
 
                 if (historico.foto != null) {

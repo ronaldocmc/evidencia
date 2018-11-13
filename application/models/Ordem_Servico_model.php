@@ -171,6 +171,7 @@ class Ordem_Servico_model extends CI_Model {
 
     public function getEspecifico($where = NULL){
         $this->db->select('
+        ordens_servicos.ordem_servico_cod AS codigo,
         ordens_servicos.ordem_servico_pk,
         ordens_servicos.ordem_servico_desc AS descricao,
         servicos.servico_nome AS servico,
