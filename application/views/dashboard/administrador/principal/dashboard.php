@@ -39,13 +39,13 @@ tbody {
 	font-size: 20pt;
 }
 
-.fas {
+.fa {
     -webkit-transition: 0.6s ease-out;
     -moz-transition:  0.6s ease-out;
     transition:  0.6s ease-out;
 }
 
-.fas:hover {
+.fa:hover {
 	-webkit-transform: rotateZ(720deg);
 	-moz-transform: rotateZ(720deg);
 	transform: rotateZ(720deg);
@@ -122,7 +122,7 @@ tbody {
 							<div class="geral" onclick="window.location = '<?= base_url('ordem_servico') ?>';">
 								<div class="bag">
 									<div class="icones color-blue">
-										<i class="fas fa-thumbtack"></i>
+										<i class="fa fas fa-thumbtack"></i>
 									</div>
 									<div class="text">
 										<h2>nova ordem</h2>
@@ -138,7 +138,7 @@ tbody {
 							<div class="geral" onclick="window.location = '<?= base_url('relatorio/novo_relatorio') ?>';">
 								<div class="bag">
 									<div class="icones color-orange">
-										<i class="fas fa-tasks"></i>
+										<i class="fa fas fa-tasks"></i>
 									</div>
 									<div class="text">
 										<h2>novo relatório</h2>
@@ -153,7 +153,7 @@ tbody {
 							<div class="geral" onclick="window.location = '<?= base_url('relatorio/mapa') ?>';">
 								<div class="bag">
 									<div class="icones color-red">
-										<i class="fas fa-map-marker-alt"></i>
+										<i class="fa fas fa-map-marker-alt"></i>
 									</div>
 									<div class="text">
 										<h2>mapa</h2>
@@ -169,7 +169,7 @@ tbody {
 							<div class="geral" onclick="alert('REFRESH');">
 								<div class="bag">
 									<div class="icones color-green">
-										<i class="fas fa-refresh"></i>
+										<i class="fa fas fa-refresh"></i>
 									</div>
 									<div class="text">
 										<h2>atualizar</h2>
