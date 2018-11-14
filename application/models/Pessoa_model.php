@@ -69,7 +69,7 @@ class Pessoa_model extends CI_Model {
      */
 
     public function update_contato(Array $data_contato, $where){
-        $success = $this->db->update('contatos', $data_contato);
+        $success = $this->db->update('contatos', $data_contato, $where);
         return $success; 
     }
 

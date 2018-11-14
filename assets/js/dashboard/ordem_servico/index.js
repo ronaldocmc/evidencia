@@ -861,7 +861,7 @@ function create_timeline(comentario, src, funcionario, situacao, data) {
 function create_cards(description, src, funcionario, situacao, data, active) {
 
     return '<div class="carousel-item' + active + ' col-md-4">' +
-    '<div class="card">' +
+    '<div class="card historico">' +
     '<img class="card-img-top img-fluid" src="'+ src +'">'+
     '<div class="card-body">' +
     '<h4 class="card-title">'+ situacao + '</h4>' +
@@ -1038,7 +1038,6 @@ send = (imagem) =>
   formData.append('abreviacao', get_abreviacao($('#servico_pk option:selected').val(), $('#tipo_servico option:selected').val()));
   formData.append('img', imagem);
 
-  console.log(formData);
   // procedencia
   var URL = ($('#ordem_servico_pk').val() == "") ? base_url + '/ordem_servico/insert' : base_url + '/ordem_servico/update_os';
   var ab, data_criacao; 
@@ -1055,7 +1054,7 @@ send = (imagem) =>
       contentType: false,
       success: function (response){
         btn_ativar($('.submit'));
-        console.log(response);
+        
         if (response.code == 400) {
           show_errors(response);
           alerts('failed', response.message, JSON.stringify(response.data));
@@ -1083,7 +1082,7 @@ send = (imagem) =>
       }
       else if(response.code == 200)
       { 
-        console.log(response);
+        // console.log(response);
 
         if ($('#ordem_servico_pk').val() != ""){
             cod = ordens_servico[posicao_selecionada]['ordem_servico_cod'];
@@ -1093,7 +1092,7 @@ send = (imagem) =>
             data_criacao = response.data.data_criacao;
         } 
 
-        console.log(cod);
+        // console.log(cod);
 
         os =
         {
@@ -1232,7 +1231,7 @@ send = (imagem) =>
 
         $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
         posicao_selecionada = $(this).val();
-        console.log(posicao_selecionada);
+        // console.log(posicao_selecionada);
 
         // console.log("PK:" + ordens_servico[$(this).val()]['ordem_servico_pk']);
 
@@ -1348,7 +1347,7 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
 
 
     //Função que envia uma requisição ajax com os dados para desativar uma ordem
-    $(document).on('click', '#btn-desativar', function (event){
+    $(document).on('click', '#btn-desativar', function (event){f
         var data;
         btn_load($('#btn-desativar'));
         if(is_superusuario){
