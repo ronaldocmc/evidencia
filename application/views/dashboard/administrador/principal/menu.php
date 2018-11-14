@@ -192,6 +192,16 @@
 
                         <?php endif;?>
                     </ul>
+                     <div style="margin-top: 50px !important;">
+                        <a href="#">
+                            <img class="logo_parceiros" src="<?php echo base_url('assets/images/icon/maps-logo.png') ?>" alt="Evidência" />
+                        </a>
+                    </div>
+                    <div style="margin-top: 15px !important;">
+                        <a href="#">
+                            <img  class="logo_parceiros" src="<?php echo base_url('assets/images/icon/certified microsoft.png') ?>" alt="Evidência" />
+                        </a>
+                    </div>
                 </nav>
             </div>
         </aside>
