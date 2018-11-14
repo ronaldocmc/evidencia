@@ -12,6 +12,7 @@ class Ordem_Servico extends CRUD_Controller {
 
 	private $localizacao;
 	public $response; 
+	public $pessoa; 
 
 	function __construct() 
 	{
@@ -25,6 +26,7 @@ class Ordem_Servico extends CRUD_Controller {
 		$this->load->model('Procedencia_model', 'procedencia_model');
 		$this->load->model('Setor_model', 'setor_model');
 		$this->load->model('Departamento_model', 'departamento_model');
+		$this->load->model('pessoa_model');
 		$this->load->library('upload');
 		$this->load->model('Tipo_Servico_model', 'tipo_servico_model');
 		$this->load->helper('form');
@@ -38,6 +40,8 @@ class Ordem_Servico extends CRUD_Controller {
 		$ordens_servico = $this->ordem_servico_model->getHome([
 			'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
 		]);
+
+		// print_r($ordens_servico); die();
 
 		foreach ($ordens_servico as $os) 
 		{
@@ -71,11 +75,11 @@ class Ordem_Servico extends CRUD_Controller {
 
 		//Criando um array de prodecencias de serviços (Interno/Externo) com dados necessário a serem exibidos na view index
 		$procedencias = $this->procedencia_model->get(['procedencias.organizacao_fk' => $this->session->user['id_organizacao']
-		]);
+	]);
 
 		//Criando um array de setores (A, B, C, D) com dados necessário a serem exibidos na view index
 		$setores = $this->setor_model->get(['setores.organizacao_fk' => $this->session->user['id_organizacao']
-		]);
+	]);
 
 		//Carregando arquivos CSS no flashdata da session para as views 
 		$this->session->set_flashdata('css',[
@@ -215,7 +219,7 @@ class Ordem_Servico extends CRUD_Controller {
 			'servico_fk', 
 			'servico',
 			'trim|required|is_natural_no_zero'
-		);  	
+		);
 	}
 
 
@@ -361,7 +365,7 @@ class Ordem_Servico extends CRUD_Controller {
 
 	//Função que chama a função de inserção de imagem relacionando-a com a situação atual. 
 	public function insert_imagem_situacao($return_ordem, $return_historico, $flag, $data_local=NULL, $cod_os=NULL, 
-		$endereco_os=NULL)
+		$endereco_os=NULL, $populacao = NULL)
 	{
 	    //Se o usuário enviou, então realizamos o upload
 		$file = $this->upload_img($return_ordem['id'], $this->input->post('img'));
@@ -387,6 +391,7 @@ class Ordem_Servico extends CRUD_Controller {
 					'historico_ordem_pk' => $return_historico['id'],
 					'ordem_servico_cod' => $cod_os,
 					'local_pk' => $data_local['local_fk'],
+					'populacao_os' => $populacao,
 					'data_criacao' => date('d/m/Y h:i:s'),
 					'endereco_os' => $endereco_os
 				]);
@@ -412,6 +417,7 @@ class Ordem_Servico extends CRUD_Controller {
 					'ordem_servico_pk' => $return_ordem['id'],
 					'historico_ordem_pk' => $return_historico['id'],
 					'local_fk' => $data_local['local_fk'],
+					'populacao_os' => $populacao,
 					'ordem_servico_cod' => $cod_os,
 					'data_criacao' => date('d/m/Y h:i:s'),
 					'endereco_os' => $endereco_os
@@ -518,12 +524,102 @@ class Ordem_Servico extends CRUD_Controller {
 	            		'ordem_servico_cod' => $codigo_os
 	            	];
 
+	            	$return_pessoa = [
+	            		'pessoa_pk' => null,
+	            		'pessoa' => false,
+	            		'contato' => false
+	            	];
+
+	            	 // var_dump($data_ordem); 
+
+	            	if($data_ordem['procedencia'] == "2"){
+
+	            		//Padronizando dados para inserir cidadão
+	            		$data_pessoa = [
+	            			'pessoa_nome' => $data_ordem['pessoa_nome'],
+	            			'pessoa_cpf' => $data_ordem['pessoa_cpf'],
+	            			'pessoas_status' => 1,
+	            		];
+
+	            			//Se o usuário não passou o cpf, setamos como NULL
+	            		if($data_ordem['pessoa_cpf'] == ""){
+	            			$data_pessoa['pessoa_cpf'] = NULL;
+	            		}
+
+	            			//Padronizando dados de contato
+	            		$data_contato = [
+	            			'contato_cel' => $data_ordem['contato_cel'],
+	            			'contato_email' => $data_ordem['contato_email'],
+	            			'contato_tel' => $data_ordem['contato_tel'],
+	            		];
+
+	            		//Verificando se esses dados realmente foram enviados, caso contrário serão nulos. 
+	            		if($data_contato['contato_email'] == ""){
+	            			$data_contato['contato_email'] = NULL;
+	            		}
+
+	            		if($data_contato['contato_tel'] == ""){
+	            			$data_contato['contato_tel'] = NULL;
+	            		}
+
+	            		if($data_contato['contato_cel'] == ""){
+	            			$data_contato['contato_cel'] = NULL;
+	            		}
+
+
+	            		//Realizando a inserção do cidadão
+	            		$return_pessoa = $this->pessoa_model->insert($data_pessoa, $data_contato);
+
+	            		//Se o cidadão já está cadastrado no nosso banco de dados então iremos busca-lo pessoa cpf
+	            		if($return_pessoa['db_error']['code'] == 1062){
+
+	            			$get_pessoa = $this->pessoa_model->get(['pessoa_cpf' => $data_ordem['pessoa_cpf']]);
+
+	            			$data_update = null; 
+
+	            			//Como já possuimos dados do cidadão no banco, caso ele tenha enviado novas informações, 
+	            			//devemos realizar um update, visando não perder o que já estava no banco.
+	            			if($data_contato['contato_email'] !== NULL){
+	            				$data_update['contato_email'] = $data_contato['contato_email'];
+	            			}
+
+	            			if($data_contato['contato_tel'] !== NULL){
+	            				$data_update['contato_tel'] = $data_contato['contato_tel'];
+	            			}
+
+	            			if($data_contato['contato_cel'] !== NULL){
+	            				$data_update['contato_cel'] = $data_contato['contato_cel'];
+	            			}
+
+	            			$return_update = $this->pessoa_model->update_contato($data_update, ['pessoa_fk' => $get_pessoa->pessoa_pk]);
+
+	          				//Aplicando o id resultante no return_pessoa
+	            			$return_pessoa['pessoa_pk'] = $get_pessoa->pessoa_pk;
+	            		}
+	            	}
+
+
 	            	//Realizando a inserção da nova ordem de serviço no banco de dados 
 	            	$return_ordem = $this->ordem_servico_model->insert_os($data_ordem_servico);
 
+	            	$return_populacao = null;
 	            	//Se a inserção foi bem sucedida, prosseguimos
 	            	if($return_ordem['db_error']['code'] == 0)
 	            	{	
+
+	            		if($return_pessoa['pessoa_pk'] !== NULL){
+
+							//Padronizando dados para vincular cidadão a ordem
+	            			$data_populacao_os = [
+	            				'pessoa_fk' =>	$return_pessoa['pessoa_pk'],
+	            				'ordem_servico_fk' => $return_ordem['id']
+
+	            			];
+
+	            			$return_populacao = $this->ordem_servico_model->insert_os_populacao($data_populacao_os);
+	            		}
+
+	            		
 	            		//Para inserir o histórico dessa nova ordem de serviço, é necessário obter a situação padrão do respectivo serviço 
 	            		$situacao = $this->servico_model->get_current(['servico_pk' => $data_ordem['servico_fk']]);
 
@@ -536,7 +632,7 @@ class Ordem_Servico extends CRUD_Controller {
 	            			'ordem_servico_fk' => $return_ordem['id'],
 	            			'funcionario_fk' => $id_funcionario[0]->funcionario_pk,
 	            			'situacao_fk'	=> $situacao->situacao_padrao_fk,
-	            			'historico_ordem_comentario' => $data_ordem['descricao']
+	            			'historico_ordem_comentario' => $data_ordem['descricao'],
 	            		];
 
 	            		//Realizando a inserção do histórico no banco de dados
@@ -550,7 +646,7 @@ class Ordem_Servico extends CRUD_Controller {
 	            			{	
 	            					//Realizando a inserção do caminho da imagem (armazenada no servidor), no banco de dados, por meio da função abaixo. 
 	            				$this->insert_imagem_situacao($return_ordem,$return_historico, 1, $data_coordenadas['local_fk'],
-	            					$codigo_os, $endereco_os);
+	            					$codigo_os, $endereco_os, $return_populacao);
 	            			}
 	            				else //Se a imagem não era obrigatória e não foi enviada, então o processo foi finalizado e executado com sucesso, retornamos o response
 	            				{	
@@ -562,6 +658,7 @@ class Ordem_Servico extends CRUD_Controller {
 	            						'local_fk' => $data_coordenadas['local_fk'],
 	            						'ordem_servico_cod' => $codigo_os,
 	            						'data_criacao' => date('d/m/Y h:i:s'),
+	            						'populacao_os' => $return_populacao,
 	            						'endereco_os' => $endereco_os
 	            					]);
 	            				} 
@@ -706,6 +803,53 @@ class Ordem_Servico extends CRUD_Controller {
 
 	            	}
 
+	            	$return_pessoa = [
+	            		'pessoa_pk' => null,
+	            		'pessoa' => false,
+	            		'contato' => false
+	            	];
+
+	            	 // var_dump($data_ordem); 
+
+	            	if($data_ordem['procedencia'] == "2"){
+
+	            		//Padronizando dados para inserir cidadão
+	            		$data_pessoa = null; 
+
+
+	            		//Verificando se o usuário deseja alterar o CPF e o nome, caso contrário 
+	            		if($data_ordem['pessoa_cpf'] !== ""){
+	            			$data_pessoa['pessoa_cpf'] = $data_ordem['pessoa_cpf'];
+	            		}
+
+	            		if($data_ordem['pessoa_nome'] !== ""){
+	            			$data_pessoa['pessoa_nome'] = $data_ordem['pessoa_nome'];
+	            		}
+
+	            		//Como já possuimos dados do cidadão no banco, caso ele tenha enviado novas informações, 
+	            		//devemos realizar um update, visando não perder o que já estava no banco.
+	            		if($data_ordem['contato_email'] !== ""){
+	            			$data_contato['contato_email'] = $data_ordem['contato_email'];
+	            		}
+
+	            		if($data_ordem['contato_tel'] !== ""){
+	            			$data_contato['contato_tel'] = $data_ordem['contato_tel'];
+	            		}
+
+	            		if($data_ordem['contato_cel'] !== ""){
+	            			$data_contato['contato_cel'] = $data_ordem['contato_cel'];
+	            		}
+
+	            		$populacao_os = $this->ordem_servico_model->get_populacao_os(['ordem_servico_fk' => $data_ordem['ordem_servico_pk']]);
+
+	            		// var_dump($populacao_os);
+
+	            		//Realizando a inserção do cidadão
+	            		$return_pessoa = $this->pessoa_model->update($data_pessoa, $data_contato, null, null, $populacao_os[0]->pessoa_fk);
+
+	            		// var_dump($return_pessoa); 
+	            	}
+
 	            	//Realizando a atualização de todos os dados da ordem de serviço. 
 	            	$return_ordem = $this->ordem_servico_model->update_os($data_ordem_servico, $data_ordem['ordem_servico_pk']);
 
@@ -713,7 +857,7 @@ class Ordem_Servico extends CRUD_Controller {
 	            	$coordenada = $this->ordem_servico_model->get_coordenadas(['coordenada_pk' => $data_ordem_servico['coordenada_fk']]);
 
 	            	//Se o uptdate foi efetuado com sucesso, retornamos SUCCESS
-	            	if($return_ordem == 1)
+	            	if($return_ordem == 1 || $return_pessoa['pessoa'] == TRUE || $return_pessoa['contato'] == TRUE)
 	            	{
 	            		$this->response->set_code(Response::SUCCESS);
 	            		$this->response->set_data([
@@ -721,14 +865,14 @@ class Ordem_Servico extends CRUD_Controller {
 	            			'ordem_servico_pk' => $data_ordem['ordem_servico_pk'],
 	            			'historico_ordem_pk' => $return_historico[0]->historico_ordem_pk,
 	            			'local_fk' => $coordenada->local_fk,
-	            			'endereco_os' => $endereco_os
+	            			'endereco_os' => $endereco_os,
+	            			'populacao_os' => $populacao_os[0]->populacao_os_pk
 	            		]);
 	            	}
 	            	else
 	            	{	//caso o update não tenha retornada nenhuma linha modificada, existem duas possíveis situações: o usuário só modificou a situação, ou não modificou nada e clicou em salvar. 
 	            		if($return_ordem == 0)
 	            		{	
-
 	            			//Verificando se o usuário alterou a situação 
 	            			if($return_situacao == 1){
 	            				$this->response->set_code(Response::SUCCESS);
@@ -737,7 +881,8 @@ class Ordem_Servico extends CRUD_Controller {
 	            					'ordem_servico_pk' => $data_ordem['ordem_servico_pk'],
 	            					'historico_ordem_pk' => $return_historico[0]->historico_ordem_pk,
 	            					'local_fk' => $coordenada->local_fk,
-	            					'endereco_os' => $endereco_os
+	            					'endereco_os' => $endereco_os,
+	            					'populacao_os' => $populacao_os[0]->populacao_os_pk
 	            				]);
 	            			}
 	            			else{ //O usuário não modificou nenhuma informação da ordem de serviço
@@ -745,10 +890,12 @@ class Ordem_Servico extends CRUD_Controller {
 	            				$this->response->set_data([
 	            					'mensagem' => "Os dados não foram alterados.<br>Certifique-se de ter modificado alguma informação.",
 	            					'ordem_servico_pk' => $data_ordem['ordem_servico_pk'],
-			            			'historico_ordem_pk' => $return_historico[0]->historico_ordem_pk,
-			            			'local_fk' => $coordenada->local_fk,
-			            			'endereco_os' => $endereco_os
+	            					'historico_ordem_pk' => $return_historico[0]->historico_ordem_pk,
+	            					'local_fk' => $coordenada->local_fk,
+	            					'endereco_os' => $endereco_os,
+	            					'populacao_os' => $populacao_os[0]->populacao_os_pk
 	            				]);	
+
 	            			}
 	            		}
 	            	}

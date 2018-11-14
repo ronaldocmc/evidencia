@@ -67,7 +67,7 @@
                                                 <div class="col">
                                                     <!-- LIMPLR-2018/28 -> para testes -->
                                                     <input id="os_protocol" autofocus class="form-control form-control-lg form-control-borderless"
-                                                        type="search" placeholder="Digite aqui o número do protocolo">
+                                                        type="search" placeholder="Digite aqui o número do protocolo" required="true">
                                                 </div>
                                                 <!--end of col-->
                                                 <div class="col-auto">
@@ -84,14 +84,19 @@
                         </div>
 
                         <div id="loading">
-
+                            <div align="center" class="center">
+                                <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                            </div>
+                        </div>
+                        <div align="center" class="center" id="nao_encontrada">
+                            <h3> Desculpe, evidência não encontrada. </h3>
                         </div>
 
                         <hr class="my-5">
 
                         <section id="os_search">
                             <div class="text-center col-md-12">
-                                <h4>Nós queremos melhorar a nossa transparência com você.</h4>
+                                <h4>Acompanhe o que estamos fazendo</h4>
                                 <p>Para isso, fizemos a área de acesso da população no nosso <a href="#">Sistema de
                                         Gerênciamento da Cidade - EVIDÊNCIA</a></p>
                                 <p>Aqui você pode ver todo o procedimento que fizemos ou estamos fazendo para resolver
@@ -230,35 +235,32 @@
     }
 
     $(document).ready(() => {
+        $('#loading').hide();
+        $('#nao_encontrada').hide();
         $('#os').hide();
         $('#finalizado').hide();
     });
 
     $(search).click(function () {
+        $('#finalizado').hide();
+        $('#loading').show();
+        $('#nao_encontrada').hide();
+
         var table = $('#os_historico');
         var div_fotos = $('#fotos');
 
         table.empty();
         div_fotos.empty();
-        $('#finalizado').hide();
-
-        $('#loading').
-        html('<div align="center" class="center">' +
-                '<img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">'+
-              '</div>'
-            );
 
         $.ajax({
             url: `${base_url}/Cidadao/getOs?protocol=${$('#os_protocol').val()}`,
             method: 'GET'
         }).done(function (response) {
+            $('#loading').hide();
 
             if (response.code == 200) {
-                $('#loading').html('');
                 $(os_search).hide();
                 $(os).fadeIn(500);
-
-                console.log(response);
 
                 $('#os_local').html(`${response.os.logradouro_nome},${response.os.local_num}`);
                 $('#os_city').html(`${response.os.municipio_nome} - ${response.os.estado_fk}`);
@@ -297,6 +299,9 @@
                 else {
                     $('#title_fotos').html('Essa evidência não possui fotos.');
                 }
+            }
+            else if (response.code == 404) {
+                $('#nao_encontrada').show();
             }
         });
     });

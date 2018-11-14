@@ -35,42 +35,30 @@ tbody {
 			<div class="statistic statistic2">
 				<div class="container">
 					<div class="row">
-						<div class="col-md-6 col-lg-3">
-							<div class="statistic__item statistic__item--green">
-								<h2 class="number">21</h2>
-								<span class="desc">novas</span>
-								<div class="icon">
-									<i class="fas fa-plus"></i>
+
+						<?php 
+						$quantidade = count($cards);
+						$grid = 12/$quantidade;
+
+
+						foreach($cards as $card):
+						?>
+							<div class="col-md-6 col-lg-<?= $grid ?>">
+								<div class="statistic__item statistic__item--<?= $card['color'] ?>
+								"
+									<?php if(array_key_exists('tooltip', $card)): ?>
+										data-toggle="tooltip" data-placement="top" title="<?= $card['tooltip'] ?>"
+									<?php endif; ?>
+								>
+									<h2 class="number"><?= $card['title'] ?></h2>
+									<span class="desc"><?= $card['label'] ?></span>
+									<div class="icon">
+										<i class="fas <?= $card['icon'] ?>"></i>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div class="col-md-6 col-lg-3">
-							<div class="statistic__item statistic__item--orange" data-toggle="tooltip" data-placement="top" title="5/23 (concluídas/total)">
-								<h2 class="number">23,4%</h2>
-								<span class="desc">concluídas</span>
-								<div class="icon">
-									<i class="fas fa-tasks"></i>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6 col-lg-3">
-							<div class="statistic__item statistic__item--red" data-toggle="tooltip" data-placement="top" title="Pedro, José, Cláudio">
-								<h2 class="text">5</h2>
-								<span class="desc">revisores</span>
-								<div class="icon">
-									<i class="fas fa-users"></i>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6 col-lg-3">
-							<div class="statistic__item statistic__item--blue" data-toggle="tooltip" data-placement="top" title="A, B, D e E">
-								<h2 class="text">6</h2>
-								<span class="desc">setores</span>
-								<div class="icon">
-									<i class="fas fa-map-marker-alt"></i>
-								</div>
-							</div>
-						</div>
+
+						<?php endforeach; ?>
 					</div>
 				</div>
 			</div>
@@ -266,105 +254,105 @@ tbody {
 									<div class="heatmap" style="display: block;">
 										<!-- <div class="row">
 											<div class="col-md-12 col-lg-12 m-b-40"> -->
-										<div class="heatmap" id="heatmap"></div>
+												<div class="heatmap" id="heatmap"></div>
 											<!-- </div>
-										</div> -->
-									</div>
+											</div> -->
+										</div>
 
+									</div>
 								</div>
+
 							</div>
 
+							<!-- END FUNCIONÁRIOS -->
 						</div>
 
-						<!-- END FUNCIONÁRIOS -->
-					</div>
 
-
-					<!-- FOOTER -->
-					<div class="row"> 
-						<div class="col-md-12"> 
-							<div class="copyright"> 
-								<p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p> 
+						<!-- FOOTER -->
+						<div class="row"> 
+							<div class="col-md-12"> 
+								<div class="copyright"> 
+									<p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p> 
+								</div> 
 							</div> 
 						</div> 
-					</div> 
-					<!-- END FOOTER -->
+						<!-- END FOOTER -->
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+			<script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
 
-		<script type="text/javascript">
-			var xValues = ['A', 'B', 'C', 'D', 'E'];
+			<script type="text/javascript">
+				var xValues = ['A', 'B', 'C', 'D', 'E'];
 
-			var yValues = ['W', 'X', 'Y', 'Z'];
+				var yValues = ['W', 'X', 'Y', 'Z'];
 
-			var zValues = [
-			[0.00, 0.00, 0.75, 0.75, 0.00],
-			[0.00, 0.00, 0.75, 0.75, 0.00],
-			[0.75, 0.75, 0.75, 0.75, 0.75],
-			[0.00, 0.00, 0.00, 0.75, 0.00]
-			];
+				var zValues = [
+				[0.00, 0.00, 0.75, 0.75, 0.00],
+				[0.00, 0.00, 0.75, 0.75, 0.00],
+				[0.75, 0.75, 0.75, 0.75, 0.75],
+				[0.00, 0.00, 0.00, 0.75, 0.00]
+				];
 
-			var colorscaleValue = [
-			[0, '#3D9970'],
-			[1, '#001f3f']
-			];
+				var colorscaleValue = [
+				[0, '#3D9970'],
+				[1, '#001f3f']
+				];
 
-			var data = [{
-				x: xValues,
-				y: yValues,
-				z: zValues,
-				type: 'heatmap',
-				colorscale: colorscaleValue,
-				showscale: true
-			}];
+				var data = [{
+					x: xValues,
+					y: yValues,
+					z: zValues,
+					type: 'heatmap',
+					colorscale: colorscaleValue,
+					showscale: true
+				}];
 
-			var layout = {
-				title: 'Performance Funcionários',
-				annotations: [],
-				xaxis: {
-					ticks: '',
-					side: 'top'
-				},
-				yaxis: {
-					ticks: '',
-					ticksuffix: ' ',
-					width: 700,
-					height: 700,
-					autosize: false
-				},
-			};
+				var layout = {
+					title: 'Performance Funcionários',
+					annotations: [],
+					xaxis: {
+						ticks: '',
+						side: 'top'
+					},
+					yaxis: {
+						ticks: '',
+						ticksuffix: ' ',
+						width: 700,
+						height: 700,
+						autosize: false
+					},
+				};
 
-			for ( var i = 0; i < yValues.length; i++ ) {
-				for ( var j = 0; j < xValues.length; j++ ) {
-					var currentValue = zValues[i][j];
-					if (currentValue != 0.0) {
-						var textColor = 'white';
-					}else{
-						var textColor = 'black';
-					}
-					var result = {
-						xref: 'x1',
-						yref: 'y1',
-						x: xValues[j],
-						y: yValues[i],
-						text: zValues[i][j],
-						font: {
-							family: 'Arial',
-							size: 12,
-							color: 'rgb(50, 171, 96)'
-						},
-						showarrow: false,
-						font: {
-							color: textColor
+				for ( var i = 0; i < yValues.length; i++ ) {
+					for ( var j = 0; j < xValues.length; j++ ) {
+						var currentValue = zValues[i][j];
+						if (currentValue != 0.0) {
+							var textColor = 'white';
+						}else{
+							var textColor = 'black';
 						}
-					};
-					layout.annotations.push(result);
+						var result = {
+							xref: 'x1',
+							yref: 'y1',
+							x: xValues[j],
+							y: yValues[i],
+							text: zValues[i][j],
+							font: {
+								family: 'Arial',
+								size: 12,
+								color: 'rgb(50, 171, 96)'
+							},
+							showarrow: false,
+							font: {
+								color: textColor
+							}
+						};
+						layout.annotations.push(result);
+					}
 				}
-			}
 
 
-			Plotly.newPlot('heatmap', data, layout);
-		</script>
+				Plotly.newPlot('heatmap', data, layout);
+			</script>
