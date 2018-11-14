@@ -47,17 +47,19 @@ class Dashboard_model extends CI_Model {
         $this->db->select('count(*) as quantidade');
         $this->db->from('historicos_ordens');
         $this->db->join('relatorios_os', 'relatorios_os.os_fk = historicos_ordens.ordem_servico_fk');
+        $this->db->join('relatorios', 'relatorios.relatorio_pk = relatorios_os.relatorio_fk');
+
         $this->db->where('DAY(historico_ordem_tempo) = DAY(curdate())');
         $this->db->where('historicos_ordens.situacao_fk', 5); //5 = FINALIZADO
         $this->db->order_by('historicos_ordens.historico_ordem_tempo', 'DESC');
         $this->db->limit(1);
 
 
-        $result = $this->db->get()->row();
+        $result = $this->db->get()->row()->quantidade;
         if ($result) {
             return ($result->quantidade);
         } else {
-            return false;
+            return 0;
         }
     }
 
@@ -82,19 +84,21 @@ class Dashboard_model extends CI_Model {
         }
     }
 
-    public function get_ordens_hoje_em_andamento() {
-        $this->db->select('count(ordem_servico_fk) as count');
-        $this->db->from('historicos_ordens');
-        $this->db->where('DAY(historico_ordem_tempo) = DAY(CURDATE())');
-        $this->db->where('situacao_fk', 2); //2 = EM ANDAMENTO
+    // public function get_ordens_hoje_em_andamento() {
+    //     $this->db->select('count(ordem_servico_fk) as count');
+    //     $this->db->from('historicos_ordens');
+    //     $this->db->join('relatorios', 'relatorios.relatorio_pk = historicos_ordens.relatorio_fk');
+    //     $this->db->where('relatorios.status', 0);
+    //     $this->db->where('DAY(historico_ordem_tempo) = DAY(CURDATE())');
+    //     $this->db->where('situacao_fk', 2); //2 = EM ANDAMENTO
 
-        $result = $this->db->get()->row();
-        if ($result) {
-            return ($result->count);
-        } else {
-            return false;
-        }
-    }
+    //     $result = $this->db->get()->row();
+    //     if ($result) {
+    //         return ($result->count);
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     public function get_revisores_do_dia() {
         $this->db->select('pessoa_nome as nome');
@@ -106,12 +110,8 @@ class Dashboard_model extends CI_Model {
 
         //echo $this->db->get_compiled_select(); die();
 
-        $result = $this->db->get()->result();
-        if($result) {
-            return $result;
-        } else {
-            return false;
-        }
+        return $this->db->get()->result();
+      
 
     }
 
@@ -125,12 +125,8 @@ class Dashboard_model extends CI_Model {
 
         //echo $this->db->get_compiled_select(); die();
 
-        $result = $this->db->get()->result();
-        if($result) {
-            return $result;
-        } else {
-            return false;
-        }
+        return $this->db->get()->result();
+        
     }
 
     // public function get_ordens_hoje() {
@@ -183,15 +179,12 @@ class Dashboard_model extends CI_Model {
         $this->db->where('relatorios.status', 0);
         $this->db->where('historicos_ordens.situacao_fk != 1'); 
         $this->db->order_by('historicos_ordens.historico_ordem_tempo', 'DESC');
+        $this->db->group_by('ordem_servico_cod');
 
         //echo $this->db->get_compiled_select(); die();
 
-        $result = $this->db->get()->result();
-        if ($result) {
-            return ($result);
-        } else {
-            return false;
-        }
+        return $this->db->get()->result();
+        
     }
 
 
@@ -293,7 +286,7 @@ class Dashboard_model extends CI_Model {
     //     $this->db->where('relatorios_os.relatorio_fk', $id_relatorio);
     // }
 
-    public function get_ultima_ordem($id_relatorio){
+    public function get_data_ultima_ordem($id_relatorio){
          $this->db->select('historico_ordem_tempo as data');
         $this->db->from('historicos_ordens');
         $this->db->join('relatorios_os', 'relatorios_os.os_fk = historicos_ordens.ordem_servico_fk');

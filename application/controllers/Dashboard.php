@@ -28,7 +28,9 @@ class Dashboard extends CRUD_Controller
         $dados['funcionarios'] = $this->get_funcionarios();
 
         $this->session->set_flashdata('css',[
-            0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css')
+            0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            1 => base_url('assets/vendor/icon-hover-effects/component.css'),
+            2 => base_url('assets/vendor/icon-hover-effects/default.css'),
         ]);
 
 
@@ -115,24 +117,32 @@ class Dashboard extends CRUD_Controller
 
         $ultima_ordem = array();
 
-        $data = $this->model->get_ultima_ordem($id_relatorio);
+        $data = $this->model->get_data_ultima_ordem($id_relatorio);
+        if($data == false){
+            return array();
+        }
 
-        $tooltip = date('H:i', strtotime($data));
+        
         $date_dif = strtotime(date('Y-m-d H:i:s')) - strtotime($data);
 
         $date_dif = $this->model->date_dif($data);
 
             if($date_dif > 60){ //é em horas
                 $value = round($date_dif/60);
+                $format = 'H:i';
                 $time = 'horas';
-                if($horas > 60){ //está em dias
-                    $value = round($horas/24);
+                if($value > 24){ //está em dias
+                    $value = round($value/24);
+                    $format = 'd/m/Y H:i';
                     $time = 'dias';
                 }
             }else { //é em minutos
                 $value = $date_dif;
+                 $format = 'H:i';
                 $time = 'minutos';
             }
+
+            $tooltip = date($format, strtotime($data));
 
             $ultima_ordem    = array(
                 'tooltip' => $tooltip,
@@ -177,7 +187,7 @@ class Dashboard extends CRUD_Controller
         $labels = array();
         $charts['doughnut'] = array();
 
-        $em_andamento = $this->model->get_ordens_hoje_em_andamento();
+        $em_andamento = count($this->model->get_ordens_em_execucao());
         $finalizadas  = $this->model->get_ordens_hoje_finalizadas();
 
 
@@ -299,6 +309,7 @@ class Dashboard extends CRUD_Controller
         );
 
         $revisores = $this->model->get_revisores_do_dia();
+
         $response['quantidade'] = count($revisores);
         $response['nomes'] = $this->get_string($revisores, 'explode');
 
@@ -337,9 +348,15 @@ private function get_ordens_concluidas(){
             'porcentagem' => '', //será retornado como string
             'text' => ''
         );
+    $ordens_em_execucao = $this->model->get_ordens_em_execucao();
+    if($ordens_em_execucao != false){
+        $em_andamento = count($this->model->get_ordens_em_execucao()); 
+        $finalizadas  = $this->model->get_ordens_hoje_finalizadas();
+    } else {
+        $em_andamento = 0;
+        $finalizadas = 0;
+    }
 
-    $em_andamento = $this->model->get_ordens_hoje_em_andamento(); 
-    $finalizadas  = $this->model->get_ordens_hoje_finalizadas();
 
 
 
@@ -431,7 +448,7 @@ private function porcentagem($dividendo, $divisor) {
 
         
         $ordens_finalizadas = $this->dashboard_model->get_ordens_hoje_finalizadas();
-        $quantidade_de_ordens_finalizadas = $ordens_finalizadas[0]->count;
+        $quantidade_de_ordens_finalizadas = $ordens_finalizadas;
 
 
         $hoje = $this->dashboard_model->get_ordens_hoje();
