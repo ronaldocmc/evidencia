@@ -699,7 +699,8 @@
           labels: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"],
           type: 'line',
           defaultFontFamily: 'Poppins',
-          datasets: [{
+          datasets: [
+          {
             label: "Foods",
             data: [0, 30, 10, 120, 50, 63, 10],
             backgroundColor: 'transparent',

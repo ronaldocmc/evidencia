@@ -18,6 +18,80 @@ tbody {
 	/*text-align: center; */
 	font-size: 10pt;
 }
+
+
+.acesso-rapido {
+	-webkit-transition: all 0.5s ease-in-out;
+	color: white;
+	height: 300px;
+}
+
+.icones{
+	background-color: #fff;
+	border-radius: 100%;
+	margin: 0 auto;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	width: 70px;
+	height: 70px;
+	-webkit-transform: scale(1.5);
+	font-size: 20pt;
+}
+
+.fa {
+    -webkit-transition: 0.6s ease-out;
+    -moz-transition:  0.6s ease-out;
+    transition:  0.6s ease-out;
+}
+
+.fa:hover {
+	-webkit-transform: rotateZ(720deg);
+	-moz-transform: rotateZ(720deg);
+	transform: rotateZ(720deg);
+}
+
+.color-red {
+	color: #fa4251;
+}
+
+.color-green{
+	color: #28a745;
+}
+
+.color-orange {
+	color: #ff8300;
+}
+
+.color-blue {
+	color: #00b5e9;
+}
+
+.acesso-rapido:hover {
+	cursor: pointer;
+	-webkit-transform: scale(1.1); 
+}
+
+
+
+.geral {
+	text-align: center;
+    margin: 0 auto;
+    padding: 2em 0 3em;
+}
+
+.acesso-rapido h2{
+	color:white;
+}
+
+.text{
+	padding: 50px 10px;
+}
+
+.bag {
+	margin-top:;
+}
+
 </style>
 
 <!-- MAIN CONTENT--> 
@@ -25,13 +99,100 @@ tbody {
 
 	<div class="section__content section__content--p30"> 
 		<div class="container-fluid"> 
+			<!-- TITLE -->
 			<div class="row">
 				<div class="col-md-12">
 					<h2 class="title-4">Bem-vindo <?= $primeiro_nome ?>!</h2>
 				</div>
 			</div>
+			<!-- END TITLE -->
+			<hr class="m-b-35">
+
+			<!-- ACESSO RÁPIDO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="title-5 m-b-10">Acesso Rápido</h2>
+				</div>
+			</div>
 			<hr>
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12 col-md-6 col-lg-3">
+						<div class="statistic__item statistic__item--blue acesso-rapido">
+							<div class="geral" onclick="window.location = '<?= base_url('ordem_servico') ?>';">
+								<div class="bag">
+									<div class="icones color-blue">
+										<i class="fa fas fa-thumbtack"></i>
+									</div>
+									<div class="text">
+										<h2>nova ordem</h2>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div class="col-sm-12 col-md-6 col-lg-3">
+						<div class="statistic__item statistic__item--orange acesso-rapido">
+							<div class="geral" onclick="window.location = '<?= base_url('relatorio/novo_relatorio') ?>';">
+								<div class="bag">
+									<div class="icones color-orange">
+										<i class="fa fas fa-tasks"></i>
+									</div>
+									<div class="text">
+										<h2>novo relatório</h2>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-12 col-md-6 col-lg-3">
+						<div class="statistic__item statistic__item--red acesso-rapido">
+							<div class="geral" onclick="window.location = '<?= base_url('relatorio/mapa') ?>';">
+								<div class="bag">
+									<div class="icones color-red">
+										<i class="fa fas fa-map-marker-alt"></i>
+									</div>
+									<div class="text">
+										<h2>mapa</h2>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+					<div class="col-sm-12 col-md-6 col-lg-3">
+						<div class="statistic__item statistic__item--green acesso-rapido">
+							<div class="geral" onclick="alert('REFRESH');">
+								<div class="bag">
+									<div class="icones color-green">
+										<i class="fa fas fa-refresh"></i>
+									</div>
+									<div class="text">
+										<h2>atualizar</h2>
+										<small>última atualização às 14/11/2018 10:20:21</small>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- END ACESSO RÁPIDO -->
+
 			<!-- STATISTIC-->
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="title-5 m-b-20">Informações Gerais</h2>
+				</div>
+			</div>
+			<hr>
+
 			<div class="statistic statistic2">
 				<div class="container">
 					<div class="row">
@@ -42,27 +203,29 @@ tbody {
 
 
 						foreach($cards as $card):
-						?>
+							?>
 							<div class="col-md-6 col-lg-<?= $grid ?>">
 								<div class="statistic__item statistic__item--<?= $card['color'] ?>
 								"
-									<?php if(array_key_exists('tooltip', $card)): ?>
-										data-toggle="tooltip" data-placement="top" title="<?= $card['tooltip'] ?>"
-									<?php endif; ?>
+								<?php if(array_key_exists('tooltip', $card)): ?>
+									data-toggle="tooltip" data-placement="top" title="<?= $card['tooltip'] ?>"
+								<?php endif; ?>
 								>
-									<h2 class="number"><?= $card['title'] ?></h2>
-									<span class="desc"><?= $card['label'] ?></span>
-									<div class="icon">
-										<i class="fas <?= $card['icon'] ?>"></i>
-									</div>
+								<h2 class="number"><?= $card['title'] ?></h2>
+								<span class="desc"><?= $card['label'] ?></span>
+								<div class="icon">
+									<i class="fas <?= $card['icon'] ?>"></i>
 								</div>
 							</div>
+						</div>
 
-						<?php endforeach; ?>
-					</div>
+					<?php endforeach; ?>
 				</div>
 			</div>
-			<!-- END STATISTIC-->
+		</div>
+		<!-- END STATISTIC-->
+
+		<?php if (count($ordens_em_execucao) > 0): ?>
 			<!-- ESTATISTICAS CHART -->
 			<div class="statistic-chart">
 				<div class="row">
@@ -75,28 +238,31 @@ tbody {
 				<div class="row">
 					<div class="col-md-6 col-lg-6">
 						<!-- CHART PERCENT-->
+
+						<?php $chart = $charts['doughnut']; ?>
+
 						<div class="chart-percent-2" style="max-height: 420px !important;">
-							<h3 class="title-3 m-b-30">Concluídas % <span style="font-size:12pt;"><small>(23,4%)</small></span></h3>
+
+							<h3 class="title-3 m-b-30"><?= $chart['title'] ?><span style="font-size:12pt;"><small> (<?= $chart['percent'] ?> %)</small></span></h3>
 							<div class="chart-wrap">
 								<canvas id="percent-chart2"></canvas>
-								<div id="chartjs-tooltip" data="60,40" labels="em andamento, concluidas">
+								<div id="chartjs-tooltip" data="<?= $chart['data'] ?>" labels="<?= $chart['labels'] ?>">
 									<table></table>
 								</div>
 							</div>
-							<div class="chart-info">
+							<?php foreach($chart['label'] as $label): ?>
 								<div class="chart-note">
-									<span class="dot dot--blue"></span>
-									<span>em andamento</span>
+									<div class="chart-info">
+										<span class="dot dot--<?= $label['color'] ?>"></span>
+										<span><?= $label['label'] ?></span>
+									</div>
 								</div>
-								<div class="chart-note">
-									<span class="dot dot--red"></span>
-									<span>concluídas</span>
-								</div>
-							</div>
+							<?php endforeach; ?>
 						</div>
 						<!-- END CHART PERCENT-->
 					</div>
 					<div class="col-md-6 col-lg-6">
+
 						<div class="chart-percent-2" style="max-height: 420px !important;">
 							<h3 class="title-2 m-b-40">Tipos Serviços</h3>
 							<div class="chart-wrap">
@@ -111,6 +277,19 @@ tbody {
 
 			</div>
 			<!-- END ESTATISTICAS CHART -->
+			<?php else: ?>
+				<div class="col-lg-12 m-b-40">
+					<div class="au au-card question" style="text-align: center;">
+						<h4 class="m-b-20">
+							Não há nenhuma ordem em execução no dia de hoje pois não há relatórios.
+							
+						</h4>
+						<h4 class="m-b-10">Deseja criar um novo relatório?</h4>
+						<h4><a class="btn btn-success btn-sm" href="<?= base_url('Relatorio/novo_relatorio')?>">Sim</a> <a class="btn btn-danger btn-sm" href="#" onclick="$('.question').hide()">Não</a></h4>
+					</div>
+				</div>
+			<?php endif; ?>
+
 			<div>
 				<div class="row">
 					<div class="col-md-12">
@@ -162,50 +341,57 @@ tbody {
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td>COLACAP-2018/5</td>
-												<td><span class="block-email">Alta</span></td>
-												<td>Coleta de animal pequeno.</td>
-												<td>Pietro Barcarollo Schiavinato</td>
-												<td><span class="status--process">Finalizado</span></td>
-											</tr>
-											<tr>
-												<td>LIMPLR-2018/28</td>
-												<td><span class="block-email">Alta</span></td>
-												<td>Limpeza de Rua</td>
-												<td>Ronaldo Messias</td>
-												<td><span class="status--warning">Em Andamento</span></td>
+											<?php foreach($ordens_em_execucao as $os): ?>
 
-											</tbody>
-										</table>
+												<tr>
+													<td><?= $os->codigo ?></td>
+													<td><span class="block-email">
+														<?= $os->prioridade ?></span></td>
+														<td><?= $os->servico ?></td>
+														<td><?= $os->funcionario ?></td>
+														<td><span class="
+															<?php 
+															if($os->situacao == 'Finalizado'){
+																echo 'status--process';
+																} else {
+																	echo 'status--warning';
+																}
+																?>
+																">
+																<?= $os->situacao ?></span></td>
+															</tr>
+
+														<?php endforeach; ?>
+													</tbody>
+												</table>
+											</div>
+										</div>
+
+										<div id="map" style="display:none;"></div>
+
 									</div>
 								</div>
-
-								<div id="map" style="display:none;"></div>
-
 							</div>
-						</div>
-					</div>
-					<!-- END ORDENS EM EXECUÇÃO -->
+							<!-- END ORDENS EM EXECUÇÃO -->
 
-					<!-- FUNCIONÁRIOS -->
-					<div class="au-card d-flex flex-column m-t-50">
-						<div class="row">
+							<!-- FUNCIONÁRIOS -->
+							<div class="au-card d-flex flex-column m-t-50">
+								<div class="row">
 
-							<div class="col-md-9">
-								<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Funcionários</h2>
-							</div>
-							<div class=col-md-3>
-								<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-									<li class="nav-item">
-										<a class="nav-link btn-sm" id="tabela-funcionario" data-toggle="pill" href="#" role="tab" aria-controls="pills-home"
-										aria-selected="true">Tabela</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link btn-sm active" id="tabela-grafico" data-toggle="pill" href="#" role="tab" aria-controls="pills-profile"
-										aria-selected="false">Gráfico</a>
-									</li>
-								</ul>
+									<div class="col-md-9">
+										<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Funcionários</h2>
+									</div>
+									<div class=col-md-3>
+										<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+											<li class="nav-item">
+												<a class="nav-link btn-sm" id="tabela-funcionario" data-toggle="pill" href="#" role="tab" aria-controls="pills-home"
+												aria-selected="true">Tabela</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link btn-sm active" id="tabela-grafico" data-toggle="pill" href="#" role="tab" aria-controls="pills-profile"
+												aria-selected="false">Gráfico</a>
+											</li>
+										</ul>
 
 <!-- 
 								<button type="button" class="btn btn-primary btn-sm">Tabela</button>
@@ -230,28 +416,25 @@ tbody {
 												</tr>
 											</thead>
 											<tbody>
-												<tr>
-													<td>Gustavo de Deus</td>
-													<td data-toggle="tooltip" data-placement="top" title="5/5 (concluídas/total)">100%</td>
-													<td>A, B e C</td>
-													<td>Limpeza de Rua</td>
-													<td data-toggle="tooltip" data-placement="top" title="11:50">16 minutos atrás</td>
-													<td><span class="status--process">Disponível</span></td>
-												</tr>
-												<tr >
-													<td>Pietro</td>
-													<td data-toggle="tooltip" data-placement="top" title="3/16 (concluídas/total)">12,3%</td>
-													<td>E,F,G</td>
-													<td>Coleta de Galho</td>
-													<td data-toggle="tooltip" data-placement="top" title="12:07">2 horas atrás</td>
-													<td><span class="status--denied">Ocupado</span></td>
+												<?php foreach($funcionarios as $f): ?>
 
-												</tbody>
-											</table>
-										</div>
+													<tr>
+														<td><?= $f['nome'] ?></td>
+														<td data-toggle="tooltip" data-placement="top" title="<?= $f['performance']['tooltip'] ?>"><?= $f['performance']['label'] ?></td>
+														<td><?= $f['setores'] ?></td>
+														<td><?= $f['servicos'] ?></td>
+														<td data-toggle="tooltip" data-placement="top" title="<?= $f['ultima_ordem']['tooltip'] ?>"><?= $f['ultima_ordem']['label'] ?></td>
+														<td><span class="<?= $f['status']['class'] ?>"><?= $f['status']['label'] ?></span></td>
+													</tr>
+
+												<?php endforeach; ?>
+												
+											</tbody>
+										</table>
 									</div>
+								</div>
 
-									<div class="heatmap" style="display: block;">
+								<div class="heatmap" style="display: block;">
 										<!-- <div class="row">
 											<div class="col-md-12 col-lg-12 m-b-40"> -->
 												<div class="heatmap" id="heatmap"></div>
