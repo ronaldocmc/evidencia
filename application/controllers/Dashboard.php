@@ -13,7 +13,7 @@ class Dashboard extends CRUD_Controller
         $this->load->library('session');
     }
 
-    public function index() {
+    public function funcionario_administrador() {
         //$this->load->model('funcionario_model');
         $this->load->helper('date_helper');
 
@@ -426,7 +426,7 @@ private function porcentagem($dividendo, $divisor) {
     }
 
 
-    public function funcionario_administrador()
+    public function funcionario_administrador_antigo()
     {
         $this->load->model('funcionario_model');
         $this->load->helper('date_helper');

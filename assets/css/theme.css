@@ -72,6 +72,7 @@ button {
     background: none;
 }
 
+
 img {
     max-width: 100%;
     height: auto;
@@ -1600,10 +1601,19 @@ section {
 }
 
 .logo_parceiros {
-    max-width: 80%;
+    max-width: 50%;
     display: flex;
     margin-bottom: 15px;
+    filter: grayscale(100%);
+    transition: 1s;
 
+
+}
+
+.logo_parceiros:hover{
+    transition: 1s;
+    max-width: 55%;
+    filter: grayscale(0%);
 }
 
 .menu-sidebar .navbar__list .navbar__sub-list {
