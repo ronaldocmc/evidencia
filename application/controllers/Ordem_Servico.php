@@ -574,22 +574,27 @@ class Ordem_Servico extends CRUD_Controller {
 	            		if($return_pessoa['db_error']['code'] == 1062){
 
 	            			$get_pessoa = $this->pessoa_model->get(['pessoa_cpf' => $data_ordem['pessoa_cpf']]);
-
+	            			
 	            			$data_update = null; 
 
 	            			//Como já possuimos dados do cidadão no banco, caso ele tenha enviado novas informações, 
 	            			//devemos realizar um update, visando não perder o que já estava no banco.
+
+	            			// && $get_pessoa->contato_email == NULL
 	            			if($data_contato['contato_email'] !== NULL){
 	            				$data_update['contato_email'] = $data_contato['contato_email'];
 	            			}
 
+	            			//&& $get_pessoa->contato_tel == NULL
 	            			if($data_contato['contato_tel'] !== NULL){
 	            				$data_update['contato_tel'] = $data_contato['contato_tel'];
 	            			}
 
+	            			// && $get_pessoa->contato_cel == NULL
 	            			if($data_contato['contato_cel'] !== NULL){
 	            				$data_update['contato_cel'] = $data_contato['contato_cel'];
 	            			}
+	            			
 
 	            			$return_update = $this->pessoa_model->update_contato($data_update, ['pessoa_fk' => $get_pessoa->pessoa_pk]);
 

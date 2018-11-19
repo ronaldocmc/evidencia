@@ -9,4 +9,3 @@ $('#tabela-grafico').click(function(){
 	$('#heatmap').show();
 	$('#table-funcionario').hide();
 });
-		

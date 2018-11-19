@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 
-$localhost = 'http://localhost/evidencia';
+$localhost = 'http://localhost/evidencia_v2';
 $azure     = 'http://evidencia.azurewebsites.net';
 
 switch(ENVIRONMENT)
