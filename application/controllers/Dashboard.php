@@ -119,8 +119,12 @@ class Dashboard extends CRUD_Controller
 
         $data = $this->model->get_data_ultima_ordem($id_relatorio);
         if($data == false){
-            return array();
+            return array(
+                'tooltip' => '',
+                'label'   => '---'
+            );
         }
+
 
         
         $date_dif = strtotime(date('Y-m-d H:i:s')) - strtotime($data);
