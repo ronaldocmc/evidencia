@@ -1,0 +1,92 @@
+.fs-16 {
+	font-size:16pt;
+}
+.fs-10 {
+	font-size:10pt;
+}
+
+.status--warning {
+	color: #ffc107;
+}
+
+thead {
+	font-size: 10pt;
+}
+
+tbody {
+	/*text-align: center; */
+	font-size: 10pt;
+}
+
+
+.acesso-rapido {
+	-webkit-transition: all 0.5s ease-in-out;
+	color: white;
+	height: 300px;
+}
+
+.icones{
+	background-color: #fff;
+	border-radius: 100%;
+	margin: 0 auto;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	width: 70px;
+	height: 70px;
+	-webkit-transform: scale(1.5);
+	font-size: 20pt;
+}
+
+.fa {
+    -webkit-transition: 0.6s ease-out;
+    -moz-transition:  0.6s ease-out;
+    transition:  0.6s ease-out;
+}
+
+.fa:hover {
+	-webkit-transform: rotateZ(720deg);
+	-moz-transform: rotateZ(720deg);
+	transform: rotateZ(720deg);
+}
+
+.color-red {
+	color: #fa4251;
+}
+
+.color-green{
+	color: #28a745;
+}
+
+.color-orange {
+	color: #ff8300;
+}
+
+.color-blue {
+	color: #00b5e9;
+}
+
+.acesso-rapido:hover {
+	cursor: pointer;
+	-webkit-transform: scale(1.1); 
+}
+
+
+
+.geral {
+	text-align: center;
+    margin: 0 auto;
+    padding: 2em 0 3em;
+}
+
+.acesso-rapido h2{
+	color:white;
+}
+
+.text{
+	padding: 50px 10px;
+}
+
+.bag {
+	margin-top:;
+}

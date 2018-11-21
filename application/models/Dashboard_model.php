@@ -194,7 +194,6 @@ class Dashboard_model extends CI_Model {
         $this->db->join('funcionarios', 'relatorios.funcionario_fk = funcionarios.funcionario_pk');
         $this->db->join('populacao', 'funcionarios.pessoa_fk = populacao.pessoa_pk');
         $this->db->where('relatorios.status', 0); //em andamento
-        $this->db->where('relatorios.pegou_no_celular', 1); //pegou no celular
 
         //echo $this->db->get_compiled_select(); die();
 
@@ -317,6 +316,41 @@ class Dashboard_model extends CI_Model {
         } else {
             return false;
         }
+    }
+
+    public function get_heatmap(){
+        $sql = "SELECT
+                populacao.pessoa_nome,
+                SUM(TIME(historico_ordem_tempo) BETWEEN '00:00:00' AND '07:59:59') as `até às 8`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '08:00:00' AND '08:59:59') as `8 às 9`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '09:00:00' AND '09:59:59') as `9 às 10`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '10:00:00' AND '10:59:59') as `10 às 11`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '11:00:00' AND '11:59:59') as `11 às 12`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '12:00:00' AND '12:59:59') as `12 às 13`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '13:00:00' AND '13:59:59') as `13 às 14`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '14:00:00' AND '14:59:59') as `14 às 15`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '15:00:00' AND '15:59:59') as `15 às 16`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '16:00:00' AND '16:59:59') as `16 às 17`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '17:00:00' AND '17:59:59') as `17 às 18`
+                FROM historicos_ordens
+                INNER JOIN relatorios_os ON relatorios_os.os_fk = historicos_ordens.ordem_servico_fk
+                INNER JOIN relatorios ON relatorios_os.relatorio_fk = relatorios.relatorio_pk
+                INNER JOIN funcionarios ON relatorios.funcionario_fk = funcionarios.funcionario_pk
+                INNER JOIN populacao ON populacao.pessoa_pk = funcionarios.pessoa_fk
+                WHERE historicos_ordens.situacao_fk = 5
+                AND DAY(relatorios.data_criacao) = DAY(CURDATE())";
+
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+
+        foreach($result as $r){
+            if($r['pessoa_nome'] == null){
+                return false;
+            } 
+        }
+
+        return $r;
+
     }
 
 }

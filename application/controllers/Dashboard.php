@@ -14,6 +14,7 @@ class Dashboard extends CRUD_Controller
     }
 
     public function funcionario_administrador() {
+        $this->load->model('dashboard_model', 'model');
         //$this->load->model('funcionario_model');
         $this->load->helper('date_helper');
 
@@ -27,10 +28,13 @@ class Dashboard extends CRUD_Controller
         $dados['ordens_em_execucao'] = $this->get_ordens_em_execucao();
         $dados['funcionarios'] = $this->get_funcionarios();
 
+        $dados['heatmap'] = $this->heatmap();
+
         $this->session->set_flashdata('css',[
             0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
             1 => base_url('assets/vendor/icon-hover-effects/component.css'),
             2 => base_url('assets/vendor/icon-hover-effects/default.css'),
+            3 => base_url('assets/css/dashboard.css')
         ]);
 
 
@@ -49,6 +53,40 @@ class Dashboard extends CRUD_Controller
                 'params' =>  $dados
             ]
         ],'administrador');
+    }
+
+    private function heatmap(){
+        $response = array(
+            'x' => [],
+            'y' => [],
+            'z' => []
+        );
+
+        $response['x'] = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+
+        $response['y'] = $this->get_revisores_array();
+            
+
+        $data = $this->model->get_heatmap();
+
+        if($data == false){
+            return false;
+        }
+
+        $response = $this->format_data_heatmap($data);
+
+        return $response;
+    }
+
+    private function format_data_heatmap($data){
+        $r = array(
+            'x' => [],
+            'y' => [],
+            'z' => []
+            );
+
+
+        return $r;
     }
 
     private function contains($string, $substring){
@@ -300,6 +338,19 @@ class Dashboard extends CRUD_Controller
         $setores = $this->model->get_setores_do_dia();
         $response['quantidade'] = count($setores);
         $response['nomes'] = $this->get_string($setores, 'explode', ' ', 1);
+
+        return $response;
+    }
+
+    private function get_revisores_array(){
+        $this->load->model('dashboard_model', 'model');
+        $response = array();
+
+        $revisores = $this->model->get_revisores_do_dia();
+        foreach($revisores as $r){
+            $arr = explode(' ', $r->nome);
+            $response[] = $arr[0]; //pegando o primeiro nome
+        }
 
         return $response;
     }

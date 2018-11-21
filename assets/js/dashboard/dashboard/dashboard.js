@@ -1,11 +1,11 @@
 
 $('#tabela-funcionario').click(function(){
 	$('#table-funcionario').show();
-	$('#heatmap').hide();
+	$('.heatmap').hide();
 });
 
 
 $('#tabela-grafico').click(function(){
-	$('#heatmap').show();
+	$('.heatmap').show();
 	$('#table-funcionario').hide();
 });

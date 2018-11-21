@@ -1,99 +1,3 @@
-<style type="text/css">
-.fs-16 {
-	font-size:16pt;
-}
-.fs-10 {
-	font-size:10pt;
-}
-
-.status--warning {
-	color: #ffc107;
-}
-
-thead {
-	font-size: 10pt;
-}
-
-tbody {
-	/*text-align: center; */
-	font-size: 10pt;
-}
-
-
-.acesso-rapido {
-	-webkit-transition: all 0.5s ease-in-out;
-	color: white;
-	height: 300px;
-}
-
-.icones{
-	background-color: #fff;
-	border-radius: 100%;
-	margin: 0 auto;
-	display: flex;
-    align-items: center;
-    justify-content: center;
-	width: 70px;
-	height: 70px;
-	-webkit-transform: scale(1.5);
-	font-size: 20pt;
-}
-
-.fa {
-    -webkit-transition: 0.6s ease-out;
-    -moz-transition:  0.6s ease-out;
-    transition:  0.6s ease-out;
-}
-
-.fa:hover {
-	-webkit-transform: rotateZ(720deg);
-	-moz-transform: rotateZ(720deg);
-	transform: rotateZ(720deg);
-}
-
-.color-red {
-	color: #fa4251;
-}
-
-.color-green{
-	color: #28a745;
-}
-
-.color-orange {
-	color: #ff8300;
-}
-
-.color-blue {
-	color: #00b5e9;
-}
-
-.acesso-rapido:hover {
-	cursor: pointer;
-	-webkit-transform: scale(1.1); 
-}
-
-
-
-.geral {
-	text-align: center;
-    margin: 0 auto;
-    padding: 2em 0 3em;
-}
-
-.acesso-rapido h2{
-	color:white;
-}
-
-.text{
-	padding: 50px 10px;
-}
-
-.bag {
-	margin-top:;
-}
-
-</style>
-
 <!-- MAIN CONTENT--> 
 <div class="main-content"> 
 
@@ -435,107 +339,106 @@ tbody {
 								</div>
 
 								<div class="heatmap" style="display: block;">
-										<!-- <div class="row">
-											<div class="col-md-12 col-lg-12 m-b-40"> -->
-												<div class="heatmap" id="heatmap"></div>
-											<!-- </div>
-											</div> -->
-										</div>
+									<?php if($heatmap == false){ ?>
 
-									</div>
+										<div class="heatmap"><h5 class="title-4" style="text-align: center;">Relatório não foi gerado no dia de hoje, portanto não é possível mostrar estatísticas.</h5></div>
+
+									<?php }else{ ?>
+									<div class="heatmap" id="heatmap"></div>
+									<?php } ?>
 								</div>
 
 							</div>
-
-							<!-- END FUNCIONÁRIOS -->
 						</div>
 
-
-						<!-- FOOTER -->
-						<div class="row"> 
-							<div class="col-md-12"> 
-								<div class="copyright"> 
-									<p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p> 
-								</div> 
-							</div> 
-						</div> 
-						<!-- END FOOTER -->
 					</div>
+
+					<!-- END FUNCIONÁRIOS -->
 				</div>
+
+
+				<!-- FOOTER -->
+				<div class="row"> 
+					<div class="col-md-12"> 
+						<div class="copyright"> 
+							<p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p> 
+						</div> 
+					</div> 
+				</div> 
+				<!-- END FOOTER -->
 			</div>
+		</div>
+	</div>
 
-			<script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+	<script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
 
-			<script type="text/javascript">
-				var xValues = ['A', 'B', 'C', 'D', 'E'];
+	<script type="text/javascript">
+		var xValues = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
-				var yValues = ['W', 'X', 'Y', 'Z'];
+		var yValues = ['Pietro'];
 
-				var zValues = [
-				[0.00, 0.00, 0.75, 0.75, 0.00],
-				[0.00, 0.00, 0.75, 0.75, 0.00],
-				[0.75, 0.75, 0.75, 0.75, 0.75],
-				[0.00, 0.00, 0.00, 0.75, 0.00]
-				];
+		var zValues = [
+		[0.00, 0.00, 0.75, 0.75, 0.00, 0.25, 0.25, 0.00, 0.00, 0.00, 0.00],
+		];
 
-				var colorscaleValue = [
-				[0, '#3D9970'],
-				[1, '#001f3f']
-				];
+		var colorscaleValue = [
+		[0, '#3D9970'],
+		[1, '#001f3f']
+		];
 
-				var data = [{
-					x: xValues,
-					y: yValues,
-					z: zValues,
-					type: 'heatmap',
-					colorscale: colorscaleValue,
-					showscale: true
-				}];
+		var data = [{
+			x: xValues,
+			y: yValues,
+			z: zValues,
+			type: 'heatmap',
+			colorscale: colorscaleValue,
+			showscale: true
+		}];
 
-				var layout = {
-					title: 'Performance Funcionários',
-					annotations: [],
-					xaxis: {
-						ticks: '',
-						side: 'top'
-					},
-					yaxis: {
-						ticks: '',
-						ticksuffix: ' ',
-						width: 700,
-						height: 700,
-						autosize: false
-					},
-				};
+		var layout = {
+			title: 'Performance Funcionários',
+			annotations: [],
+			xaxis: {
+				ticks: '',
+				side: 'top'
+			},
+			yaxis: {
+				ticks: '',
+				ticksuffix: ' ',
+				width: 700,
+				height: 700,
+				autosize: false
+			},
+		};
 
-				for ( var i = 0; i < yValues.length; i++ ) {
-					for ( var j = 0; j < xValues.length; j++ ) {
-						var currentValue = zValues[i][j];
-						if (currentValue != 0.0) {
-							var textColor = 'white';
-						}else{
-							var textColor = 'black';
-						}
-						var result = {
-							xref: 'x1',
-							yref: 'y1',
-							x: xValues[j],
-							y: yValues[i],
-							text: zValues[i][j],
-							font: {
-								family: 'Arial',
-								size: 12,
-								color: 'rgb(50, 171, 96)'
-							},
-							showarrow: false,
-							font: {
-								color: textColor
-							}
-						};
-						layout.annotations.push(result);
-					}
+		for ( var i = 0; i < yValues.length; i++ ) {
+			for ( var j = 0; j < xValues.length; j++ ) {
+				var currentValue = zValues[i][j];
+				if (currentValue != 0.0) {
+					var textColor = 'white';
+				}else{
+					var textColor = 'black';
 				}
+				var result = {
+					xref: 'x1',
+					yref: 'y1',
+					x: xValues[j],
+					y: yValues[i],
+					text: zValues[i][j],
+					font: {
+						family: 'Arial',
+						size: 12,
+						color: 'rgb(50, 171, 96)'
+					},
+					showarrow: false,
+					font: {
+						color: textColor
+					}
+				};
+				layout.annotations.push(result);
+			}
+		}
 
 
-				Plotly.newPlot('heatmap', data, layout);
-			</script>
+		Plotly.newPlot('heatmap', data, layout);
+	</script>
