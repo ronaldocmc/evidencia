@@ -58,7 +58,6 @@ class AccessWS extends MY_Controller
 
     public function index()
     {
-
     }
 
     /**
@@ -74,11 +73,13 @@ class AccessWS extends MY_Controller
         $this->response = new Response();
         $this->load->helper('attempt');
         $this->load->helper('token');
+        $this->load->helper('string');
         $this->load->library('form_validation');
         $this->load->model('Funcionario_model', 'fmodel');
         $this->load->model('Contato_model', 'contato_model');
         $this->load->model('Tentativa_model');
         $this->load->model('Funcionario_setor_model', 'funcionario_setor_model');
+
 
         $today = date('Y-m-d H:i:s');
 		
@@ -135,8 +136,22 @@ class AccessWS extends MY_Controller
 					$data_token['last_update'] = "01/01/2000";
 
                     $dados['token'] = generate_token($data_token);
-
                     
+                    $d = array();
+                    $d['nome'] = $user->pessoa_nome;
+                    $d['tipo'] = $user->funcao_nome;
+                    $d['count'] = $this->fmodel->get_quantidade_evidencias($user->funcionario_pk);
+
+                    $setores = $this->fmodel->get_setores($user->funcionario_pk);
+                    if(count($setores) > 0){
+                        $d['setores'] = get_string($setores, 'explode', ' ', 1);
+                    } else {
+                        $d['setores'] = '';
+                    }
+
+
+                    $dados['dados'] = $d;
+
 					$this->response->set_data($dados);
                     $this->tentativa_model->delete($this->input->ip_address());
                 } 
