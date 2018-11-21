@@ -73,6 +73,7 @@ class Funcionario_model extends CI_Model {
             populacao.pessoa_pk, 
             populacao.pessoa_nome, 
             funcionarios_funcoes.funcao_fk, 
+            funcoes.funcao_nome,
             funcionarios.organizacao_fk, 
             funcionarios.funcionario_status');
         $this->db->from(self::TABLE_NAME);
@@ -418,6 +419,16 @@ class Funcionario_model extends CI_Model {
         }
     }
 
+    public function get_setores($funcionario_id){
+        $this->db->select('setor_nome as nome');
+        $this->db->from('funcionarios_setores');
+        $this->db->join('setores', 'funcionarios_setores.setor_fk = setores.setor_pk');
+        $this->db->where('funcionarios_setores.funcionario_fk', $funcionario_id);
+
+        $result = $this->db->get()->result();
+        return $result;
+    }
+
     public function reset($pessoa_pk){
         // DELETE FROM `recuperacoes_senha` WHERE `recuperacoes_senha`.`pessoa_fk` = 11;
         // DELETE FROM `contatos` WHERE `contatos`.`pessoa_fk` = 11;
@@ -435,6 +446,21 @@ class Funcionario_model extends CI_Model {
         $this->db->where('pessoa_pk',$pessoa_pk);
         $this->db->delete('populacao');
 
+    }
+
+
+    public function get_quantidade_evidencias($funcionario_id){
+        $this->db->select('count(distinct(ordem_servico_fk)) as quantidade');
+        $this->db->from('historicos_ordens');
+        $this->db->where('funcionario_fk', $funcionario_id);
+        $this->db->where('situacao_fk', 1);
+
+        $result = $this->db->get()->row();
+        if ($result) {
+            return ($result->quantidade);
+        } else {
+            return false;
+        }
     }
 
 }
