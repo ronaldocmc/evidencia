@@ -70,16 +70,46 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
+if(ENVIRONMENT == 'production'){
+	$active_group = 'production';
+} else {
+	$active_group = 'development';
+}
 
-$active_group = 'default';
 $query_builder = TRUE;
 
-$db['default'] = array(
+$db['development'] = array(
 	'dsn'	=> '',
 	'hostname' => 'evidencia-v2.mysql.database.azure.com',
 	'username' => 'admin_prudenco@evidencia-v2',
 	'password' => 'Developers10',
 	'database' => 'evidencia',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => FALSE,
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => array(
+        'ssl_ca' => realpath('./assets/ssl/BaltimoreCyberTrustRoot.crt.pem'),
+        'ssl_verify' => FALSE
+    ),
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+
+
+$db['production'] = array(
+	'dsn'	=> '',
+	'hostname' => 'evidencia-v2.mysql.database.azure.com',
+	'username' => 'admin_prudenco@evidencia-v2',
+	'password' => 'Developers10',
+	'database' => 'evidencia-producao',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
