@@ -1,99 +1,3 @@
-<style type="text/css">
-.fs-16 {
-	font-size:16pt;
-}
-.fs-10 {
-	font-size:10pt;
-}
-
-.status--warning {
-	color: #ffc107;
-}
-
-thead {
-	font-size: 10pt;
-}
-
-tbody {
-	/*text-align: center; */
-	font-size: 10pt;
-}
-
-
-.acesso-rapido {
-	-webkit-transition: all 0.5s ease-in-out;
-	color: white;
-	height: 300px;
-}
-
-.icones{
-	background-color: #fff;
-	border-radius: 100%;
-	margin: 0 auto;
-	display: flex;
-    align-items: center;
-    justify-content: center;
-	width: 70px;
-	height: 70px;
-	-webkit-transform: scale(1.5);
-	font-size: 20pt;
-}
-
-.fa {
-    -webkit-transition: 0.6s ease-out;
-    -moz-transition:  0.6s ease-out;
-    transition:  0.6s ease-out;
-}
-
-.fa:hover {
-	-webkit-transform: rotateZ(720deg);
-	-moz-transform: rotateZ(720deg);
-	transform: rotateZ(720deg);
-}
-
-.color-red {
-	color: #fa4251;
-}
-
-.color-green{
-	color: #28a745;
-}
-
-.color-orange {
-	color: #ff8300;
-}
-
-.color-blue {
-	color: #00b5e9;
-}
-
-.acesso-rapido:hover {
-	cursor: pointer;
-	-webkit-transform: scale(1.1); 
-}
-
-
-
-.geral {
-	text-align: center;
-    margin: 0 auto;
-    padding: 2em 0 3em;
-}
-
-.acesso-rapido h2{
-	color:white;
-}
-
-.text{
-	padding: 50px 10px;
-}
-
-.bag {
-	margin-top:;
-}
-
-</style>
-
 <!-- MAIN CONTENT--> 
 <div class="main-content"> 
 
@@ -166,14 +70,14 @@ tbody {
 					</div>
 					<div class="col-sm-12 col-md-6 col-lg-3">
 						<div class="statistic__item statistic__item--green acesso-rapido">
-							<div class="geral" onclick="alert('REFRESH');">
+							<div class="geral" onclick="window.location.reload();">
 								<div class="bag">
 									<div class="icones color-green">
 										<i class="fa fas fa-refresh"></i>
 									</div>
 									<div class="text">
 										<h2>atualizar</h2>
-										<small>última atualização às 14/11/2018 10:20:21</small>
+										<small id="texto-atualizacao"></small>
 									</div>
 								</div>
 							</div>
@@ -243,68 +147,73 @@ tbody {
 
 						<div class="chart-percent-2" style="max-height: 420px !important;">
 
-							<h3 class="title-3 m-b-30"><?= $chart['title'] ?><span style="font-size:12pt;"><small> (<?= $chart['percent'] ?> %)</small></span></h3>
-							<div class="chart-wrap">
-								<canvas id="percent-chart2"></canvas>
-								<div id="chartjs-tooltip" data="<?= $chart['data'] ?>" labels="<?= $chart['labels'] ?>">
-									<table></table>
-								</div>
-							</div>
-							<?php foreach($chart['label'] as $label): ?>
-								<div class="chart-note">
-									<div class="chart-info">
-										<span class="dot dot--<?= $label['color'] ?>"></span>
-										<span><?= $label['label'] ?></span>
+							<h3 class="title-3 m-b-30"><?= $chart['title'] ?><span style="font-size:12pt;"></h3>
+								<div class="chart-wrap">
+									<canvas id="percent-chart2"></canvas>
+									<div id="chartjs-tooltip" data="<?= $chart['data'] ?>" labels="<?= $chart['labels'] ?>">
+										<table></table>
 									</div>
 								</div>
-							<?php endforeach; ?>
-						</div>
-						<!-- END CHART PERCENT-->
-					</div>
-					<div class="col-md-6 col-lg-6">
-
-						<div class="chart-percent-2" style="max-height: 420px !important;">
-							<h3 class="title-2 m-b-40">Tipos Serviços</h3>
-							<div class="chart-wrap">
-								<canvas id="sales-chart"></canvas>
+								<?php foreach($chart['label'] as $label): ?>
+									<div class="chart-note">
+										<div class="chart-info">
+											<span class="dot dot--<?= $label['color'] ?>"></span>
+											<span><?= $label['label'] ?></span>
+										</div>
+									</div>
+								<?php endforeach; ?>
 							</div>
-							<div id="chartjs-tooltip"></div>
-							<div class="chart-info"></div>
-							<div class="chart-info"></div>
+							<!-- END CHART PERCENT-->
+						</div>
+						<div class="col-md-6 col-lg-6">
+							<div class="top-campaign">
+								<h3 class="title-3 m-b-30">Tipos Serviços</h3>
+								<div class="table-responsive">
+									<table class="table table-top-campaign">
+										<tbody>
+											<?php foreach($tipos_servicos as $t): ?>
+												<tr>
+													<td><?= $t->nome ?></td>
+													<td><?= $t->quantidade ?></td>
+												</tr>
+											<?php endforeach; ?>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>			
+					</div>
+
+				</div>
+				<!-- END ESTATISTICAS CHART -->
+				<?php else: ?>
+					<div class="col-lg-12 m-b-40">
+						<div class="au au-card question" style="text-align: center;">
+							<h4 class="m-b-20">
+								Não há nenhuma ordem em execução no dia de hoje pois não há relatórios.
+
+							</h4>
+							<h4 class="m-b-10">Deseja criar um novo relatório?</h4>
+							<h4><a class="btn btn-success btn-sm" href="<?= base_url('Relatorio/novo_relatorio')?>">Sim</a> <a class="btn btn-danger btn-sm" href="#" onclick="$('.question').hide()">Não</a></h4>
 						</div>
 					</div>
-				</div>
+				<?php endif; ?>
 
-			</div>
-			<!-- END ESTATISTICAS CHART -->
-			<?php else: ?>
-				<div class="col-lg-12 m-b-40">
-					<div class="au au-card question" style="text-align: center;">
-						<h4 class="m-b-20">
-							Não há nenhuma ordem em execução no dia de hoje pois não há relatórios.
-							
-						</h4>
-						<h4 class="m-b-10">Deseja criar um novo relatório?</h4>
-						<h4><a class="btn btn-success btn-sm" href="<?= base_url('Relatorio/novo_relatorio')?>">Sim</a> <a class="btn btn-danger btn-sm" href="#" onclick="$('.question').hide()">Não</a></h4>
-					</div>
-				</div>
-			<?php endif; ?>
-
-			<div>
-				<div class="row">
-					<div class="col-md-12">
-						<h3 class="title-5 m-b-35">Tabelas</h3>
-						<hr>
-					</div>
-				</div>
-
-				<!-- ORDENS EM EXECUÇÃO -->
-				<div class="au-card d-flex flex-column">
+				<div>
 					<div class="row">
-
 						<div class="col-md-12">
-							<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Ordens em Execução</h2>
+							<h3 class="title-5 m-b-35">Tabelas</h3>
+							<hr>
 						</div>
+					</div>
+
+					<!-- ORDENS EM EXECUÇÃO -->
+					<div class="au-card d-flex flex-column">
+						<div class="row">
+
+							<div class="col-md-12">
+								<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Ordens em Execução</h2>
+							</div>
 						<!-- <div class=col-md-3>
 							<ul class="nav nav-pills">
 								<li class="active"><button type="button" class="btn btn-primary btn-sm">Tabela</button></li>
@@ -381,65 +290,64 @@ tbody {
 									<div class="col-md-9">
 										<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Funcionários</h2>
 									</div>
-									<div class=col-md-3>
+									<div class="col-md-3" style="display:none;">
 										<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 											<li class="nav-item">
-												<a class="nav-link btn-sm" id="tabela-funcionario" data-toggle="pill" href="#" role="tab" aria-controls="pills-home"
+												<a class="nav-link btn-sm active" id="tabela-funcionario" data-toggle="pill" href="#" role="tab" aria-controls="pills-home"
 												aria-selected="true">Tabela</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link btn-sm active" id="tabela-grafico" data-toggle="pill" href="#" role="tab" aria-controls="pills-profile"
+												<a class="nav-link btn-sm" id="tabela-grafico" data-toggle="pill" href="#" role="tab" aria-controls="pills-profile"
 												aria-selected="false">Gráfico</a>
 											</li>
 										</ul>
 
-<!-- 
-								<button type="button" class="btn btn-primary btn-sm">Tabela</button>
-								<button type="button" class="btn btn-outline-warning btn-sm">Gráfico</button> -->
-							</div>
-
-						</div>
-
-						<div class="row">
-							<div class="col-md-12">
-								<div id="table-funcionario" style="display: none;">
-									<div class="table-responsive table-data2 table--no-card m-b-40">
-										<table class="table table-striped table-datatable">
-											<thead>
-												<tr>
-													<th>Nome</th>
-													<th>Performance</th>
-													<th>Setores</th>
-													<th>Serviços</th>
-													<th>Última ordem concluída a</th>
-													<th>Status</th>                     
-												</tr>
-											</thead>
-											<tbody>
-												<?php foreach($funcionarios as $f): ?>
-
-													<tr>
-														<td><?= $f['nome'] ?></td>
-														<td data-toggle="tooltip" data-placement="top" title="<?= $f['performance']['tooltip'] ?>"><?= $f['performance']['label'] ?></td>
-														<td><?= $f['setores'] ?></td>
-														<td><?= $f['servicos'] ?></td>
-														<td data-toggle="tooltip" data-placement="top" title="<?= $f['ultima_ordem']['tooltip'] ?>"><?= $f['ultima_ordem']['label'] ?></td>
-														<td><span class="<?= $f['status']['class'] ?>"><?= $f['status']['label'] ?></span></td>
-													</tr>
-
-												<?php endforeach; ?>
-												
-											</tbody>
-										</table>
 									</div>
+
 								</div>
 
-								<div class="heatmap" style="display: block;">
-										<!-- <div class="row">
-											<div class="col-md-12 col-lg-12 m-b-40"> -->
+								<div class="row">
+									<div class="col-md-12">
+										<div id="table-funcionario" style="display: block;">
+											<div class="table-responsive table-data2 table--no-card m-b-40">
+												<table class="table table-striped table-datatable">
+													<thead>
+														<tr>
+															<th>Nome</th>
+															<th>Performance</th>
+															<th>Setores</th>
+															<th>Serviços</th>
+															<th>Última ordem concluída a</th>
+															<th>Status</th>                     
+														</tr>
+													</thead>
+													<tbody>
+														<?php foreach($funcionarios as $f): ?>
+
+															<tr>
+																<td><?= $f['nome'] ?></td>
+																<td data-toggle="tooltip" data-placement="top" title="<?= $f['performance']['tooltip'] ?>"><?= $f['performance']['label'] ?></td>
+																<td><?= $f['setores'] ?></td>
+																<td><?= $f['servicos'] ?></td>
+																<td data-toggle="tooltip" data-placement="top" title="<?= $f['ultima_ordem']['tooltip'] ?>"><?= $f['ultima_ordem']['label'] ?></td>
+																<td><span class="<?= $f['status']['class'] ?>"><?= $f['status']['label'] ?></span></td>
+															</tr>
+
+														<?php endforeach; ?>
+
+													</tbody>
+												</table>
+											</div>
+										</div>
+
+										<div class="heatmap" style="display: none;">
+											<?php if($heatmap == false){ ?>
+
+												<div class="heatmap"><h5 class="title-4" style="text-align: center;">Relatório não foi gerado no dia de hoje, portanto não é possível mostrar estatísticas.</h5></div>
+
+											<?php }else{ ?>
 												<div class="heatmap" id="heatmap"></div>
-											<!-- </div>
-											</div> -->
+											<?php } ?>
 										</div>
 
 									</div>
@@ -463,79 +371,77 @@ tbody {
 					</div>
 				</div>
 			</div>
+			
 
-			<script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+			<!-- <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script> -->
 
 			<script type="text/javascript">
-				var xValues = ['A', 'B', 'C', 'D', 'E'];
+				// var xValues = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
-				var yValues = ['W', 'X', 'Y', 'Z'];
+				// var yValues = ['Pietro'];
 
-				var zValues = [
-				[0.00, 0.00, 0.75, 0.75, 0.00],
-				[0.00, 0.00, 0.75, 0.75, 0.00],
-				[0.75, 0.75, 0.75, 0.75, 0.75],
-				[0.00, 0.00, 0.00, 0.75, 0.00]
-				];
+				// var zValues = [
+				// [0.00, 0.00, 0.75, 0.75, 0.00, 0.25, 0.25, 0.00, 0.00, 0.00, 0.00],
+				// ];
 
-				var colorscaleValue = [
-				[0, '#3D9970'],
-				[1, '#001f3f']
-				];
+				// var colorscaleValue = [
+				// [0, '#3D9970'],
+				// [1, '#001f3f']
+				// ];
 
-				var data = [{
-					x: xValues,
-					y: yValues,
-					z: zValues,
-					type: 'heatmap',
-					colorscale: colorscaleValue,
-					showscale: true
-				}];
+				// var data = [{
+				// 	x: xValues,
+				// 	y: yValues,
+				// 	z: zValues,
+				// 	type: 'heatmap',
+				// 	colorscale: colorscaleValue,
+				// 	showscale: true
+				// }];
 
-				var layout = {
-					title: 'Performance Funcionários',
-					annotations: [],
-					xaxis: {
-						ticks: '',
-						side: 'top'
-					},
-					yaxis: {
-						ticks: '',
-						ticksuffix: ' ',
-						width: 700,
-						height: 700,
-						autosize: false
-					},
-				};
+				// var layout = {
+				// 	title: 'Performance Funcionários',
+				// 	annotations: [],
+				// 	xaxis: {
+				// 		ticks: '',
+				// 		side: 'top'
+				// 	},
+				// 	yaxis: {
+				// 		ticks: '',
+				// 		ticksuffix: ' ',
+				// 		width: 700,
+				// 		height: 700,
+				// 		autosize: false
+				// 	},
+				// };
 
-				for ( var i = 0; i < yValues.length; i++ ) {
-					for ( var j = 0; j < xValues.length; j++ ) {
-						var currentValue = zValues[i][j];
-						if (currentValue != 0.0) {
-							var textColor = 'white';
-						}else{
-							var textColor = 'black';
-						}
-						var result = {
-							xref: 'x1',
-							yref: 'y1',
-							x: xValues[j],
-							y: yValues[i],
-							text: zValues[i][j],
-							font: {
-								family: 'Arial',
-								size: 12,
-								color: 'rgb(50, 171, 96)'
-							},
-							showarrow: false,
-							font: {
-								color: textColor
-							}
-						};
-						layout.annotations.push(result);
-					}
-				}
+				// for ( var i = 0; i < yValues.length; i++ ) {
+				// 	for ( var j = 0; j < xValues.length; j++ ) {
+				// 		var currentValue = zValues[i][j];
+				// 		if (currentValue != 0.0) {
+				// 			var textColor = 'white';
+				// 		}else{
+				// 			var textColor = 'black';
+				// 		}
+				// 		var result = {
+				// 			xref: 'x1',
+				// 			yref: 'y1',
+				// 			x: xValues[j],
+				// 			y: yValues[i],
+				// 			text: zValues[i][j],
+				// 			font: {
+				// 				family: 'Arial',
+				// 				size: 12,
+				// 				color: 'rgb(50, 171, 96)'
+				// 			},
+				// 			showarrow: false,
+				// 			font: {
+				// 				color: textColor
+				// 			}
+				// 		};
+				// 		layout.annotations.push(result);
+				// 	}
+				// }
 
 
-				Plotly.newPlot('heatmap', data, layout);
+				// Plotly.newPlot('heatmap', data, layout);
 			</script>

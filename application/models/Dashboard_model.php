@@ -84,22 +84,6 @@ class Dashboard_model extends CI_Model {
         }
     }
 
-    // public function get_ordens_hoje_em_andamento() {
-    //     $this->db->select('count(ordem_servico_fk) as count');
-    //     $this->db->from('historicos_ordens');
-    //     $this->db->join('relatorios', 'relatorios.relatorio_pk = historicos_ordens.relatorio_fk');
-    //     $this->db->where('relatorios.status', 0);
-    //     $this->db->where('DAY(historico_ordem_tempo) = DAY(CURDATE())');
-    //     $this->db->where('situacao_fk', 2); //2 = EM ANDAMENTO
-
-    //     $result = $this->db->get()->row();
-    //     if ($result) {
-    //         return ($result->count);
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
     public function get_revisores_do_dia() {
         $this->db->select('pessoa_nome as nome');
         $this->db->from('relatorios');
@@ -129,31 +113,11 @@ class Dashboard_model extends CI_Model {
         
     }
 
-    // public function get_ordens_hoje() {
-    //     //         SELECT ordem_servico_fk from historicos_ordens WHERE DAY(historico_ordem_tempo) = DAY(CURDATE()) 
-    //     // AND situacao_fk = 2;
-    //     $this->db->select('count(ordem_servico_fk) as count');
-    //     $this->db->from('historicos_ordens');
-    //     $this->db->where('DAY(historico_ordem_tempo) = DAY(CURDATE())');
-    //     $this->db->where('situacao_fk', ID_SITUACAO_ABERTA);
-
-    //     $result = $this->db->get()->result();
-    //     if ($result) {
-    //         return ($result);
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
     public function get_ordens_hoje(){
-        // $this->db->query('SELECT count(*) as quantidade FROM (select ordem_servico_fk, historico_ordem_pk,
-        //     min(historico_ordem_tempo) as data_criacao 
-        //     from evidencia.historicos_ordens 
-        //     group by ordem_servico_fk) as t WHERE DAY(t.data_criacao) = DAY(curdate());');
         $this->db->select('count(*) as quantidade');
         $this->db->from('(select ordem_servico_fk, historico_ordem_pk,
             min(historico_ordem_tempo) as data_criacao 
-            from evidencia.historicos_ordens 
+            from historicos_ordens 
             group by ordem_servico_fk) as t');
         $this->db->where('DAY(t.data_criacao) = DAY(curdate())');
         $result = $this->db->get()->row();
@@ -194,7 +158,6 @@ class Dashboard_model extends CI_Model {
         $this->db->join('funcionarios', 'relatorios.funcionario_fk = funcionarios.funcionario_pk');
         $this->db->join('populacao', 'funcionarios.pessoa_fk = populacao.pessoa_pk');
         $this->db->where('relatorios.status', 0); //em andamento
-        $this->db->where('relatorios.pegou_no_celular', 1); //pegou no celular
 
         //echo $this->db->get_compiled_select(); die();
 
@@ -314,6 +277,62 @@ class Dashboard_model extends CI_Model {
         $result = $this->db->get()->row();
         if ($result) {
             return ($result->dif);
+        } else {
+            return false;
+        }
+    }
+
+    public function get_heatmap(){
+        $sql = "SELECT
+                populacao.pessoa_nome,
+                SUM(TIME(historico_ordem_tempo) BETWEEN '00:00:00' AND '07:59:59') as `até às 8`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '08:00:00' AND '08:59:59') as `8 às 9`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '09:00:00' AND '09:59:59') as `9 às 10`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '10:00:00' AND '10:59:59') as `10 às 11`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '11:00:00' AND '11:59:59') as `11 às 12`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '12:00:00' AND '12:59:59') as `12 às 13`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '13:00:00' AND '13:59:59') as `13 às 14`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '14:00:00' AND '14:59:59') as `14 às 15`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '15:00:00' AND '15:59:59') as `15 às 16`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '16:00:00' AND '16:59:59') as `16 às 17`,
+                SUM(HOUR(historico_ordem_tempo) BETWEEN '17:00:00' AND '17:59:59') as `17 às 18`
+                FROM historicos_ordens
+                INNER JOIN relatorios_os ON relatorios_os.os_fk = historicos_ordens.ordem_servico_fk
+                INNER JOIN relatorios ON relatorios_os.relatorio_fk = relatorios.relatorio_pk
+                INNER JOIN funcionarios ON relatorios.funcionario_fk = funcionarios.funcionario_pk
+                INNER JOIN populacao ON populacao.pessoa_pk = funcionarios.pessoa_fk
+                WHERE historicos_ordens.situacao_fk = 5
+                AND DAY(relatorios.data_criacao) = DAY(CURDATE())";
+
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+
+        foreach($result as $r){
+            if($r['pessoa_nome'] == null){
+                return false;
+            } 
+        }
+
+        return $r;
+
+    }
+
+
+    public function get_tipos_servicos_do_dia(){
+        $this->db->select('tipos_servicos.tipo_servico_nome as nome, count(*) as quantidade');
+        $this->db->from('relatorios_os');
+        $this->db->join('ordens_servicos', 'relatorios_os.os_fk = ordens_servicos.ordem_servico_pk');
+        $this->db->join('servicos', 'ordens_servicos.servico_fk = servicos.servico_pk');
+        $this->db->join('tipos_servicos', 'servicos.tipo_servico_fk = tipos_servicos.tipo_servico_pk');
+        $this->db->join('relatorios', 'relatorios.relatorio_pk = relatorios_os.relatorio_fk');
+        $this->db->where('DAY(relatorios.data_criacao) = DAY(CURDATE())');
+        $this->db->group_by('tipos_servicos.tipo_servico_nome');
+
+        //echo $this->db->get_compiled_select(); die();
+
+        $result = $this->db->get()->result();
+        if ($result) {
+            return ($result);
         } else {
             return false;
         }
