@@ -471,48 +471,26 @@ $(document).on('click', '#btn-mapa-historico', function (event)
     }
 });
 
-//Funções que estendem a visualização do mapa e da imagem para adicionar uma nova situação
-$(document).on('click', '#btn-mapa-historico', function (event) 
-{
-
-    if(adicionar_mapa_historico == 1){
-
-        $('#mapa_historico').show();
-        $('#btn-mapa-historico').removeClass('btn-primary');
-        $('#btn-mapa-historico').addClass('btn-danger');
-        adicionar_mapa_historico++;
-
-    }
-    else
-    {
-        $('#mapa_historico').hide();
-        $('#btn-mapa-historico').removeClass('btn-danger');
-        $('#btn-mapa-historico').addClass('btn-primary'); 
-        adicionar_mapa_historico--;
-
-    }
-});
-
-$(document).on('click', '#btn-foto-historico', function (event) 
-{
-    if(adicionar_imagem_historico == 1){
+// $(document).on('click', '#btn-foto-historico', function (event) 
+// {
+//     if(adicionar_imagem_historico == 1){
       
-        $('#card_slider_historico').show();
-        $('#btn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
-        $('#btn-foto-historico').removeClass('btn-primary');
-        $('#btn-foto-historico').addClass('btn-danger');
-        adicionar_imagem_historico++;
-    }
-    else
-    {
-        $('#card_slider_historico').hide();
-        $('#btn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
-        $('#btn-foto-historico').removeClass('btn-danger');
-        $('#btn-foto-historico').addClass('btn-primary'); 
-        adicionar_imagem_historico--;
+//         $('#card_slider_historico').show();
+//         $('#btn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
+//         $('#btn-foto-historico').removeClass('btn-primary');
+//         $('#btn-foto-historico').addClass('btn-danger');
+//         adicionar_imagem_historico++;
+//     }
+//     else
+//     {
+//         $('#card_slider_historico').hide();
+//         $('#btn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
+//         $('#btn-foto-historico').removeClass('btn-danger');
+//         $('#btn-foto-historico').addClass('btn-primary'); 
+//         adicionar_imagem_historico--;
 
-    }
-});
+//     }
+// });
 
 
 //Função que  preenche os campos do "Editar Histórico"
@@ -521,10 +499,6 @@ $(document).on('click', '.btn_historico', function (event)
     document.getElementById("ce_historico_servico").focus();
     var imagem;
     var local_ordem='';
-
-    $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
-    posicao_selecionada = $(this).val();
-
     remove_data();
 
     $("#v_descricao").html(ordens_servico[posicao_selecionada]['ordem_servico_desc']);
@@ -944,7 +918,7 @@ send_historico = (imagem) =>
               $('#situacao_pk_historico option:selected').text(),
               ordens_servico[i]['setor_nome'],
               '<div class="btn-group">  <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-              '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+              '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
               '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
               '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
               ]).draw();
@@ -1139,7 +1113,7 @@ send = (imagem) =>
                   os.situacao_nome,
                   os.setor_nome,
                   '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="'+(ordens_servico.length - 1)+'" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_ordem_servico" title="Editar">' +
-                  '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_servico" title="Histórico">' +
+                  '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (ordens_servico.length - 1) +'" data-target="#ce_historico_servico" title="Histórico">' +
                   '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(ordens_servico.length - 1)+'" data-target="#d_servico" title="Desativar">' +
                   '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                   ]).draw(false);
@@ -1166,7 +1140,7 @@ send = (imagem) =>
             os.situacao_nome,
             os.setor_nome,
             '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="'+ (i) +'" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_servico" title="Histórico">' +
+            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
             '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
             '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
             ]).draw();
@@ -1438,7 +1412,7 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
                     os.situacao_nome,
                     os.setor_nome,
                     '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                     ]).draw(false);
@@ -1452,7 +1426,7 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
                     os.situacao_nome,
                     os.setor_nome,
                     '<div class="btn-group"><button type="button" disabled style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled  style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled  style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Reativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
                     ]).draw(false);
@@ -1476,7 +1450,7 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
                     os.situacao_nome,
                     os.setor_nome,
                     '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                     ]).draw(false);
@@ -1500,7 +1474,7 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
                     os.situacao_nome,
                     os.setor_nome,
                     '<div class="btn-group"><button type="button" disabled style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Reativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
                     ]).draw(false);
@@ -1524,7 +1498,7 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
                     os.situacao_nome,
                     os.setor_nome,
                     '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                     ]).draw(false);
@@ -1548,7 +1522,7 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
                     os.situacao_nome,
                     os.setor_nome,
                     '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
                     '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
                     '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                     ]).draw(false);
