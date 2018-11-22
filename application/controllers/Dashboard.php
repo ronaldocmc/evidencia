@@ -29,6 +29,7 @@ class Dashboard extends CRUD_Controller
         $dados['funcionarios'] = $this->get_funcionarios();
 
         $dados['heatmap'] = $this->heatmap();
+        $dados['tipos_servicos'] = $this->get_tipos_servicos();
 
         $this->session->set_flashdata('css',[
             0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
@@ -53,6 +54,13 @@ class Dashboard extends CRUD_Controller
                 'params' =>  $dados
             ]
         ],'administrador');
+    }
+
+    private function get_tipos_servicos(){
+        $this->load->model('dashboard_model', 'model');
+        
+        return $this->model->get_tipos_servicos_do_dia();
+
     }
 
     private function heatmap(){

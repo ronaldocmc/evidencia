@@ -147,68 +147,73 @@
 
 						<div class="chart-percent-2" style="max-height: 420px !important;">
 
-							<h3 class="title-3 m-b-30"><?= $chart['title'] ?><span style="font-size:12pt;"><small> (<?= $chart['percent'] ?> %)</small></span></h3>
-							<div class="chart-wrap">
-								<canvas id="percent-chart2"></canvas>
-								<div id="chartjs-tooltip" data="<?= $chart['data'] ?>" labels="<?= $chart['labels'] ?>">
-									<table></table>
-								</div>
-							</div>
-							<?php foreach($chart['label'] as $label): ?>
-								<div class="chart-note">
-									<div class="chart-info">
-										<span class="dot dot--<?= $label['color'] ?>"></span>
-										<span><?= $label['label'] ?></span>
+							<h3 class="title-3 m-b-30"><?= $chart['title'] ?><span style="font-size:12pt;"></h3>
+								<div class="chart-wrap">
+									<canvas id="percent-chart2"></canvas>
+									<div id="chartjs-tooltip" data="<?= $chart['data'] ?>" labels="<?= $chart['labels'] ?>">
+										<table></table>
 									</div>
 								</div>
-							<?php endforeach; ?>
-						</div>
-						<!-- END CHART PERCENT-->
-					</div>
-					<div class="col-md-6 col-lg-6">
-
-						<div class="chart-percent-2" style="max-height: 420px !important;">
-							<h3 class="title-2 m-b-40">Tipos Serviços</h3>
-							<div class="chart-wrap">
-								<canvas id="sales-chart"></canvas>
+								<?php foreach($chart['label'] as $label): ?>
+									<div class="chart-note">
+										<div class="chart-info">
+											<span class="dot dot--<?= $label['color'] ?>"></span>
+											<span><?= $label['label'] ?></span>
+										</div>
+									</div>
+								<?php endforeach; ?>
 							</div>
-							<div id="chartjs-tooltip"></div>
-							<div class="chart-info"></div>
-							<div class="chart-info"></div>
+							<!-- END CHART PERCENT-->
+						</div>
+						<div class="col-md-6 col-lg-6">
+							<div class="top-campaign">
+								<h3 class="title-3 m-b-30">Tipos Serviços</h3>
+								<div class="table-responsive">
+									<table class="table table-top-campaign">
+										<tbody>
+											<?php foreach($tipos_servicos as $t): ?>
+												<tr>
+													<td><?= $t->nome ?></td>
+													<td><?= $t->quantidade ?></td>
+												</tr>
+											<?php endforeach; ?>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>			
+					</div>
+
+				</div>
+				<!-- END ESTATISTICAS CHART -->
+				<?php else: ?>
+					<div class="col-lg-12 m-b-40">
+						<div class="au au-card question" style="text-align: center;">
+							<h4 class="m-b-20">
+								Não há nenhuma ordem em execução no dia de hoje pois não há relatórios.
+
+							</h4>
+							<h4 class="m-b-10">Deseja criar um novo relatório?</h4>
+							<h4><a class="btn btn-success btn-sm" href="<?= base_url('Relatorio/novo_relatorio')?>">Sim</a> <a class="btn btn-danger btn-sm" href="#" onclick="$('.question').hide()">Não</a></h4>
 						</div>
 					</div>
-				</div>
+				<?php endif; ?>
 
-			</div>
-			<!-- END ESTATISTICAS CHART -->
-			<?php else: ?>
-				<div class="col-lg-12 m-b-40">
-					<div class="au au-card question" style="text-align: center;">
-						<h4 class="m-b-20">
-							Não há nenhuma ordem em execução no dia de hoje pois não há relatórios.
-							
-						</h4>
-						<h4 class="m-b-10">Deseja criar um novo relatório?</h4>
-						<h4><a class="btn btn-success btn-sm" href="<?= base_url('Relatorio/novo_relatorio')?>">Sim</a> <a class="btn btn-danger btn-sm" href="#" onclick="$('.question').hide()">Não</a></h4>
-					</div>
-				</div>
-			<?php endif; ?>
-
-			<div>
-				<div class="row">
-					<div class="col-md-12">
-						<h3 class="title-5 m-b-35">Tabelas</h3>
-						<hr>
-					</div>
-				</div>
-
-				<!-- ORDENS EM EXECUÇÃO -->
-				<div class="au-card d-flex flex-column">
+				<div>
 					<div class="row">
-
 						<div class="col-md-12">
-							<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Ordens em Execução</h2>
+							<h3 class="title-5 m-b-35">Tabelas</h3>
+							<hr>
 						</div>
+					</div>
+
+					<!-- ORDENS EM EXECUÇÃO -->
+					<div class="au-card d-flex flex-column">
+						<div class="row">
+
+							<div class="col-md-12">
+								<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Ordens em Execução</h2>
+							</div>
 						<!-- <div class=col-md-3>
 							<ul class="nav nav-pills">
 								<li class="active"><button type="button" class="btn btn-primary btn-sm">Tabela</button></li>
@@ -285,28 +290,25 @@
 									<div class="col-md-9">
 										<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Funcionários</h2>
 									</div>
-									<div class=col-md-3>
+									<div class="col-md-3" style="display:none;">
 										<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 											<li class="nav-item">
-												<a class="nav-link btn-sm" id="tabela-funcionario" data-toggle="pill" href="#" role="tab" aria-controls="pills-home"
+												<a class="nav-link btn-sm active" id="tabela-funcionario" data-toggle="pill" href="#" role="tab" aria-controls="pills-home"
 												aria-selected="true">Tabela</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link btn-sm active" id="tabela-grafico" data-toggle="pill" href="#" role="tab" aria-controls="pills-profile"
+												<a class="nav-link btn-sm" id="tabela-grafico" data-toggle="pill" href="#" role="tab" aria-controls="pills-profile"
 												aria-selected="false">Gráfico</a>
 											</li>
 										</ul>
 
-<!-- 
-								<button type="button" class="btn btn-primary btn-sm">Tabela</button>
-								<button type="button" class="btn btn-outline-warning btn-sm">Gráfico</button> -->
 							</div>
 
 						</div>
 
 						<div class="row">
 							<div class="col-md-12">
-								<div id="table-funcionario" style="display: none;">
+								<div id="table-funcionario" style="display: block;">
 									<div class="table-responsive table-data2 table--no-card m-b-40">
 										<table class="table table-striped table-datatable">
 											<thead>
@@ -338,13 +340,13 @@
 									</div>
 								</div>
 
-								<div class="heatmap" style="display: block;">
+								<div class="heatmap" style="display: none;">
 									<?php if($heatmap == false){ ?>
 
 										<div class="heatmap"><h5 class="title-4" style="text-align: center;">Relatório não foi gerado no dia de hoje, portanto não é possível mostrar estatísticas.</h5></div>
 
 									<?php }else{ ?>
-									<div class="heatmap" id="heatmap"></div>
+										<div class="heatmap" id="heatmap"></div>
 									<?php } ?>
 								</div>
 
