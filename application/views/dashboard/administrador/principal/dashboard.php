@@ -70,14 +70,14 @@
 					</div>
 					<div class="col-sm-12 col-md-6 col-lg-3">
 						<div class="statistic__item statistic__item--green acesso-rapido">
-							<div class="geral" onclick="alert('REFRESH');">
+							<div class="geral" onclick="window.location.reload();">
 								<div class="bag">
 									<div class="icones color-green">
 										<i class="fa fas fa-refresh"></i>
 									</div>
 									<div class="text">
 										<h2>atualizar</h2>
-										<small>última atualização às 14/11/2018 10:20:21</small>
+										<small id="texto-atualizacao"></small>
 									</div>
 								</div>
 							</div>
@@ -302,145 +302,146 @@
 											</li>
 										</ul>
 
-							</div>
+									</div>
 
-						</div>
+								</div>
 
-						<div class="row">
-							<div class="col-md-12">
-								<div id="table-funcionario" style="display: block;">
-									<div class="table-responsive table-data2 table--no-card m-b-40">
-										<table class="table table-striped table-datatable">
-											<thead>
-												<tr>
-													<th>Nome</th>
-													<th>Performance</th>
-													<th>Setores</th>
-													<th>Serviços</th>
-													<th>Última ordem concluída a</th>
-													<th>Status</th>                     
-												</tr>
-											</thead>
-											<tbody>
-												<?php foreach($funcionarios as $f): ?>
+								<div class="row">
+									<div class="col-md-12">
+										<div id="table-funcionario" style="display: block;">
+											<div class="table-responsive table-data2 table--no-card m-b-40">
+												<table class="table table-striped table-datatable">
+													<thead>
+														<tr>
+															<th>Nome</th>
+															<th>Performance</th>
+															<th>Setores</th>
+															<th>Serviços</th>
+															<th>Última ordem concluída a</th>
+															<th>Status</th>                     
+														</tr>
+													</thead>
+													<tbody>
+														<?php foreach($funcionarios as $f): ?>
 
-													<tr>
-														<td><?= $f['nome'] ?></td>
-														<td data-toggle="tooltip" data-placement="top" title="<?= $f['performance']['tooltip'] ?>"><?= $f['performance']['label'] ?></td>
-														<td><?= $f['setores'] ?></td>
-														<td><?= $f['servicos'] ?></td>
-														<td data-toggle="tooltip" data-placement="top" title="<?= $f['ultima_ordem']['tooltip'] ?>"><?= $f['ultima_ordem']['label'] ?></td>
-														<td><span class="<?= $f['status']['class'] ?>"><?= $f['status']['label'] ?></span></td>
-													</tr>
+															<tr>
+																<td><?= $f['nome'] ?></td>
+																<td data-toggle="tooltip" data-placement="top" title="<?= $f['performance']['tooltip'] ?>"><?= $f['performance']['label'] ?></td>
+																<td><?= $f['setores'] ?></td>
+																<td><?= $f['servicos'] ?></td>
+																<td data-toggle="tooltip" data-placement="top" title="<?= $f['ultima_ordem']['tooltip'] ?>"><?= $f['ultima_ordem']['label'] ?></td>
+																<td><span class="<?= $f['status']['class'] ?>"><?= $f['status']['label'] ?></span></td>
+															</tr>
 
-												<?php endforeach; ?>
-												
-											</tbody>
-										</table>
+														<?php endforeach; ?>
+
+													</tbody>
+												</table>
+											</div>
+										</div>
+
+										<div class="heatmap" style="display: none;">
+											<?php if($heatmap == false){ ?>
+
+												<div class="heatmap"><h5 class="title-4" style="text-align: center;">Relatório não foi gerado no dia de hoje, portanto não é possível mostrar estatísticas.</h5></div>
+
+											<?php }else{ ?>
+												<div class="heatmap" id="heatmap"></div>
+											<?php } ?>
+										</div>
+
 									</div>
 								</div>
 
-								<div class="heatmap" style="display: none;">
-									<?php if($heatmap == false){ ?>
-
-										<div class="heatmap"><h5 class="title-4" style="text-align: center;">Relatório não foi gerado no dia de hoje, portanto não é possível mostrar estatísticas.</h5></div>
-
-									<?php }else{ ?>
-										<div class="heatmap" id="heatmap"></div>
-									<?php } ?>
-								</div>
-
 							</div>
+
+							<!-- END FUNCIONÁRIOS -->
 						</div>
 
-					</div>
 
-					<!-- END FUNCIONÁRIOS -->
-				</div>
-
-
-				<!-- FOOTER -->
-				<div class="row"> 
-					<div class="col-md-12"> 
-						<div class="copyright"> 
-							<p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p> 
+						<!-- FOOTER -->
+						<div class="row"> 
+							<div class="col-md-12"> 
+								<div class="copyright"> 
+									<p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p> 
+								</div> 
+							</div> 
 						</div> 
-					</div> 
-				</div> 
-				<!-- END FOOTER -->
+						<!-- END FOOTER -->
+					</div>
+				</div>
 			</div>
-		</div>
-	</div>
+			
 
-	<script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+			<!-- <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script> -->
 
-	<script type="text/javascript">
-		var xValues = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+			<script type="text/javascript">
+				// var xValues = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
-		var yValues = ['Pietro'];
+				// var yValues = ['Pietro'];
 
-		var zValues = [
-		[0.00, 0.00, 0.75, 0.75, 0.00, 0.25, 0.25, 0.00, 0.00, 0.00, 0.00],
-		];
+				// var zValues = [
+				// [0.00, 0.00, 0.75, 0.75, 0.00, 0.25, 0.25, 0.00, 0.00, 0.00, 0.00],
+				// ];
 
-		var colorscaleValue = [
-		[0, '#3D9970'],
-		[1, '#001f3f']
-		];
+				// var colorscaleValue = [
+				// [0, '#3D9970'],
+				// [1, '#001f3f']
+				// ];
 
-		var data = [{
-			x: xValues,
-			y: yValues,
-			z: zValues,
-			type: 'heatmap',
-			colorscale: colorscaleValue,
-			showscale: true
-		}];
+				// var data = [{
+				// 	x: xValues,
+				// 	y: yValues,
+				// 	z: zValues,
+				// 	type: 'heatmap',
+				// 	colorscale: colorscaleValue,
+				// 	showscale: true
+				// }];
 
-		var layout = {
-			title: 'Performance Funcionários',
-			annotations: [],
-			xaxis: {
-				ticks: '',
-				side: 'top'
-			},
-			yaxis: {
-				ticks: '',
-				ticksuffix: ' ',
-				width: 700,
-				height: 700,
-				autosize: false
-			},
-		};
+				// var layout = {
+				// 	title: 'Performance Funcionários',
+				// 	annotations: [],
+				// 	xaxis: {
+				// 		ticks: '',
+				// 		side: 'top'
+				// 	},
+				// 	yaxis: {
+				// 		ticks: '',
+				// 		ticksuffix: ' ',
+				// 		width: 700,
+				// 		height: 700,
+				// 		autosize: false
+				// 	},
+				// };
 
-		for ( var i = 0; i < yValues.length; i++ ) {
-			for ( var j = 0; j < xValues.length; j++ ) {
-				var currentValue = zValues[i][j];
-				if (currentValue != 0.0) {
-					var textColor = 'white';
-				}else{
-					var textColor = 'black';
-				}
-				var result = {
-					xref: 'x1',
-					yref: 'y1',
-					x: xValues[j],
-					y: yValues[i],
-					text: zValues[i][j],
-					font: {
-						family: 'Arial',
-						size: 12,
-						color: 'rgb(50, 171, 96)'
-					},
-					showarrow: false,
-					font: {
-						color: textColor
-					}
-				};
-				layout.annotations.push(result);
-			}
-		}
+				// for ( var i = 0; i < yValues.length; i++ ) {
+				// 	for ( var j = 0; j < xValues.length; j++ ) {
+				// 		var currentValue = zValues[i][j];
+				// 		if (currentValue != 0.0) {
+				// 			var textColor = 'white';
+				// 		}else{
+				// 			var textColor = 'black';
+				// 		}
+				// 		var result = {
+				// 			xref: 'x1',
+				// 			yref: 'y1',
+				// 			x: xValues[j],
+				// 			y: yValues[i],
+				// 			text: zValues[i][j],
+				// 			font: {
+				// 				family: 'Arial',
+				// 				size: 12,
+				// 				color: 'rgb(50, 171, 96)'
+				// 			},
+				// 			showarrow: false,
+				// 			font: {
+				// 				color: textColor
+				// 			}
+				// 		};
+				// 		layout.annotations.push(result);
+				// 	}
+				// }
 
 
-		Plotly.newPlot('heatmap', data, layout);
-	</script>
+				// Plotly.newPlot('heatmap', data, layout);
+			</script>
