@@ -55,7 +55,7 @@ class Dashboard_model extends CI_Model {
         $this->db->limit(1);
 
 
-        $result = $this->db->get()->row()->quantidade;
+        $result = $this->db->get()->row();
         if ($result) {
             return ($result->quantidade);
         } else {
@@ -105,6 +105,7 @@ class Dashboard_model extends CI_Model {
         $this->db->join('relatorios_os', 'relatorios.relatorio_pk = relatorios_os.relatorio_fk');
         $this->db->join('ordens_servicos', 'relatorios_os.os_fk = ordens_servicos.ordem_servico_pk');
         $this->db->join('setores', 'ordens_servicos.setor_fk = setores.setor_pk');
+        $this->db->where('relatorios.status', 0);
         $this->db->where('DAY(relatorios.data_criacao) = DAY(CURDATE())');
 
         //echo $this->db->get_compiled_select(); die();
