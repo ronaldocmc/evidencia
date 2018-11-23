@@ -1063,7 +1063,7 @@ private function create_relatorio($filtro)
         }
         else
         {
-            if (!$id_relatorio) 
+            if ($id_relatorio === NULL) 
             {
                 $relatorios = $this->relatorio_model->get_objects(['relatorios.status' => 0]);
 
@@ -1127,16 +1127,16 @@ private function create_relatorio($filtro)
                     );
                 }   
             }
-            //após verificar todas as ordens, setamos o status do relatório para 1 ou 2 para indicar que o relatório foi entregue.
+            //após verificar todas as ordens, setamos o status do relatório para 1 ou 2 para indicar que o relatório foi entregue completo ou incompleto.
             if ($completo) 
             {
                 // Completo
-                $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $os->relatorio_fk]);
+                $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $id_relatorio]);
             }
             else
             {
                 // Incompleto
-                $this->relatorio_model->update(['status' => 2], ['relatorio_pk' => $os->relatorio_fk]);
+                $this->relatorio_model->update(['status' => 2], ['relatorio_pk' => $id_relatorio]);
             }
 
             $this->relatorio_model->set_data_entrega($id_relatorio);

@@ -119,6 +119,7 @@ class Funcionario_model extends CI_Model {
         $this->db->select('
             funcionarios.funcionario_pk,
             funcionarios.funcionario_status,
+            funcionarios.organizacao_fk,
             populacao.pessoa_pk,
             populacao.pessoa_nome, 
             populacao.pessoa_cpf,
