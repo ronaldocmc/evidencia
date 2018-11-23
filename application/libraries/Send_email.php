@@ -24,17 +24,7 @@ class Send_email
 
 		if (ENABLE_EMAIL)
 		{
-			// $data['url'] = $message;
-			// $body = $this->ci->load->view($view, $data, TRUE);
-
-			// $result = $this->ci->email
-			//     ->from('no.reply.teste.evidencia@gmail.com')
-			//     ->to($email)
-			//     ->subject($subject)
-			//     ->message($body)
-			//     ->send();
-			// return $result;
-
+			
 			$data['url'] = $message;
 			$body = $this->ci->load->view($view, $data, TRUE);
 
