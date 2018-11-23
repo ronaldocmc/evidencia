@@ -10,12 +10,13 @@
                             <h2 class="title-1">Painel de Gerenciamento de Relatórios </h2>
                         </div>
 
-
+                        <?php if($relatorio->pegou_no_celular == 0): ?>
                         <button class="au-btn au-btn-icon au-btn--blue" data-toggle="modal" data-target="#delegar_para_outra_pessoa" >
                             <i class="zmdi zmdi-refresh"></i>Trocar Funcionário</button>
 
                             <button class="au-btn au-btn-icon btn au-btn--blue pull-right" data-toggle="modal" data-target="#d-relatorio" >
                                 <i class="zmdi zmdi-delete"></i>Destruir Relatório</button>
+                        <?php endif; ?>
                             </div>
                         </div>
 
@@ -75,11 +76,12 @@
 
                                         
                                     </div>
-
                                     <div class="py-4">
+                                    <?php if($relatorio->pegou_no_celular == 1): ?>
                                         <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo align-middle" data-toggle="modal" data-target="#restaurar_os"> 
                                             Receber Relatório
                                         </button>
+                                    <?php endif; ?>
                                     </div>
 
 
