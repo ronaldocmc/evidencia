@@ -198,7 +198,7 @@
 						</div>
 					</div>
 				<?php endif; ?>
-
+				<?php if(count($ordens_em_execucao) > 0): ?>
 				<div>
 					<div class="row">
 						<div class="col-md-12">
@@ -356,6 +356,8 @@
 							</div>
 
 							<!-- END FUNCIONÁRIOS -->
+
+						<?php endif; ?>
 						</div>
 
 
