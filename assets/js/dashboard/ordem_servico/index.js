@@ -1173,12 +1173,13 @@ send = (imagem) =>
       if($('#procedencia_pk').val() == "2"){
         $('#info_cidadao').show();
     }
-    $("#image-upload-div").show();
+    
     $('#logradouro-input').removeClass('loading');  
     $("#bairro-input").removeClass('loading');
     $('#titulo').html("Nova ordem de serviço");
     muda_depto();
     $('#ce_ordem_servico').modal('show');
+    $("#card_imagem").show();
     $('#ordem_servico_pk').val("");
 });
 
@@ -1235,7 +1236,6 @@ send = (imagem) =>
         $('#setor_pk').val(parseInt(ordens_servico[posicao_selecionada]['setor_pk']));
         $("#latitude").val(ordens_servico[posicao_selecionada]['coordenada_lat']);
         $("#longitude").val(ordens_servico[posicao_selecionada]['coordenada_long']);
-        $("#image-upload-div").hide();
         $("#card_imagem").hide();
 
         var data_local;
@@ -1302,6 +1302,7 @@ $( "#close-modal" ).click(function() {
 $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
     $("#tipo_servico option").remove();
     $("#servico_pk option").remove();
+    $("#card_imagem").show();
     primeiro_editar = false; 
 });
 

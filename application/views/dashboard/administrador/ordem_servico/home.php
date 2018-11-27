@@ -55,7 +55,7 @@
                                                     <?=$ordem_servico->ordem_servico_cod?>
                                                 </td>
                                                 <td>
-                                                    <span style="display: none"><?=$ordem_servico->data_criacao?></span><?=date('d/m/Y H:i:s', strtotime($ordem_servico->data_criacao))?>
+                                                    <?=$ordem_servico->data_criacao?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->prioridade_nome?>
