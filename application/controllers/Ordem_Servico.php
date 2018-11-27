@@ -364,7 +364,7 @@ class Ordem_Servico extends CRUD_Controller {
 	}
 
 	//Função que chama a função de inserção de imagem relacionando-a com a situação atual. 
-	public function insert_imagem_situacao($return_ordem, $return_historico, $flag, $data_local=NULL, $cod_os=NULL, 
+	public function insert_imagem_situacao($return_ordem, $return_historico, $flag, $data_local, $cod_os=NULL, 
 		$endereco_os=NULL, $populacao = NULL)
 	{
 	    //Se o usuário enviou, então realizamos o upload
@@ -377,6 +377,7 @@ class Ordem_Servico extends CRUD_Controller {
 
 		);
 
+		
 		//Realizando a inserção do caminho da imagem no banco de dados
 		$setou = $this->ordem_servico_model->insert_image($data_imagem);
 
@@ -390,7 +391,7 @@ class Ordem_Servico extends CRUD_Controller {
 					'ordem_servico_pk' => $return_ordem['id'],
 					'historico_ordem_pk' => $return_historico['id'],
 					'ordem_servico_cod' => $cod_os,
-					'local_pk' => $data_local['local_fk'],
+					'local_fk' => $data_local,
 					'populacao_os' => $populacao,
 					'data_criacao' => date('d/m/Y h:i:s'),
 					'endereco_os' => $endereco_os
@@ -416,7 +417,7 @@ class Ordem_Servico extends CRUD_Controller {
 					'mensagem' => "Não foi possivel inserir a imagem! Contudo, a ordem de serviço foi cadastrada com sucesso!",
 					'ordem_servico_pk' => $return_ordem['id'],
 					'historico_ordem_pk' => $return_historico['id'],
-					'local_fk' => $data_local['local_fk'],
+					'local_fk' => $data_local,
 					'populacao_os' => $populacao,
 					'ordem_servico_cod' => $cod_os,
 					'data_criacao' => date('d/m/Y h:i:s'),
@@ -596,7 +597,11 @@ class Ordem_Servico extends CRUD_Controller {
 	            			}
 	            			
 
-	            			$return_update = $this->pessoa_model->update_contato($data_update, ['pessoa_fk' => $get_pessoa->pessoa_pk]);
+	            			if($data_update !== NULL){
+
+	            				$return_update = $this->pessoa_model->update_contato($data_update, ['pessoa_fk' => $get_pessoa->pessoa_pk]);
+	            			}
+	            			
 
 	          				//Aplicando o id resultante no return_pessoa
 	            			$return_pessoa['pessoa_pk'] = $get_pessoa->pessoa_pk;
@@ -850,8 +855,11 @@ class Ordem_Servico extends CRUD_Controller {
 	            		// var_dump($populacao_os);
 
 	            		//Realizando a inserção do cidadão
-	            		$return_pessoa = $this->pessoa_model->update($data_pessoa, $data_contato, null, null, $populacao_os[0]->pessoa_fk);
+	            		if($data_contato !== null){
+	            			$return_pessoa = $this->pessoa_model->update($data_pessoa, $data_contato, null, null, $populacao_os[0]->pessoa_fk);
 
+	            		}
+	            		
 	            		// var_dump($return_pessoa); 
 	            	}
 
