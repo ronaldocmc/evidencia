@@ -319,10 +319,11 @@
                                             <small class="form-text text-muted">Insira um ponto de referência para buscar o local</small>
                                         </div>
                                         <div class="col-12 col-md-8">
-                                            <label for="logradouro_nome">Logradouro</label>
-                                            <input class="form-control input-dropdown loading endereco" type="text" id="logradouro-input" name="logradouro_nome" autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]'>
+                                            <!-- O que removi do dropdown: autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]'> 
                                             <ul class="dropdown-menu" data-return = "#logradouro_pk" data-next="#numero-input">
-                                            </ul>
+                                            </ul>-->
+                                            <label for="logradouro_nome">Logradouro</label>
+                                            <input class="form-control loading endereco" type="text" id="logradouro-input" name="logradouro_nome">
                                             <small class="form-text text-muted">Insira o logradouro para buscar o local</small>
                                         </div>
                                     </div>

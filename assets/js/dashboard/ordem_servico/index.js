@@ -421,14 +421,6 @@ $(".endereco").focusout(function() {
 });
 
 
-//Função que recolhe o dropdown se o usuário sair do foco do campo
-$('.input-dropdown').focusout(function(){
-
-    $('.dropdown-menu').removeClass('show');
-
-});
-
-
 function remove_data() {
     $("#v_descricao").html('');
     $("#v_prioridade").html('');
