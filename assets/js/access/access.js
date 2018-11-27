@@ -2,73 +2,21 @@
 // const google = "6LfwtV4UAAAAANnXXJhkM87IgNRNQghpwW467CEc";
 const base_url = window.location .protocol + "//" + window.location.host + "/" + window.location.pathname.split('/')[1];
 
-$(document).ready(function () {
-
-  //Aplicando efeito nos elementos da área de login
-//   $("#btn-login-large").on("mouseover", function () {
-//     $("#avatar_id_large").css("background-color", "black");
-// });
-
-//   $("#btn-login-large").on("mouseout", function () {
-//     $("#avatar_id_large").css("background-color", "#666");
-// });
-});
-
-//Aplicando efeito nos elementos da área de login modal
-// $("#btn-login").on("mouseover", function () {
-//   $("#avatar_id").css("background-color", "black");
-// });
-
-// $("#btn-login").on("mouseout", function () {
-//   $("#avatar_id").css("background-color", "#666");
-// });
-
-
-//Ajustando o fechamento do modal quando a tela já está no tamanho padrão
-$(window).on('resize', function () {
-  var win = $(this);
-  if (win.width() >= 992) {
-    $('#modal-acesso').modal('hide');
-    $('#username_modal').val('');
-    $('#password_modal').val('');
-  };
-});
-
-
 //Função que verifica se o usuário inseriu uma entrada corretamente
 verify_data = () => {
 
   //Recebendo a entrada inserida pelo usuário
   var e = $('#username').val(), s = $('#password').val();
 
-  //Caso o usuário esteja em mobile, recebe dados do modal
-  var e_modal = $('#username_modal').val(), s_modal = $('#email_modal').val();
-
   //Verificando se os campos foram preenchidos corretamente
 
-  //Verificando se enviou pelo formulário da direita
-  if ($(window).width() >= 992) {
 
-    if ($.isEmptyObject(e) && $.isEmptyObject(s)) {
-      $('.area-acesso').append(alerts_access('no_data'));
-  } else if ($.isEmptyObject(e) || $.isEmptyObject(s)) {
-      $('.area-acesso').append(alerts_access('incorrect_data'));
+
+  if ($.isEmptyObject(e) || $.isEmptyObject(s)) {
+    $('.area-acesso').append(alerts_access('no_data'));
   } else {
-      login_send(e, s);
+    login_send(e, s);
   }
-
-} else {
-    //Verificando se enviou pelo modal
-
-    if ($.isEmptyObject(e_modal) && $.isEmptyObject(s_modal)) {
-      $('.area-acesso').append(alerts_access('no_data'));
-  } else if ($.isEmptyObject(e_modal) || $.isEmptyObject(s_modal)) {
-      $('.area-acesso').append(alerts_access('incorrect_data'));
-  } else {
-      login_send(e_modal, s_modal);
-  }
-}
-
 
 }
 
