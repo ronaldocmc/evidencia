@@ -23,6 +23,7 @@ var posicao_selecionada = null;
 var primeiro_editar = false;
 var adicionar_imagem_historico = 1; 
 var adicionar_mapa_historico = 1; 
+
 // var adicionar_imagem_situacao= 1; 
 // var adicionar_mapa_situacao = 1; 
 //-----------------------------------//
@@ -446,7 +447,7 @@ $(document).on('click', '#btn-mapa-historico', function (event)
 {
 
     if(adicionar_mapa_historico == 1){
-      
+
         $('#mapa_historico').show();
         $('#btn-mapa-historico').removeClass('btn-primary');
         $('#btn-mapa-historico').addClass('btn-danger');
@@ -466,7 +467,7 @@ $(document).on('click', '#btn-mapa-historico', function (event)
 // $(document).on('click', '#btn-foto-historico', function (event) 
 // {
 //     if(adicionar_imagem_historico == 1){
-      
+
 //         $('#card_slider_historico').show();
 //         $('#btn-foto-historico').html('<i class="fa fa-camera" aria-hidden="true"></i>');
 //         $('#btn-foto-historico').removeClass('btn-primary');
@@ -596,50 +597,50 @@ $(document).on('click', '.btn_atividade', function (event)
 
 get_historico = (id) => 
 {   $('.carousel').carousel();
-    btn_load($('#btn-salvar-historico'));
-    $('.close').attr('disabled', 'disabled');
-    $('.close').css('cursor', 'default');
-    $('#fechar-historico').attr('disabled', 'disabled');
-    $('#fechar-historico').css('cursor', 'default');
+btn_load($('#btn-salvar-historico'));
+$('.close').attr('disabled', 'disabled');
+$('.close').css('cursor', 'default');
+$('#fechar-historico').attr('disabled', 'disabled');
+$('#fechar-historico').css('cursor', 'default');
 
-    var html = "";
-    var indicators = "";
-    var active = " active";
-    var timeline = "";
+var html = "";
+var indicators = "";
+var active = " active";
+var timeline = "";
 
-    var d = new Date();
-    dataHora = (d.toLocaleString());  
+var d = new Date();
+dataHora = (d.toLocaleString());  
 
-    $.ajax({
-        url: base_url + '/Ordem_Servico/json_especifico/' + id + '/' + 1,
-        dataType: "json",
-        success: function (response) {
-            btn_ativar($('#btn-salvar-historico'));
-            $('.close').removeAttr('disabled');
-            $('.close').css('cursor', 'pointer');
-            $('#fechar-historico').removeAttr('disabled');
-            $('#fechar-historico').css('cursor', 'pointer');
+$.ajax({
+    url: base_url + '/Ordem_Servico/json_especifico/' + id + '/' + 1,
+    dataType: "json",
+    success: function (response) {
+        btn_ativar($('#btn-salvar-historico'));
+        $('.close').removeAttr('disabled');
+        $('.close').css('cursor', 'pointer');
+        $('#fechar-historico').removeAttr('disabled');
+        $('#fechar-historico').css('cursor', 'pointer');
 
-            if(response.ordem.historico.length > 2){
-                html +=     '<div id="myCarousel" class="carousel slide"data-ride="carousel">' +
-                '<div class="carousel-inner row w-100 mx-auto"></div>' +
-                '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
-                '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
-                '<span class="sr-only"">Previous</span>' +
-                '</a>' +
-                '<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">' +
-                '<span class="carousel-control-next-icon" aria-hidden="true"></span>' +
-                '<span class="sr-only">Next</span>'+
-                '</a>'+
-                '</div>';
-            }else{
-                html += '<div id="card_imagens">' +
-                '<div class="carousel-inner row w-100 mx-auto"></div>' +
-                '</div>';
-            }
+        if(response.ordem.historico.length > 2){
+            html +=     '<div id="myCarousel" class="carousel slide"data-ride="carousel">' +
+            '<div class="carousel-inner row w-100 mx-auto"></div>' +
+            '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
+            '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
+            '<span class="sr-only"">Previous</span>' +
+            '</a>' +
+            '<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">' +
+            '<span class="carousel-control-next-icon" aria-hidden="true"></span>' +
+            '<span class="sr-only">Next</span>'+
+            '</a>'+
+            '</div>';
+        }else{
+            html += '<div id="card_imagens">' +
+            '<div class="carousel-inner row w-100 mx-auto"></div>' +
+            '</div>';
+        }
 
-            
-            $('#card_slider_historico').html(html);
+
+        $('#card_slider_historico').html(html);
 
             // html = "";
             response.ordem.historico.map((historico, i) => {
@@ -655,10 +656,10 @@ get_historico = (id) =>
 
                 if (historico.foto != null) {
                     html += create_cards(historico.comentario, base_url + historico.foto.replace('./', '/'), historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                        active = "";
+                    active = "";
                 } else {
                     html += create_cards(historico.comentario, base_url + '/assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                        active = "";
+                    active = "";
                 }
 
             });
@@ -710,7 +711,7 @@ get_atividade = (id) =>
             $('.close').css('cursor', 'pointer');
             $('#fechar-atividade').removeAttr('disabled');
             $('#fechar-atividade').css('cursor', 'pointer');
-          
+
             response.ordem.historico.map((historico, i) => {
                 if(i == response.ordem.historico.length -1){
                     if (historico.comentario == null) {
@@ -968,10 +969,10 @@ send = (imagem) =>
 
   if($('#nome-input').val() == "" && $('#cpf-input').val() == "" && $('#email-input').val() == "" && $('#celular-input').val() == "" && $('#telefone-input').val() == ""){
     $('#procedencia_pk').val("1");
-  }
+}
 
 
-  if(is_superusuario){
+if(is_superusuario){
     formData.append('senha', $("#senha").val());
 }
 
@@ -999,10 +1000,10 @@ send = (imagem) =>
     formData.append('contato_cel',$('#celular-input').val());
     formData.append('contato_tel',$('#telefone-input').val());
 
-  }
+}
 
-  formData.append('abreviacao', get_abreviacao($('#servico_pk option:selected').val(), $('#tipo_servico option:selected').val()));
-  formData.append('img', imagem);
+formData.append('abreviacao', get_abreviacao($('#servico_pk option:selected').val(), $('#tipo_servico option:selected').val()));
+formData.append('img', imagem);
 
   // procedencia
   var URL = ($('#ordem_servico_pk').val() == "") ? base_url + '/ordem_servico/insert' : base_url + '/ordem_servico/update_os';
@@ -1092,11 +1093,18 @@ send = (imagem) =>
           'setor_pk':$('#setor_pk').val()
       }
 
+      if($('#procedencia_pk').val() == "2"){
+          let protocolo = create_protocol(os.ordem_servico_cod);
+          $('#protocol-copy').attr('data-copy', protocolo);
+          $('#numero-protocolo').html(protocolo);
+      }
+
+
       if ($('#ordem_servico_pk').val() == "") 
               { //verifica se é um insert
 
-               ordens_servico.push(os);
-               table.row.add([
+                 ordens_servico.push(os);
+                 table.row.add([
                   os.ordem_servico_cod,
                   os.data_criacao,
                   os.prioridade_nome,
@@ -1109,44 +1117,47 @@ send = (imagem) =>
                   '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(ordens_servico.length - 1)+'" data-target="#d_servico" title="Desativar">' +
                   '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
                   ]).draw(false);
-               alerts('success', 'Sucesso', response.data.mensagem);
-               remove_image();
-           } 
-           else 
-           {
-            for (var i in ordens_servico) 
-            {
+                 alerts('success', 'Sucesso', response.data.mensagem);
+                 remove_image();
+             } 
+             else 
+             {
+                for (var i in ordens_servico) 
+                {
 
-              if (ordens_servico[i]['ordem_servico_pk'] == $('#ordem_servico_pk').val()){
-                  os['situacao_atual_pk'] = ordens_servico[i]['situacao_atual_pk'];
-                  break;
+                  if (ordens_servico[i]['ordem_servico_pk'] == $('#ordem_servico_pk').val()){
+                      os['situacao_atual_pk'] = ordens_servico[i]['situacao_atual_pk'];
+                      break;
+                  }
               }
-          }
-          ordens_servico[i] = (os);
-          table.row(i).data([
-            os.ordem_servico_cod,
-            os.data_criacao,
-            os.prioridade_nome,
-            os.endereco,
-            os.servico_nome,
-            os.situacao_nome,
-            os.setor_nome,
-            '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="'+ (i) +'" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
-            '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
-            '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-            ]).draw();
-          alerts('success', 'Sucesso', response.data.mensagem); 
+              ordens_servico[i] = (os);
+              table.row(i).data([
+                os.ordem_servico_cod,
+                os.data_criacao,
+                os.prioridade_nome,
+                os.endereco,
+                os.servico_nome,
+                os.situacao_nome,
+                os.setor_nome,
+                '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="'+ (i) +'" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
+                '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                ]).draw();
+              alerts('success', 'Sucesso', response.data.mensagem); 
 
-      }
+          }
           //pre_loader_hide();
           remove_image();
           $("#info_cidadao").hide();
           $('#ce_ordem_servico').modal('hide');
-          primeiro_editar = false; 
+          if($('#procedencia_pk').val() == "2"){
+            $('#protocolo').modal('show');
+        }
+        
 
-
-      }
+        primeiro_editar = false; 
+    }
 
       }, //Fecha success
       error: function (response) {
@@ -1176,7 +1187,33 @@ send = (imagem) =>
 });
 
 
+    //Função que gera o protocolo para o cliente 
+    function create_protocol(ordem_servico_cod){
+        // let encrypt = random_string(); 
+        let current_date = new Date();
+        let cod_os = ordem_servico_cod.split("/");
+        let ano = cod_os[0].split("-");
+        let horario ="";
 
+        if(current_date.getMinutes() < 10){
+            horario += current_date.getHours() + "0" +  current_date.getMinutes();
+        }else{
+            horario +=  current_date.getHours() + ""+  current_date.getMinutes();
+        }
+
+        return (organizacao.toUpperCase() + "-" + cod_os[1] + horario + "/" + ano[1]);
+        
+    }
+
+    function random_string(){
+        let text = "";
+
+        for(let i = 0; i < 3; i++){
+            text += String.fromCharCode(Math.floor(Math.random() * (90 - 65 + 1)) + 65);
+        }
+        console.log(text);
+        return text; 
+    }
 
     //Função que aguarda o clique no botão editar e preenche os campos do modal
     $(document).on('click', '.btn_editar', function (event) 
@@ -1318,8 +1355,8 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
         var data;
         btn_load($('#btn-desativar'));
         if(is_superusuario){
-           data = 
-           {
+         data = 
+         {
             'ordem_servico_pk': $('#ordem_servico_pk').val(),
             'senha': $('#pass-modal-desativar').val()
         }
@@ -1350,8 +1387,8 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
         var data;
         btn_load($('#btn-reativar'));
         if(is_superusuario){
-           data = 
-           {
+         data = 
+         {
             'ordem_servico_pk': $('#ordem_servico_pk').val(),
             'senha': $('#pass-modal-reativar').val()
         }
@@ -1379,6 +1416,46 @@ $('#ce_ordem_servico').on('hide.bs.modal', function (event) {
 
     $('#filter-ativo').on('change',function() {
       update_table();
+  });
+
+    
+    function copyToClipboard(text, el) {
+
+      var copyTest = document.queryCommandSupported('copy');
+      var elOriginalText = el.attr('data-original-title');
+
+      if (copyTest === true) {
+        var copyTextArea = document.createElement("textarea");
+        copyTextArea.value = text;
+        document.body.appendChild(copyTextArea);
+        copyTextArea.select();
+        try {
+          var successful = document.execCommand('copy');
+          var msg = successful ? 'Copiado!' : 'Erro! Não copiado.';
+          el.attr('data-original-title', msg).tooltip('show');
+      } catch (err) {
+          console.log('Não foi permitido copiar!');
+      }
+      document.body.removeChild(copyTextArea);
+      el.attr('data-original-title', elOriginalText);
+  } else {
+
+        // Fallback if browser doesn't support .execCommand('copy')
+        window.prompt("Copy to clipboard: Ctrl+C or Command+C, Enter", text);
+    }
+}
+
+$(document).ready(function() {
+  $('.js-tooltip').tooltip();
+
+      // Copy to clipboard
+      // Grab any text in the attribute 'data-copy' and pass it to the 
+      // copy function
+      $('.js-copy').click(function() {
+        var text = $(this).attr('data-copy');
+        var el = $(this);
+        copyToClipboard(text, el);
+    });
   });
 
 
