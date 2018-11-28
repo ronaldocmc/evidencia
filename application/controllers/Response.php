@@ -21,8 +21,9 @@ class Response {
 	const DB_ERROR_INSERT = 503;
 
 
-
-	private $code;
+	private $object; 	// Objeto que está sendo operado
+	private $operation; // Operação realizada no objeto
+	private $code;	 
 	private $message;
 	private $data;
 
@@ -31,6 +32,8 @@ class Response {
 		$this->code = $code != null ? $code : self::SUCCESS;
 		$this->message = "OK";
 		$this->data = null;
+		$this->object = null;
+		$this->operation = null;
 	}
 
 	public function __get($value)
@@ -43,6 +46,20 @@ class Response {
         $this->$proper = $value;
     }
 
+    public function set_operation($operation)
+    {
+    	$this->operation = $operation;
+    }
+
+    public function set_message($message)
+    {
+    	$this->message = $message;
+    }
+
+    public function set_object($object)
+    {
+    	$this->object = $object;
+    }
 
 	public function set_code($code)
 	{
