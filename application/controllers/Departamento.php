@@ -43,7 +43,8 @@ class Departamento extends CRUD_Controller {
             4 => base_url('assets/js/utils.js'),
             5 => base_url('assets/js/constants.js'),
             6 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            7 => base_url('assets/js/dashboard/departamento/index.js')
+            7 => base_url('assets/js/dashboard/departamento/index.js'),
+            8 => base_url('assets/js/response_messages.js')
         ]);
 
         load_view([
@@ -68,31 +69,8 @@ class Departamento extends CRUD_Controller {
             'trim|required|min_length[3]|max_length[50]'
         );
 
-        if($this->session->user['is_superusuario'])
-        {
-            $this->form_validation->set_rules(
-                'senha', 
-                'senha', 
-                'trim|required|min_length[8]'
-            );
-        }
-
         if($this->form_validation->run())
         {
-            // Se for um superusuário
-            if($this->session->user['is_superusuario'])
-            {
-                // Validação da sua senha
-                if(!authenticate_operation($this->input->post('senha'),$this->session->user['password_user']))
-                {
-                    // Caso a senha esteja incorreta
-                    $response->set_code(Response::UNAUTHORIZED);
-                    $response->set_data(['senha' => 'Senha informada incorreta']);
-                    $response->send();
-                    return;
-                }
-            }
-
             // Pegando os dados da requisição POST
             $dados['departamento_nome'] = $this->input->post('nome');
 
@@ -106,6 +84,7 @@ class Departamento extends CRUD_Controller {
                 if(!$query)
                 {
                     $response->set_code(Response::DB_ERROR_UPDATE);
+                    $response->set_message('Erro ao atualizar dados do departamento');
                 }
             }
             else
@@ -113,12 +92,14 @@ class Departamento extends CRUD_Controller {
                 // Caso contrário, é feito o insert
                 $dados['organizacao_fk'] = $this->session->user['id_organizacao'];
                 $query = $this->departamento_model->insert($dados);
+
                 $response->set_data(['id'=> $query]);
 
                 // Caso houve um erro no insert
                 if(!$query)
                 {
                     $response->set_code(Response::DB_ERROR_INSERT);
+                    $response->set_data('Erro ao inserir dados do departamento');
                 }
             }
 
@@ -126,6 +107,7 @@ class Departamento extends CRUD_Controller {
             if($query)
             {
                 $response->set_code(Response::SUCCESS);
+                $response->set_message('Operação realizada com sucesso');
             }
 
         }
@@ -133,7 +115,7 @@ class Departamento extends CRUD_Controller {
         {
             // Caso o form_validation->run falhe
             $response->set_code(Response::BAD_REQUEST);
-            $response->set_data($this->form_validation->error_array());
+            $response->set_message(implode('<br>', $this->form_validation->error_array()));
         }
 
         $response->send();
@@ -144,14 +126,16 @@ class Departamento extends CRUD_Controller {
     {
         $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
         date_default_timezone_set('America/Sao_Paulo');
+
         $response = new Response();
+        $response->set_use_success(false);
 
         $departamento = $this->departamento_model->get($this->input->post('departamento_pk'));
 
         if ($departamento === false) 
         {
             $response->set_code(Response::NOT_FOUND);
-            $response->set_data(['erro' => 'Departamento não encontrado.']);
+            $response->set_message('Departamento não encontrado.');
         } 
         else 
         { //se existe departamento:
@@ -159,15 +143,13 @@ class Departamento extends CRUD_Controller {
             if ($departamento[0]->ativo == 0) 
             {
                 $response->set_code(Response::BAD_REQUEST);
-                $response->set_data(['erro' => 'Departamento desativado.']);
+                $response->set_message('Departamento desativado.');
             }
             else
             { // se a departamento está ativa: 
                 $departamento_pk =  $this->input->post('departamento_pk');
                 
-                $tipos_servicos = $this->tipo_servico_model->get(['tipos_servicos.departamento_fk' => $departamento_pk]);
-                
-                
+                $tipos_servicos = $this->tipo_servico_model->get(['tipos_servicos.departamento_fk' => $departamento_pk]);                
                 
                 $response->set_code(Response::SUCCESS);
                 $response->set_data($tipos_servicos);
@@ -183,20 +165,6 @@ class Departamento extends CRUD_Controller {
     {   
         $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
         $response = new Response();
-
-        // Se for um superusuário
-        if($this->session->user['is_superusuario'])
-        {
-            // Validação da sua senha
-            if(!authenticate_operation($this->input->post('senha'),$this->session->user['password_user']))
-            {
-                // Caso a senha esteja incorreta
-                $response->set_code(Response::UNAUTHORIZED);
-                $response->set_data(['password_user' => 'Senha informada incorreta']);
-                $response->send();
-                return;
-            }
-        }
 
         $departamento_pk =  $this->input->post('departamento_pk');
 
@@ -215,18 +183,19 @@ class Departamento extends CRUD_Controller {
             {
             // Caso a query tenha sucesso
                 $response->set_code(Response::SUCCESS);
-                $response->set_data(['msg' => 'linhas afetadas: '.$query]);
+                $response->set_message('Departamento desativado com sucesso');
             }
             else
             {
             // Caso falhe
                 $response->set_code(Response::DB_ERROR_UPDATE);
+                $response->set_message('Erro ao desativar departamento');
             }
         }
         else
         {
             $response->set_code(Response::BAD_REQUEST);
-            $response->set_data(['erro' => 'Departamento ainda possui tipos de serviço vinculados.']);
+            $response->set_message('Departamento ainda possui tipos de serviço vinculados.');
         }
 
 
@@ -237,20 +206,6 @@ class Departamento extends CRUD_Controller {
     public function activate()
     {
         $response = new Response();
-
-        // Se for um superusuário
-        if($this->session->user['is_superusuario'])
-        {
-            // Validação da sua senha
-            if(!authenticate_operation($this->input->post('senha'),$this->session->user['password_user']))
-            {
-                // Caso a senha esteja incorreta
-                $response->set_code(Response::UNAUTHORIZED);
-                $response->set_data(['password_user' => 'Senha informada incorreta']);
-                $response->send();
-                return;
-            }
-        }
 
         // Novo status da flag
         $dados['ativo'] = 1;
@@ -263,11 +218,13 @@ class Departamento extends CRUD_Controller {
         {
             // Caso a query tenha sucesso
             $response->set_code(Response::SUCCESS);
+            $response->set_message('Departamento ativado com sucesso');
         }
         else
         {
             // Caso falhe
             $response->set_code(Response::DB_ERROR_UPDATE);
+            $response->set_message('Erro ao desativar departamento');
         }
 
         $response->send();
