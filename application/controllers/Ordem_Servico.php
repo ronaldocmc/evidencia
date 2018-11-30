@@ -109,7 +109,8 @@ class Ordem_Servico extends CRUD_Controller {
 			10 => base_url('assets/vendor/select-input/select-input.js'),
 			11 => base_url('assets/js/localizacao.js'),
 			12 => base_url('assets/vendor/cropper/cropper.js'),
-			13 => base_url('assets/vendor/input-image/input-image.js')
+			13 => base_url('assets/vendor/input-image/input-image.js'),
+			14 => base_url('assets/js/date-eu.js')
 		]);
 
 		$this->session->set_flashdata('mapa',[
