@@ -78,7 +78,7 @@ class Ordem_Servico_model extends CI_Model {
         $this->db->join('populacao_os','populacao_os.ordem_servico_fk = '.self::TABLE_NAME. '.'.self::PRI_INDEX, 'LEFT');
         $this->db->join('populacao','populacao.pessoa_pk = populacao_os.pessoa_fk', 'LEFT');
         $this->db->join('contatos', 'contatos.pessoa_fk = populacao_os.pessoa_fk', 'LEFT');
-         $this->db->group_by(self::TABLE_NAME. '.'.self::PRI_INDEX);
+        $this->db->group_by(self::TABLE_NAME. '.'.self::PRI_INDEX);
 
 
         if ($where !== NULL) {
@@ -91,7 +91,6 @@ class Ordem_Servico_model extends CI_Model {
             }
         }
 
-        // echo $this->db->get_compiled_select(); die();
         $result = $this->db->get()->result();
         if ($result) {
             return ($result);

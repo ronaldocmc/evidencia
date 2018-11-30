@@ -22,6 +22,40 @@ try{
 }
 
 
+try{
+  var table = $("#datatable_os").DataTable({
+      "info" : false,
+      "language":{
+          "emptyTable": "Nenhum dado encontrado.",
+          "search":     "Procurar:",
+          "lengthMenu": "Mostrar _MENU_ registros",
+          "processing":     "Aguarde...",
+          "zeroRecords": "Nenhum registro encontrado",
+          "info": "Página _PAGE_ de _PAGES_",
+          "infoEmpty": "Nenhum registro encontrado",
+          "paginate": {                                        
+                  "first":      "Primeiro",
+                  "last":       "Último",
+                  "next":       "Próximo",
+                  "previous":   "Anterior"
+              },
+          "collumns": [
+            null,
+            {"type": "data-eu"},
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+      }
+  });
+}catch(err){
+  console.log(err);
+}
+
+
 $(document).ready(function() {
   $(window).keydown(function(event){
     if(event.keyCode == 13) {

@@ -27,9 +27,8 @@ var adicionar_mapa_historico = 1;
 // var adicionar_mapa_situacao = 1; 
 //-----------------------------------//
 $(document).ready(function() {
-    $("#data").click();
-    $("#data").click();
-    // $("#procedencia_pk").val("1");
+    $("#data_brasileira").click();
+    $("#data_brasileira").click();
 });
 
 
