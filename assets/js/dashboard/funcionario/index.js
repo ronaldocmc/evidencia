@@ -273,8 +273,8 @@ send = (imagem) => {
     processData: false,
     contentType: false,
     success: function (response) {
-      // btn_ativar($('#pula-para-confirmacao'));
-      // btn_ativar($('.submit'));
+      btn_ativar($('#pula-para-confirmacao'));
+      btn_ativar($('.submit'));
 
       if (response.code !== 200) {
         show_errors(response);

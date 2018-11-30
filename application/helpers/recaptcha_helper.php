@@ -19,9 +19,8 @@
         }
         else
         {
-        	$err[0] = 'Bot Detectado';
-			//return $err;
-            return TRUE;
+        	$err = 'Bot Detectado';
+			return $err;
     	}
     }
 

@@ -1,3 +1,4 @@
+
 <?php if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
@@ -296,7 +297,8 @@ class Contact extends CI_Controller
         $this->load->helper('recaptcha');
         $this->load->helper('attempt');
 
-        $captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
+        // $captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
+        $captcha_response = true;
 
         $attempt_response = verify_attempt_restore($this->input->ip_address(),$this->input->post('email'));
 
@@ -337,6 +339,7 @@ class Contact extends CI_Controller
                     $this->send_email->send_email('email/restore_password', 'Recuperação de Senha - Evidencia', base_url() . 'contact/reset_password/' . $restore['recuperacao_token'], $contact_fetch->contato_email);
 
                     $this->response->set_code(Response::SUCCESS);
+                    $this->response->set_message('Enviado com sucesso');
 
                     // Insere a ação no log
                     $this->log_model->insert([
@@ -347,13 +350,13 @@ class Contact extends CI_Controller
                 else 
                 {
                     $this->response->set_code(Response::NOT_FOUND);
-                    $this->response->set_data("O e-mail inserido não foi encontrado. Por favor, recupere a senha com o e-mail cadastrado no sistema.");
+                    $this->response->set_message('O e-mail inserido não foi encontrado. Por favor, recupere a senha com o e-mail cadastrado no sistema.');
                 }
             } 
             else 
             {
                 $this->response->set_code(Response::BAD_REQUEST);
-                $this->response->set_data($this->form_validation->errors_array());
+                $this->response->set_message(implode('<br>', $this->form_validation->errors_array()));
             }
         } 
         else 
@@ -361,12 +364,12 @@ class Contact extends CI_Controller
             if ($captcha_response !== true) 
             {
                 $this->response->set_code(Response::UNAUTHORIZED);
-                $this->response->set_data($captcha_response);
+                $this->response->set_message('Acesso negado. ' . $captcha_response);
             } 
             else 
             {
                 $this->response->set_code(Response::FORBIDDEN);
-                $this->response->set_data($attempt_response);
+                $this->response->set_message('Acesso bloqueado. ' . $attempt_response);
             }
         }
         $this->response->send();

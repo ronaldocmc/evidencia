@@ -82,3 +82,6 @@
 
 <!--Importando funções Jquery responsáveis pela verificação de dados e execução da entrada do usuário-->
 <script src="<?php echo base_url('assets/js/access/access.js') ?>"></script>
+
+<script src="<?php echo base_url('assets/js/response_messages.js') ?>"></script>
+<script src="<?php echo base_url('assets/js/utils.js') ?>"></script>

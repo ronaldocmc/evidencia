@@ -38,7 +38,7 @@
 			$next_attempt_time = strtotime("+{$wait_time} minutes", strtotime($last_attempt_time));	
 			if (strtotime(date('Y/m/d H:i:s'))<$next_attempt_time)
 			{
-				$err[0] = 'Aguardar '.date('i:s', $next_attempt_time - strtotime(date('Y/m/d H:i:s'))).' minutos';
+				$err = 'Aguardar '.date('i:s', $next_attempt_time - strtotime(date('Y/m/d H:i:s'))).' minutos';
 				return $err;
 			}
 			else

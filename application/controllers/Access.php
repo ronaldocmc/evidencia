@@ -97,13 +97,13 @@ class Access extends CI_Controller {
     		if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5'))
     		{
     			$this->response->set_code(Response::UNAUTHORIZED);
-    			$this->response->set_data([
-    				'erro' => 'Você não tem autorização para acessar o sistema'
-    			]);
+    			$this->response->set_message('Você não tem autorização para acessar o sistema');
     		}
     		else
     		{	
     			$this->response->set_code(Response::SUCCESS);
+                $this->response->set_message('Login efetuado com sucesso');
+
     			$userdata =  [
     				'id_user' => $response->pessoa_pk,
     				'name_user' => $response->pessoa_nome,
@@ -132,6 +132,7 @@ class Access extends CI_Controller {
         else
         {
             $this->response->set_code(Response::NOT_FOUND);
+            $this->response->set_message('Usuário não encontrado!');
             $attempt = [
              'tentativa_ip' => $this->input->ip_address(),
              'tentativa_tempo' => date('Y/m/d H:i:s')
@@ -225,7 +226,7 @@ class Access extends CI_Controller {
             $captcha_response = TRUE;
             $attempt_response = TRUE;
         }else{
-        	//$captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
+        	// $captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
             $captcha_response = TRUE;
         	$attempt_response = verify_attempt($this->input->ip_address());
         }
@@ -263,7 +264,7 @@ class Access extends CI_Controller {
     		else 
     		{	    		
     			$this->response->set_code(Response::BAD_REQUEST);
-    			$this->response->set_data($this->form_validation->errors_array());
+    			$this->response->set_message(implode('<br>', $this->form_validation->errors_array()));
     		}
     	} 
     	else
@@ -271,12 +272,12 @@ class Access extends CI_Controller {
     		if ($captcha_response !== TRUE)
     		{
     			$this->response->set_code(Response::UNAUTHORIZED);
-    			$this->response->set_data($captcha_response);
+                $this->response->set_message('Bloqueado pelo Recaptcha! ' . $captcha_response);
     		}
     		else
     		{
     			$this->response->set_code(Response::FORBIDDEN);
-    			$this->response->set_data($attempt_response);
+                $this->response->set_message('Número de tentativas excedidas. ' . $attempt_response);
     		}
     	}
     	$this->response->send();          
