@@ -74,14 +74,15 @@ class ContactWS extends MY_Controller
                     }
                 } else {
                     $this->response->set_code(Response::NOT_FOUND);
+                    $this->response->set_message('Contato não encontrado');
                 }
             } else {
                 $this->response->set_code(Response::FORBIDDEN);
-                $this->response->set_data($attempt_response);
+                $this->response->set_message($attempt_response);
             }
         } else {
             $this->response->set_code(Response::BAD_REQUEST);
-            $this->response->set_data($this->form_validation->errors_array());
+            $this->response->set_message(implode('<br>', $this->form_validation->errors_array()));
         }
         $this->response->send();
     }

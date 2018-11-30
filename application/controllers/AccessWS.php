@@ -113,6 +113,7 @@ class AccessWS extends MY_Controller
                 {
                     //Se for superusuário, não tem login no app
                     $this->response->set_code(Response::NOT_FOUND);
+                    $this->response->set_message('Esse tipo de usuário não tem acesso ao aplicativo');
                     $this->response->set_data($this->data_json);
                     $this->response->send();
                     die();
@@ -123,6 +124,7 @@ class AccessWS extends MY_Controller
                 if($user->funcionario_status == 0)
                 {
                     $this->response->set_code(Response::UNAUTHORIZED);
+                    $this->response->set_message('Usuário desativado');
                     $this->response->set_data(null);
                     $this->response->send();
                     die();
@@ -158,6 +160,7 @@ class AccessWS extends MY_Controller
                 else 
                 {
                     $this->response->set_code(Response::NOT_FOUND);
+                    $this->response->set_message('Usuário não encontrado');
                     $attempt = [
                         'tentativa_ip' => $this->input->ip_address(),
                         'tentativa_tempo' => $today,
@@ -168,12 +171,13 @@ class AccessWS extends MY_Controller
             else 
             {
                 $this->response->set_code(Response::FORBIDDEN);
-                $this->response->set_data($attempt_result);
+                $this->response->set_message('Máximo de tentativas alcançado. ' . $attempt_result);
             }
         } 
         else 
         {
             $this->response->set_code(Response::BAD_REQUEST);
+            $this->response->set_message(implode('<br>', $this->form_validation->errors_array()));
         }
 
 		$this->response->send();	
@@ -193,21 +197,28 @@ class AccessWS extends MY_Controller
 
         $attempt_result = verify_attempt($this->input->ip_address());
 
-        if ($attempt_result === true) {
+        if ($attempt_result === true) 
+        {
             $obj = apache_request_headers();
             
             $new_token = verify_token($obj['Token'], $this->response);
             
-            if ($new_token) {
+            if ($new_token) 
+            {
 				$dados['token'] = $new_token;
                 $this->response->set_data($dados);
                 $this->tentativa_model->delete($this->input->ip_address());
-            } else {
+            } 
+            else 
+            {
                 $this->response->set_code(Response::UNAUTHORIZED);
+                $this->response->set_message('Seção expirada');
             }
-        } else {
+        } 
+        else 
+        {
             $this->response->set_code(Response::FORBIDDEN);
-            $this->response->set_data($attempt_result);
+            $this->response->set_message($attempt_result);
         }
         $this->response->send();
         $this->__destruct();
@@ -223,18 +234,23 @@ class AccessWS extends MY_Controller
         $this->load->helper('token');
         $this->response = new Response();
 
-        if (verify_token($this->data_json, $this->response)) {
+        if (verify_token($this->data_json, $this->response)) 
+        {
             $obj = apache_request_headers();
 
             $this->data_json['pessoa_fk'] = $obj['access_id'];
 
-            if (!$this->modeltoken->delete($this->data_json['pessoa_fk'])) {
+            if (!$this->modeltoken->delete($this->data_json['pessoa_fk'])) 
+            {
                 $this->data_json['pessoa_fk'] = null;
                 $this->data_json['token'] = null;
                 $this->data_json['timestamp'] = null;
             }
-        } else {
+        } 
+        else 
+        {
             $this->response->set_data(Response::LOGOUT_ERROR);
+            $this->response->set_message('Token inválido');
         }
         $this->response->send();
         $this->__destruct();

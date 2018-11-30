@@ -80,19 +80,19 @@ class RelatorioWS extends MY_Controller
             if($ordens_servicos)
             {
                 $this->response->set_code(Response::SUCCESS);
-                $this->response->add_data('ordens_servicos',$ordens_servicos);
+                $this->response->add_data('ordens_servicos', $ordens_servicos);
             }
             else
             {
                 $this->response->set_code(Response::NOT_FOUND);
-                $this->response->set_data('Relatório não encontrado. Verifique se realmente existe um relatório em aberto para você.');
+                $this->response->set_message('Relatório não encontrado. Verifique se realmente existe um relatório em aberto para você.');
             }
 
             
 
         } else {
             $this->response->set_code(Response::FORBIDDEN);
-            $this->response->set_data($attempt_result);
+            $this->response->set_message($attempt_result);
         }
 
         $this->response->send();
@@ -124,7 +124,7 @@ class RelatorioWS extends MY_Controller
 
         } else {
             $this->response->set_code(Response::FORBIDDEN);
-            $this->response->set_data($attempt_result);
+            $this->response->set_message($attempt_result);
         }
 
         $this->response->send();
@@ -171,7 +171,7 @@ class RelatorioWS extends MY_Controller
                             //SE O STATUS FOR EM ANDAMENTO:
                             $this->response = new Response();
                             $this->response->set_code(Response::BAD_REQUEST);
-                            $this->response->set_data('O relatório corrente ainda não foi concluído.');
+                            $this->response->set_message('O relatório corrente ainda não foi concluído.');
                             $this->response->send();
                             die();
                         }
@@ -190,7 +190,7 @@ class RelatorioWS extends MY_Controller
                 $this->relatorio_model->set_data_entrega($relatorio->relatorio_pk);
                 
                 $this->response->set_code(Response::SUCCESS);
-                $this->response->set_data('Situação do relatório atualizado com sucesso.');
+                $this->response->set_message('Situação do relatório atualizado com sucesso.');
                 $this->response->send();
                 die();
             }
@@ -200,7 +200,7 @@ class RelatorioWS extends MY_Controller
         {
             $this->response = new Response();
             $this->response->set_code(Response::NOT_FOUND);
-            $this->response->set_data('Não encontramos nenhum relatório em andamento para você.');
+            $this->response->set_message('Não encontramos nenhum relatório em andamento para você.');
             $this->response->send();
             die();
         }
