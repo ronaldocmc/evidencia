@@ -278,10 +278,10 @@ class Ordem_Servico_model extends CI_Model {
         if ($where !== NULL) {
             if (is_array($where)) {
                 foreach ($where as $field=>$value) {
-                    $this->db->where($field, $value);
+                    $this->db->like($field, $value);
                 }
             } else {
-                $this->db->where(self::PRI_INDEX, $where);
+                $this->db->like(self::PRI_INDEX, $where);
             }
         }
 

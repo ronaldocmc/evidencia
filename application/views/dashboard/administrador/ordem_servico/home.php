@@ -319,10 +319,11 @@
                                             <small class="form-text text-muted">Insira um ponto de referência para buscar o local</small>
                                         </div>
                                         <div class="col-12 col-md-8">
-                                            <label for="logradouro_nome">Logradouro</label>
-                                            <input class="form-control input-dropdown loading endereco" type="text" id="logradouro-input" name="logradouro_nome" autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]'>
+                                            <!-- O que removi do dropdown: autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]'> 
                                             <ul class="dropdown-menu" data-return = "#logradouro_pk" data-next="#numero-input">
-                                            </ul>
+                                            </ul>-->
+                                            <label for="logradouro_nome">Logradouro</label>
+                                            <input class="form-control loading endereco" type="text" id="logradouro-input" name="logradouro_nome">
                                             <small class="form-text text-muted">Insira o logradouro para buscar o local</small>
                                         </div>
                                     </div>
@@ -404,6 +405,49 @@
 </div>
 <!-- FIM MODAL NOVA ORDEM/ALTERAR ORDEM-->
 
+
+<!-- MODAL PROTOCOLO DE ATENDIMENTO --> 
+<div class="modal fade" id="protocolo">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="width: 380px !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Protocolo de Atendimento</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><strong>Informe para o cidadão:</strong></div>
+                    </div>
+                    <div class="card-body" id= "numero-protocolo" style="text-align: center;"></div>
+                </div>
+                 <div class= "modal-footer">
+                    <div class="btn-group">
+                        <button id="protocol-copy" style="width: 50px !important;" type="button" class="btn btn-sm btn-success pull-right btn-copy js-tooltip js-copy" data-toggle="tooltip" data-placement="bottom" title="Copiar">
+                            <div class="d-none d-sm-block">
+                                <i class="fas fa-copy fa-fw"></i>
+                            </div>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-atividade" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<style type="text/css">
+    .icon-copy {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  vertical-align: middle;
+}
+</style>
 
 <!-- MODAL ADICIONAR SITUAÇÃO ATUAL ORDEM SERVIÇO -->
     <div class="modal fade" id="atividade">
@@ -634,6 +678,7 @@
                     var is_superusuario = <?php if($superusuario){ echo "true"; }else{ echo "false";} ?>;
                     var procedencias = <?php echo json_encode($procedencias !== false ? $procedencias : []); ?>;
                     var ordens_servico = <?php echo json_encode($ordens_servico !== false ? $ordens_servico : []); ?>;
+                    var organizacao = <?php echo json_encode($this->session->user['id_organizacao']); ?>;
                 </script>
 
                 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">

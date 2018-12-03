@@ -251,9 +251,10 @@
 
         table.empty();
         div_fotos.empty();
+        var cod = ($('#os_protocol').val()).split("-");
 
         $.ajax({
-            url: `${base_url}/Cidadao/getOs?protocol=${$('#os_protocol').val()}`,
+            url: `${base_url}/Cidadao/getOs?protocol=${cod[1].substr(0,3)}`,
             method: 'GET'
         }).done(function (response) {
             $('#loading').hide();

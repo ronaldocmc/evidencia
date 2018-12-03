@@ -41,10 +41,9 @@ class Cidadao extends CI_Controller {
 
     public function getOs(){
         $this->load->model('Ordem_Servico_model', 'ordem_servico_model');
-
         $json['os'] = $this->ordem_servico_model->getCidadao(
             array(
-                'ordem_servico_cod' => $_GET['protocol']
+                'ordem_servico_cod' => "/".$_GET['protocol']
             )
         );
 
