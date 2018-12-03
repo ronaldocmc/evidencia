@@ -42,12 +42,14 @@ class Ordem_Servico extends CRUD_Controller {
 		]);
 
 		// print_r($ordens_servico); die();
+		$ordens_servico = null;
 
-		foreach ($ordens_servico as $os) 
-		{
-			$os->data_criacao = date('d/m/Y H:i:s', strtotime($os->data_criacao));
+		if ($ordens_servico !== null) {
+				foreach ($ordens_servico as $os) 
+			{
+				$os->data_criacao = date('d/m/Y H:i:s', strtotime($os->data_criacao));
+			}
 		}
-
 		//Criando um array de departamentos pertencentes a organização do usuário 
 		$departamentos = $this->departamento_model->get([
 			'organizacao_fk' => $this->session->user['id_organizacao']
