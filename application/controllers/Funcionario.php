@@ -46,6 +46,7 @@ class Funcionario extends CRUD_Controller {
             2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
             3 => base_url('assets/css/modal_desativar.css'),
             4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            5 => base_url('assets/css/user_guide.css')
         ));
 
         $this->CI->session->set_flashdata('scripts', array(

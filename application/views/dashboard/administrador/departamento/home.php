@@ -38,16 +38,6 @@
                                                     </div>
                                                     <div class="col-md-10 text-guide">Inserir um departamento</div>
                                                 </div>
-<!--                                                 <div class="row"> 
-                                                    <div class="col-md-1 icon-guide" style="">
-                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Inserir" style="color: #4272d7 !important;">
-                                                            <div class="d-none d-sm-block">
-                                                                <i class="fas fa-plus" style="color: white;"></i>
-                                                            </div>
-                                                        </button>
-                                                    </div>
-                                                    <div class="col-md-11 text-guide">Inserir um departamento</div>
-                                                </div> -->
                                                 <div class="row">
                                                     <div class="col-md-2 icon-guide">
                                                         <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
