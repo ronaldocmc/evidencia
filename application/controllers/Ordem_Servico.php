@@ -93,7 +93,8 @@ class Ordem_Servico extends CRUD_Controller {
 			4 => base_url('assets/vendor/cropper/cropper.css'),
 			5 => base_url('assets/vendor/input-image/input-image.css'),
 			6 => base_url('assets/css/timeline.css'),
-			7 => base_url('assets/css/style_card.css')
+			7 => base_url('assets/css/style_card.css'),
+			8 => base_url('assets/css/user_guide.css')
 		]);
 
 		//Carregando arquivos SCRIPT no flashdata da session para as views 
