@@ -31,7 +31,8 @@ class Departamento extends CRUD_Controller {
         $this->session->set_flashdata('css',[
             0 => base_url('assets/css/modal_desativar.css'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css')
+            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            3 => base_url('assets/css/user_guide.css')
         ]);
 
         //CSS para departamentos
