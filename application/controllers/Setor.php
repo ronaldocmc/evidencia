@@ -34,7 +34,8 @@ class Setor extends CRUD_Controller
     		0 => base_url('assets/css/modal_desativar.css'),
     		1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
     		2 => base_url('assets/css/loading_input.css'),
-    		3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css')
+    		3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            4 => base_url('assets/css/user_guide.css')
     	]);
 
         //Scripts para crud setores

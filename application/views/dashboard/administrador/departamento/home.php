@@ -78,6 +78,11 @@
                                                     </div>
                                                     <div class="col-md-10 text-guide">Ativar departamento novamente</div>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="col-md-12>">
+                                                        <br><p><strong>Qualquer dúvida entre em contato com o suporte  na sua organização!</p></strong>
+                                                    </div>
+                                                </div>
                                         </div>
                                     </div>
                                 </div>
