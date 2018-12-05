@@ -129,6 +129,7 @@
 		</div>
 		<!-- END STATISTIC-->
 
+
 		<?php if (count($ordens_em_execucao) > 0): ?>
 			<!-- ESTATISTICAS CHART -->
 			<div class="statistic-chart">
@@ -190,7 +191,7 @@
 					<div class="col-lg-12 m-b-40">
 						<div class="au au-card question" style="text-align: center;">
 							<h4 class="m-b-20">
-								Não há nenhuma ordem em execução no dia de hoje pois não há relatórios.
+								Não há nenhuma ordem em execução hoje, pois nenhum relatório foi gerado.
 
 							</h4>
 							<h4 class="m-b-10">Deseja criar um novo relatório?</h4>
