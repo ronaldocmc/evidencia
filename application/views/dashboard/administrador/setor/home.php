@@ -10,13 +10,74 @@
                                     <button class="au-btn au-btn-icon au-btn--blue reset_multistep" data-toggle="modal" data-target="#ce_setor" >
                                         <i class="zmdi zmdi-plus"></i>novo setor</button>
                                 </div>
-                                <div class="col-md-12 mt-3">
+                            <div class="col-md-12 mt-3">
                                 <div class="collapse" id="collapseHelp">
-                                    <div class="card card-body">
-                                        <p>Setores permitem a divisão do muicípio para melhor controle da distriubuição de funcionários e ordens de serviço.</p>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                <h3>Guia do Usuário</h3>
+                                            </div>
+                                        </div>
+                                        <div class="card-body card-user-guide">
+                                        <div class="col-md-6">
+                                            <p>Bem-vindo a área de Gerenciamento de Setores!</p><br>
+                                            <p> Aqui você poderá realizar algumas operações para controlar os setores, que representam áreas regionais do município, onde a organização vai atuar!</p><br>
+                                            <p>Os setores representam regiões delimitadas, podendo conter um ou mais bairros do município. Nosso objetivo é permitir identificar áreas onde os funcionários e a ordens de serviço estarão presentes! Assim, gerenciar equipes conforme as demandas de ordem de serviço por setor torna-se uma tarefa organizada!</p>
+                                        </div>
+                                        <div class="col-md-6 user-guide">
+                                            <p><b>Operações permitidas:</b></p>
+                                            <div class="col-md-12 functions-page" >
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-plus fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Inserir um novo setor</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-edit fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Editar um setor existente</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" class="btn btn-sm btn-danger" disabled="true" title="Desativar">
+                                                                <div class="d-none d-block">
+                                                                    <i class="fas fa-times fa-fw"></i>
+                                                                </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Desativar um setor inativo</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" class="btn btn-sm btn-success" disabled="true" title="Reativar">
+                                                                <div class="d-none d-block">
+                                                                    <i class="fas fa-power-off fa-fw"></i>
+                                                                </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Ativar um setor novamente</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12>">
+                                                        <br><p><strong>Qualquer dúvida entre em contato com o suporte  na sua organização!</p></strong>
+                                                    </div>
+                                                </div>
+                                        </div>
                                     </div>
                                 </div>
+                                    </div>
                                 </div>
+                            </div>
                             </div>
                         </div>
                         <div class="row py-2">
@@ -24,8 +85,8 @@
                                 <div class="au-card d-flex flex-column">
                                     
                                     <h2 class="title-1 m-b-25">
-                                    <i style="cursor: pointer; color: gray" class="fas fa-question fa-xs pull-left" data-toggle="collapse" href="#collapseHelp" role="button" aria-expanded="false" aria-controls="collapseHelp"></i>
-                                    setores</h2>
+                                    <i style="cursor: pointer; color: gray" class="fas fa-info pull-right" data-toggle="collapse" href="#collapseHelp" role="button" aria-expanded="false" aria-controls="collapseHelp"></i>
+                                    Setores</h2>
 
                                     <div class="">
                                         <h5>Filtrar por</h5><br>
