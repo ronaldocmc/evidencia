@@ -45,7 +45,7 @@ class Contact extends CI_Controller
 
 
     /**
-     * Método chamado quando é necessário criar uma senha para um usuário por via do e-mail
+     * Método chamado quando é necessário criar ou redefinir a senha para um usuário por via do e-mail
      *
      * @return void
      */
@@ -66,18 +66,14 @@ class Contact extends CI_Controller
             {
                 $data = [
                     'token' => $token,
+                    'define' => $define
                 ];
 
-                $this->load->view('access/header_html', false);
+                $this->load->view('dashboard/commons/head.php', false);
 
-                if ($define === NULL) 
-                {
-                    $this->load->view('contact/reset_password', $data, false);
-                }
-                else
-                {
-                    $this->load->view('contact/define_password', $data, false);
-                }
+                $this->load->view('contact/define_password', $data, false);
+
+                $this->load->view('dashboard/commons/footer.php', false);
             } 
             else
             {
@@ -90,9 +86,14 @@ class Contact extends CI_Controller
         {
             $data = [
                 'token' => '',
+                'define' => $define
             ];
-            $this->load->view('access/header_html', false);
-            $this->load->view('contact/reset_password', $data, false);
+            
+            $this->load->view('dashboard/commons/head.php', false);
+
+            $this->load->view('contact/define_password', $data, false);
+
+            $this->load->view('dashboard/commons/footer.php', false);
         } 
         else 
         {
