@@ -11,14 +11,85 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="overview-wrap">
-                        <h2 class="title-1">mapa</h2>
-                        <!-- <button id="filtrar" class="au-btn au-btn-icon au-btn--blue reset_multistep">Filtrar</button> -->
-                        <!-- <button class="au-btn au-btn-icon au-btn--blue reset_multistep" data-toggle="modal" data-target="#ce_ordem_servico">
-                            <i class="zmdi zmdi-plus"></i>nova ordem de serviço
-                        </button> -->
+                        <h2 class="title-1 m-b-25">Mapa</h2>
+                        <h2><i style="cursor: pointer; color: gray" class="fas fa-info pull-right" data-toggle="collapse" href="#collapseHelp" role="button" aria-expanded="false" aria-controls="collapseHelp"></i></h2>
                     </div>
+
                     <div class="col-md-12" style="margin-bottom: 10px;">
-                        <!-- <b>Filtros</b> -->
+                        <!-- <b>Filtros</b>  -->
+                    </div>
+                    <div class="col-md-12 mt-3">
+                        <div class="collapse" id="collapseHelp">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <h3>Guia do Usuário</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body card-user-guide">
+                                    <div class="col-md-6">
+                                        <p>Bem-vindo ao Mapa de Ordens de Serviço!</p>
+                                        <p> Aqui você poderá visualizar de forma mais dinâmica os serviços prestados nas localidades do município!</p><br>
+
+                                        <p>Oferecemos alguns filtros para proporcionar uma exibição mais específica caso necessário! Você pode visualizar ordens de serviço em um determinado período, por situação, por tipo de serviço, entre outros. Para experimentar os filtros, basta selecionar qual achar conveniente e clicar em <strong> "Filtrar". </strong></p><br>
+
+                                        <p>Assim, é possível ter uma percepção instantânea da ocorrência das ordens de serviço <strong>(OS)</strong> e por localização, além de identificar a situação atual de uma OS de forma rápida e fácil! </p>
+                                    </div>
+                                    <div class="col-md-6 user-guide">
+                                        <div class="col-md-12" style="display: inline-flex;">
+                                            <div class="col-md-6">
+                                                <p><b>Legenda dos Markers:</b></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><b> Legenda das Situações:</b></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 functions-page" >
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <img src="<?= base_url('assets/img/icons/Alta.png') ?>">
+                                                </div>
+                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Prioridade Alta</div>
+                                                <div class="col-md-2 icon-guide">
+                                                    <img src="<?= base_url('assets/img/icons/Aberta.png') ?>">
+                                                </div>
+                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Aberta</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <img src="<?= base_url('assets/img/icons/Media.png') ?>">
+                                                </div>
+                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Prioridade Média</div>
+                                                <div class="col-md-2 icon-guide">
+                                                    <img src="<?= base_url('assets/img/icons/Em Andamento.png') ?>">
+                                                </div>
+                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Em Andamento</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <img src="<?= base_url('assets/img/icons/Baixa.png') ?>">
+                                                </div>
+                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Prioridade Baixa</div>
+                                                <div class="col-md-2 icon-guide">
+                                                    <img src="<?= base_url('assets/img/icons/Finalizada.png') ?>">
+                                                </div>
+                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Finalizada</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12>">
+                                                    <br><p>Os serviços são representados por ícones únicos de identificação. Para visualizar a ordem de serviço e identificar o serviço, basta clicar sobre o marker.</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12>">
+                                                    <br><p><strong>Qualquer dúvida entre em contato com o suporte  na sua organização!</p></strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-3">
