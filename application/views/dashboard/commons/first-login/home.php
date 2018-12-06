@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="titulo">Seja bem vindo!</h4>
+                <h4 class="modal-title" id="titulo">Seja bem-vindo ao Evidência!</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -22,7 +22,7 @@
                                 <input type="hidden" value="<?= $pessoa_fk ?>" name="pessoa_fk" id="pessoa_fk">
                                  <input type="hidden" value="<?= $organizacao_fk ?>" name="organizacao_fk" id="organizacao_fk">
                                 <div class="container mt-1 form-group">
-                                    <h4 style="text-align: center" class="text-danger"><i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
+                                    <h4 style="text-align: center" class="text-danger py-2"><i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
                                     <p>Esse é seu primeiro login, por questões de segurança nos próximos passos você criará um login e uma senha.</p>
                                     <ul style="margin-left: 15px">
                                         <li>Seu usuário tem acesso ao sistema, então tome alguns cuidados!</li>
