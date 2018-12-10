@@ -1135,20 +1135,55 @@ class Ordem_Servico extends CRUD_Controller {
 
 
 	public function json(){
-		// echo file_get_contents(base_url('assets/js/dashboard/ordem_servico/ordens.json'));
 		$today = date('Y-m-d');
 		$date = date('Y-m-d H:i:s', strtotime('-90 days', strtotime($today)));
-
 
 		//Futuramente alterar esse get para o get do model que está em relatorio_model.
 		$ordens_servico['ordens'] = $this->ordem_servico_model->getJsonForWeb([
 			'departamentos.organizacao_fk' => $this->session->user['id_organizacao'],
-			'historicos_ordens.historico_ordem_tempo >= ' => $date	,
+			'historicos_ordens.historico_ordem_tempo >= ' => $date,
 		]);
 
-		// print_r($ordens_servico['ordens']); die();
-
 		echo json_encode($ordens_servico);
+	}
+
+	public function json_map()
+	{
+		$where = $this->build_query($this->input->post());
+
+
+	}
+
+	private function build_query($data)
+	{
+		$where = [];
+		
+		if ($data['departamento'] != -1) 
+		{
+			$where['departamento_pk'] = $data['departamento'];
+		}
+		
+		if ($data['tipo_servico'] != -1) 
+		{
+			$where['tipo_servico_pk'] = $data['tipo_servico'];
+		}
+		
+		if ($data['servico'] != -1) 
+		{
+			$where['servico_pk'] = $data['servico'];
+		}
+		
+		if ($data['situacao'] != -1) 
+		{
+			$where['situacao_pk'] = $data['situacao'];
+		}
+		
+		if ($data['prioridade'] != -1) 
+		{
+			$where['prioridade_pk'] = $data['prioridade'];
+		}
+
+		return $where;
 	}
 
 

@@ -128,17 +128,6 @@ class Ordem_Servico_model extends CI_Model {
             MIN(historicos_ordens.historico_ordem_tempo) AS data_inicial,
             (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao
             ');
-            // historico_final.historico_ordem_tempo AS data_final,
-            // 
-
-        // prioridade
-        // tipo_servico
-        // servico
-        // departamento
-        // lat e long
-        // $this->db->select_min('historicos_ordens.historico_ordem_tempo AS historico_inicial');
-
-        // $this->db->select_max('historicos_ordens.historico_ordem_tempo AS historico_final');
 
         $this->db->from(self::TABLE_NAME);
 
@@ -179,8 +168,6 @@ class Ordem_Servico_model extends CI_Model {
         }
         
         $result = $this->db->get()->result();
-        // $result = $this->db->get_compiled_select();
-        // print_r($result); die();
 
         if ($result) {
             return ($result);

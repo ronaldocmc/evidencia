@@ -13,146 +13,147 @@ function initMap() {
     });
 
     
-    $(document).ready(function () {
-        $('#filtrar').prop('disabled',true);
-        $('.carousel').carousel();
-        $.ajax({
-            url: base_url + '/ordem_servico/json',
-            dataType: "json",
-            success: function (response) {
-                ordens_servico = response.ordens;
-                markers = response.ordens.map(function (ordem, i) {
+    // $(document).ready(function () {
+    //     $('#filtrar').prop('disabled',true);
+    //     $('.carousel').carousel();
 
-                    let imagem = '../assets/img/icons/Markers/Status/';
+    //     $.ajax({
+    //         url: base_url + '/ordem_servico/json',
+    //         dataType: "json",
+    //         success: function (response) {
+    //             ordens_servico = response.ordens;
+    //             markers = response.ordens.map(function (ordem, i) {
 
-                    if(ordem.departamento == "1"){
-                        imagem += "Coleta/";
-                    }
+    //                 let imagem = '../assets/img/icons/Markers/Status/';
 
-                    if(ordem.departamento == "2"){
-                        imagem += "Limpeza/";
-                    }
+    //                 if(ordem.departamento == "1"){
+    //                     imagem += "Coleta/";
+    //                 }
 
-                    if(ordem.prioridade == "1"){
-                        imagem += "Baixa/";
-                    }
+    //                 if(ordem.departamento == "2"){
+    //                     imagem += "Limpeza/";
+    //                 }
 
-                    if(ordem.prioridade == "2"){
-                        imagem += "Alta/";
-                    }
+    //                 if(ordem.prioridade == "1"){
+    //                     imagem += "Baixa/";
+    //                 }
 
-                    if(ordem.prioridade == "4"){
-                        imagem += "Media/";
-                    }
+    //                 if(ordem.prioridade == "2"){
+    //                     imagem += "Alta/";
+    //                 }
 
-                    if(ordem.situacao == "1"){
-                        imagem += "Aberta/"
-                    }
+    //                 if(ordem.prioridade == "4"){
+    //                     imagem += "Media/";
+    //                 }
 
-                    if(ordem.situacao == "2"){
-                        imagem += "Andamento/"
-                    }
+    //                 if(ordem.situacao == "1"){
+    //                     imagem += "Aberta/"
+    //                 }
 
-                    if(ordem.situacao == "3"){
-                        imagem += "Recusado/"
-                    }
+    //                 if(ordem.situacao == "2"){
+    //                     imagem += "Andamento/"
+    //                 }
 
-                    if(ordem.situacao == "4"){
-                        imagem += "Recusado/"
-                    }
+    //                 if(ordem.situacao == "3"){
+    //                     imagem += "Recusado/"
+    //                 }
 
-                    if(ordem.situacao == "5"){
-                        imagem += "Finalizado/"
-                    }
+    //                 if(ordem.situacao == "4"){
+    //                     imagem += "Recusado/"
+    //                 }
 
-                    switch(ordem.servico){
-                        case "1":
-                        imagem +=  "Marker_Fossa.png";
-                        break;
-                        case "2":
-                        imagem +=  "Marker_Fossa.png";
-                        break;
-                        case "3":
-                        imagem +=  "Marker_Animal_Morto.png";
-                        break;
-                        case "4":
-                        imagem +=  "Marker_Sofa.png";
-                        break;
-                        case "5":
-                        imagem +=  "Marker_Galhos.png";
-                        break;
-                        case "6": 
-                        imagem += "Marker_Lixo.png";
-                        break;
-                        case "7": 
-                        imagem += "Marker_Lixao.png";
-                        break;
-                        case "8": 
-                        imagem += "Marker_Eletro.png";
-                        break;
-                        case "9": 
-                        imagem += "Marker_Feira.png";
-                        break;
-                        case "10": 
-                        imagem += "Marker_Mobiliario.png";
-                        break;
-                        case "11": 
-                        imagem += "Marker_Madeira.png";
-                        break;
-                        case "12": 
-                        imagem += "Marker_Carpinagem.png";
-                        break;
-                        case "13": 
-                        imagem += "Marker_Carpinagem.png";
-                        break;
-                        case "14": 
-                        imagem += "Marker_Entulho.png";
-                        break;
-                        case "15": 
-                        imagem += "Marker_Escola.png";
-                        break;
-                        case "16": 
-                        imagem += "Marker_Grama.png";
-                        break;
-                        case "17": 
-                        imagem = "";
-                        break;
-                        case "18": 
-                        imagem += "Marker_Cacamba.png";
-                        break;
+    //                 if(ordem.situacao == "5"){
+    //                     imagem += "Finalizado/"
+    //                 }
 
-                    }
+    //                 switch(ordem.servico){
+    //                     case "1":
+    //                     imagem +=  "Marker_Fossa.png";
+    //                     break;
+    //                     case "2":
+    //                     imagem +=  "Marker_Fossa.png";
+    //                     break;
+    //                     case "3":
+    //                     imagem +=  "Marker_Animal_Morto.png";
+    //                     break;
+    //                     case "4":
+    //                     imagem +=  "Marker_Sofa.png";
+    //                     break;
+    //                     case "5":
+    //                     imagem +=  "Marker_Galhos.png";
+    //                     break;
+    //                     case "6": 
+    //                     imagem += "Marker_Lixo.png";
+    //                     break;
+    //                     case "7": 
+    //                     imagem += "Marker_Lixao.png";
+    //                     break;
+    //                     case "8": 
+    //                     imagem += "Marker_Eletro.png";
+    //                     break;
+    //                     case "9": 
+    //                     imagem += "Marker_Feira.png";
+    //                     break;
+    //                     case "10": 
+    //                     imagem += "Marker_Mobiliario.png";
+    //                     break;
+    //                     case "11": 
+    //                     imagem += "Marker_Madeira.png";
+    //                     break;
+    //                     case "12": 
+    //                     imagem += "Marker_Carpinagem.png";
+    //                     break;
+    //                     case "13": 
+    //                     imagem += "Marker_Carpinagem.png";
+    //                     break;
+    //                     case "14": 
+    //                     imagem += "Marker_Entulho.png";
+    //                     break;
+    //                     case "15": 
+    //                     imagem += "Marker_Escola.png";
+    //                     break;
+    //                     case "16": 
+    //                     imagem += "Marker_Grama.png";
+    //                     break;
+    //                     case "17": 
+    //                     imagem = "";
+    //                     break;
+    //                     case "18": 
+    //                     imagem += "Marker_Cacamba.png";
+    //                     break;
 
-                    // var pinColor = colors[ordem.situacao];
-                    // var imagem = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor);
+    //                 }
 
-                    var marker = new google.maps.Marker({
-                        position: { lat: parseFloat(ordem.latitude), lng: parseFloat(ordem.longitude) },
-                        map: main_map,
-                        icon: imagem,
-                        id: ordem.id,
-                        departamento: ordem.departamento,
-                        tipo_servico: ordem.tipo_servico,
-                        servico: ordem.servico,
-                        situacao: ordem.situacao,
-                        data_criacao: ordem.data_inicial, //Usava o reformatDate();
-                        prioridade: ordem.prioridade,
-                        setor: ordem.setor,
-                        title: ordem.rua + ", " + ordem.numero + " - " + ordem.bairro + ". " + ordem.ponto_referencia
-                    });
+    //                 // var pinColor = colors[ordem.situacao];
+    //                 // var imagem = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor);
 
-                    marker.addListener('click', function () {
-                        main_map.panTo(marker.getPosition());
-                        request_data(this.id, marker.setor); 
-                        $('#v_evidencia').modal('show');
-                    }); 
-                    return marker;
-                });
+    //                 var marker = new google.maps.Marker({
+    //                     position: { lat: parseFloat(ordem.latitude), lng: parseFloat(ordem.longitude) },
+    //                     map: main_map,
+    //                     icon: imagem,
+    //                     id: ordem.id,
+    //                     departamento: ordem.departamento,
+    //                     tipo_servico: ordem.tipo_servico,
+    //                     servico: ordem.servico,
+    //                     situacao: ordem.situacao,
+    //                     data_criacao: ordem.data_inicial, //Usava o reformatDate();
+    //                     prioridade: ordem.prioridade,
+    //                     setor: ordem.setor,
+    //                     title: ordem.rua + ", " + ordem.numero + " - " + ordem.bairro + ". " + ordem.ponto_referencia
+    //                 });
 
-$('#filtrar').prop('disabled',false);
-}
-});
-});
+    //                 marker.addListener('click', function () {
+    //                     main_map.panTo(marker.getPosition());
+    //                     request_data(this.id, marker.setor); 
+    //                     $('#v_evidencia').modal('show');
+    //                 }); 
+    //                 return marker;
+    //             });
+
+    //             $('#filtrar').prop('disabled',false);
+    //         }
+    //     });
+    // });
 
 
 function remove_data() {
@@ -401,16 +402,8 @@ function muda_tipo_servico() {
 
 
 $('#filtrar').click(function () {
+    filters = get_filters();
     activeAll();
-
-    // console.log("Listando");
-    // console.log("Departamento: " + departamento.val());
-    // console.log("Tipo_servico: " + tipo_servico.val());
-    // console.log("Servico: " + servico.val());
-    // console.log("Prioridade: " + prioridade.val());
-    // console.log("Situação: " + situacao.val());
-    // console.log("Data de: " + de.val());
-    // console.log("Data Ate: " + ate.val());
     
     markers.map((marker, i) => {
         filter(marker);
@@ -486,5 +479,30 @@ function filter(marker) {
     }
 }
 
-}
+    function get_filters() {
+        var filters;
 
+        if (departamento.val() != -1) {
+            filters['departamento_pk'] = departamento.val();
+        }
+
+        if (tipo_servico.val() != -1) {
+            filters['tipo_servico_pk'] = tipo_servico.val();
+        }
+
+        if (servico.val() != -1) {
+            filters['servico_pk'] = servico.val();
+        }
+        
+        if (prioridade.val() != -1) {
+            filters['prioridade_pk'] = prioridade.val();
+        }
+
+        if (situacao.val() != -1) {
+            filters['situacao_pk'] = situacao.val();
+        }
+
+        // Fazer a parte da data
+    }
+
+}
