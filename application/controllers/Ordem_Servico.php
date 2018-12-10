@@ -41,9 +41,6 @@ class Ordem_Servico extends CRUD_Controller {
 			'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
 		]);
 
-		// print_r($ordens_servico); die();
-		$ordens_servico = null;
-
 		if ($ordens_servico !== null) {
 				foreach ($ordens_servico as $os) 
 			{
