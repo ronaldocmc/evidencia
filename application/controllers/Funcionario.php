@@ -538,7 +538,7 @@ public function update()
                     {
                         if($data['departamento_fk'] != '')
                         {
-                            $this->model->insert_funcionarios_departamentos([
+                            $this->model->insert_departamento([
                                 'funcionario_fk' => $return_funcionario, 
                                 'departamento_fk' => $data['departamento_fk']
                             ]);
