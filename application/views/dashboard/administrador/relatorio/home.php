@@ -89,6 +89,15 @@
                                                                        <i class="fas fa-eye fa-fw"></i>
                                                                    </div>
                                                                </a>
+                                                               
+                                                               <a class="btn btn-sm btn-success" target="blank" href="<?= base_url('relatorio/imprimir_relatorio/'.$r->relatorio_pk) ?>">
+                                                                   <div class="d-none d-sm-block">
+                                                                       Imprimir
+                                                                   </div>
+                                                                   <div class="d-block d-sm-none">
+                                                                   <i class="fas fa-print"></i>
+                                                                   </div>
+                                                               </a>
                                                         </div>
                                                     </td>
                                                 </tr>
