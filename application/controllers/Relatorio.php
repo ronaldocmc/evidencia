@@ -1147,6 +1147,72 @@ private function create_relatorio($filtro)
             return;
         }
     }
+
+
+
+    
+public function imprimir_relatorio($id_relatorio)
+{
+    $this->load->model('funcionario_model');
+    $this->load->model('relatorio_model');
+
+    $relatorio = $this->relatorio_model->get_relatorio($id_relatorio);
+    if($relatorio)
+    {
+
+        //pegamos o funcionário:
+        $funcionario = $this->funcionario_model->get(['funcionario_pk' => $relatorio->funcionario_fk])[0];
+
+        $ordens_servicos = $this->get_ordens_relatorio($id_relatorio);
+
+        //var_dump($ordens_servicos); die();
+
+        //arrumando a data:
+        if($ordens_servicos != false){
+            foreach($ordens_servicos as $os){
+                $os->data_criacao = date('d/m/Y H:i:s', strtotime($os->data_criacao));
+
+                //Se não tiver sido entregue, vamos mostrar: Não Finalizado, se tiver, vamos printar a situação atual
+                if($os->status_os == 2){
+                    $os->status_os_string = 'Não Finalizado';
+                }else{
+                    $os->status_os_string = $os->situacao_atual;
+                }
+            }
+        }
+
+
+        $filtro_data = $this->relatorio_model->get_filtro_relatorio_data($id_relatorio);
+        $filtro_setores = $this->relatorio_model->get_filtro_relatorio_setores($id_relatorio);
+        $filtro_tipos_servicos = $this->relatorio_model->get_filtro_relatorio_tipos_servicos($id_relatorio);
+
+        //criar o método que preenche o filtro data
+        $string_filtros['data'] = $this->get_string_filtro_data($filtro_data);
+
+        //criar um método para preecnher os filtros:
+        $string_filtros['setor'] = $this->get_string_filtro_setores($filtro_setores);
+
+        $string_filtros['tipos_servicos'] = $this->get_string_filtro_tipos_servicos($filtro_tipos_servicos);
+
+       $this->load->view('dashboard/administrador/relatorio/imprimir_relatorio',
+       array(
+        'ordens_servicos' => $ordens_servicos,
+        'funcionario' => $funcionario,
+        'relatorio' => $relatorio,
+        'filtros' => $string_filtros
+    )); 
+
+    }
+    else
+    {
+        $response = new Response();
+        $response->set_code(Response::NOT_FOUND);
+        $response->set_data("Relatório não encontrado."); 
+        $response->send();
+
+    } 
+}
+
 }
 
 ?>
