@@ -1009,7 +1009,8 @@ private function create_relatorio($filtro)
             0 => base_url('assets/vendor/cropper/cropper.css'),
             1 => base_url('assets/vendor/input-image/input-image.css'),
             2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            3 => base_url('assets/css/modal_desativar.css')
+            3 => base_url('assets/css/modal_desativar.css'),
+            4 => base_url('assets/css/user_guide.css')
         ));
 
         $this->session->set_flashdata('scripts', array(
