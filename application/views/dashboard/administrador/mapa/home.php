@@ -155,27 +155,16 @@
                     <div class="divider"></div>
                     <div class="row py-3">
                         <div class="col-md-3">
-                            <label for="dia">De</label>
+                            <label for="de">De</label>
                             <input type="date" class="form-control" id="de">
                             <!-- <small class="form-text text-muted">Dia inicial</small> -->
                         </div>
                         <div class="col-md-3">
-                            <label for="dia">Até</label>
+                            <label for="ate">Até</label>
                             <input type="date" class="form-control" id="ate">
                             <!-- <small class="form-text text-muted">Dia inicial</small> -->
                         </div>
-
-                        <div class="col-md-2">
-                            <label for="dia">Hora inicial</label>
-                            <input type="time" id="h_inicial" class="form-control">
-                            <!-- <small class="form-text text-muted">Dia inicial</small> -->
-                        </div>
-
-                        <div class="col-md-2">
-                            <label for="dia">Hora final</label>
-                            <input type="time" id="h_final" class="form-control">
-                            <!-- <small class="form-text text-muted">Dia inicial</small> -->
-                        </div>
+                        
                         <div class="col-md-2">
                             <label for="prioridade_pk">Prioridade</label>
                             <select class="form-control" id="prioridade_pk" name="prioridade_pk" required="true">
@@ -191,25 +180,9 @@
                             <!-- <small class="form-text text-muted">Filtrar por prioridade</small> -->
                         </div>
                     </div>
-                    <button id="filtrar" class="au-btn au-btn-icon au-btn--blue reset_multistep pull-right">Filtrar</button>
-                    <!-- <div class="divider"></div> 
-                     <div class="row py-3">
-                        <div class="col-md-4">
-                            <label for="funcionario">Funcionário</label>
-                            <input type="text" class="form-control" placeholder="Nome do funcionário">
-                             <small class="form-text text-muted">Dia inicial</small>
-                        </div>
-                        <div class="col-md-4">
-                            <label id="inserido_por">Inserido por</label>
-                            <select class="form-control">
-                                <option value="#">Fiscal</option>
-                                <option value="#">Atendente</option>
-                                <option value="#">Administrador</option>
-                            </select>
-                             <small class="form-text text-muted">Dia inicial</small> 
-                        </div>
-                        
-                    </div> -->
+                    <button id="filtrar" class="au-btn au-btn-icon au-btn--blue reset_multistep pull-right">
+                        <i class="fa fa-dot-circle-o"></i> Filtrar
+                    </button>
                 </div>
             </div>
         </div>

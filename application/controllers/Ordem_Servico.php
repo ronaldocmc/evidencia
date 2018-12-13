@@ -41,6 +41,8 @@ class Ordem_Servico extends CRUD_Controller {
 			'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
 		]);
 
+		// filtrar as OS pela data
+
 		if ($ordens_servico !== null) {
 				foreach ($ordens_servico as $os) 
 			{
@@ -73,12 +75,14 @@ class Ordem_Servico extends CRUD_Controller {
 		]);
 
 		//Criando um array de prodecencias de serviços (Interno/Externo) com dados necessário a serem exibidos na view index
-		$procedencias = $this->procedencia_model->get(['procedencias.organizacao_fk' => $this->session->user['id_organizacao']
-	]);
+		$procedencias = $this->procedencia_model->get([
+			'procedencias.organizacao_fk' => $this->session->user['id_organizacao']
+		]);
 
 		//Criando um array de setores (A, B, C, D) com dados necessário a serem exibidos na view index
-		$setores = $this->setor_model->get(['setores.organizacao_fk' => $this->session->user['id_organizacao']
-	]);
+		$setores = $this->setor_model->get([
+			'setores.organizacao_fk' => $this->session->user['id_organizacao']
+		]);
 
 		//Carregando arquivos CSS no flashdata da session para as views 
 		$this->session->set_flashdata('css',[
@@ -139,6 +143,7 @@ class Ordem_Servico extends CRUD_Controller {
 		],'administrador');    
 	}
 
+	
 
 	public function config_form_validation()
 	{
@@ -1134,58 +1139,183 @@ class Ordem_Servico extends CRUD_Controller {
 	}
 
 
-	public function json(){
-		$today = date('Y-m-d');
-		$date = date('Y-m-d H:i:s', strtotime('-90 days', strtotime($today)));
+	public function json()
+	{
+		$where = $this->monta_query();
 
-		//Futuramente alterar esse get para o get do model que está em relatorio_model.
-		$ordens_servico['ordens'] = $this->ordem_servico_model->getJsonForWeb([
-			'departamentos.organizacao_fk' => $this->session->user['id_organizacao'],
-			'historicos_ordens.historico_ordem_tempo >= ' => $date,
-		]);
+		if ($where != null) 
+		{
+			$result = $this->ordem_servico_model->getJsonForWeb($where);
+		}
+		else
+		{
+			$result = $this->ordem_servico_model->getJsonForWeb();	
+		}
 
-		echo json_encode($ordens_servico);
+		$filtro = $this->seleciona_filtro(
+			$this->input->post('data_inicial'),
+			$this->input->post('data_final'),
+			$this->input->post('situacao')
+		);
+		$ordens_servico = $this->filtra_ordens_mapa(
+			$result, 
+			$this->input->post('data_inicial'),
+			$this->input->post('data_final'),
+			$this->input->post('situacao'),
+			$filtro
+		);
+		$response = new Response();
+		$response->set_data($ordens_servico);
+		$response->send();
+		// echo json_encode($ordens_servico, JSON_UNESCAPED_UNICODE);
 	}
 
-	public function json_map()
+	// Popula os campos que serão pesquisados
+	private function monta_query()
 	{
-		$where = $this->build_query($this->input->post());
+		$where = null;
 
+		if ($this->input->post('departamento') != '' && 
+			($this->input->post('tipo_servico') == '' && $this->input->post('servico') == '')) 
+		{
+			$where['tipos_servicos.departamento_fk'] = $this->input->post('departamento');
+		}
+		else if ($this->input->post('tipo_servico') != '' && $this->input->post('servico') == '')
+		{
+			
+			$where['servicos.tipo_servico_fk'] = $this->input->post('tipo_servico');	
+		}
+		else if($this->input->post('servico') != '')
+		{
+			
+			$where['ordens_servicos.servico_fk'] = $this->input->post('servico');
+		}
 
-	}
-
-	private function build_query($data)
-	{
-		$where = [];
-		
-		if ($data['departamento'] != -1) 
+		if ($this->input->post('prioridade') != '') 
 		{
-			$where['departamento_pk'] = $data['departamento'];
-		}
-		
-		if ($data['tipo_servico'] != -1) 
-		{
-			$where['tipo_servico_pk'] = $data['tipo_servico'];
-		}
-		
-		if ($data['servico'] != -1) 
-		{
-			$where['servico_pk'] = $data['servico'];
-		}
-		
-		if ($data['situacao'] != -1) 
-		{
-			$where['situacao_pk'] = $data['situacao'];
-		}
-		
-		if ($data['prioridade'] != -1) 
-		{
-			$where['prioridade_pk'] = $data['prioridade'];
+			
+			$where['ordens_servicos.prioridade_fk'] = $this->input->post('prioridade');
 		}
 
 		return $where;
 	}
 
+	private function seleciona_filtro($data_inicial, $data_final, $situacao)
+	{
+		
+		if ($data_inicial != '' && $data_final != '' && $situacao != '') 
+		{
+			return 1; // Todos estão selecionados
+		}
+		
+		else if ($data_inicial == '' && $data_final == '' && $situacao == '') 
+		{
+			return 2; // Todos estão vazios
+		}
+		
+		else if ($data_inicial == '' && $data_final == '' && $situacao != '') 
+		{
+			return 3; // Só situação está válida
+		}
+		
+		else if ($data_inicial != '' && $data_final == '' && $situacao == '') 
+		{
+			return 4; // Só inicial válida
+		}
+		
+		else if ($data_inicial == '' && $data_final != '' && $situacao == '') 
+		{
+			return 5; // Só final válida
+		}
+		
+		else if ($data_inicial == '' && $data_final != '' && $situacao != '') 
+		{
+			return 6; // Final e situação válidas
+		}
+		
+		else if ($data_inicial != '' && $data_final != '' && $situacao == '') 
+		{
+			return 7; // Inicial e final válidas
+		}
+		
+		else if ($data_inicial != '' && $data_final == '' && $situacao != '') 
+		{
+			return 8; // Inicial e situação válidas
+		}
+	}
+
+
+	// Método auxiliar para filtrar as os de acordo com os filtros escolhidos no mapa
+	private function filtra_ordens_mapa($ordens, $data_inicial, $data_final, $situacao, $filtro)
+	{
+		$return = null;
+
+		foreach ($ordens as $os)
+		{
+			switch ($filtro) {
+				case 1:
+					if (strtotime($os->data_inicial) > strtotime($data_inicial) 
+						&& strtotime($os->data_inicial) < strtotime($data_final)
+						&& $os->situacao == $situacao) 
+					{
+						$return[] = $os;
+					}
+					break;
+				
+				case 2:
+						$return[] = $os;
+					break;
+
+				case 3:
+					if ($os->situacao == $situacao) 
+					{
+						$return[] = $os;
+					}
+					break;
+
+				case 4:
+					if (strtotime($os->data_inicial) > strtotime($data_inicial)) 
+					{
+						$return[] = $os;
+					}
+					break;
+
+				case 5:
+					if (strtotime($os->data_inicial) < strtotime($data_final)) 
+					{
+						$return[] = $os;
+					}
+					break;
+
+				case 6:
+					if (strtotime($os->data_inicial) < strtotime($data_final)
+						&& $os->situacao == $situacao) 
+					{
+						$return[] = $os;
+					}
+					break;
+
+				case 7:
+					if (strtotime($os->data_inicial) > strtotime($data_inicial) 
+						&& strtotime($os->data_inicial) < strtotime($data_final)) 
+					{
+						$return[] = $os;
+					}
+					break;
+
+				case 8:
+					if (strtotime($os->data_inicial) > strtotime($data_inicial) 
+						&& $os->situacao == $situacao) 
+					{
+						$return[] = $os;
+					}
+					break;
+			}	
+			
+		}
+
+		return $return;
+	}
 
 	//Função que gera um json para preencher os históricos 
 	public function json_especifico($id, $flag){
