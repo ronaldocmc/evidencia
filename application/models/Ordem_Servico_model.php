@@ -125,7 +125,7 @@ class Ordem_Servico_model extends CI_Model {
             bairros.bairro_nome as bairro,
             setores.setor_nome as setor,
             ordens_servicos.prioridade_fk AS prioridade,
-            MIN(historicos_ordens.historico_ordem_tempo) AS data_inicial,
+            MIN(historicos_ordens.historico_ordem_tempo) AS data_criacao,
             (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao
             ');
 

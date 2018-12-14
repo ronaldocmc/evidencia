@@ -41,14 +41,28 @@ class Ordem_Servico extends CRUD_Controller {
 			'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
 		]);
 
-		// filtrar as OS pela data
+		// Intervalo de uma semana para trás
+		date_default_timezone_set('America/Sao_Paulo');
+		$data_final = date('Y-m-d', time()) . ' 23:59:00';
+		$data_inicial = date('Y-m-d', strtotime('-7 days')) . ' 00:00:00';
 
-		if ($ordens_servico !== null) {
-				foreach ($ordens_servico as $os) 
+		// Filtra com a flag 7 (data inicial e final levadas em consideração)
+		$ordens_servico = $this->filtra_ordens_view(
+			$ordens_servico, 
+			$data_inicial,
+			$data_final,
+			'',
+			7
+		);
+
+		if ($ordens_servico !== null) 
+		{
+			foreach ($ordens_servico as $os) 
 			{
 				$os->data_criacao = date('d/m/Y H:i:s', strtotime($os->data_criacao));
 			}
 		}
+
 		//Criando um array de departamentos pertencentes a organização do usuário 
 		$departamentos = $this->departamento_model->get([
 			'organizacao_fk' => $this->session->user['id_organizacao']
@@ -143,7 +157,7 @@ class Ordem_Servico extends CRUD_Controller {
 		],'administrador');    
 	}
 
-	
+
 
 	public function config_form_validation()
 	{
@@ -1141,6 +1155,7 @@ class Ordem_Servico extends CRUD_Controller {
 
 	public function json()
 	{
+		// Verifica quais campos estão setados para passar para o model
 		$where = $this->monta_query();
 
 		if ($where != null) 
@@ -1152,22 +1167,25 @@ class Ordem_Servico extends CRUD_Controller {
 			$result = $this->ordem_servico_model->getJsonForWeb();	
 		}
 
+		// Seleciona qual flag de filtro deverá ser usada, de acordo com as datas e situação
 		$filtro = $this->seleciona_filtro(
 			$this->input->post('data_inicial'),
 			$this->input->post('data_final'),
 			$this->input->post('situacao')
 		);
-		$ordens_servico = $this->filtra_ordens_mapa(
+
+		// Filtra as ordens
+		$ordens_servico = $this->filtra_ordens_view(
 			$result, 
 			$this->input->post('data_inicial'),
 			$this->input->post('data_final'),
 			$this->input->post('situacao'),
 			$filtro
 		);
+
 		$response = new Response();
 		$response->set_data($ordens_servico);
 		$response->send();
-		// echo json_encode($ordens_servico, JSON_UNESCAPED_UNICODE);
 	}
 
 	// Popula os campos que serão pesquisados
@@ -1200,6 +1218,7 @@ class Ordem_Servico extends CRUD_Controller {
 		return $where;
 	}
 
+	// De acordo com os campos setados, retorna a flag que será usada no filtro
 	private function seleciona_filtro($data_inicial, $data_final, $situacao)
 	{
 		
@@ -1246,7 +1265,7 @@ class Ordem_Servico extends CRUD_Controller {
 
 
 	// Método auxiliar para filtrar as os de acordo com os filtros escolhidos no mapa
-	private function filtra_ordens_mapa($ordens, $data_inicial, $data_final, $situacao, $filtro)
+	private function filtra_ordens_view($ordens, $data_inicial, $data_final, $situacao, $filtro)
 	{
 		$return = null;
 
@@ -1254,8 +1273,8 @@ class Ordem_Servico extends CRUD_Controller {
 		{
 			switch ($filtro) {
 				case 1:
-					if (strtotime($os->data_inicial) > strtotime($data_inicial) 
-						&& strtotime($os->data_inicial) < strtotime($data_final)
+					if (strtotime($os->data_criacao) > strtotime($data_inicial) 
+						&& strtotime($os->data_criacao) < strtotime($data_final)
 						&& $os->situacao == $situacao) 
 					{
 						$return[] = $os;
@@ -1274,21 +1293,21 @@ class Ordem_Servico extends CRUD_Controller {
 					break;
 
 				case 4:
-					if (strtotime($os->data_inicial) > strtotime($data_inicial)) 
+					if (strtotime($os->data_criacao) > strtotime($data_inicial)) 
 					{
 						$return[] = $os;
 					}
 					break;
 
 				case 5:
-					if (strtotime($os->data_inicial) < strtotime($data_final)) 
+					if (strtotime($os->data_criacao) < strtotime($data_final)) 
 					{
 						$return[] = $os;
 					}
 					break;
 
 				case 6:
-					if (strtotime($os->data_inicial) < strtotime($data_final)
+					if (strtotime($os->data_criacao) < strtotime($data_final)
 						&& $os->situacao == $situacao) 
 					{
 						$return[] = $os;
@@ -1296,15 +1315,15 @@ class Ordem_Servico extends CRUD_Controller {
 					break;
 
 				case 7:
-					if (strtotime($os->data_inicial) > strtotime($data_inicial) 
-						&& strtotime($os->data_inicial) < strtotime($data_final)) 
+					if (strtotime($os->data_criacao) > strtotime($data_inicial) 
+						&& strtotime($os->data_criacao) < strtotime($data_final)) 
 					{
 						$return[] = $os;
 					}
 					break;
 
 				case 8:
-					if (strtotime($os->data_inicial) > strtotime($data_inicial) 
+					if (strtotime($os->data_criacao) > strtotime($data_inicial) 
 						&& $os->situacao == $situacao) 
 					{
 						$return[] = $os;

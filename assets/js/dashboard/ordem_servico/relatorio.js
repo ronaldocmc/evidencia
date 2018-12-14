@@ -369,7 +369,7 @@ function initMap() {
             tipo_servico: ordem.tipo_servico,
             servico: ordem.servico,
             situacao: ordem.situacao,
-            data_criacao: ordem.data_inicial, 
+            data_criacao: ordem.data_criacao, 
             prioridade: ordem.prioridade,
             setor: ordem.setor,
             title: ordem.rua + ", " + ordem.numero + " - " + ordem.bairro + ". " + ordem.ponto_referencia
