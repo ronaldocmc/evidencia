@@ -1361,5 +1361,73 @@ class Ordem_Servico extends CRUD_Controller {
 		echo json_encode($ordens_servico);
 	}
 
+	public function filtro_tabela()
+	{
+		$response = new Response();
+		$ordens_servico = null;
+
+		switch ($this->input->post('filtro')) 
+		{
+			case 'finalizadas':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
+				]);
+
+				if ($ordens_servico != null) 
+				{
+					$ordens_servico = $this->filtra_ordens_view(
+						$ordens_servico, 
+						'',
+						'',
+						'5',
+						3
+					);
+				}
+				break;
+
+			case 'abertas':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
+				]);
+
+				if ($ordens_servico != null) 
+				{
+					$ordens_servico = $this->filtra_ordens_view(
+						$ordens_servico, 
+						'',
+						'',
+						'1',
+						3
+					);
+				}
+				break;
+
+			case 'ativadas':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao'],
+					'ordens_servicos.ordem_servico_status' => '1'
+				]);
+				break;
+
+			case 'desativadas':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao'],
+					'ordens_servicos.ordem_servico_status' => '0'
+				]);
+				break;
+		}
+
+		if ($ordens_servico != null) 
+		{
+			$response->set_code(Response::SUCCESS);
+			$response->set_data($ordens_servico);
+		}
+		else
+		{
+			$response->set_code(Response::NOT_FOUND);
+		}
+		
+		$response->send();
+	}
 }
 ?>

@@ -79,6 +79,7 @@ class Ordem_Servico_model extends CI_Model {
         $this->db->join('populacao','populacao.pessoa_pk = populacao_os.pessoa_fk', 'LEFT');
         $this->db->join('contatos', 'contatos.pessoa_fk = populacao_os.pessoa_fk', 'LEFT');
         $this->db->group_by(self::TABLE_NAME. '.'.self::PRI_INDEX);
+        $this->db->limit(500);
 
 
         if ($where !== NULL) {

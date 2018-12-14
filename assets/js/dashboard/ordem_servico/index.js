@@ -1505,26 +1505,44 @@ $(document).ready(function() {
 
         case "ativadas":
         table.clear().draw();
-        $.each(ordens_servico, function (i, os) {
+        let url = base_url + '/ordem_servico/filtro_tabela';
+        let filtro = {
+            filtro: 'ativadas'
+        };
+        $.post(url, filtro)
+        .done(function(response){
+            if (response.code == 200) {
+                ordens_servico = response.data;
+                console.log(ordens_servico);
+                $.each(ordens_servico, function (i, os) {
 
-            let endereco = os.logradouro_nome+ ", " + os.local_num + " - " + os.bairro_nome; 
+                    let endereco = os.logradouro_nome+ ", " + os.local_num + " - " + os.bairro_nome; 
 
-            if(os.ordem_servico_status == 1) {
-                table.row.add([
-                    os.ordem_servico_cod,
-                    os.data_criacao,
-                    os.prioridade_nome,
-                    endereco,
-                    os.servico_nome,
-                    os.situacao_nome,
-                    os.setor_nome,
-                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
-                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
-                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
-                    '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                    ]).draw(false);
+                    if(os.ordem_servico_status == 1) {
+                        table.row.add([
+                            os.ordem_servico_cod,
+                            os.data_criacao,
+                            os.prioridade_nome,
+                            endereco,
+                            os.servico_nome,
+                            os.situacao_nome,
+                            os.setor_nome,
+                            '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                            '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
+                            '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                            ]).draw(false);
+                    }
+                });
+            } else if (response.code == 404) {
+                alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada');
             }
+        })
+        .fail(function (response){
+            alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
         });
+
+       
         break;
 
         case "desativadas":
