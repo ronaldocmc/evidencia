@@ -91,7 +91,7 @@ class Ordem_Servico_model extends CI_Model {
                 $this->db->where(self::PRI_INDEX, $where);
             }
         }
-
+        // echo $this->db->get_compiled_select(); die();
         $result = $this->db->get()->result();
         if ($result) {
             return ($result);
@@ -127,7 +127,7 @@ class Ordem_Servico_model extends CI_Model {
             setores.setor_nome as setor,
             ordens_servicos.prioridade_fk AS prioridade,
             MIN(historicos_ordens.historico_ordem_tempo) AS data_criacao,
-            (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao
+            (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual_pk
             ');
 
         $this->db->from(self::TABLE_NAME);

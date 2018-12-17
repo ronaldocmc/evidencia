@@ -125,7 +125,7 @@
                                 <div class="col-md-4">
                                     <label for="filter-ativo">Mostrar</label>
                                     <select name="filter-ativo" id="filter-ativo" class="form-control">
-                                        <option value="todos">Todos</option>
+                                        <option value="todos">Todas</option>
                                         <option value="finalizadas">Finalizadas</option>
                                         <option value="abertas">Não Finalizadas</option>
                                         <option value="ativadas">Ativas</option>

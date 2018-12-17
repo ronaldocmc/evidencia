@@ -62,23 +62,23 @@ function initMap() {
             imagem += "Media/";
         }
 
-        if(ordem.situacao == "1"){
+        if(ordem.situacao_atual_pk == "1"){
             imagem += "Aberta/"
         }
 
-        if(ordem.situacao == "2"){
+        if(ordem.situacao_atual_pk == "2"){
             imagem += "Andamento/"
         }
 
-        if(ordem.situacao == "3"){
+        if(ordem.situacao_atual_pk == "3"){
             imagem += "Recusado/"
         }
 
-        if(ordem.situacao == "4"){
+        if(ordem.situacao_atual_pk == "4"){
             imagem += "Recusado/"
         }
 
-        if(ordem.situacao == "5"){
+        if(ordem.situacao_atual_pk == "5"){
             imagem += "Finalizado/"
         }
 
@@ -368,7 +368,7 @@ function initMap() {
             departamento: ordem.departamento,
             tipo_servico: ordem.tipo_servico,
             servico: ordem.servico,
-            situacao: ordem.situacao,
+            situacao: ordem.situacao_atual_pk,
             data_criacao: ordem.data_criacao, 
             prioridade: ordem.prioridade,
             setor: ordem.setor,

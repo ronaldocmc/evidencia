@@ -1275,7 +1275,7 @@ class Ordem_Servico extends CRUD_Controller {
 				case 1:
 					if (strtotime($os->data_criacao) > strtotime($data_inicial) 
 						&& strtotime($os->data_criacao) < strtotime($data_final)
-						&& $os->situacao == $situacao) 
+						&& $os->situacao_atual_pk == $situacao) 
 					{
 						$return[] = $os;
 					}
@@ -1286,7 +1286,7 @@ class Ordem_Servico extends CRUD_Controller {
 					break;
 
 				case 3:
-					if ($os->situacao == $situacao) 
+					if ($os->situacao_atual_pk == $situacao) 
 					{
 						$return[] = $os;
 					}
@@ -1308,7 +1308,7 @@ class Ordem_Servico extends CRUD_Controller {
 
 				case 6:
 					if (strtotime($os->data_criacao) < strtotime($data_final)
-						&& $os->situacao == $situacao) 
+						&& $os->situacao_atual_pk == $situacao) 
 					{
 						$return[] = $os;
 					}
@@ -1324,7 +1324,7 @@ class Ordem_Servico extends CRUD_Controller {
 
 				case 8:
 					if (strtotime($os->data_criacao) > strtotime($data_inicial) 
-						&& $os->situacao == $situacao) 
+						&& $os->situacao_atual_pk == $situacao) 
 					{
 						$return[] = $os;
 					}
@@ -1368,6 +1368,12 @@ class Ordem_Servico extends CRUD_Controller {
 
 		switch ($this->input->post('filtro')) 
 		{
+			case 'todos':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
+				]);
+				break;
+
 			case 'finalizadas':
 				$ordens_servico = $this->ordem_servico_model->getHome([
 					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
@@ -1419,6 +1425,10 @@ class Ordem_Servico extends CRUD_Controller {
 
 		if ($ordens_servico != null) 
 		{
+			foreach ($ordens_servico as $os) 
+			{
+				$os->data_criacao = date('d/m/Y H:i:s', strtotime($os->data_criacao));
+			}
 			$response->set_code(Response::SUCCESS);
 			$response->set_data($ordens_servico);
 		}
