@@ -157,6 +157,7 @@ class Ordem_Servico_model extends CI_Model {
         $this->db->join('setores', 'setores.setor_pk = '.self::TABLE_NAME.'.setor_fk');
 
         $this->db->group_by(self::TABLE_NAME. '.'.self::PRI_INDEX);
+        $this->db->limit(100);
 
         if ($where !== NULL) {
             if (is_array($where)) {

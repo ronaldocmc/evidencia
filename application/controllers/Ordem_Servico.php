@@ -120,8 +120,8 @@ class Ordem_Servico extends CRUD_Controller {
 			3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
 			4 => base_url('assets/vendor/datatables/datatables.min.js'),
 			5 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-			6 => base_url('assets/js/utils.js'),
-			7 => base_url('assets/js/constants.js'),
+			6 => base_url('assets/js/constants.js'),
+			7 => base_url('assets/js/utils.js'),
 			8 => base_url('assets/js/jquery.noty.packaged.min.js'),
 			9 => base_url('assets/js/dashboard/ordem_servico/index.js'),
 			10 => base_url('assets/vendor/select-input/select-input.js'),
@@ -1372,7 +1372,7 @@ class Ordem_Servico extends CRUD_Controller {
 				$ordens_servico = $this->ordem_servico_model->getHome([
 					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
 				]);
-				
+
 				// Intervalo de uma semana para trás
 				date_default_timezone_set('America/Sao_Paulo');
 				$data_final = date('Y-m-d', time()) . ' 23:59:00';
