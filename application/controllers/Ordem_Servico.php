@@ -1368,6 +1368,26 @@ class Ordem_Servico extends CRUD_Controller {
 
 		switch ($this->input->post('filtro')) 
 		{
+			case 'semana':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
+				]);
+				
+				// Intervalo de uma semana para trás
+				date_default_timezone_set('America/Sao_Paulo');
+				$data_final = date('Y-m-d', time()) . ' 23:59:00';
+				$data_inicial = date('Y-m-d', strtotime('-7 days')) . ' 00:00:00';
+
+				// Filtra com a flag 7 (data inicial e final levadas em consideração)
+				$ordens_servico = $this->filtra_ordens_view(
+					$ordens_servico, 
+					$data_inicial,
+					$data_final,
+					'',
+					7
+				);
+				break;
+
 			case 'todos':
 				$ordens_servico = $this->ordem_servico_model->getHome([
 					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']

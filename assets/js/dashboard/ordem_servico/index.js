@@ -1467,6 +1467,64 @@ $(document).ready(function() {
 
       switch ($('#filter-ativo').val()) 
       {
+        case "semana":
+            url = base_url + '/ordem_servico/filtro_tabela';
+            filtro = {
+                filtro: 'semana'
+            };
+            pre_loader_show();
+            $.post(url, filtro)
+            .done(function (response) {
+               if (response.code == 200) {
+                
+                table.clear().draw();
+
+                ordens_servico = response.data;
+
+                $.each(ordens_servico, function (i, os) {
+                    let endereco = os.logradouro_nome+ ", " + os.local_num + " - " + os.bairro_nome; 
+
+                    if(os.ordem_servico_status == 1){
+                        table.row.add([
+                            os.ordem_servico_cod,
+                            os.data_criacao,
+                            os.prioridade_nome,
+                            endereco,
+                            os.servico_nome,
+                            os.situacao_nome,
+                            os.setor_nome,
+                            '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                            '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="'+(i)+'" data-target="#d_servico" title="Desativar">' +
+                            '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
+                            ]).draw(false);
+                    }else{
+                        table.row.add([
+                            os.ordem_servico_cod,
+                            os.data_criacao,
+                            os.prioridade_nome,
+                            endereco,
+                            os.servico_nome,
+                            os.situacao_nome,
+                            os.setor_nome,
+                            '<div class="btn-group"><button type="button" disabled style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+ (i) +'" data-target="#ce_ordem_servico" title="Editar">' +
+                            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled  style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="'+ (i) +'" data-target="#ce_historico_servico" title="Histórico">' +
+                            '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="'+(i)+'" data-target="#r_servico" title="Reativar">' +
+                            '<div class="d-none d-sm-block"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
+                            ]).draw(false);
+                    }
+                });
+                $("#data_brasileira").click();
+                
+               } else if (response.code == 404) {
+                    alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada');
+                }
+            })
+            .fail(function (response) {
+                alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
+            });
+            pre_loader_hide();
+            break;
 
         case "todos":
             url = base_url + '/ordem_servico/filtro_tabela';
@@ -1524,7 +1582,7 @@ $(document).ready(function() {
             .fail(function (response) {
                 alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
             });
-            pre_loader_show();
+            pre_loader_hide();
             break;
 
         case "ativadas":

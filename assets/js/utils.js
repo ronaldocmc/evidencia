@@ -4,7 +4,7 @@ try{
       "language":{
           "emptyTable": "Nenhum dado encontrado.",
           "search":     "Procurar:",
-          "lengthMenu": "Mostrar Por Página _MENU_ registros",
+          "lengthMenu": "Mostrar Por Página _MENU_",
           "processing":     "Aguarde...",
           "zeroRecords": "Nenhum registro encontrado",
           "info": "Página _PAGE_ de _PAGES_",
