@@ -79,6 +79,7 @@ class Ordem_Servico_model extends CI_Model {
         $this->db->join('populacao','populacao.pessoa_pk = populacao_os.pessoa_fk', 'LEFT');
         $this->db->join('contatos', 'contatos.pessoa_fk = populacao_os.pessoa_fk', 'LEFT');
         $this->db->group_by(self::TABLE_NAME. '.'.self::PRI_INDEX);
+        $this->db->limit(500);
 
 
         if ($where !== NULL) {
@@ -90,7 +91,7 @@ class Ordem_Servico_model extends CI_Model {
                 $this->db->where(self::PRI_INDEX, $where);
             }
         }
-
+        // echo $this->db->get_compiled_select(); die();
         $result = $this->db->get()->result();
         if ($result) {
             return ($result);
@@ -125,20 +126,9 @@ class Ordem_Servico_model extends CI_Model {
             bairros.bairro_nome as bairro,
             setores.setor_nome as setor,
             ordens_servicos.prioridade_fk AS prioridade,
-            MIN(historicos_ordens.historico_ordem_tempo) AS data_inicial,
-            (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao
+            MIN(historicos_ordens.historico_ordem_tempo) AS data_criacao,
+            (SELECT historicos_ordens.situacao_fk FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual_pk
             ');
-            // historico_final.historico_ordem_tempo AS data_final,
-            // 
-
-        // prioridade
-        // tipo_servico
-        // servico
-        // departamento
-        // lat e long
-        // $this->db->select_min('historicos_ordens.historico_ordem_tempo AS historico_inicial');
-
-        // $this->db->select_max('historicos_ordens.historico_ordem_tempo AS historico_final');
 
         $this->db->from(self::TABLE_NAME);
 
@@ -167,6 +157,7 @@ class Ordem_Servico_model extends CI_Model {
         $this->db->join('setores', 'setores.setor_pk = '.self::TABLE_NAME.'.setor_fk');
 
         $this->db->group_by(self::TABLE_NAME. '.'.self::PRI_INDEX);
+        $this->db->limit(100);
 
         if ($where !== NULL) {
             if (is_array($where)) {
@@ -179,8 +170,6 @@ class Ordem_Servico_model extends CI_Model {
         }
         
         $result = $this->db->get()->result();
-        // $result = $this->db->get_compiled_select();
-        // print_r($result); die();
 
         if ($result) {
             return ($result);

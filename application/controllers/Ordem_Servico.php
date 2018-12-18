@@ -41,12 +41,28 @@ class Ordem_Servico extends CRUD_Controller {
 			'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
 		]);
 
-		if ($ordens_servico !== null) {
-				foreach ($ordens_servico as $os) 
+		// Intervalo de uma semana para trás
+		date_default_timezone_set('America/Sao_Paulo');
+		$data_final = date('Y-m-d', time()) . ' 23:59:00';
+		$data_inicial = date('Y-m-d', strtotime('-7 days')) . ' 00:00:00';
+
+		// Filtra com a flag 7 (data inicial e final levadas em consideração)
+		$ordens_servico = $this->filtra_ordens_view(
+			$ordens_servico, 
+			$data_inicial,
+			$data_final,
+			'',
+			7
+		);
+
+		if ($ordens_servico !== null) 
+		{
+			foreach ($ordens_servico as $os) 
 			{
 				$os->data_criacao = date('d/m/Y H:i:s', strtotime($os->data_criacao));
 			}
 		}
+
 		//Criando um array de departamentos pertencentes a organização do usuário 
 		$departamentos = $this->departamento_model->get([
 			'organizacao_fk' => $this->session->user['id_organizacao']
@@ -73,12 +89,14 @@ class Ordem_Servico extends CRUD_Controller {
 		]);
 
 		//Criando um array de prodecencias de serviços (Interno/Externo) com dados necessário a serem exibidos na view index
-		$procedencias = $this->procedencia_model->get(['procedencias.organizacao_fk' => $this->session->user['id_organizacao']
-	]);
+		$procedencias = $this->procedencia_model->get([
+			'procedencias.organizacao_fk' => $this->session->user['id_organizacao']
+		]);
 
 		//Criando um array de setores (A, B, C, D) com dados necessário a serem exibidos na view index
-		$setores = $this->setor_model->get(['setores.organizacao_fk' => $this->session->user['id_organizacao']
-	]);
+		$setores = $this->setor_model->get([
+			'setores.organizacao_fk' => $this->session->user['id_organizacao']
+		]);
 
 		//Carregando arquivos CSS no flashdata da session para as views 
 		$this->session->set_flashdata('css',[
@@ -102,8 +120,8 @@ class Ordem_Servico extends CRUD_Controller {
 			3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
 			4 => base_url('assets/vendor/datatables/datatables.min.js'),
 			5 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-			6 => base_url('assets/js/utils.js'),
-			7 => base_url('assets/js/constants.js'),
+			6 => base_url('assets/js/constants.js'),
+			7 => base_url('assets/js/utils.js'),
 			8 => base_url('assets/js/jquery.noty.packaged.min.js'),
 			9 => base_url('assets/js/dashboard/ordem_servico/index.js'),
 			10 => base_url('assets/vendor/select-input/select-input.js'),
@@ -138,6 +156,7 @@ class Ordem_Servico extends CRUD_Controller {
 			],
 		],'administrador');    
 	}
+
 
 
 	public function config_form_validation()
@@ -1134,23 +1153,188 @@ class Ordem_Servico extends CRUD_Controller {
 	}
 
 
-	public function json(){
-		// echo file_get_contents(base_url('assets/js/dashboard/ordem_servico/ordens.json'));
-		$today = date('Y-m-d');
-		$date = date('Y-m-d H:i:s', strtotime('-90 days', strtotime($today)));
+	public function json()
+	{
+		// Verifica quais campos estão setados para passar para o model
+		$where = $this->monta_query();
 
+		if ($where != null) 
+		{
+			$result = $this->ordem_servico_model->getJsonForWeb($where);
+		}
+		else
+		{
+			$result = $this->ordem_servico_model->getJsonForWeb();	
+		}
 
-		//Futuramente alterar esse get para o get do model que está em relatorio_model.
-		$ordens_servico['ordens'] = $this->ordem_servico_model->getJsonForWeb([
-			'departamentos.organizacao_fk' => $this->session->user['id_organizacao'],
-			'historicos_ordens.historico_ordem_tempo >= ' => $date	,
-		]);
+		// Seleciona qual flag de filtro deverá ser usada, de acordo com as datas e situação
+		$filtro = $this->seleciona_filtro(
+			$this->input->post('data_inicial'),
+			$this->input->post('data_final'),
+			$this->input->post('situacao')
+		);
 
-		// print_r($ordens_servico['ordens']); die();
+		// Filtra as ordens
+		$ordens_servico = $this->filtra_ordens_view(
+			$result, 
+			$this->input->post('data_inicial'),
+			$this->input->post('data_final'),
+			$this->input->post('situacao'),
+			$filtro
+		);
 
-		echo json_encode($ordens_servico);
+		$response = new Response();
+		$response->set_data($ordens_servico);
+		$response->send();
 	}
 
+	// Popula os campos que serão pesquisados
+	private function monta_query()
+	{
+		$where = null;
+
+		if ($this->input->post('departamento') != '' && 
+			($this->input->post('tipo_servico') == '' && $this->input->post('servico') == '')) 
+		{
+			$where['tipos_servicos.departamento_fk'] = $this->input->post('departamento');
+		}
+		else if ($this->input->post('tipo_servico') != '' && $this->input->post('servico') == '')
+		{
+			
+			$where['servicos.tipo_servico_fk'] = $this->input->post('tipo_servico');	
+		}
+		else if($this->input->post('servico') != '')
+		{
+			
+			$where['ordens_servicos.servico_fk'] = $this->input->post('servico');
+		}
+
+		if ($this->input->post('prioridade') != '') 
+		{
+			
+			$where['ordens_servicos.prioridade_fk'] = $this->input->post('prioridade');
+		}
+
+		return $where;
+	}
+
+	// De acordo com os campos setados, retorna a flag que será usada no filtro
+	private function seleciona_filtro($data_inicial, $data_final, $situacao)
+	{
+		
+		if ($data_inicial != '' && $data_final != '' && $situacao != '') 
+		{
+			return 1; // Todos estão selecionados
+		}
+		
+		else if ($data_inicial == '' && $data_final == '' && $situacao == '') 
+		{
+			return 2; // Todos estão vazios
+		}
+		
+		else if ($data_inicial == '' && $data_final == '' && $situacao != '') 
+		{
+			return 3; // Só situação está válida
+		}
+		
+		else if ($data_inicial != '' && $data_final == '' && $situacao == '') 
+		{
+			return 4; // Só inicial válida
+		}
+		
+		else if ($data_inicial == '' && $data_final != '' && $situacao == '') 
+		{
+			return 5; // Só final válida
+		}
+		
+		else if ($data_inicial == '' && $data_final != '' && $situacao != '') 
+		{
+			return 6; // Final e situação válidas
+		}
+		
+		else if ($data_inicial != '' && $data_final != '' && $situacao == '') 
+		{
+			return 7; // Inicial e final válidas
+		}
+		
+		else if ($data_inicial != '' && $data_final == '' && $situacao != '') 
+		{
+			return 8; // Inicial e situação válidas
+		}
+	}
+
+
+	// Método auxiliar para filtrar as os de acordo com os filtros escolhidos no mapa
+	private function filtra_ordens_view($ordens, $data_inicial, $data_final, $situacao, $filtro)
+	{
+		$return = null;
+
+		foreach ($ordens as $os)
+		{
+			switch ($filtro) {
+				case 1:
+					if (strtotime($os->data_criacao) > strtotime($data_inicial) 
+						&& strtotime($os->data_criacao) < strtotime($data_final)
+						&& $os->situacao_atual_pk == $situacao) 
+					{
+						$return[] = $os;
+					}
+					break;
+				
+				case 2:
+						$return[] = $os;
+					break;
+
+				case 3:
+					if ($os->situacao_atual_pk == $situacao) 
+					{
+						$return[] = $os;
+					}
+					break;
+
+				case 4:
+					if (strtotime($os->data_criacao) > strtotime($data_inicial)) 
+					{
+						$return[] = $os;
+					}
+					break;
+
+				case 5:
+					if (strtotime($os->data_criacao) < strtotime($data_final)) 
+					{
+						$return[] = $os;
+					}
+					break;
+
+				case 6:
+					if (strtotime($os->data_criacao) < strtotime($data_final)
+						&& $os->situacao_atual_pk == $situacao) 
+					{
+						$return[] = $os;
+					}
+					break;
+
+				case 7:
+					if (strtotime($os->data_criacao) > strtotime($data_inicial) 
+						&& strtotime($os->data_criacao) < strtotime($data_final)) 
+					{
+						$return[] = $os;
+					}
+					break;
+
+				case 8:
+					if (strtotime($os->data_criacao) > strtotime($data_inicial) 
+						&& $os->situacao_atual_pk == $situacao) 
+					{
+						$return[] = $os;
+					}
+					break;
+			}	
+			
+		}
+
+		return $return;
+	}
 
 	//Função que gera um json para preencher os históricos 
 	public function json_especifico($id, $flag){
@@ -1177,5 +1361,103 @@ class Ordem_Servico extends CRUD_Controller {
 		echo json_encode($ordens_servico);
 	}
 
+	public function filtro_tabela()
+	{
+		$response = new Response();
+		$ordens_servico = null;
+
+		switch ($this->input->post('filtro')) 
+		{
+			case 'semana':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
+				]);
+
+				// Intervalo de uma semana para trás
+				date_default_timezone_set('America/Sao_Paulo');
+				$data_final = date('Y-m-d', time()) . ' 23:59:00';
+				$data_inicial = date('Y-m-d', strtotime('-7 days')) . ' 00:00:00';
+
+				// Filtra com a flag 7 (data inicial e final levadas em consideração)
+				$ordens_servico = $this->filtra_ordens_view(
+					$ordens_servico, 
+					$data_inicial,
+					$data_final,
+					'',
+					7
+				);
+				break;
+
+			case 'todos':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
+				]);
+				break;
+
+			case 'finalizadas':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
+				]);
+
+				if ($ordens_servico != null) 
+				{
+					$ordens_servico = $this->filtra_ordens_view(
+						$ordens_servico, 
+						'',
+						'',
+						'5',
+						3
+					);
+				}
+				break;
+
+			case 'abertas':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao']
+				]);
+
+				if ($ordens_servico != null) 
+				{
+					$ordens_servico = $this->filtra_ordens_view(
+						$ordens_servico, 
+						'',
+						'',
+						'1',
+						3
+					);
+				}
+				break;
+
+			case 'ativadas':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao'],
+					'ordens_servicos.ordem_servico_status' => '1'
+				]);
+				break;
+
+			case 'desativadas':
+				$ordens_servico = $this->ordem_servico_model->getHome([
+					'prioridades.organizacao_fk' => $this->session->user['id_organizacao'],
+					'ordens_servicos.ordem_servico_status' => '0'
+				]);
+				break;
+		}
+
+		if ($ordens_servico != null) 
+		{
+			foreach ($ordens_servico as $os) 
+			{
+				$os->data_criacao = date('d/m/Y H:i:s', strtotime($os->data_criacao));
+			}
+			$response->set_code(Response::SUCCESS);
+			$response->set_data($ordens_servico);
+		}
+		else
+		{
+			$response->set_code(Response::NOT_FOUND);
+		}
+		
+		$response->send();
+	}
 }
 ?>
