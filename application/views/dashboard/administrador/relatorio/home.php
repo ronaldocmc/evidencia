@@ -13,11 +13,71 @@
                     </div>
                         <div class="col-md-12 mt-3">
                             <div class="collapse" id="collapseHelp">
-                                <div class="card card-body">
-                                    <p>Esta é a área para gerenciamento dos relatórios.</p>
-                                    <p>Aqui é possível criar um novo relatório para delgar a um determinado funcionário.</p>
-                                    <p>Ao clicar em detalhes, é possível ver os detalhes do relatório criado.</p>
-                                    <p>Para editar um relatório criado, é necessário acessar os detalhes do relatório.</p>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <h3>Guia do Usuário</h3>
+                                        </div>
+                                    </div>
+                                    <div class="card-body card-user-guide">
+                                        <div class="col-md-6">
+                                            <p>Bem-vindo a área de Gerenciamento de Relatórios!</p><br>
+                                            <p> Aqui você poderá realizar algumas operações para controlar relatórios de ordens de serviços.</p><br>
+                                            <p>A navegação é bem simples e inclui funcionalidades como gerar um <b>novo relatório</b> e atribui-lo a um funcionário, editar um relatório já existente clicando no botão <b>"Detalhes"</b> e acessando a área de edição, além de receber relatórios que significa coletar os relatórios enviados aos funcionários.</p>
+
+                                            <br><p>Organizamos os relatórios de forma totalmente digital para que sua empresa economize na papelada e torne o processo de atribuição de serviços aos funcionários algo ágil! </p>
+                                        </div>
+                                        <div class="col-md-6 user-guide">
+                                            <p><b>Operações permitidas:</b></p>
+                                            <div class="col-md-12 functions-page" >
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fa fa-plus fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Gerar novo relatório</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fa fa-envelope fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Receber relatório gerado</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" class="btn btn-sm btn-danger" disabled="true" title="Desativar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-times fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Destruir relatório existente</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" class="btn btn-sm btn-success" disabled="true" title="Reativar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-bars fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Visualizar detalhes dos relatórios</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12>">
+                                                        <br><p><strong>Qualquer dúvida entre em contato com o suporte  na sua organização!</p></strong>
+                                                    </div>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
