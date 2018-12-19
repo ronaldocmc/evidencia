@@ -107,18 +107,6 @@
 
                         <section id="os">
 
-                            <!-- <div class="col-md-12">
-                                <div class="alert alert-warning" role="alert">
-                                    <h4 class="alert-heading">Evidência sem dono!</h4>
-                                    <p>Essa evidência não foi associada a nenhum cidadão. Se foi você que fez esse
-                                        relato,
-                                        você pode se associar a ela <a href="#">clicando aqui</a>.</p>
-                                    <hr>
-                                    <p class="mb-0"><a href="#" data-toggle="modal" data-target="#modalInfo">Por que
-                                            me associar a uma evidência?</a></p>
-                                </div>
-                            </div> -->
-
                             <div class="col-md-12 p-5" id="finalizado">
                                 <div class="alert alert-success" role="alert">
                                     <h4 class="alert-heading">Evidência finalizada!</h4>
@@ -181,41 +169,6 @@
 
     </div>
 
-
-
-
-    <!-- MODAL -->
-
-    <div class="modal fade bd-example-modal-lg" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="modalInfo"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="TituloModalLongoExemplo">Associar a uma evidência</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h4 class="text-muted">O que é uma evidência?</h4>
-                    <p>Aqui na Prudenco nós apelidamos as ocorrências de serviços pela cidade de Evidência, e esse
-                        apelido foi passado para o nosso <a href="#">Sistema de gestão da cidade</a>.</p>
-
-
-                    <h4 class="text-muted">Por que me associar?</h4>
-                    <p>Nós queremos melhorar o nosso contato com a população. Quando você se associa a evidências, você
-                        passa a ter acesso a uma área do nosso sistema específica para associados.</p>
-                    <p>Nessa área você tem acesso a todas as suas evidências e também a um canal de comunicação direto
-                        com a gente, possibilitando abrir novos chamados através da internet.</p>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary">Desejo me associar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>
@@ -242,9 +195,10 @@
     });
 
     $(search).click(function () {
+        $('#os').hide();
         $('#finalizado').hide();
-        $('#loading').show();
         $('#nao_encontrada').hide();
+        $('#loading').show();
 
         var table = $('#os_historico');
         var div_fotos = $('#fotos');
