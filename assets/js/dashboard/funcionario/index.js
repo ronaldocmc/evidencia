@@ -144,7 +144,12 @@ update_table = () => {
             '<i class="fas fa-times fa-fw"></i>' +
             '</div>' +
             '</button>' +
-            '</div>'
+            '</div>' +
+            '<button class="btn btn-sm btn-info btn-attr-pessoa_pk" value="' + (i) + '" data-toggle="modal" data-target="#p_funcionario" title="Alterar senha"> ' +
+            '<div class="d-none d-sm-block">' +
+            '<i class="fas fa-lock"></i>' +
+            '</div>' +
+            '</button>'
           ]).draw(false);
         } else {
           table.row.add([
@@ -181,7 +186,12 @@ update_table = () => {
             '<i class="fas fa-times fa-fw"></i>' +
             '</div>' +
             '</button>' +
-            '</div>'
+            '</div>' +
+            '<button class="btn btn-sm btn-info btn-attr-pessoa_pk" value="' + (i) + '" data-toggle="modal" data-target="#p_funcionario" title="Alterar senha"> ' +
+            '<div class="d-none d-sm-block">' +
+            '<i class="fas fa-lock"></i>' +
+            '</div>' +
+            '</button>'
           ]).draw(false);
         }
       });
@@ -389,7 +399,68 @@ $(document).on('click', '.btn-editar', function (event) {
   change_funcao();
 });
 
+let senha = $('#p-senha');
+let nova_senha = $('#p-confirmar-senha');
+let msg = $('#p-msg');
 
+senha.keyup(function () {
+  if (nova_senha.val() != undefined) {
+    if (senha.val() != nova_senha.val()) {
+      msg.html("As senhas não conferem");
+    } else {
+      msg.html("");
+    }
+  }
+});
+
+nova_senha.keyup(function () {
+  if (senha.val() != undefined) {
+    if (senha.val() != nova_senha.val()) {
+      msg.html("As senhas não conferem");
+    } else {
+      msg.html("");
+    }
+  }
+});
+
+$('#btn-password').click(function () {
+
+  if (senha.val() == nova_senha.val()) {
+
+
+    $.ajax({
+      url: base_url + '/funcionario/change_password',
+      method: "POST",
+      data: {
+        pessoa_fk: $('#pessoa_pk').val(),
+        new_password: senha.val(),
+      },
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        let type;
+        if (response.code == 200) {
+          type = "success";
+          $('#p_funcionario').modal("hide");
+        } else {
+          type = "failed";
+          senha.val("");
+          nova_senha.val("");
+          senha.focus();
+        }
+
+        alerts(type, response.message, response.data);
+      }
+    });
+
+
+  } else {
+    $('#p-msg').html("Digite novamente a nova senha");
+    senha.val("");
+    nova_senha.val("");
+    senha.focus();
+  }
+});
 
 
 // EXTRA

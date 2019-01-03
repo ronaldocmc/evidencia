@@ -143,6 +143,11 @@
                                                                      <i class="fas fa-times fa-fw"></i>
                                                                  </div>
                                                              </button>
+                                                             <button class="btn btn-sm btn-info btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#p_funcionario" title="Alterar senha">
+                                                                <div class="d-none d-sm-block">
+                                                                    <i class="fas fa-lock"></i>
+                                                                </div>
+                                                             </button>
                                                              <?php else: ?>
                                                                 <button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#a_funcionario" title="Reativar">
                                                                     <div class="d-none d-sm-block">
@@ -184,6 +189,7 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-12">
+                            
                                     <form class="msform">
                                         <!-- progressbar -->
                                         <ul class="progressbar">
@@ -577,6 +583,43 @@
                                 </div>
                             </div>
                         </div>
+
+
+                <div class="modal fade" id="p_funcionario">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Alterar senha</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <h4 style="text-align: center" class="text-danger">
+                                        <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
+                                        <p style="text-align: center">A senha deve possuir 8 ou mais caracteres!</p>
+                                        
+                                        <label>Digite a nova senha</label>
+                                        <input id="p-senha" type="text" class="form-control">
+
+                                        <label>Confirme a nova senha</label>
+                                        <input id="p-confirmar-senha" type="text" class="form-control">
+                                        
+                                        <p id="p-msg" style="color: red; text-align: center"></p>
+                                    </div>
+                                    <?php if ($this->session->user['is_superusuario']): ?>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control" autocomplete="false" placeholder="Confirme sua senha" required="required" id="pass-modal-desativar"
+                                            pattern="{8,}">
+                                        </div>
+                                    <?php endif;?>
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary btn-alterar-senha" id="btn-password" name="post"><i class="fa fa-dot-circle-o"></i> Alterar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                         <script type="text/javascript">
                             var funcionarios = <?php echo json_encode($funcionarios !== false ? $funcionarios : []) ?>;
                             var funcoes = <?php echo json_encode($funcoes !== false ? $funcoes : []) ?>;
