@@ -608,7 +608,7 @@
                                     </div>
                                     <?php if ($this->session->user['is_superusuario']): ?>
                                         <div class="form-group">
-                                            <input type="password" class="form-control" autocomplete="false" placeholder="Confirme sua senha" required="required" id="pass-modal-desativar"
+                                            <input type="password" class="form-control" autocomplete="false" placeholder="Confirmar senha de superusuario" required="required" id="pass-modal-desativar"
                                             pattern="{8,}">
                                         </div>
                                     <?php endif;?>
