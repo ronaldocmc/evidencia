@@ -427,14 +427,14 @@ $('#btn-password').click(function () {
 
   if (senha.val() == nova_senha.val()) {
 
+    const formData = new FormData();
+    formData.append('pessoa_fk', $('#pessoa_pk').val());
+    formData.append('new_password', senha.val());
 
     $.ajax({
       url: base_url + '/funcionario/change_password',
       method: "POST",
-      data: {
-        pessoa_fk: $('#pessoa_pk').val(),
-        new_password: senha.val(),
-      },
+      data: formData,
       processData: false,
       contentType: false,
       success: function (response) {
@@ -444,11 +444,11 @@ $('#btn-password').click(function () {
           $('#p_funcionario').modal("hide");
         } else {
           type = "failed";
-          senha.val("");
-          nova_senha.val("");
           senha.focus();
         }
 
+        senha.val("");
+        nova_senha.val("");
         alerts(type, response.message, response.data);
       }
     });

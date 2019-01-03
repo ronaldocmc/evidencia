@@ -599,10 +599,10 @@
                                         <p style="text-align: center">A senha deve possuir 8 ou mais caracteres!</p>
                                         
                                         <label>Digite a nova senha</label>
-                                        <input id="p-senha" type="text" class="form-control">
+                                        <input id="p-senha" type="password" class="form-control">
 
                                         <label>Confirme a nova senha</label>
-                                        <input id="p-confirmar-senha" type="text" class="form-control">
+                                        <input id="p-confirmar-senha" type="password" class="form-control">
                                         
                                         <p id="p-msg" style="color: red; text-align: center"></p>
                                     </div>

@@ -760,7 +760,7 @@ public function change_password(){
         if ($accepted) 
         {       
             $where = [
-                'pessoa_fk' => $this->input->post('pessoa_fk'),
+                'pessoa_fk' => $data['pessoa_fk'],
             ];
 
             $this->form_validation->set_rules(
@@ -771,12 +771,12 @@ public function change_password(){
 
 
             if (!$this->form_validation->run()) {
-                
-                $new_password = hash(ALGORITHM_HASH, $this->input->post('new_password') . SALT);
+
                 $this->response->set_code(Response::DB_ERROR_UPDATE);
-                $this->response->set_data("A senha deve possuir 8 ou mais caracteres!");  
+                $this->response->set_data("A senha deve possuir 8 ou mais caracteres!");
 
             }else{   
+                $new_password = hash(ALGORITHM_HASH, $data['new_password'] . SALT);
                 if($this->pessoa_model->new_password($where, ['acesso_senha' => $new_password])) {
                     $this->response->set_code(Response::SUCCESS);
                     $this->response->set_data("Senha alterada com sucesso!");
