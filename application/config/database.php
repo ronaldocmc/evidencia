@@ -80,8 +80,8 @@ $query_builder = TRUE;
 
 $db['development'] = array(
 	'dsn'	=> '',
-	'hostname' => 'evidencia-v2.mysql.database.azure.com',
-	'username' => 'admin_prudenco@evidencia-v2',
+	'hostname' => 'dbprdevidencia01.mysql.database.azure.com',
+	'username' => 'admin_prudenco@dbprdevidencia01',
 	'password' => 'Developers10',
 	'database' => 'evidencia',
 	'dbdriver' => 'mysqli',
@@ -106,8 +106,8 @@ $db['development'] = array(
 
 $db['production'] = array(
 	'dsn'	=> '',
-	'hostname' => 'evidencia-v2.mysql.database.azure.com',
-	'username' => 'admin_prudenco@evidencia-v2',
+	'hostname' => 'dbprdevidencia01.mysql.database.azure.com',
+	'username' => 'admin_prudenco@dbprdevidencia01',
 	'password' => 'Developers10',
 	'database' => 'evidencia-producao',
 	'dbdriver' => 'mysqli',
