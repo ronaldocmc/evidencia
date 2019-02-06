@@ -46,29 +46,12 @@ function send_data(){
 
 	$.post(base_url+'/departamento/insert_update',data).done(function (response) {
 
+		wich_alert(response);
+
 		btn_ativar($('#pula-para-confirmacao'));
 		btn_ativar($('.submit'));
 
-
-		if (response.code == 400)
-		{
-			show_errors(response);
-			alerts('failed','Erro!','O formulário apresenta algum(ns) erro(s) de validação');
-			$('#senha-input').val('');
-		}
-		else if (response.code == 401)
-		{
-			show_errors(response);
-			alerts('failed','Erro!','Senha informada incorreta');
-			$('#senha-input').val('');
-			$('#senha-input').focus();
-		}
-		else if (response.code == 500)
-		{
-			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
-			$('#senha-input').val('');
-		}
-		else
+		if (response.code == 200)
 		{
 			dep  = 
 			{
@@ -80,7 +63,6 @@ function send_data(){
 				dep['departamento_pk'] = response.data['id'];
 				departamentos.push(dep);
 				change_table($('#filter-ativo'));
-				alerts('success','Sucesso!','Departamento inserido com sucesso');
 			}
 			else
 			{
@@ -93,8 +75,6 @@ function send_data(){
 				departamentos[i] = (dep);
 				change_table($('#filter-ativo'));
 			}
-
-			alerts('success','Sucesso!','Departamento inserido com sucesso');
 
 			$('#ce_departamento').modal('hide');
 		}
@@ -153,13 +133,10 @@ $(document).on('click','.btn-desativar',function(event) {
 	}
 
 	$.post(base_url + '/departamento/get_dependents', data, function (response, textStatus, xhr) {
-		if (response.code == 400) {
-			alerts('failed', 'Erro!', 'O formulário apresenta algum erro de validação');
-		}
-		else if (response.code == 401) {
-			alerts('failed', 'Erro!', 'Senha informada incorreta');
-		}
-		else if (response.code == 200) {
+
+		wich_alert(response)
+
+		if (response.code == 200) {
 		  	html = ''; //esta variável vai servir para eu preencher a div tipo-servicos-dependentes
 		  	title = '';
             if(response.data.length == 0 || response.data == false){ //se não houver nenhum serviço:
@@ -185,7 +162,10 @@ $(document).on('click','.btn-desativar',function(event) {
             $('#tipo-servicos-dependentes').html('<br>'+'<h5>'+title + '</h5>' + html+'</br>');
             $('#tipo-servicos-dependentes').show();
             $('#loading-departamento-deactivate').hide();
-        }		
+        } else {
+        	$('#d-departamento').modal('toggle');
+        	$('#loading-departamento-deactivate').hide();
+        }
 
     });
 
@@ -235,24 +215,12 @@ $(document).on('click','#btn-desativar',function(event) {
 	$('#pass-modal-desativar').val('')
 
 	$.post(base_url+'/departamento/deactivate', data, function(response, textStatus, xhr) {
-
+		
+		wich_alert(response);
 		btn_ativar($('#btn-desativar'));
 
-		if (response.code == 400)
+		if (response.code == 200)
 		{
-			alerts('failed','Erro!', response.data.erro);
-		}
-		else if (response.code == 401)
-		{
-			alerts('failed','Erro!','Senha informada incorreta');
-		}
-		else if (response.code == 500)
-		{
-			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
-		}
-		else
-		{
-			alerts('success','Sucesso!','Departamento desativado com sucesso');
 			for (var i in departamentos)
 			{
 				if (departamentos[i]['departamento_pk']==data['departamento_pk'])
@@ -287,26 +255,11 @@ activate = (dep_pk, pass) => {
 
 	$.post(base_url+'/departamento/activate', data, function(response, textStatus, xhr) {
 
-
+		wich_alert(response);
 		btn_ativar($('#btn-reativar'));
 
-		if (response.code == 401)
+		if (response.code == 200)
 		{
-			alerts('failed','Erro!','O formulário apresenta algum erro de validação');
-		}
-		else if (response.code == 401)
-		{
-			show_errors(response);
-			alerts('failed','Erro!','Senha informada incorreta');
-		}
-		else if (response.code == 1500 || response.code == 1501)
-		{
-			show_errors(response);
-			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
-		}
-		else
-		{
-			alerts('success','Sucesso!','Departamento reativado com sucesso');
 			for (var i in departamentos)
 			{
 				if (departamentos[i]['departamento_pk']==data['departamento_pk'])

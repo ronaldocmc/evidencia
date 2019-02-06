@@ -10,15 +10,73 @@
                         </div>
                         <div class="col-md-12 mt-3">
                             <div class="collapse" id="collapseHelp">
-                                <div class="card card-body">
-                                    <p>Esta é a área para gerenciamento dos funcionários.</p>
-                                    <p>Aqui é possível registrar o funcionário da empresa, informando seus dados pessoais e atuação na empresa.</p>
-                                    <p>Os campos obrigatórios estão marcados com negrito e asterisco (*).</p>
-                                    <p>Lembrando que ao desativar um funcionário ele não poderá mais utilizar o sistema.</p>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <h3>Guia do Usuário</h3>
+                                        </div>
+                                    </div>
+                                    <div class="card-body card-user-guide">
+                                        <div class="col-md-6">
+                                            <p>Bem-vindo a área de Gerenciamento de Funcionários!</p><br>
+                                            <p> Aqui você poderá realizar algumas operações para controlar os funcionários da sua organização!</p><br>
+                                            <p>Nesta área é possível registrar dados dos funcionários, como dados pessoais e dados departamentais! É importante ressaltar que alguns dados são obrigatórios e estão indicados com um asterisco <strong>(*)</strong>. <p> Aqui, gerenciar os funcionários conforme seu departamento e função dentro da organização, torna-se uma tarefa prática e segura!</p>
+                                            <br><p><strong>Qualquer dúvida entre em contato com o suporte  na sua organização!</p></strong>
+                                        </div>
+                                        <div class="col-md-6 user-guide">
+                                            <p><b>Operações permitidas:</b></p>
+                                            <div class="col-md-12 functions-page" >
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-plus fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Inserir um novo funcionário</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-edit fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Editar dados do funcionário existente</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" class="btn btn-sm btn-danger" disabled="true" title="Desativar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-times fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Desativar um funcionário afastado/inativo</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" class="btn btn-sm btn-success" disabled="true" title="Reativar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-power-off fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Ativar um funcionário novamente</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12>">
+                                                        <br><p><strong>Atenção:</strong> Após desativar um funcionário ele não possuirá mais acesso a nenhum módulo do sistema! </p></strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
                         <!-- CAMPO HIDDEN PARA O ID -->
                         <input type="hidden" id="pessoa_pk" name="pessoa_pk" class="form-control">
                         <input type="hidden" id="opcao-editar" name="editar" class="form-control" value="false">
@@ -61,31 +119,31 @@
                                         <?php
                                         if ($funcionarios):
                                             foreach ($funcionarios as $key => $f): ?>
-                                               <tr>
-                                                   <td>
-                                                       <?=$f->pessoa_nome?>
-                                                   </td>
-                                                   <td>
-                                                       <?=$f->contato_email?>
-                                                   </td>
-                                                   <td>
-                                                       <?=$f->funcao_nome?>
-                                                   </td>
-                                                   <td>
-                                                       <div class="btn-group">
+                                             <tr>
+                                                 <td>
+                                                     <?=$f->pessoa_nome?>
+                                                 </td>
+                                                 <td>
+                                                     <?=$f->contato_email?>
+                                                 </td>
+                                                 <td>
+                                                     <?=$f->funcao_nome?>
+                                                 </td>
+                                                 <td>
+                                                     <div class="btn-group">
 
-                                                           <?php if ($f->funcionario_status == 1): ?>
-                                                               <button class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#ce_funcionario" title="Editar">
-                                                                   <div class="d-none d-sm-block">
-                                                                       <i class="fas fa-edit fa-fw"></i>
-                                                                   </div>
-                                                               </button>
-                                                               <button class="btn btn-sm btn-danger btn-desativar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#d_funcionario" title="Desativar">
-                                                                   <div class="d-none d-sm-block">
-                                                                       <i class="fas fa-times fa-fw"></i>
-                                                                   </div>
-                                                               </button>
-                                                               <?php else: ?>
+                                                         <?php if ($f->funcionario_status == 1): ?>
+                                                             <button class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#ce_funcionario" title="Editar">
+                                                                 <div class="d-none d-sm-block">
+                                                                     <i class="fas fa-edit fa-fw"></i>
+                                                                 </div>
+                                                             </button>
+                                                             <button class="btn btn-sm btn-danger btn-desativar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#d_funcionario" title="Desativar">
+                                                                 <div class="d-none d-sm-block">
+                                                                     <i class="fas fa-times fa-fw"></i>
+                                                                 </div>
+                                                             </button>
+                                                             <?php else: ?>
                                                                 <button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#a_funcionario" title="Reativar">
                                                                     <div class="d-none d-sm-block">
                                                                         <i class="fas fa-power-off fa-fw"></i>
@@ -165,7 +223,7 @@
                                                     <div class="col-12 col-md-10">
                                                         <input type="text" id="cpf-input" name="pessoa_cpf" placeholder="CPF" class="form-control cpf-input" required>
                                                         <small class="form-text text-muted">Por favor, informe o CPF do funcionário</small>
-                                                            
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -335,16 +393,16 @@
                                                         <label for="departamento-input" class=" form-control-label">Departamento</label>
                                                     </div>
                                                     <div class="col-12 col-md-10">
-                                                <select class="form-control" id="departamento-input">
-                                                    <option value="">Nenhum Departamento</option>
-                                                <?php 
+                                                        <select class="form-control" id="departamento-input">
+                                                            <option value="">Nenhum Departamento</option>
+                                                            <?php 
 
-                                                    foreach($departamentos as $key => $value):
+                                                            foreach($departamentos as $key => $value):
 
-                                                        echo '<option value="'.$key.'">'.$value.'</option>';
-                                                    endforeach
-                                                ?>
-                                                </select>
+                                                                echo '<option value="'.$key.'">'.$value.'</option>';
+                                                            endforeach
+                                                            ?>
+                                                        </select>
                                                         <small class="help-block form-text">Por favor, informe o departamento do funcionário</small>
                                                     </div>
                                                 </div>
@@ -354,13 +412,13 @@
                                                     </div>
                                                     <div class="col-12 col-md-10">
                                                         <?php if ($setores != null): ?>
-                                                        <select multiple class="form-control" id="setor-input">
-                                                            <?php foreach ($setores as $k => $s): ?>
-                                                                <option value="<?=$k?>">
-                                                                    <?=$s?>
-                                                                </option>
-                                                            <?php endforeach ?>
-                                                        </select>
+                                                            <select multiple class="form-control" id="setor-input">
+                                                                <?php foreach ($setores as $k => $s): ?>
+                                                                    <option value="<?=$k?>">
+                                                                        <?=$s?>
+                                                                    </option>
+                                                                <?php endforeach ?>
+                                                            </select>
                                                         <?php endif ?>
                                                         <small class="help-block form-text">Por favor, informe o setor do funcionário, caso ele seja funcionário de campo <br>
                                                             <strong>

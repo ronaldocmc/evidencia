@@ -1,0 +1,61 @@
+ 
+.user-guide{
+	padding-left: 50px;
+}
+
+.card-user-guide{
+	display: inherit !important; 
+	text-align: justify;
+}
+
+.functions-page{
+	display: inline; 
+	padding-left: 10px;
+
+}
+
+.icon-guide{
+	padding: 4px !important;
+	padding-left: 10px !important;
+
+}
+
+.text-guide{
+	text-align: justify;
+	padding-top: 4px;
+	padding-left: 0px;
+}
+
+@media screen and (min-width: 360px) and (max-width: 763px) {
+ 
+.user-guide{
+	padding-left: 20px;
+	margin-top: 25px;
+}
+
+.card-user-guide{
+	display: inline-block !important; 
+	text-align: justify;
+}
+
+.functions-page{
+	display: inline; 
+	padding-left: 10px;
+
+}
+
+.icon-guide{
+	padding: 6px !important;
+	width: 2% !important;
+}
+
+.text-guide{
+	text-align: justify;
+	padding-left: 35px !important;
+	font-size: 15px;
+	width: 95% !important;
+}
+
+
+}
+

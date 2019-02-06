@@ -34,7 +34,8 @@ class Setor extends CRUD_Controller
     		0 => base_url('assets/css/modal_desativar.css'),
     		1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
     		2 => base_url('assets/css/loading_input.css'),
-    		3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css')
+    		3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            4 => base_url('assets/css/user_guide.css')
     	]);
 
         //Scripts para crud setores
@@ -49,7 +50,8 @@ class Setor extends CRUD_Controller
     		7 => base_url('assets/js/constants.js'),
     		8 => base_url('assets/js/jquery.noty.packaged.min.js'),
     		9 => base_url('assets/js/dashboard/setor/index.js'),
-    		10 => base_url('assets/vendor/select-input/select-input.js')
+    		10 => base_url('assets/vendor/select-input/select-input.js'),
+            11 => base_url('assets/js/response_messages.js')
     	]);
 
     	load_view([
@@ -103,6 +105,7 @@ class Setor extends CRUD_Controller
     			if(!$query)
     			{
     				$response->set_code(Response::DB_ERROR_UPDATE);
+                    $response->set_message('Erro ao atualizar dados do setor');
     			}
     		}
     		else
@@ -111,11 +114,12 @@ class Setor extends CRUD_Controller
     			$dados['organizacao_fk'] = $this->session->user['id_organizacao'];
     			$query = $this->setor_model->insert($dados);
     			$response->set_data(['id'=> $query]);
-
+                
                 // Caso houve um erro no insert
     			if(!$query)
     			{
     				$response->set_code(Response::DB_ERROR_INSERT);
+                    $response->set_message('Erro ao inserir dados do setor');
     			}
     		}
 
@@ -123,6 +127,7 @@ class Setor extends CRUD_Controller
     		if($query)
     		{
     			$response->set_code(Response::SUCCESS);
+                $response->set_message('Operação realizada com sucesso');
     		}
 
     	}
@@ -130,7 +135,7 @@ class Setor extends CRUD_Controller
     	{
             // Caso o form_validation->run falhe
     		$response->set_code(Response::BAD_REQUEST);
-    		$response->set_data($this->form_validation->error_array());
+    		$response->set_message(implode('<br>', $this->form_validation->error_array()));
     	}
 
     	$response->send();
@@ -150,19 +155,19 @@ class Setor extends CRUD_Controller
         $dados['setor_status'] = 0;
 
         // Update da tabela, no departamento informado
-        $query = $this->setor_model->update($dados, 
-            $this->input->post('setor_pk'));
+        $query = $this->setor_model->update($dados, $this->input->post('setor_pk'));
 
         if($query)
         {
             // Caso a query tenha sucesso
             $response->set_code(Response::SUCCESS);
-            $response->set_data(['msg' => 'linhas afetadas: '.$query]);
+            $response->set_message('Setor desativado com sucesso');
         }
         else
         {
             // Caso falhe
             $response->set_code(Response::DB_ERROR_UPDATE);
+            $response->set_message('Não foi possível desativar o setor');
         }
 
         $response->send();
@@ -179,16 +184,18 @@ class Setor extends CRUD_Controller
         // Update da tabela, no departamento informado
         $query = $this->setor_model->update($dados, 
             $this->input->post('setor_pk'));
-
+        
         if($query)
         {
             // Caso a query tenha sucesso
             $response->set_code(Response::SUCCESS);
+            $response->set_message('Setor reativado com sucesso');
         }
         else
         {
             // Caso falhe
             $response->set_code(Response::DB_ERROR_UPDATE);
+            $response->set_message('Não foi possível reativar o setor');
         }
 
         $response->send();

@@ -68,7 +68,8 @@ class AtualizacaoWS extends MY_Controller
             
         $attempt_result = verify_attempt($this->input->ip_address());
 
-        if ($attempt_result === true) {
+        if ($attempt_result === true) 
+        {
            
             $token_decodificado = json_decode(token_decrypt($header_obj['Token']));
             $last_update = $token_decodificado->last_update;
@@ -84,9 +85,11 @@ class AtualizacaoWS extends MY_Controller
 
             $this->response->add_data('token',$token);
 
-        } else {
+        }
+        else 
+        {
             $this->response->set_code(Response::FORBIDDEN);
-            $this->response->set_data($attempt_result);
+            $this->response->set_message($attempt_result);
         }
 
         $this->response->send();
@@ -106,21 +109,28 @@ class AtualizacaoWS extends MY_Controller
 
         $attempt_result = verify_attempt($this->input->ip_address());
 
-        if ($attempt_result === true) {
+        if ($attempt_result === true) 
+        {
             $obj = apache_request_headers();
 
             $new_token = verify_token($obj['Token'], $this->response);
 
-            if ($new_token) {
+            if ($new_token) 
+            {
                 $dados['token'] = $new_token;
                 $this->response->set_data($dados);
                 $this->tentativa_model->delete($this->input->ip_address());
-            } else {
-                $this->response->set_code(Response::UNAUTHORIZED);
             }
-        } else {
+            else
+            {
+                $this->response->set_code(Response::UNAUTHORIZED);
+                $this->response->set_message('Seção experida');
+            }
+        } 
+        else 
+        {
             $this->response->set_code(Response::FORBIDDEN);
-            $this->response->set_data($attempt_result);
+            $this->response->set_message($attempt_result);
         }
         $this->response->send();
         $this->__destruct();
@@ -136,18 +146,23 @@ class AtualizacaoWS extends MY_Controller
         $this->load->helper('token');
         $this->response = new Response();
 
-        if (verify_token($this->data_json, $this->response)) {
+        if (verify_token($this->data_json, $this->response)) 
+        {
             $obj = apache_request_headers();
 
             $this->data_json['pessoa_fk'] = $obj['access_id'];
 
-            if (!$this->modeltoken->delete($this->data_json['pessoa_fk'])) {
+            if (!$this->modeltoken->delete($this->data_json['pessoa_fk'])) 
+            {
                 $this->data_json['pessoa_fk'] = null;
                 $this->data_json['token'] = null;
                 $this->data_json['timestamp'] = null;
             }
-        } else {
+        } 
+        else 
+        {
             $this->response->set_data(Response::LOGOUT_ERROR);
+            $this->response->set_message('Erro ao sair');
         }
         $this->response->send();
         $this->__destruct();

@@ -23,7 +23,6 @@ verify_data = () => {
 verify_email = () => {
   //Recebendo a entrada inserida pelo usuário
   var e = $('#email_recover').val();
-  console.log(e);
 
   //Verificando se o campo email foi preenchido e se é um email válido
 
@@ -46,24 +45,12 @@ login_send = (e, s) => {
     t = 'token';
     //Enviando os dados via post (AJAX)
     $.post(base_url+'/access/login/', { login: e, password: s, 'g-recaptcha-response': t }).done(function (response) {
-      console.log(response);
+      wich_alert(response);
+      pre_loader_hide();
       if (response.code == 200) {
         window.location.reload();
-    } else if (response.code == 400) {
-        pre_loader_hide();
-        $('.area-acesso').append(alerts_access('response', response.message, response.data.password));
-    } else if (response.code == 403) {
-        pre_loader_hide();
-        $('.area-acesso').append(alerts_access('response', response.message, response.data));
-    } else if (response.code == 404) {
-        pre_loader_hide();
-        $('.area-acesso').append(alerts_access('incorrect_data'));
-    } else if (response.code == 401) {
-        pre_loader_hide();
-        $('.area-acesso').append(alerts_access('response', 'Acesso Proíbido', 'Você não tem permissão para acessar o sistema WEB'));
-    }
-}, "json");
-//});
+      }
+    }, "json");
 }
 
 //Função que envia uma requisição para recuperação de senha
@@ -72,26 +59,15 @@ email_send = (email) => {
   var t;
 
   //Solicitando autenticação recaptcha para o usuário (Não sou robo).
-  grecaptcha.execute(google, { action: 'homepage' }).then(function (token) {
-    t = token;
+  // grecaptcha.execute(google, { action: 'homepage' }).then(function (token) {
+    // t = token;
 
     //Enviando os dados via post (AJAX)
-    $.post(base_url+'/contact/restore_password', { email, 'g-recaptcha-response': t }).done(function (response) {
-      console.log(response);
-      if (response.code == 200) {
-        $('.area-acesso').append(alerts_access('success_email'));
-        pre_loader_hide();
-    }
-    else {
-        $('.area-acesso').append(alerts_access('failed_email', response.message, response.data[0]));
-        pre_loader_hide();
-    }
-}, "json");
+    $.post(base_url+'/contact/restore_password', { email, 'g-recaptcha-response': true }).done(function (response) {
+      wich_alert(response);
+    }, "json");
 
-    $('#password_recover').modal('hide');
-    $('#modal-acesso').modal('show');
-
-});
+  // });
 
 }
 

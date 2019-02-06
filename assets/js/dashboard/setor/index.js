@@ -23,32 +23,10 @@ $(".submit").click(function(){
 	btn_load($(".submit"));
     
     $.post(base_url+'/setor/insert_update',data).done(function (response) {
+    	wich_alert(response);
     	btn_ativar($(".submit"));
 
-  		if (response.code == 400)
-  		{
-			show_errors(response);
-			alerts('failed','Erro!','O formulário apresenta algum(ns) erro(s) de validação');
-			$('#senha-input').val('');
-  		}
-  		else if (response.code == 401)
-  		{
-  			show_errors(response);
-			alerts('failed','Erro!','Senha informada incorreta');
-			$('#senha-input').val('');
-			$('#senha-input').focus();
-  		}
-  		else if (response.code == 501)
-  		{
-			alerts('failed','Erro!','Erro ao editar os dados');
-  			$('#senha-input').val('');
-  		}
-  		else if (response.code == 503)
-  		{
-			alerts('failed','Erro!','Erro ao editar os dados');
-  			$('#senha-input').val('');
-  		}
-  		else if(response.code == 200)
+  		if(response.code == 200)
   		{
   			setor  = 
 	  			{
@@ -60,7 +38,6 @@ $(".submit").click(function(){
   					setor['setor_pk'] = response.data['id'];
 		  			setores.push(setor);
 		  			change_table($('#filter-ativo'));
-		  			alerts('success','Sucesso!','Setor inserido com sucesso');
   			}
   			else
   			{
@@ -129,30 +106,10 @@ $(document).on('click','#btn-desativar',function(event) {
 	btn_load($('#btn-desativar'));
 
 	$.post(base_url+'/setor/deactivate', data, function(response, textStatus, xhr) {
-
+		wich_alert(response);
 		btn_ativar($('#btn-desativar'));
 
-		if (response.code == 400)
-		{
-			alerts('failed','Erro!','O formulário apresenta algum erro de validação');
-		}
-  		else if (response.code == 401)
-  		{
-			alerts('failed','Erro!','Senha informada incorreta');
-  		}
-  		else if (response.code == 500)
-  		{
-			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
-  		}
-  		else if (response.code == 501)
-  		{
-			alerts('failed','Erro!','Os dados não foram atualizados');
-  		}
-  		else if (response.code == 503)
-  		{
-			alerts('failed','Erro!','Os dados não foram inseridos');
-  		}
-		else
+		if (response.code == 200)
 		{
 			alerts('success','Sucesso!','Departamento desativado com sucesso');
 			for (var i in setores)
@@ -185,27 +142,10 @@ activate = (setor_pk, pass) => {
 		}
 	btn_load($('#btn-reativar'));
 	$.post(base_url+'/setor/activate', data, function(response, textStatus, xhr) {
+		wich_alert(response);
 		btn_ativar($('#btn-reativar'));
 
-		if (response.code == 401)
-		{
-			alerts('failed','Erro!','O formulário apresenta algum erro de validação');
-		}
-  		else if (response.code == 401)
-  		{
-  			show_errors(response);
-			alerts('failed','Erro!','Senha informada incorreta');
-  		}
-  		else if (response.code == 501)
-  		{
-			alerts('failed','Erro!','Setor não ativado');
-  		}
-  		else if (response.code == 1500 || response.code == 1501)
-  		{
-  			show_errors(response);
-			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
-  		}
-		else
+		if (response.code == 200)
 		{
 			alerts('success','Sucesso!','Departamento reativado com sucesso');
 			for (var i in setores)

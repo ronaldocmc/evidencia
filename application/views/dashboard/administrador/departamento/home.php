@@ -13,18 +13,69 @@
                             <input type="hidden" name="opcao-editar" id="opcao-editar" value="false">
                             <div class="col-md-12 mt-3">
                                 <div class="collapse" id="collapseHelp">
-                                    <div class="card card-body">
-                                        <p>Departamentos possuem tipos de serviços específicos. </p>
-                                        <p>Foi implementado no Sistema Evidência com a finalidade de facilitar
-                                        as buscas por serviços e fornecer aos funcionários uma melhor capacidade de filtragem de informações.</p>
-                                        <p><b>Características:</b></p>
-                                        <div class="col-md-12">
-                                            <ul>
-                                                <li>Facilita que o funcionário encontre serviços</li>
-                                                <li>Possibilita relatórios por departamentos</li>
-                                                <li>Facilita buscas</li>
-                                            </ul>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                <h3>Guia do Usuário</h3>
+                                            </div>
                                         </div>
+                                        <div class="card-body card-user-guide">
+                                        <div class="col-md-6">
+                                            <p>Bem-vindo a área de Gerenciamento de Departamentos!</p><br>
+                                            <p> Aqui você poderá realizar algumas operações para controlar os departamentos da sua organização.</p><br>
+                                            <p>Organizamos o seu departamento de modo que ele possua serviços específicos conforme um tipo de serviço definido. Assim, controlar a prestação de serviços da sua organização torna-se uma tarefa fácil e rápida! </p>
+                                        </div>
+                                        <div class="col-md-6 user-guide">
+                                            <p><b>Operações permitidas:</b></p>
+                                            <div class="col-md-12 functions-page" >
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-plus fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Inserir um departamento</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-edit fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Editar departamento existente</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" class="btn btn-sm btn-danger" disabled="true" title="Desativar">
+                                                                <div class="d-none d-block">
+                                                                    <i class="fas fa-times fa-fw"></i>
+                                                                </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Desativar departamento inativo</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" class="btn btn-sm btn-success" disabled="true" title="Reativar">
+                                                                <div class="d-none d-block">
+                                                                    <i class="fas fa-power-off fa-fw"></i>
+                                                                </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Ativar departamento novamente</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12>">
+                                                        <br><p><strong>Qualquer dúvida entre em contato com o suporte  na sua organização!</p></strong>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
                                     </div>
                                 </div>
                             </div>

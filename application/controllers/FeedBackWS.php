@@ -20,11 +20,11 @@ class FeedBackWS extends MY_Controller
 
     public function __construct()
     {
-        $this->response = new Response();
-        parent::__construct($this->response);
+      $this->response = new Response();
+      parent::__construct($this->response);
 
-		date_default_timezone_set('America/Sao_Paulo');
-        exit();
+		  date_default_timezone_set('America/Sao_Paulo');
+      exit();
     }
 
    public function novo_feedback()
@@ -35,19 +35,19 @@ class FeedBackWS extends MY_Controller
    		$this->response = new Response();
 
    		$obj = $obj = json_decode(file_get_contents('php://input'));
-		$headers = apache_request_headers();
+		  $headers = apache_request_headers();
 
-		$retorno = $this->mensagens_model->insert([
-			'funcionario_fk' => get('id_funcionario', $headers['Token']),
-			'mensagem_texto' => $obj->mensagem_texto
-		]);
+  		$retorno = $this->mensagens_model->insert([
+  			'funcionario_fk' => get('id_funcionario', $headers['Token']),
+  			'mensagem_texto' => $obj->mensagem_texto
+  		]);
 
-		if ($retorno === false) 
-		{
-			$this->response->set_code(Response::DB_ERROR_INSERT);
-			$this->response->set_data(['erro' => 'Não foi possível inserir a mensagem']);
-		}
+  		if ($retorno === false) 
+  		{
+  			$this->response->set_code(Response::DB_ERROR_INSERT);
+  			$this->response->set_message('Não foi possível inserir a mensagem');
+  		}
 
-		$this->response->send();
+		  $this->response->send();
    }
 }
