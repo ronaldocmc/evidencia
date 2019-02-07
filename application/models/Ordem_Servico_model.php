@@ -515,7 +515,7 @@ class Ordem_Servico_model extends CI_Model {
             FROM ordens_servicos ";
 
         $query.= "INNER JOIN servicos ON ordens_servicos.servico_fk = servicos.servico_pk
-        INNER JOIN historicos_ordens ON historicos_ordens.ordem_servico_fk = historicos_ordens.ordem_servico_fk
+        INNER JOIN historicos_ordens ON historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk
         INNER JOIN situacoes ON situacoes.situacao_pk = historicos_ordens.situacao_fk
         INNER JOIN prioridades ON ordens_servicos.prioridade_fk = ordens_servicos.prioridade_fk
         INNER JOIN procedencias ON procedencias.procedencia_pk = ordens_servicos.procedencia_fk
@@ -531,6 +531,8 @@ class Ordem_Servico_model extends CI_Model {
         $query.= $this->fill_query('setor_fk', $where['setor']);
         $query.= $this->fill_query('tipos_servicos.tipo_servico_pk', $where['tipo']);
         $query.= "GROUP BY ordens_servicos.ordem_servico_pk";
+
+        // echo $query; die();
 
         $return = $this->db->query($query);
         return $return->result();
