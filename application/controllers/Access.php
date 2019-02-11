@@ -88,10 +88,8 @@ class Access extends CI_Controller {
 	 *
 	 * @param       array  $access
 	 */
-    private function authenticate($access)
+    private function authenticate($response)
     {
-		$response = $this->model->get_login($access);
-
     	if ($response !== FALSE)
     	{
     		if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5'))
@@ -105,28 +103,23 @@ class Access extends CI_Controller {
                 $this->response->set_message('Login efetuado com sucesso');
 
     			$userdata =  [
-    				'id_user' => $response->pessoa_pk,
-    				'name_user' => $response->pessoa_nome,
-    				'password_user' => isset($response->organizacao_pk) ? null : $response->acesso_senha,
-    				'id_organizacao' => isset($response->organizacao_pk)?$response->organizacao_pk:'admin',
+    				'id_user' => isset($response->funcionario_pk) ? $response->funcionario_pk : $response->superusuario_pk,
+    				'name_user' => isset($response->funcionario_nome) ? $response->funcionario_nome : $response->superusuario_nome,
+    				'password_user' => isset($response->organizacao_pk) ? null : $response->superusuario_senha,
+    				'id_organizacao' => isset($response->organizacao_pk) ? $response->organizacao_pk : 'admin',
     				'name_organizacao' => isset($response->organizacao_nome)?$response->organizacao_nome:'Superusuario',
-    				'email_user' => $response->contato_email,
+    				'email_user' => isset($response->funcionario_pk) ? $response->funcionario_login : null,
     				'is_superusuario' => isset($response->organizacao_pk) ? FALSE : TRUE,
-    				'image_user_min' => isset($response->imagem_caminho)?base_url('/assets/uploads/perfil_images/min/'.$response->imagem_caminho):base_url('/assets/img/default.png'),
-    				'image_user' => isset($response->imagem_caminho)?base_url('/assets/uploads/perfil_images/'.$response->imagem_caminho):base_url('/assets/img/default.png'),
-                    'id_funcionario' => isset($response->funcionario_pk)?$response->funcionario_pk:null,
-    				'func_funcao' => isset($response->funcao_nome)?$response->funcao_nome:null
+    				'image_user_min' => isset($response->funcionario_caminho_foto) ? base_url('/assets/uploads/perfil_images/min/'.$response->funcionario_caminho_foto) : base_url('/assets/img/default.png'),
+    				'image_user' => isset($response->funcionario_caminho_foto) ? base_url('/assets/uploads/perfil_images/'.$response->funcionario_caminho_foto) : base_url('/assets/img/default.png'),
+                    'id_funcionario' => isset($response->funcionario_pk)?$response->funcionario_pk : null,
+    				'func_funcao' => isset($response->funcao_nome)?$response->funcao_nome : null
     			];
 
                 $permissions = $this->get_permissions($userdata['func_funcao'], $userdata['is_superusuario']);
                 $this->session->set_userdata('permissions', $permissions);
                 $this->session->set_userdata('user',$userdata);
                 $this->tentativa_model->delete($this->input->ip_address());
-
-                $this->log_model->insert([
-                    'log_pessoa_fk' => $response->pessoa_pk,
-                    'log_descricao' => 'Logou no sistema'
-                ]);
             }
         }
         else
@@ -243,23 +236,24 @@ class Access extends CI_Controller {
          
     		if ($this->form_validation->run() === TRUE) 
     		{
+                $response = '';
     			$id = explode('@',$this->input->post('login'));
+                if ($id[1] != 'admin') 
+                {
+                    $access['funcionario_login'] = $this->input->post('login');
+                    $access['funcionario_senha'] = hash(ALGORITHM_HASH,$this->input->post('password').SALT);
+                    $this->load->model('Funcionario_model', 'func_model');
+                    $response = $this->func_model->get_login($access);
+                }
+                else
+                {
+                    $access['superusuario_login'] = $this->input->post('login');
+                    $access['superusuario_senha'] = hash(ALGORITHM_HASH,$this->input->post('password').SALT);
+                    $this->load->model('Super_model', 'su_model');
+                    $response = $this->su_model->get_login($access);
+                }
                 
-    			$access =[
-    				'acessos.acesso_senha' => hash(ALGORITHM_HASH,$this->input->post('password').SALT)
-    			];
-
-    			if ($id[1] != 'admin')
-    			{
-    				$this->load->model('Funcionario_model', 'model');
-                    $access['contatos.contato_email'] = $this->input->post('login');
-    			}
-    			else
-    			{
-    				$this->load->model('Super_model','model');
-                    $access['acessos.acesso_login'] = $id[0];
-    			}
-                $this->authenticate($access);
+                $this->authenticate($response);
     		} 
     		else 
     		{	    		

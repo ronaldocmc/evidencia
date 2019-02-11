@@ -12,12 +12,12 @@ class Super_model extends CI_Model {
     /**
      * @name string TABLE_NAME Holds the name of the table in use by this model
      */
-    const TABLE_NAME = 'super_usuarios';
+    const TABLE_NAME = 'superusuarios';
 
     /**
      * @name string PRI_INDEX Holds the name of the tables' primary index used in this model
      */
-    const PRI_INDEX = 'pessoa_fk';
+    const PRI_INDEX = 'superusuario_pk';
 
 
     public function get_all_superusers_without_me($pk)
@@ -42,12 +42,9 @@ class Super_model extends CI_Model {
 
     public function get_login($where = NULL)
     {
-        $this->db->select('acessos.*, populacao.*, contatos.* , imagens_perfil.imagem_caminho, '.self::TABLE_NAME.".*"); 
+        $this->db->select('*'); 
         $this->db->from(self::TABLE_NAME);
-        $this->db->join('acessos','acessos.pessoa_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX,'left');
-        $this->db->join('populacao','populacao.pessoa_pk = '.self::TABLE_NAME.'.'.self::PRI_INDEX);
-        $this->db->join('contatos','contatos.pessoa_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX, 'left');
-        $this->db->join('imagens_perfil','imagens_perfil.pessoa_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX,'left');
+        
         if ($where !== NULL) {
             if (is_array($where)) {
                 foreach ($where as $field=>$value) {
