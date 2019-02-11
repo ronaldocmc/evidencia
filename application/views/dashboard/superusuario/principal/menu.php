@@ -119,10 +119,6 @@
                                                         <i class="zmdi zmdi-account"></i>Conta
                                                     </a>
                                                 </div>
-                                                <div class="account-dropdown__item">
-                                                    <a href="#">
-                                                        <i class="zmdi zmdi-settings"></i>Configurações</a>
-                                                </div>
                                             </div>
                                             <div class="account-dropdown__footer">
                                                 <a href="<?= base_url('access/quit') ?>">

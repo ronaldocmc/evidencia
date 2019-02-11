@@ -741,6 +741,69 @@ public function deactivate(){
     }
 }
 
+public function change_password(){
+    if($this->session->has_userdata('user'))
+    {
+        //Pego os dados via post (AJAX)
+        $data = $this->input->post();
+
+        //Premissa que o usuário comum está logado
+        $accepted = TRUE;
+
+        if($this->session->user['is_superusuario'])
+        {
+                 //Utilizando o helper de autenticação de senha para realiar o insert
+            $this->load->helper('Password_helper');
+            $accepted = authenticate_operation($data['senha'],$this->session->user['password_user']);
+        }
+
+        if ($accepted) 
+        {       
+            $where = [
+                'pessoa_fk' => $data['pessoa_fk'],
+            ];
+
+            $this->form_validation->set_rules(
+                'new_password',
+                'Senha',
+                'trim|required|min_length[8]|max_length[128]'
+            );
+
+
+            if (!$this->form_validation->run()) {
+
+                $this->response->set_code(Response::DB_ERROR_UPDATE);
+                $this->response->set_data("A senha deve possuir 8 ou mais caracteres!");
+
+            }else{   
+                $new_password = hash(ALGORITHM_HASH, $data['new_password'] . SALT);
+                if($this->pessoa_model->new_password($where, ['acesso_senha' => $new_password])) {
+                    $this->response->set_code(Response::SUCCESS);
+                    $this->response->set_data("Senha alterada com sucesso!");
+                }
+                else
+                {
+                    $this->response->set_code(Response::DB_ERROR_UPDATE);
+                    $this->response->set_data("Não foi possível alterar a senha do funcionário no sistema");  
+                }
+            }
+        } 
+        else 
+        {
+            $this->response->set_code(Response::UNAUTHORIZED);
+            $this->response->set_data("Operação não autorizada! Senha informada incorreta.");
+        }
+
+        $this->response->send();
+    } 
+    else 
+    {
+        redirect(base_url('access/index'));
+
+    }
+
+}
+
 
 
 }
