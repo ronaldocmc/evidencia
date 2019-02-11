@@ -9,9 +9,6 @@ verify_data = () => {
   var e = $('#username').val(), s = $('#password').val();
 
   //Verificando se os campos foram preenchidos corretamente
-
-
-
   if ($.isEmptyObject(e) || $.isEmptyObject(s)) {
     $('.area-acesso').append(alerts_access('no_data'));
   } else {
