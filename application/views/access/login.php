@@ -77,9 +77,6 @@
 <!--Importando a biblioteca noty JavaScript para notificação do usuário-->
 <script src="<?php echo base_url('assets/js/jquery.noty.packaged.min.js') ?>"></script>
 
-<!--Importando o Recaptcha para verificação de usuário real-->
-<!-- <script src="https://www.google.com/recaptcha/api.js?render=<?php echo RECAPTCHA_SITE_KEY ?>"></script> -->
-
 <!--Importando funções Jquery responsáveis pela verificação de dados e execução da entrada do usuário-->
 <script src="<?php echo base_url('assets/js/access/access.js') ?>"></script>
 
