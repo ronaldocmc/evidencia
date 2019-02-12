@@ -21,27 +21,11 @@ class Funcionario_model extends CI_Model {
 
     public function get_login($where = NULL)
     {
-        $this->db->select('
-            funcionarios.funcionario_pk,
-            populacao.pessoa_pk,
-            populacao.pessoa_nome,
-            organizacoes.organizacao_pk,
-            organizacoes.organizacao_nome,
-            acessos.acesso_senha,
-            contatos.contato_email,
-            imagens_perfil.imagem_caminho,
-            funcoes.funcao_nome,
-            funcoes.funcao_pk
-            ');
+        $this->db->select('*');
         $this->db->from(self::TABLE_NAME);
-        $this->db->join('acessos','acessos.pessoa_fk = '.self::TABLE_NAME.'.pessoa_fk');
         $this->db->join('funcionarios_setores','funcionarios_setores.funcionario_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX, 'left');
-        $this->db->join('populacao','populacao.pessoa_pk = '.self::TABLE_NAME.'.pessoa_fk');
         $this->db->join('organizacoes','organizacoes.organizacao_pk = '.self::TABLE_NAME.'.organizacao_fk');
-        $this->db->join('contatos','contatos.pessoa_fk = '.self::TABLE_NAME.'.pessoa_fk');
-        $this->db->join('imagens_perfil','imagens_perfil.pessoa_fk = '.self::TABLE_NAME.'.pessoa_fk','left');
-        $this->db->join('funcionarios_funcoes','funcionarios_funcoes.funcionario_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX);
-        $this->db->join('funcoes','funcoes.funcao_pk = funcionarios_funcoes.funcao_fk');
+        $this->db->join('funcoes','funcoes.funcao_pk = funcionarios.funcao_fk');
         
         if ($where !== NULL) {
             if (is_array($where)) {
@@ -52,7 +36,7 @@ class Funcionario_model extends CI_Model {
                 $this->db->where(self::PRI_INDEX, $where);
             }
         }
-        //echo $this->db->get_compiled_select();
+        // echo $this->db->get_compiled_select();die();
         $result = $this->db->get()->result();
         if ($result) {
             if ($where !== NULL) {

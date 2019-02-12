@@ -88,10 +88,8 @@ class Access extends CI_Controller {
 	 *
 	 * @param       array  $access
 	 */
-    private function authenticate($access)
+    private function authenticate($response)
     {
-		$response = $this->model->get_login($access);
-
     	if ($response !== FALSE)
     	{
     		if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5'))
@@ -105,28 +103,22 @@ class Access extends CI_Controller {
                 $this->response->set_message('Login efetuado com sucesso');
 
     			$userdata =  [
-    				'id_user' => $response->pessoa_pk,
-    				'name_user' => $response->pessoa_nome,
-    				'password_user' => isset($response->organizacao_pk) ? null : $response->acesso_senha,
-    				'id_organizacao' => isset($response->organizacao_pk)?$response->organizacao_pk:'admin',
-    				'name_organizacao' => isset($response->organizacao_nome)?$response->organizacao_nome:'Superusuario',
-    				'email_user' => $response->contato_email,
-    				'is_superusuario' => isset($response->organizacao_pk) ? FALSE : TRUE,
-    				'image_user_min' => isset($response->imagem_caminho)?base_url('/assets/uploads/perfil_images/min/'.$response->imagem_caminho):base_url('/assets/img/default.png'),
-    				'image_user' => isset($response->imagem_caminho)?base_url('/assets/uploads/perfil_images/'.$response->imagem_caminho):base_url('/assets/img/default.png'),
-                    'id_funcionario' => isset($response->funcionario_pk)?$response->funcionario_pk:null,
-    				'func_funcao' => isset($response->funcao_nome)?$response->funcao_nome:null
+                    'id_user' => isset($response->funcionario_pk) ? $response->funcionario_pk : $response->superusuario_pk,
+                    'email_user' => isset($response->funcionario_pk) ? $response->funcionario_login : null,
+                    'password_user' => isset($response->organizacao_pk) ? $response->funcionario_senha : $response->superusuario_senha,
+                    'id_organizacao' => isset($response->organizacao_pk) ? $response->organizacao_pk : 'admin',
+                    'name_user' => isset($response->funcionario_nome) ? $response->funcionario_nome : $response->superusuario_nome,
+                    'name_organizacao' => isset($response->organizacao_nome)?$response->organizacao_nome:'Superusuario',
+                    'is_superusuario' => isset($response->organizacao_pk) ? FALSE : TRUE,
+                    'image_user_min' => isset($response->funcionario_caminho_foto) ? base_url('/assets/uploads/perfil_images/min/'.$response->funcionario_caminho_foto) : base_url('/assets/img/default.png'),
+                    'image_user' => isset($response->funcionario_caminho_foto) ? base_url('/assets/uploads/perfil_images/'.$response->funcionario_caminho_foto) : base_url('/assets/img/default.png'),
+    				'func_funcao' => isset($response->funcao_nome)?$response->funcao_nome : null
     			];
 
                 $permissions = $this->get_permissions($userdata['func_funcao'], $userdata['is_superusuario']);
                 $this->session->set_userdata('permissions', $permissions);
                 $this->session->set_userdata('user',$userdata);
                 $this->tentativa_model->delete($this->input->ip_address());
-
-                $this->log_model->insert([
-                    'log_pessoa_fk' => $response->pessoa_pk,
-                    'log_descricao' => 'Logou no sistema'
-                ]);
             }
         }
         else
@@ -134,73 +126,73 @@ class Access extends CI_Controller {
             $this->response->set_code(Response::NOT_FOUND);
             $this->response->set_message('Usuário não encontrado!');
             $attempt = [
-             'tentativa_ip' => $this->input->ip_address(),
-             'tentativa_tempo' => date('Y/m/d H:i:s')
+                'tentativa_ip' => $this->input->ip_address(),
+                'tentativa_tempo' => date('Y/m/d H:i:s')
             ];
             $this->tentativa_model->insert($attempt);
         }
     }
 
     //Este método irá pegar as permissões do tipo do usuário
- public function get_permissions($func_funcao, $is_superusuario)
- {
-    $controller_exceptions = array();
-    $method_exceptions     = array();
-    $permissions           = array();
-    
-    if($is_superusuario)
+    public function get_permissions($func_funcao, $is_superusuario)
     {
+        $controller_exceptions = array();
+        $method_exceptions     = array();
+        $permissions           = array();
+        
+        if($is_superusuario)
+        {
             //pass;
-
-    }
-    else
-    {
-        if($func_funcao == 'Administrador')
-        {   
-                //exceptions são os controllers que ele não tem permissão para acessar
-            $controller_exceptions = array(
-                0 => 'organizacao',
-                1 => 'superusuario',
-            );
         }
         else
         {
-            if($func_funcao == 'Atendente')
-            {
+            if($func_funcao == 'Administrador')
+            {   
+                    //exceptions são os controllers que ele não tem permissão para acessar
                 $controller_exceptions = array(
                     0 => 'organizacao',
                     1 => 'superusuario',
-                    2 => 'departamento',
-                    3 => 'funcionario',
-                    4 => 'prioridade',
-                    5 => 'servico',
-                    6 => 'setor',
-                    7 => 'situacao',
-                    8 => 'tipo_servico'
                 );
-                    //agora temos o caso se ele tem permissão para acessar um controller, mas não tem permissão para acessar um método do controlador:
-                $method_exceptions = array(
-                    0 =>  array(
-                        'controller' => 'dashboard',
-                        'method'     => 'superusuario'
-                    ),
-                    1 => array(
-                        'controller' => 'ordem_servico',
-                        'method'     => 'deactivate'
-                    ),
-                ); 
             }
+            else
+            {
+                if($func_funcao == 'Atendente')
+                {
+                    $controller_exceptions = array(
+                        0 => 'organizacao',
+                        1 => 'superusuario',
+                        2 => 'departamento',
+                        3 => 'funcionario',
+                        4 => 'prioridade',
+                        5 => 'servico',
+                        6 => 'setor',
+                        7 => 'situacao',
+                        8 => 'tipo_servico'
+                    );
+                    
+                    //agora temos o caso se ele tem permissão para acessar um controller, mas não tem permissão para acessar um método do controlador:
+                    $method_exceptions = array(
+                        0 =>  array(
+                            'controller' => 'dashboard',
+                            'method'     => 'superusuario'
+                        ),
+                        1 => array(
+                            'controller' => 'ordem_servico',
+                            'method'     => 'deactivate'
+                        ),
+                    ); 
+                }
 
 
+            }
         }
-    }
 
-    $permissions = array(
-        'controller_exceptions' => $controller_exceptions,
-        'method_exceptions'     => $method_exceptions
-    );
-    return $permissions;
- }
+        $permissions = array(
+            'controller_exceptions' => $controller_exceptions,
+            'method_exceptions'     => $method_exceptions
+        );
+        return $permissions;
+    }
 
 	//--------------------------------------------------------------------------------
 
@@ -223,14 +215,14 @@ class Access extends CI_Controller {
 		//Faz a verificação de que o usuário não trata-se de um robo
         if(ENVIRONMENT == 'testing')
         {
-            $captcha_response = TRUE;
             $attempt_response = TRUE;
-        }else{
-        	// $captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
-            $captcha_response = TRUE;
+        }
+        else
+        {
         	$attempt_response = verify_attempt($this->input->ip_address());
         }
-    	if ($captcha_response === TRUE && $attempt_response === TRUE)
+        
+    	if ($attempt_response)
     	{	
     		$this->form_validation->set_rules('login', 
     			'Login',
@@ -243,23 +235,26 @@ class Access extends CI_Controller {
          
     		if ($this->form_validation->run() === TRUE) 
     		{
-    			$id = explode('@',$this->input->post('login'));
-                
-    			$access =[
-    				'acessos.acesso_senha' => hash(ALGORITHM_HASH,$this->input->post('password').SALT)
-    			];
+                $response = '';
+    			$login = explode('@',$this->input->post('login'));
+                if ($login[1] != 'admin') 
+                {
+                    $access['funcionario_login'] = $this->input->post('login');
+                    $access['funcionario_senha'] = hash(ALGORITHM_HASH,$this->input->post('password').SALT);
 
-    			if ($id[1] != 'admin')
-    			{
-    				$this->load->model('Funcionario_model', 'model');
-                    $access['contatos.contato_email'] = $this->input->post('login');
-    			}
-    			else
-    			{
-    				$this->load->model('Super_model','model');
-                    $access['acessos.acesso_login'] = $id[0];
-    			}
-                $this->authenticate($access);
+                    $this->load->model('Funcionario_model', 'func_model');
+                    $response = $this->func_model->get_login($access);
+                }
+                else
+                {
+                    $access['superusuario_login'] = $this->input->post('login');
+                    $access['superusuario_senha'] = hash(ALGORITHM_HASH,$this->input->post('password').SALT);
+
+                    $this->load->model('Super_model', 'su_model');
+                    $response = $this->su_model->get_login($access);
+                }
+                
+                $this->authenticate($response);
     		} 
     		else 
     		{	    		
@@ -269,16 +264,8 @@ class Access extends CI_Controller {
     	} 
     	else
     	{
-    		if ($captcha_response !== TRUE)
-    		{
-    			$this->response->set_code(Response::UNAUTHORIZED);
-                $this->response->set_message('Bloqueado pelo Recaptcha! ' . $captcha_response);
-    		}
-    		else
-    		{
-    			$this->response->set_code(Response::FORBIDDEN);
-                $this->response->set_message('Número de tentativas excedidas. ' . $attempt_response);
-    		}
+			$this->response->set_code(Response::FORBIDDEN);
+            $this->response->set_message('Número de tentativas excedidas. ' . $attempt_response);
     	}
     	$this->response->send();          
     }
