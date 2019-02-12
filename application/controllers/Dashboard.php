@@ -13,23 +13,19 @@ class Dashboard extends CRUD_Controller
         $this->load->library('session');
     }
 
-    public function funcionario_administrador() {
-        $this->load->model('dashboard_model', 'model');
-        //$this->load->model('funcionario_model');
-        $this->load->helper('date_helper');
-
+    public function funcionario_administrador() 
+    {
         $organizacao = $this->session->user['id_organizacao'];       
 
-        $this->load->model('dashboard_model');
         $dados['primeiro_nome'] = $this->primeiro_nome($this->session->user['name_user']);
 
-        $dados['cards'] = $this->get_cards();
-        $dados['charts'] = $this->get_charts();
-        $dados['ordens_em_execucao'] = $this->get_ordens_em_execucao();
-        $dados['funcionarios'] = $this->get_funcionarios();
+        // $dados['cards'] = $this->get_cards();
+        // $dados['charts'] = $this->get_charts();
+        // $dados['ordens_em_execucao'] = $this->get_ordens_em_execucao();
+        // $dados['funcionarios'] = $this->get_funcionarios();
 
-        $dados['heatmap'] = $this->heatmap();
-        $dados['tipos_servicos'] = $this->get_tipos_servicos();
+        // $dados['heatmap'] = $this->heatmap();
+        // $dados['tipos_servicos'] = $this->get_tipos_servicos();
 
         $this->session->set_flashdata('css',[
             0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
