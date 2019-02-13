@@ -1,124 +1,71 @@
 <?php
+require_once APPPATH."core\MY_Model.php";
 
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-class Organizacao_model extends CI_Model
-{
-
-    /**
-     * @name string TABLE_NAME Holds the name of the table in use by this model
-     */
-    const TABLE_NAME = 'organizacoes';
-
-    /**
-     * @name string PRI_INDEX Holds the name of the tables' primary index used in this model
-     */
+class Organizacao_model extends MY_Model {
+    const NAME = 'organização';
+	const TABLE_NAME = 'organizacoes';
     const PRI_INDEX = 'organizacao_pk';
+    
+    const FORM = array(
+        'organizacao_pk',
+        'organizacao_cnpj',
+        'organizacao_nome'
+    );
 
-    /**
-     * Retrieves record(s) from the database
-     *
-     * @param mixed $where Optional. Retrieves only the records matching given criteria, or all records if not given.
-     *                      If associative array is given, it should fit field_name=>value pattern.
-     *                      If string, value will be used to match against PRI_INDEX
-     * @return mixed Single record if ID is given, or array of results
-     */
-    public function get($where = null)
+
+   public function get(){
+        $this->CI->db->select('*');
+        $this->CI->db->from('organizacoes');
+        $this->CI->db->join('localizacoes', 'organizacoes.localizacao_fk = localizacoes.localizacao_pk');
+        return $this->CI->db->get()->result();  
+
+    //    return $this->get_all(
+    //     '*', //select *
+    //     array(), //WHERE VAZIO 
+    //     -1, //SEM LIMIT
+    //     -1, //SEM OFFSET
+    //     //JOIN com localizacoes
+    //     [
+    //         0 => [
+    //             'table' => 'localizacoes',
+    //             'on' => 'organizacoes.localizacao_fk = localizacoes.localizacao_pk'
+    //         ]
+    //     ] 
+    //    );
+   }
+
+//    public function config_form_validation_primary_key()
+//    {
+//         $this->CI->form_validation->set_rules(
+//             'organizacao_pk',
+//             'Domínio',
+//             'trim|min_length[4]|max_length[128]'
+//         );
+//    }
+
+    public function config_form_validation()
     {
-        $this->db->select('*');
-        $this->db->from(self::TABLE_NAME);
-        $this->db->join('locais', 'locais.local_pk = ' . self::TABLE_NAME . '.local_fk');
-        $this->db->join('logradouros', 'locais.logradouro_fk = logradouros.logradouro_pk');
-        $this->db->join('bairros', 'bairros.bairro_pk = locais.bairro_fk');
-        $this->db->join('municipios', 'bairros.municipio_fk = municipios.municipio_pk');
-        $this->db->join('estados', 'municipios.estado_fk = estados.estado_pk');
-        if ($where !== null) 
-        {
-            if (is_array($where)) 
-            {
-                foreach ($where as $field => $value) 
-                {
-                    $this->db->where($field, $value);
-                }
-            } 
-            else 
-            {
-                $this->db->where(self::PRI_INDEX, $where);
-            }
-        }
-        $result = $this->db->get()->result();
+        $this->CI->form_validation->set_rules(
+            'organizacao_pk',
+            'Domínio',
+            'trim|required|min_length[4]|max_length[128]'
+        );
+        $this->CI->form_validation->set_rules(
+            'organizacao_nome',
+            'Nome',
+            'trim|required|min_length[4]|max_length[128]'
+        );
 
-        if ($result) 
-        {
-            if ($where !== null) 
-            {
-                return array_shift($result);
-            } 
-            else 
-            {
-                return $result;
-            }
-        } 
-        else 
-        {
-            return false;
-        }
-    }
-
-    /**
-     * Inserts new data into database
-     *
-     * @param Array $data Associative array with field_name=>value pattern to be inserted into database
-     * @return mixed Inserted row ID, or false if error occured
-     */
-    public function insert(Array $data) {
-        if ($this->db->insert(self::TABLE_NAME, $data)) {
-            return $this->db->insert_id();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Updates selected record in the database
-     *
-     * @param Array $data Associative array field_name=>value to be updated
-     * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
-     * @return int Number of affected rows by the update query
-     */
-
-    // public function update(array $data, $where = array())
-    // {
-    //     if (!is_array($where)) {
-    //         $where = array(self::PRI_INDEX => $where);
-    //     }
-    //     $this->db->update(self::TABLE_NAME, $data, $where);
-    //     return $this->db->affected_rows();
-    // }
-
-    public function update(Array $data, $where = array()) {
-            if (!is_array($where)) {
-                $where = array(self::PRI_INDEX => $where);
-            }
-        $this->db->update(self::TABLE_NAME, $data, $where);
-        return $this->db->affected_rows();
-    }
-
-
-    /**
-     * Deletes specified record from the database
-     *
-     * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
-     * @return int Number of rows affected by the delete query
-     */
-    public function delete($where = array())
-    {
-        if (!is_array($where)) {
-            $where = array(self::PRI_INDEX => $where);
-        }
-        $this->db->delete(self::TABLE_NAME, $where);
-        return $this->db->affected_rows();
+        $this->CI->form_validation->set_rules(
+            'organizacao_cnpj',
+            'CNPJ',
+            'trim|required|regex_match[/[0-9].\-/]|min_length[18]|max_length[18]'
+        );
     }
 }
+
+?>

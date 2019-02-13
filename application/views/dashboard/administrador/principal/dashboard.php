@@ -90,14 +90,14 @@
 			<!-- END ACESSO RÁPIDO -->
 
 			<!-- STATISTIC-->
-			<div class="row">
+			<!-- <div class="row">
 				<div class="col-md-12">
 					<h2 class="title-5 m-b-20">Informações Gerais</h2>
 				</div>
-			</div>
+			</div> -->
 			<hr>
 
-			<div class="statistic statistic2">
+			<!-- <div class="statistic statistic2">
 				<div class="container">
 					<div class="row">
 
@@ -125,12 +125,12 @@
 
 					<?php endforeach; ?>
 				</div>
-			</div>
+			</div> -->
 		</div>
 		<!-- END STATISTIC-->
 
 
-		<?php if (count($ordens_em_execucao) > 0): ?>
+		<!-- <?php if (count($ordens_em_execucao) > 0): ?>
 			<!-- ESTATISTICAS CHART -->
 			<div class="statistic-chart">
 				<div class="row">
@@ -447,4 +447,4 @@
 
 
 				// Plotly.newPlot('heatmap', data, layout);
-			</script>
+			</script> -->
