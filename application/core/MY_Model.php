@@ -31,6 +31,17 @@ class MY_Model extends Generic_Model
         }
     }
 
+    private function check_if_key_exists($key, $array) 
+    {
+        if(!array_key_exists('ativo', $object))
+        {
+            throw new MyException(
+                'O atributo ativo não existe em '.$this->getName(),
+                Response::NOT_FOUND
+            );
+        }
+    }
+
     function __contruct()
     {
         $this->object = [];
@@ -59,14 +70,45 @@ class MY_Model extends Generic_Model
 
     public function update(){
         return $this->update_object($this->object, $this->object[$this->getPriIndex()]);
+
+
+        if(array_key_exists($this->getPriIndex(), $this->object)){
+            return $this->update_object($this->object, $this->object[$this->getPriIndex()]);
+        } else {
+            throw new MyException(
+                'Primary Index de '.$this->getName().' deve estar preenchido!', 
+                Response::NOT_FOUND
+            );
+        }
     }
 
     public function deactivate(){
-        //TODO pegar o objeto e verificar se o ativo está 0. Se sim, retornar a mensagem de que o objeto já está desativado.
-        return $this->update_object(['ativo' => 0], $this->object[$this->getPriIndex()]);
+        $object = $this->get_one([$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
+        
+        $this->check_if_key_exists('ativo', $object);
+
+        if($object['ativo'] == 0){
+            throw new MyException(
+                $this->getName().' já está desativado!',
+                Response::BAD_REQUEST
+            );
+        } else {
+            return $this->update_object(['ativo' => 0], $this->object[$this->getPriIndex()]);
+        }
     }
 
     public function activate(){
-        return $this->update_object(['ativo' => 1], $this->object[$this->getPriIndex()]);    
+        $object = $this->get_one([$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
+
+        $this->check_if_key_exists('ativo', $object);
+
+        if($object['ativo'] == 1){
+            throw new MyException(
+                $this->getName().' já está ativo!',
+                Response::BAD_REQUEST
+            );
+        } else {
+            return $this->update_object(['ativo' => 1], $this->object[$this->getPriIndex()]);
+        }  
     }
 }

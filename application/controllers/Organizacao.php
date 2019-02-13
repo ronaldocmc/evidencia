@@ -27,8 +27,6 @@ class Organizacao extends CI_Controller {
         $this->load->helper('exception');
         $this->response = new Response();
 
-        // $this->set_rules_form_validation();
-        
         $this->localizacao->config_form_validation();
         $this->organizacao->config_form_validation();
     }
@@ -80,7 +78,9 @@ class Organizacao extends CI_Controller {
         try
         {
             $this->load();
-            $organizacao_pk = $this->session->user['id_organizacao'];
+            //$organizacao_pk = $this->session->user['id_organizacao'];
+            $organizacao_pk = 'pietro';
+            $_POST['organizacao_pk'] = $organizacao_pk;
 
             if($this->is_superuser())
             {
@@ -89,12 +89,11 @@ class Organizacao extends CI_Controller {
             
             $this->organizacao->fill();
             $this->localizacao->fill();
-            //TODO
-            //form validation tem que estar dentro dos métodos -> insert tem a validação do organizacao_pk também
+
             $this->organizacao->run_form_validation();
 
             $this->begin_transaction();
-
+            
             if(isset($organizacao_pk))
             {
                 $this->update();
@@ -124,18 +123,44 @@ class Organizacao extends CI_Controller {
 
     private function update()
     {
+        $organizacao = $this->organizacao->get_one('localizacao_fk', $this->input->post('organizacao_pk'));
+
+        $this->localizacao->__set("localizacao_pk", $organizacao->localizacao_fk);
+    
         $this->localizacao->update();
         $this->organizacao->update();
     }
 
     public function deactivate()
     {
-        //TODO
+        try{
+            $this->organizacao->deactivate();
+            
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->set_message('Organização desativada com sucesso!');
+            $this->response->send();
+
+        }catch(MyException $e){
+            handle_my_exception($e);
+        } catch(Exception $e){
+            handle_exception($e);
+        }
     }
 
     public function activate()
     {
-        //TODO
+        try{
+            $this->organizacao->activate();
+            
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->set_message('Organização ativada com sucesso!');
+            $this->response->send();
+
+        }catch(MyException $e){
+            handle_my_exception($e);
+        } catch(Exception $e){
+            handle_exception($e);
+        }
     }
 
     private function is_superuser()
@@ -152,11 +177,15 @@ class Organizacao extends CI_Controller {
         );
     }
 
-    public function begin_transaction(){
+    // TODO: voltar para o CRUD_Controller
+    public function begin_transaction()
+    {
         $this->db->trans_start();
     }
 
-    public function end_transaction(){
+    // TODO voltar para o CRUD CONTOLLER
+    public function end_transaction()
+    {
         if ($this->db->trans_status() === FALSE)
         {
             $this->db->trans_rollback();
