@@ -54,7 +54,8 @@ class Super_model extends CI_Model {
                 $this->db->where(self::PRI_INDEX, $where);
             }
         }
-        //echo $this->db->get_compiled_select(); die();
+        $this->db->where(self::TABLE_NAME.'.ativo', 1);
+        
         $result = $this->db->get()->result();
         if ($result) {
             if ($where !== NULL) {
