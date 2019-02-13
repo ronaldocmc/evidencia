@@ -14,6 +14,8 @@ if (!defined('BASEPATH')) {
 }
 
 require_once dirname(__FILE__) . "/../controllers/Response.php";
+require_once APPPATH."core\MyException.php";
+
 
 class CRUD_Controller extends CI_Controller
 {
@@ -205,6 +207,34 @@ class CRUD_Controller extends CI_Controller
             return FALSE;
         }
 
+    }
+
+
+    public function begin_transaction(){
+        $this->db->trans_start();
+    }
+    public function end_transaction(){
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            throw new MyException('Erro ao realizar operação em '.$this->getTableName().'<br>'.implode('<br>',$this->db->error()), Response::SERVER_FAIL);
+        }
+        else
+        {
+            $this->db->trans_commit();
+        }
+    }
+
+    public function run_form_validation()
+    {
+        if(!$this->form_validation->run())
+        {
+            if(is_array($this->form_validation->errors_array()))
+            {
+                $errors = implode('<br>', $this->form_validation->errors_array());
+                throw new MyException($errors, Response::BAD_REQUEST);
+            }
+        }
     }
 
 }
