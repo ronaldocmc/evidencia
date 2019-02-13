@@ -34,9 +34,9 @@ class Generic_Model extends CI_Model {
         return $result;
     }
     
-    public function get_one($where = NULL) {
+    public function get_one($select, $where = NULL) {
         $query = '';
-        $query = "SELECT * FROM ".$this->getTableName()." ";
+        $query = "SELECT ".$select." FROM ".$this->getTableName()." ";
         if(is_array($where)){
             foreach($where as $field => $value){
                 if($value === reset($where)){
@@ -45,6 +45,8 @@ class Generic_Model extends CI_Model {
                     $query.= " AND ".$field." = '".$value."'";
                  }
             }
+        } else {
+            $query.= " WHERE ".$this->getPriIndex()." = '".$where."'";
         }
         //echo $query;
         $result = $this->CI->db->query($query);

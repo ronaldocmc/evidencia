@@ -38,14 +38,22 @@ class Organizacao_model extends MY_Model {
     //    );
    }
 
+//    public function config_form_validation_primary_key()
+//    {
+//         $this->CI->form_validation->set_rules(
+//             'organizacao_pk',
+//             'Domínio',
+//             'trim|min_length[4]|max_length[128]'
+//         );
+//    }
+
     public function config_form_validation()
     {
         $this->CI->form_validation->set_rules(
             'organizacao_pk',
             'Domínio',
-            'trim|min_length[4]|max_length[128]'
+            'trim|required|min_length[4]|max_length[128]'
         );
-
         $this->CI->form_validation->set_rules(
             'organizacao_nome',
             'Nome',
