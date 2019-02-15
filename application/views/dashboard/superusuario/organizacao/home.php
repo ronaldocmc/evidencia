@@ -189,7 +189,7 @@
                                                     <label for="uf-input" class="form-control-label"><strong>Estado*</strong></label>
                                                 </div>
                                                 <div class="col-12 col-md-2">
-                                                    <select class="form-control loading" id="uf-input" name="estado_pk" required="true">
+                                                    <select class="form-control" id="uf-input" name="estado_pk">
                                                     </select>
                                                     <small class="form-text text-muted"></small>
                                                 </div>
@@ -197,7 +197,7 @@
                                                     <label for="cidade-input" class=" form-control-label"><strong>Cidade*</strong></label>
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <select class="form-control loading" id="cidade-input" name="municipio_pk" required="true">
+                                                    <select class="form-control" id="cidade-input" name="municipio_pk">
                                                     </select>
 
                                                     <small class="help-block form-text">Por favor, informe a cidade</small>
