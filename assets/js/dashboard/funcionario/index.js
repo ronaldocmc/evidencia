@@ -252,20 +252,11 @@ send = (imagem) => {
   btn_load($('.submit'));
 
   const formData = new FormData();
-  formData.append('pessoa_nome', $('#nome-input').val());
-  formData.append('pessoa_cpf', $('#cpf-input').val());
-  formData.append('contato_email', $('#email-input').val());
-  formData.append('contato_tel', $('#telefone-input').val());
-  formData.append('contato_cel', $('#celular-input').val());
+  formData.append('funcionario_nome', $('#nome-input').val());
+  formData.append('funcionario_cpf', $('#cpf-input').val());
+  formData.append('funcionario_login', $('#email-input').val());
   formData.append('funcao_fk', $('#funcao-input').val());
-  formData.append('logradouro_nome', $('#logradouro-input').val());
-  formData.append('local_num', $('#numero-input').val());
-  formData.append('local_complemento', $('#complemento-input').val());
-  formData.append('estado_pk', $('#uf-input :selected').text());
-  formData.append('bairro', $('#bairro-input').val());
   formData.append('setor_fk', $('#setor-input').val());
-  formData.append('municipio_pk', $('#cidade-input').val());
-  formData.append('municipio_nome', $('#cidade-input :selected').text());
   formData.append('departamento_fk', $('#departamento-input').val());
   formData.append('senha', $('#pass-modal-edit').val());
   formData.append('img', imagem);
@@ -368,10 +359,10 @@ $(document).on('click', '.btn-editar', function (event) {
   else {
     $('#setor-input').val([]);
   }
-  $('#pessoa_pk').val(funcionarios[posicao_selecionada]['pessoa_pk']);
-  $('#nome-input').val(funcionarios[posicao_selecionada]['pessoa_nome']);
-  $('#cpf-input').val(funcionarios[posicao_selecionada]['pessoa_cpf']);
-  $('#email-input').val(funcionarios[posicao_selecionada]['contato_email']);
+  $('#pessoa_pk').val(funcionarios[posicao_selecionada]['funcionario_pk']);
+  $('#nome-input').val(funcionarios[posicao_selecionada]['funcionario_nome']);
+  $('#cpf-input').val(funcionarios[posicao_selecionada]['funcionario_cpf']);
+  $('#email-input').val(funcionarios[posicao_selecionada]['funcionario_login']);
   $('#telefone-input').val(funcionarios[posicao_selecionada]['contato_tel']);
   $('#celular-input').val(funcionarios[posicao_selecionada]['contato_cel']);
   $('#funcao-input option[value=' + funcionarios[posicao_selecionada]['funcao_pk'] + ']').prop('selected', true);
@@ -391,7 +382,7 @@ $(document).on('click', '.btn-editar', function (event) {
       return this.text == funcionarios['id_org']["estado_pk"];
     }).attr('selected', true);
 
-    change_uf($("#uf-input").val(), $("#uf-input option:selected").text(), funcionarios[$(this).val()]["municipio_pk"]);
+    // change_uf($("#uf-input").val(), $("#uf-input option:selected").text(), funcionarios[$(this).val()]["municipio_pk"]);
   }
   else {
     $("#cidade-input").val(funcionarios[$(this).val()]["municipio_pk"]);
