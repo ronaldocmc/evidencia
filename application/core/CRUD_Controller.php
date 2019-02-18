@@ -210,31 +210,41 @@ class CRUD_Controller extends CI_Controller
     }
 
 
-    public function begin_transaction(){
+    public function add_password_to_form_validation()
+    {
+        $this->form_validation->set_rules(
+            'senha', 
+            'senha', 
+            'trim|required|min_length[8]'
+        );
+    }
+
+    public function is_superuser()
+    {
+        return $this->session->user['is_superusuario'];
+    }
+
+
+    public function begin_transaction()
+    {
         $this->db->trans_start();
     }
-    public function end_transaction(){
+
+
+    public function end_transaction()
+    {
         if ($this->db->trans_status() === FALSE)
         {
             $this->db->trans_rollback();
-            throw new MyException('Erro ao realizar operação em '.$this->getTableName().'<br>'.implode('<br>',$this->db->error()), Response::SERVER_FAIL);
+            if(is_array($this->db->error())){
+                throw new MyException('Erro ao realizar operação.<br>'.implode('<br>',$this->db->error()), Response::SERVER_FAIL);
+            } else {
+                throw new MyException('Erro ao realizar operação.<br>'.$this->db->error(), Response::SERVER_FAIL);
+            }
         }
         else
         {
             $this->db->trans_commit();
         }
     }
-
-    public function run_form_validation()
-    {
-        if(!$this->form_validation->run())
-        {
-            if(is_array($this->form_validation->errors_array()))
-            {
-                $errors = implode('<br>', $this->form_validation->errors_array());
-                throw new MyException($errors, Response::BAD_REQUEST);
-            }
-        }
-    }
-
 }

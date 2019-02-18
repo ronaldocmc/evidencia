@@ -4,27 +4,24 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-class Tipo_Servico_model extends CI_Model
+require_once APPPATH . "core\MY_Model.php";
+
+class Tipo_Servico_model extends MY_Model
 {
 
-    /**
-     * @name string TABLE_NAME Holds the name of the table in use by this model
-     */
+    const NAME = 'tipos_servicos';
     const TABLE_NAME = 'tipos_servicos';
-
-    /**
-     * @name string PRI_INDEX Holds the name of the tables' primary index used in this model
-     */
     const PRI_INDEX = 'tipo_servico_pk';
 
-    /**
-     * Retrieves record(s) from the database
-     *
-     * @param mixed $where Optional. Retrieves only the records matching given criteria, or all records if not given.
-     *                      If associative array is given, it should fit field_name=>value pattern.
-     *                      If string, value will be used to match against PRI_INDEX
-     * @return mixed Single record if ID is given, or array of results
-     */
+    const FORM = array(
+        'tipo_servico_nome',
+        'tipo_servico_desc',
+        'prioridade_padrao_fk',
+        'departamento_fk',
+        'tipo_servico_abreviacao'
+    );
+
+    // @override
     public function get($where = null)
     {
         $this->db->select('*');
@@ -50,77 +47,41 @@ class Tipo_Servico_model extends CI_Model
         }
     }
 
-    /**
-     * Inserts new data into database
-     *
-     * @param Array $data Associative array with field_name=>value pattern to be inserted into database
-     * @return mixed Inserted row ID, or false if error occured
-     */
-    public function insert(array $data)
+
+    function config_form_validation()
     {
-        if ($this->db->insert(self::TABLE_NAME, $data)) {
-            $id = $this->db->insert_id();
+        $this->CI->form_validation->set_rules(
+            'tipo_servico_nome',
+            'Nome',
+            'trim|required|max_length[128]'
+        );
 
-            if ($this->db->insert('geral_atualizacao', array('empresa_fk' => $this->session->user['id_organizacao']))) {
-                $id_geral = $this->db->insert_id();
-                $data_geral = array(
-                    'geral_atualizacao_fk' => $id_geral,
-                    'tipo_servico_fk' => $id,
-                );
+        $this->CI->form_validation->set_rules(
+            'tipo_servico_desc',
+            'Descrição',
+            'trim|required|max_length[128]'
+        );
 
-                if ($this->db->insert('tipo_servico_atualizacao', $data_geral)) {
-                    return $id;
-                } else {
-                    $this->db->delete('geral_atualizacao', array('geral_atualizacao_pk' => $id_geral));
-                    return false;
-                }
+        $this->CI->form_validation->set_rules(
+            'prioridade_padrao_fk',
+            'Prioridade Padrao',
+            'trim|required|is_natural'
+        );
 
-            } else {
-                $this->delete($id_situacao);
-            }
+        $this->CI->form_validation->set_rules(
+            'tipo_servico_abreviacao',
+            'Abreviação',
+            'trim|required|max_length[10]'
+        );        
 
-        }
-        return false;
-    }
-
-    /**
-     * Updates selected record in the database
-     *
-     * @param Array $data Associative array field_name=>value to be updated
-     * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
-     * @return int Number of affected rows by the update query
-     */
-    public function update(array $data, $where = array())
-    {
-        if (!is_array($where)) {
-            $where = array(self::PRI_INDEX => $where);
-        }
-        $this->db->update(self::TABLE_NAME, $data, $where);
-
-        $affected = $this->db->affected_rows();
-
-        if ($affected > 0) {
-            $this->load->model('atualizacao_model');
-
-            $this->atualizacao_model->update($where[self::PRI_INDEX], 'tipo_servico_fk', 'tipo_servico_atualizacao');
-        }
-
-        return $affected;
+        $this->CI->form_validation->set_rules(
+            'departamento_fk',
+            'Departamento',
+            'trim|required|is_natural'
+        );
     }
 
 
-    /**
-     * Deletes specified record from the database
-     *
-     * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
-     * @return int Number of rows affected by the delete query
-     */
-    public function delete($where = array())
-    {
-        if (!is_array($where)) {
-            $where = array(self::PRI_INDEX => $where);
-        }
-        $this->db->delete(self::TABLE_NAME, $where);
-        return $this->db->affected_rows();
-    }
+
 }
+

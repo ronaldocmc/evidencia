@@ -119,7 +119,7 @@
                                                         </td>
                                                         <td>
                                                             <div class="btn-group">
-                                                                <?php if ($setor->setor_status): ?>
+                                                                <?php if ($setor->ativo): ?>
                                                                     <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$key?>" data-target="#ce_setor" title="Editar">
                                                                         <div class="d-none d-sm-block">
                                                                             <i class="fas fa-edit fa-fw"></i>
