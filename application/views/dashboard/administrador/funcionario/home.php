@@ -109,7 +109,7 @@
                                     <thead>
                                         <tr>
                                             <th>Nome</th>
-                                            <th>E-mail</th>
+                                            <th>Login</th>
                                             <th>Função</th>
                                             <th>Opções</th>
                                         </tr>
@@ -118,13 +118,14 @@
 
                                         <?php
                                         if ($funcionarios):
+                                            
                                             foreach ($funcionarios as $key => $f): ?>
                                              <tr>
                                                  <td>
-                                                     <?=$f->pessoa_nome?>
+                                                     <?= $f->funcionario_nome ?>
                                                  </td>
                                                  <td>
-                                                     <?=$f->contato_email?>
+                                                     <?=$f->funcionario_login ?>
                                                  </td>
                                                  <td>
                                                      <?=$f->funcao_nome?>
@@ -132,7 +133,7 @@
                                                  <td>
                                                      <div class="btn-group">
 
-                                                         <?php if ($f->funcionario_status == 1): ?>
+                                                         <?php if ($f->ativo == 1): ?>
                                                              <button class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#ce_funcionario" title="Editar">
                                                                  <div class="d-none d-sm-block">
                                                                      <i class="fas fa-edit fa-fw"></i>
@@ -194,8 +195,7 @@
                                         <!-- progressbar -->
                                         <ul class="progressbar">
                                             <li class="active">Informações Pessoais</li>
-                                            <li>Endereço</li>
-                                            <li>Contato</li>
+                                            <li>Acesso</li>
                                             <li>Profissional</li>
                                             <li>Foto</li>
                                             <?php if ($this->session->user['is_superusuario']): ?>
@@ -241,102 +241,7 @@
                                         </div>
                                         <div class="card card-step col-12 px-0">
                                             <div class="card-header">
-                                                Endereço
-                                            </div>
-                                            <div class="card-body card-block">
-                                                <div class="row form-group">
-                                                    <div class="col-12 col-md-2">
-                                                        <label for="uf-input" class="form-control-label">
-                                                            Estado
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-12 col-md-2">
-                                                        <select class="form-control loading" id="uf-input" name="estado_pk" required="true">
-                                                        </select>
-                                                        <small class="form-text text-muted"></small>
-                                                    </div>
-                                                    <div class="col-12 col-md-2">
-                                                        <label for="cidade-input" class=" form-control-label">
-                                                            Cidade
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-12 col-md-6">
-                                                        <select class="form-control loading" id="cidade-input" name="municipio_pk" required="true">
-                                                        </select>
-
-                                                        <small class="help-block form-text">Por favor, informe a cidade</small>
-                                                    </div>
-                                                </div>
-                                                <div class="row form-group">
-                                                    <div class="col-12 col-md-2">
-                                                        <label for="logradouro-input" class=" form-control-label">
-                                                            Logradouro
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-12 col-md-6">
-                                                        <input type="hidden" name="logradouro_nome" id="logradouro_pk">
-                                                        <div class="dropdown" id="drop">
-                                                            <input type="text" id="logradouro-input" name="logradouro_nome" class="form-control input-dropdown" autocomplete="off" placeholder="Logradouro"
-                                                            data-src='["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]'
-                                                            data-params='[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]'
-                                                            data-action='["post","get"]' data-arrayret='    ["data",null]'>
-                                                            <small class="help-block form-text helper-dropdown">Por favor, informe o logradouro do funcionário</small>
-                                                            <ul class="dropdown-menu" data-return="#logradouro_pk" data-next="#numero-input">
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12 col-md-1">
-                                                        <label for="numero-input" class=" form-control-label">
-                                                            Nº
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-12 col-md-3">
-                                                        <input type="number" id="numero-input" name="local_num" placeholder="Nº" class="form-control numero-input" min="0">
-                                                        <small class="form-text text-muted"></small>
-                                                    </div>
-                                                </div>
-                                                <div class="row form-group">
-                                                    <div class="col-12 col-md-2">
-                                                        <label for="complemento-input" class=" form-control-label">
-                                                            Complemento
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-12 col-md-5">
-                                                        <input type="text" id="complemento-input" name="local_complemento" placeholder="Complemento" class="form-control" maxlength="30">
-                                                        <small class="help-block form-text">Por favor, informe o complemento</small>
-                                                    </div>
-                                                    <div class="col-12 col-md-1">
-                                                        <label for="bairro-input" class=" form-control-label">
-                                                            Bairro
-                                                            <br>
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-12 col-md-4">
-                                                        <input type="hidden" name="bairro_nome" id="bairro_pk">
-                                                        <div class="dropdown" id="drop">
-                                                            <input type="text" id="bairro-input" name="bairro" class="form-control input-dropdown" placeholder="Bairro" autocomplete="off"
-                                                            data-src='["<?php echo base_url('localizacao/bairros'); ?>","https://viacep.com.br/ws"]' data-index='["bairro_pk","bairro"]' data-value='["bairro_nome","bairro"]'
-                                                            data-params='[[["cidade-input",null,"val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["logradouro-input",null,"val"],["json",null,"param"]]]'
-                                                            data-action='["get","get"]' data-arrayret='["data",null]'>
-                                                            <small class="help-block form-text helper-dropdown">Por favor, informe o bairro do funcionário</small>
-                                                            <ul class="dropdown-menu" data-return="#bairro_pk" data-next="#bairro-input">
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card-footer text-center">
-                                                <button type="button" class="btn btn-secondary previous btn-sm">
-                                                    <i class="fas fa-arrow-circle-left"></i> Anterior
-                                                </button>
-                                                <button type="button" class="btn btn-secondary next btn-sm">
-                                                    <i class="fas fa-arrow-circle-right"></i> Próximo
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="card card-step col-12 px-0">
-                                            <div class="card-header">
-                                                Contato
+                                                Acesso
                                             </div>
                                             <div class="card-body card-block">
                                                 <div class="row form-group">
@@ -347,27 +252,11 @@
                                                     </div>
                                                     <div class="col-12 col-md-10">
                                                         <input type="email" id="email-input" name="contato_email" placeholder="Email" class="form-control email-input" required="true">
-                                                        <small class="help-block form-text">Por favor, informe o email do funcionário</small>
+                                                        <small class="help-block form-text">Por favor, informe o login do funcionário</small>
                                                     </div>
                                                 </div>
-                                                <div class="row form-group">
-                                                    <div class="col-12 col-md-2">
-                                                        <label for="telefone-input" class=" form-control-label">Telefone</label>
-                                                    </div>
-                                                    <div class="col-12 col-md-10">
-                                                        <input type="text" id="telefone-input" name="contato_tel" placeholder="Telefone" class="form-control telefone-input">
-                                                        <small class="help-block form-text">Por favor, informe o telefone do funcionário</small>
-                                                    </div>
-                                                </div>
-                                                <div class="row form-group">
-                                                    <div class="col-12 col-md-2">
-                                                        <label for="celular-input" class=" form-control-label">Celular</label>
-                                                    </div>
-                                                    <div class="col-12 col-md-10">
-                                                        <input type="text" id="celular-input" name="contato_cel" placeholder="Celular" class="form-control celular-input">
-                                                        <small class="help-block form-text">Por favor, informe o celular do funcionário</small>
-                                                    </div>
-                                                </div>
+
+                                                
                                             </div>
                                             <div class="card-footer text-center">
                                                 <button type="button" class="btn btn-secondary previous btn-sm">
