@@ -43,20 +43,17 @@ $("#btn-edit").click(function()
         {
             'organizacao_nome': $('#nome-input').val(),
             'organizacao_cnpj': $('#cnpj-input').val(),
-            'logradouro_nome': $('#logradouro-input').val(),
-            'local_num': $('#numero-input').val(),
-            'local_complemento': $('#complemento-input').val(),
-            'estado_pk' :$('#uf-input :selected').text(),
-            'bairro': $('#bairro-input').val(),
-            'municipio_pk': $('#cidade-input').val(),
-            'municipio_nome': $('#cidade-input :selected').text()
+            'localizacao_rua': $('#logradouro-input').val(),
+            'localizacao_num': $('#numero-input').val(),
+            'localizacao_bairro': $('#bairro-input').val(),
+            'localizacao_municipio': $('#localizacao_municipio').val()
         }
 
         btn_load($('#btn-edit'));
 
         pre_loader_show();
 
-        $.post(base_url+'/organizacao/insert_update',data).done(function (response) 
+        $.post(base_url+'/organizacao/save',data).done(function (response) 
         {
 
             btn_ativar($('#btn-edit'));
@@ -132,7 +129,7 @@ $("#btn-confirmar-edicao").click(function()
     
     btn_load($('#btn-confirmar-edicao'));
 
-    $.post(base_url+'/organizacao/insert_update',data).done(function (response) 
+    $.post(base_url+'/organizacao/save',data).done(function (response) 
     {
 
         btn_ativar($('#btn-confirmar-edicao'));
