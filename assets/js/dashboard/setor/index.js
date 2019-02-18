@@ -20,10 +20,10 @@ $(".submit").click(function(){
            	'senha': $('#senha-input').val()
 		}
 
-	btn_load($(".submit"));
+	// btn_load($(".submit"));
     
-    $.post(base_url+'/setor/insert_update',data).done(function (response) {
-    	wich_alert(response);
+    $.post(base_url+'/setor/save',data).done(function (response) {
+    	console.log(response);
     	btn_ativar($(".submit"));
 
   		if(response.code == 200)

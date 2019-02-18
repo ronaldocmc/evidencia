@@ -33,7 +33,7 @@ class MY_Model extends Generic_Model
 
     private function check_if_key_exists($key, $array) 
     {
-        if(!array_key_exists('ativo', $object))
+        if(!array_key_exists($key, $array))
         {
             throw new MyException(
                 'O atributo ativo não existe em '.$this->getName(),
@@ -83,32 +83,34 @@ class MY_Model extends Generic_Model
     }
 
     public function deactivate(){
-        $object = $this->get_one([$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
-        
-        $this->check_if_key_exists('ativo', $object);
+        $this->object = $this->get_one('*', [$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
+        // var_dump($this->object);die();
+        $this->check_if_key_exists('ativo', $this->object);
 
-        if($object['ativo'] == 0){
+        if($this->object->ativo == 0){
             throw new MyException(
                 $this->getName().' já está desativado!',
                 Response::BAD_REQUEST
             );
         } else {
-            return $this->update_object(['ativo' => 0], $this->object[$this->getPriIndex()]);
+            $field = $this->getPriIndex();
+            return $this->update_object(['ativo' => 0], $this->object->$field);
         }
     }
 
     public function activate(){
-        $object = $this->get_one([$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
+        $this->object = $this->get_one('*', [$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
 
-        $this->check_if_key_exists('ativo', $object);
+        $this->check_if_key_exists('ativo', $this->object);
 
-        if($object['ativo'] == 1){
+        if($this->object->ativo == 1){
             throw new MyException(
                 $this->getName().' já está ativo!',
                 Response::BAD_REQUEST
             );
         } else {
-            return $this->update_object(['ativo' => 1], $this->object[$this->getPriIndex()]);
+            $field = $this->getPriIndex();
+            return $this->update_object(['ativo' => 1], $this->object->$field);
         }  
     }
 }
