@@ -207,4 +207,18 @@ class CRUD_Controller extends CI_Controller
 
     }
 
+
+    private function add_password_to_form_validation()
+    {
+        $this->form_validation->set_rules(
+            'senha', 
+            'senha', 
+            'trim|required|min_length[8]'
+        );
+    }
+
+    private function is_superuser()
+    {
+        return $this->session->user['is_superusuario'];
+    }
 }
