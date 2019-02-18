@@ -16,20 +16,20 @@
                         <div class="col-lg-12">
                             <div class="au-card d-flex flex-column">
                                 <h2 class="title-1 m-b-25">organizações</h2>
-                                <div class=""> 
-                                    <h5>Filtrar por</h5><br> 
-                                    <div class="row"> 
-                                        <div class="col-md-4"> 
-                                            <label for="filter-ativo">Mostrar</label> 
-                                            <select name="filter-ativo" id="filter-ativo" class="form-control"> 
-                                                <option value="todos">Todos</option> 
-                                                <option value="ativos">Apenas ativos</option> 
-                                                <option value="desativados">Apenas desativados</option> 
-                                            </select><br> 
-                                        </div> 
-                                    </div> 
-                                </div> 
-                                
+                                <div class="">
+                                    <h5>Filtrar por</h5><br>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="filter-ativo">Mostrar</label>
+                                            <select name="filter-ativo" id="filter-ativo" class="form-control">
+                                                <option value="todos">Todos</option>
+                                                <option value="ativos">Apenas ativos</option>
+                                                <option value="desativados">Apenas desativados</option>
+                                            </select><br>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="table-responsive table--no-card m-b-40">
                                     <table  id="organizacoes" class="table table-striped table-datatable">
                                         <thead>
@@ -41,22 +41,22 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php if ($organizacoes!==FALSE): ?>
-                                                <?php foreach ($organizacoes as $key=> $organizacao) : ?>
+                                            <?php if ($organizacoes !== false): ?>
+                                                <?php foreach ($organizacoes as $key => $organizacao): ?>
                                                     <tr>
                                                         <td>
-                                                            <?= $organizacao->organizacao_nome ?>
+                                                            <?=$organizacao->organizacao_nome?>
                                                         </td>
                                                         <td>
-                                                            <?=$organizacao->organizacao_pk ?>
+                                                            <?=$organizacao->organizacao_pk?>
                                                         </td>
                                                         <td>
-                                                            <?=ucwords(mb_strtolower($organizacao->logradouro_nome,'UTF-8')).", ".$organizacao->local_num." - ".ucwords(mb_strtolower($organizacao->bairro_nome,'UTF-8'))." - ".$organizacao->municipio_nome."/".$organizacao->estado_pk ?>
+                                                        <?=ucwords(mb_strtolower($organizacao->localizacao_rua, 'UTF-8')) . ", " . $organizacao->localizacao_num . " - " . ucwords(mb_strtolower($organizacao->localizacao_bairro, 'UTF-8')) . " - " . $organizacao->municipio_nome . "/SP"?>
                                                         </td>
                                                         <td>
                                                             <?php if ($organizacao->ativo): ?>
                                                                 <div class="btn-group">
-                                                                    <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?= $key ?>" data-target="#ce_organizacao">
+                                                                    <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$key?>" data-target="#ce_organizacao">
                                                                         <div class="d-none d-sm-block">
                                                                             Editar
                                                                         </div>
@@ -64,7 +64,7 @@
                                                                             <i class="fas fa-edit fa-fw"></i>
                                                                         </div>
                                                                     </button>
-                                                                    <button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="<?= $key ?>" data-target="#d-organizacao">
+                                                                    <button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="<?=$key?>" data-target="#d-organizacao">
                                                                         <div class="d-none d-sm-block">
                                                                             Desativar
                                                                         </div>
@@ -72,7 +72,7 @@
                                                                             <i class="fas fa-times fa-fw"></i>
                                                                         </div>
                                                                     </button>
-                                                                    <button type="button" class="btn btn-sm btn-success btn-acessar" data-toggle="modal" value="<?= $key ?>" data-target="#a-organizacao">
+                                                                    <button type="button" class="btn btn-sm btn-success btn-acessar" data-toggle="modal" value="<?=$key?>" data-target="#a-organizacao">
                                                                         <div class="d-none d-sm-block">
                                                                             Acessar
                                                                         </div>
@@ -83,7 +83,7 @@
                                                                 </div>
                                                                 <?php else: ?>
                                                                     <div class="btn-group">
-                                                                        <button type="button" class="btn btn-sm btn-success btn_reativar" value="<?= $key ?>" data-toggle="modal" data-target="#r-organizacao">
+                                                                        <button type="button" class="btn btn-sm btn-success btn_reativar" value="<?=$key?>" data-toggle="modal" data-target="#r-organizacao">
                                                                             <div class="d-none d-sm-block">
                                                                                 Reativar
                                                                             </div>
@@ -92,11 +92,11 @@
                                                                             </div>
                                                                         </button>
                                                                     </div>
-                                                                <?php endif ?>
+                                                                <?php endif?>
                                                             </td>
                                                         </tr>
-                                                    <?php endforeach ?>                      
-                                                <?php endif ?>
+                                                    <?php endforeach?>
+                                                <?php endif?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -185,23 +185,25 @@
                                         </div>
                                         <div class="card-body card-block">
                                             <div class="row form-group">
-                                                <div class="col-12 col-md-2">
+                                                <!-- <div class="col-12 col-md-2">
                                                     <label for="uf-input" class="form-control-label"><strong>Estado*</strong></label>
                                                 </div>
                                                 <div class="col-12 col-md-2">
                                                     <select class="form-control" id="uf-input" name="estado_pk">
                                                     </select>
                                                     <small class="form-text text-muted"></small>
-                                                </div>
+                                                </div> -->
                                                 <div class="col-12 col-md-2">
                                                     <label for="cidade-input" class=" form-control-label"><strong>Cidade*</strong></label>
                                                 </div>
-                                                <div class="col-12 col-md-6">
+                                                <div class="col-12 col-md-10">
                                                     <select class="form-control" id="cidade-input" name="municipio_pk">
+                                                        <?php foreach ($municipios as $m): ?>
+                                                            <option value="<?=$m->municipio_pk?>"><?=$m->municipio_nome?></option>
+                                                        <?php endforeach;?>
                                                     </select>
-
                                                     <small class="help-block form-text">Por favor, informe a cidade</small>
-                                                </div> 
+                                                </div>
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col-12 col-md-2">
@@ -225,17 +227,17 @@
                                                 </div>
                                             </div>
                                             <div class="row form-group">
-                                                <div class="col-12 col-md-2">
+                                                <!-- <div class="col-12 col-md-2">
                                                     <label for="complemento-input" class=" form-control-label">Complemento</label>
                                                 </div>
                                                 <div class="col-12 col-md-5">
                                                     <input type="text" id="complemento-input" name="local_complemento" placeholder="Complemento" class="form-control" maxlength="30">
                                                     <small class="help-block form-text">Por favor, informe o complemento</small>
-                                                </div>
-                                                <div class="col-12 col-md-1">
+                                                </div> -->
+                                                <div class="col-12 col-md-2">
                                                     <label for="bairro-input" class=" form-control-label"><strong>Bairro*</strong><br></label>
-                                                </div>
-                                                <div class="col-12 col-md-4">
+                                                </div> 
+                                                <div class="col-12 col-md-10">
                                                    <input type="hidden" name="bairro_nome" id="bairro_pk">
                                                    <div class="dropdown" id="drop">
                                                     <input type="text" id="bairro-input" name="bairro"  class="form-control input-dropdown" autocomplete="off" data-src = '["<?php echo base_url('localizacao/bairros'); ?>","https://viacep.com.br/ws"]' data-index='["bairro_pk","bairro"]' data-value='["bairro_nome","bairro"]' data-params  = '[[["cidade-input",null,"val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["logradouro-input",null,"val"],["json",null,"param"]]]' data-action='["get","get"]' data-arrayret='["data",null]'>
@@ -243,7 +245,7 @@
                                                     <ul class="dropdown-menu" data-return = "#bairro_pk" data-next="#bairro-input">
                                                     </ul>
                                                 </div>
-                                            </div>                                                    
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="card-footer text-center">
@@ -355,7 +357,7 @@
 </div>
 </div>
 <script type="text/javascript">
-    var organizacoes = <?php echo json_encode($organizacoes!==FALSE?$organizacoes:[]);?>; 
+    var organizacoes = <?php echo json_encode($organizacoes !== false ? $organizacoes : []); ?>;
     console.log(organizacoes);
 
 </script>

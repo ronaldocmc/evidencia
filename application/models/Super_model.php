@@ -78,7 +78,6 @@ class Super_model extends CI_Model {
     public function get($where = NULL) {
         $this->db->select('*');
         $this->db->from(self::TABLE_NAME);
-        $this->db->join('acessos','acessos.pessoa_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX);
         if ($where !== NULL) {
             if (is_array($where)) {
                 foreach ($where as $field=>$value) {

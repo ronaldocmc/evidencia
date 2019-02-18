@@ -10,22 +10,21 @@ require_once APPPATH."core\CRUD_Controller.php";
 
 require_once APPPATH."models\Organizacao_model.php";
 
-//TODO mudar para CRUD_Controller
-class Organizacao extends CI_Controller {
+class Organizacao extends CRUD_Controller {
     public $response;
 
     public function __construct()
     {
         parent::__construct();
+        $this->response = new Response();
+        $this->load->helper('exception');
+        $this->load->library('form_validation');
         $this->load->model('organizacao_model', 'organizacao');
     }
 
     private function load()
     {
-        $this->load->library('form_validation');
         $this->load->model('localizacao_model', 'localizacao');
-        $this->load->helper('exception');
-        $this->response = new Response();
 
         $this->localizacao->config_form_validation();
         $this->organizacao->config_form_validation();
@@ -33,8 +32,11 @@ class Organizacao extends CI_Controller {
 
     public function index()
     {
-        $this->load->model('organizacao_model');
-        $organizacoes = $this->organizacao_model->get();
+        $this->load->model('municipio_model', 'municipio');
+        
+        $data['organizacoes'] = $this->organizacao->get();
+
+        $data['municipios'] = $this->municipio->get(); //get all
 
         //CSS para crud organizações
         $this->session->set_flashdata('css',[
@@ -63,7 +65,7 @@ class Organizacao extends CI_Controller {
         load_view([
             0 => [
                 'src' => 'dashboard/superusuario/organizacao/home',
-                'params' => ['organizacoes' => $organizacoes]
+                'params' => $data
             ],
             1 => [
                 'src' => 'access/pre_loader',
@@ -73,18 +75,60 @@ class Organizacao extends CI_Controller {
 
     }
 
+
+    public function edit_info()
+    {
+        // Pegando a organização salva na session 
+        if ($this->has_organization())
+        {   
+            $this->load->model('municipio_model', 'municipio');
+
+            $data['organizacao'] = $this->organizacao->get_object($this->session->user['id_organizacao']);
+
+            $data['municipios'] = $this->municipio->get(); //get all
+            
+
+            // CSS para a edição
+            $this->session->set_flashdata('css',[
+                0 => base_url('assets/css/modal_desativar.css'),
+                1 => base_url('assets/css/loading_input.css'),
+                2 => base_url('assets/css/media_query_edit_org.css')
+            ]);
+            //Scripts para edição
+            $this->session->set_flashdata('scripts',[
+                0 => base_url('assets/js/localizacao.js'),
+                1 => base_url('assets/vendor/select-input/select-input.js'),
+                2 => base_url('assets/js/dashboard/organizacao/edit_info.js'),
+                3 => base_url('assets/js/constants.js'),
+                4 => base_url('assets/js/utils.js'),
+                5 => base_url('assets/js/jquery.noty.packaged.min.js'),
+                6 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js')
+            ]);
+            load_view([
+                0 => [
+                    'src' => 'dashboard/administrador/organizacao/editar_informacoes',
+                    'params' => $data
+                ]
+            ],'administrador');
+
+        }
+    }
+
     public function save()
     {
         try
         {
             $this->load();
-            //$organizacao_pk = $this->session->user['id_organizacao'];
-            $organizacao_pk = 'pietro';
-            $_POST['organizacao_pk'] = $organizacao_pk;
 
             if($this->is_superuser())
             {
                 $this->add_password_to_form_validation();
+                $organizacao_pk = $this->input->post('organizacao_pk');
+            }
+            else 
+            {
+                $organizacao_pk = $this->session->user['id_organizacao'];
+                $_POST['organizacao_pk'] = $organizacao_pk;
             }
             
             $this->organizacao->fill();
@@ -93,8 +137,10 @@ class Organizacao extends CI_Controller {
             $this->organizacao->run_form_validation();
 
             $this->begin_transaction();
+
+            $organizacao = $this->organizacao->get_one('organizacao_pk', $this->input->post('organizacao_pk'));
             
-            if(isset($organizacao_pk))
+            if($organizacao)
             {
                 $this->update();
             } 
@@ -124,7 +170,7 @@ class Organizacao extends CI_Controller {
     private function update()
     {
         $organizacao = $this->organizacao->get_one('localizacao_fk', $this->input->post('organizacao_pk'));
-
+    
         $this->localizacao->__set("localizacao_pk", $organizacao->localizacao_fk);
     
         $this->localizacao->update();
@@ -134,6 +180,11 @@ class Organizacao extends CI_Controller {
     public function deactivate()
     {
         try{
+            $this->add_password_to_form_validation();
+            $this->organizacao->fill();
+
+            $this->organizacao->run_form_validation();
+
             $this->organizacao->deactivate();
             
             $this->response->set_code(Response::SUCCESS);
@@ -150,6 +201,10 @@ class Organizacao extends CI_Controller {
     public function activate()
     {
         try{
+            $this->add_password_to_form_validation();
+            $this->organizacao->fill();
+
+            $this->organizacao->run_form_validation();
             $this->organizacao->activate();
             
             $this->response->set_code(Response::SUCCESS);
@@ -163,20 +218,10 @@ class Organizacao extends CI_Controller {
         }
     }
 
-    private function is_superuser()
+    private function has_organization()
     {
-        return $this->session->user['is_superusuario'];
+        return $this->session->user['id_organizacao'];
     }
-
-    private function add_password_to_form_validation()
-    {
-        $this->form_validation->set_rules(
-            'senha', 
-            'senha', 
-            'trim|required|min_length[8]'
-        );
-    }
-
     
 }
 
