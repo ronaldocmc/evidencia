@@ -17,11 +17,23 @@ class Organizacao_model extends MY_Model {
     );
 
 
-   public function get(){
+    public function get()
+    {
         $this->CI->db->select('*');
         $this->CI->db->from('organizacoes');
         $this->CI->db->join('localizacoes', 'organizacoes.localizacao_fk = localizacoes.localizacao_pk');
+        $this->CI->db->join('municipios', 'localizacoes.localizacao_municipio = municipios.municipio_pk');
         return $this->CI->db->get()->result();  
+    }
+
+    public function get_object($pk)
+    {
+        $this->CI->db->select('*');
+        $this->CI->db->from('organizacoes');
+        $this->CI->db->join('localizacoes', 'organizacoes.localizacao_fk = localizacoes.localizacao_pk');
+        $this->CI->db->where('organizacao_pk', $pk);
+        return $this->CI->db->get()->row();
+    }
 
     //    return $this->get_all(
     //     '*', //select *
@@ -36,7 +48,6 @@ class Organizacao_model extends MY_Model {
     //         ]
     //     ] 
     //    );
-   }
 
 //    public function config_form_validation_primary_key()
 //    {
