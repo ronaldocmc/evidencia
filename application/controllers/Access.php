@@ -150,8 +150,26 @@ class Access extends CI_Controller {
             {   
                     //exceptions são os controllers que ele não tem permissão para acessar
                 $controller_exceptions = array(
-                    0 => 'organizacao',
-                    1 => 'superusuario',
+                    0 => 'superusuario',
+                    // 0 => 'organizacao',
+                );
+
+                $method_exceptions = array(
+                    0 => array(
+                        'controller' => 'organizacao',
+                        'method'     => 'deactivate',
+                    ),
+                    
+                    1 => array(
+                        'controller' => 'organizacao',
+                        'method'     => 'activate',
+                    ),
+
+                    2 => array(
+                        'controller' => 'organizacao',
+                        'method'     => 'index',
+                    )
+
                 );
             }
             else
