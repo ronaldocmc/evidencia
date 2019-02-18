@@ -208,7 +208,7 @@ class CRUD_Controller extends CI_Controller
     }
 
 
-    private function add_password_to_form_validation()
+    public function add_password_to_form_validation()
     {
         $this->form_validation->set_rules(
             'senha', 
@@ -217,8 +217,32 @@ class CRUD_Controller extends CI_Controller
         );
     }
 
-    private function is_superuser()
+    public function is_superuser()
     {
         return $this->session->user['is_superusuario'];
+    }
+
+
+    public function begin_transaction()
+    {
+        $this->db->trans_start();
+    }
+
+
+    public function end_transaction()
+    {
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            if(is_array($this->db->error())){
+                throw new MyException('Erro ao realizar operação.<br>'.implode('<br>',$this->db->error()), Response::SERVER_FAIL);
+            } else {
+                throw new MyException('Erro ao realizar operação.<br>'.$this->db->error(), Response::SERVER_FAIL);
+            }
+        }
+        else
+        {
+            $this->db->trans_commit();
+        }
     }
 }
