@@ -44,7 +44,7 @@ class AccessWS extends MY_Controller
     public function __construct()
     {
         date_default_timezone_set('America/Sao_Paulo');
-        parent::__construct(null);
+        parent::__construct(new Response());
         exit();
     }
 
@@ -75,42 +75,36 @@ class AccessWS extends MY_Controller
         $this->load->helper('token');
         $this->load->helper('string');
         $this->load->library('form_validation');
-        $this->load->model('Funcionario_model', 'fmodel');
-        $this->load->model('Contato_model', 'contato_model');
+        $this->load->model('Funcionario_model', 'funcionario_model');
         $this->load->model('Tentativa_model');
-        $this->load->model('Funcionario_setor_model', 'funcionario_setor_model');
-
 
         $today = date('Y-m-d H:i:s');
-		
+
         $obj = json_decode(file_get_contents('php://input'));
-		
+
         $attempt_result = verify_attempt($this->input->ip_address());
-		
+
         $login = explode('@', $obj->login_user);
-        $data['contatos.contato_email'] = $obj->login_user;
-        $data['acessos.acesso_senha'] = $obj->password_user;
+
+        $data['funcionarios.funcionario_login'] = $obj->login_user;
+        $data['funcionarios.funcionario_senha'] = hash(ALGORITHM_HASH, $obj->password_user . SALT);
 
         $this->form_validation->set_data($data);
 
         $this->form_validation->set_rules(
-            'contatos.contato_email',
+            'funcionarios.funcionario_login',
             'Login',
             'trim|required|regex_match[/[a-zA-Z0-9_\-.+]+@[a-zA-Z0-9-]+/]|min_length[8]|max_length[128]');
 
         $this->form_validation->set_rules(
-            'acessos.acesso_senha',
+            'funcionarios.funcionario_senha',
             'Senha',
             'trim|required|min_length[8]|max_length[128]');
 
-        if ($this->form_validation->run()) 
-        {
-            if ($attempt_result === true) 
-            {
-                $data['acessos.acesso_senha'] = hash(ALGORITHM_HASH, $obj->password_user . SALT);
+        if ($this->form_validation->run()) {
+            if ($attempt_result === true) {
 
-                if ($login[1] === 'admin') 
-                {
+                if ($login[1] === 'admin') {
                     //Se for superusuário, não tem login no app
                     $this->response->set_code(Response::NOT_FOUND);
                     $this->response->set_message('Esse tipo de usuário não tem acesso ao aplicativo');
@@ -118,11 +112,10 @@ class AccessWS extends MY_Controller
                     $this->response->send();
                     die();
                 }
-	
-                $user = $this->fmodel->get_login_mobile($data);
-                
-                if($user->funcionario_status == 0)
-                {
+
+                $user = $this->funcionario_model->get('*', $data)[0];
+
+                if ($user->ativo == 0) {
                     $this->response->set_code(Response::UNAUTHORIZED);
                     $this->response->set_message('Usuário desativado');
                     $this->response->set_data(null);
@@ -130,35 +123,36 @@ class AccessWS extends MY_Controller
                     die();
                 }
 
-                if ($user)
-                {
-					$data_token['id_pessoa'] = $user->pessoa_pk;
+                if ($user) {
+                    $data_token['id_pessoa'] = $user->funcionario_pk;
                     $data_token['id_funcionario'] = $user->funcionario_pk;
-					$data_token['id_empresa'] =  $user->organizacao_fk;
-					$data_token['last_update'] = "01/01/2000";
+                    $data_token['id_empresa'] = $user->organizacao_fk;
+                    $data_token['last_update'] = "01/01/2000";
 
                     $dados['token'] = generate_token($data_token);
-                    
-                    $d = array();
-                    $d['nome'] = $user->pessoa_nome;
-                    $d['tipo'] = $user->funcao_nome;
-                    $d['count'] = $this->fmodel->get_quantidade_evidencias($user->funcionario_pk);
 
-                    $setores = $this->fmodel->get_setores($user->funcionario_pk);
-                    if(count($setores) > 0){
+                    $d = [];
+                    $d['nome'] = $user->funcionario_nome;
+                    $d['tipo'] = $user->funcao_nome;
+                    $d['count'] = 10;
+
+                    $setores = $this->funcionario_model->get_setores(
+                        ["funcionarios.funcionario_pk" => $user->funcionario_pk]
+                    );
+
+                    
+
+                    if (count($setores) > 0) {
                         $d['setores'] = get_string($setores, 'explode', ' ', 1);
                     } else {
                         $d['setores'] = '';
                     }
 
-
                     $dados['dados'] = $d;
 
-					$this->response->set_data($dados);
+                    $this->response->set_data($dados);
                     $this->tentativa_model->delete($this->input->ip_address());
-                } 
-                else 
-                {
+                } else {
                     $this->response->set_code(Response::NOT_FOUND);
                     $this->response->set_message('Usuário não encontrado');
                     $attempt = [
@@ -167,20 +161,16 @@ class AccessWS extends MY_Controller
                     ];
                     $this->tentativa_model->insert($attempt);
                 }
-            } 
-            else 
-            {
+            } else {
                 $this->response->set_code(Response::FORBIDDEN);
                 $this->response->set_message('Máximo de tentativas alcançado. ' . $attempt_result);
             }
-        } 
-        else 
-        {
+        } else {
             $this->response->set_code(Response::BAD_REQUEST);
             $this->response->set_message(implode('<br>', $this->form_validation->errors_array()));
         }
 
-		$this->response->send();	
+        $this->response->send();
         $this->__destruct();
     }
 
@@ -197,26 +187,20 @@ class AccessWS extends MY_Controller
 
         $attempt_result = verify_attempt($this->input->ip_address());
 
-        if ($attempt_result === true) 
-        {
+        if ($attempt_result === true) {
             $obj = apache_request_headers();
-            
+
             $new_token = verify_token($obj['Token'], $this->response);
-            
-            if ($new_token) 
-            {
-				$dados['token'] = $new_token;
+
+            if ($new_token) {
+                $dados['token'] = $new_token;
                 $this->response->set_data($dados);
                 $this->tentativa_model->delete($this->input->ip_address());
-            } 
-            else 
-            {
+            } else {
                 $this->response->set_code(Response::UNAUTHORIZED);
                 $this->response->set_message('Seção expirada');
             }
-        } 
-        else 
-        {
+        } else {
             $this->response->set_code(Response::FORBIDDEN);
             $this->response->set_message($attempt_result);
         }
@@ -234,21 +218,17 @@ class AccessWS extends MY_Controller
         $this->load->helper('token');
         $this->response = new Response();
 
-        if (verify_token($this->data_json, $this->response)) 
-        {
+        if (verify_token($this->data_json, $this->response)) {
             $obj = apache_request_headers();
 
             $this->data_json['pessoa_fk'] = $obj['access_id'];
 
-            if (!$this->modeltoken->delete($this->data_json['pessoa_fk'])) 
-            {
+            if (!$this->modeltoken->delete($this->data_json['pessoa_fk'])) {
                 $this->data_json['pessoa_fk'] = null;
                 $this->data_json['token'] = null;
                 $this->data_json['timestamp'] = null;
             }
-        } 
-        else 
-        {
+        } else {
             $this->response->set_data(Response::LOGOUT_ERROR);
             $this->response->set_message('Token inválido');
         }
