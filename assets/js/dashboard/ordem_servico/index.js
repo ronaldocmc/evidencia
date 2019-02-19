@@ -226,7 +226,7 @@ send_data = () => {
     try {
 
         //btn_load($('#pula-para-confirmacao'));
-        btn_load($('.submit'));
+        // btn_load($('.submit'));f
         $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => {
             blobToBase64(blob,this.send);
         });
@@ -287,7 +287,7 @@ function initMap()
         for (var i = 0; i < endereco.length; i++) {
 
             if(endereco[i].types.indexOf("sublocality") !== -1){
-                $("#bairro-input").val(endereco[i].long_name);
+                $("#bairro_pk").val(endereco[i].long_name);
             }
             else if(endereco[i].types.indexOf("street_number") !== -1){
                 $("#numero-input").val(endereco[i].long_name);    
@@ -938,26 +938,6 @@ send_historico = (imagem) =>
     }); // Fecha AJAX
 }
 
-function get_abreviacao(servico, tipo_servico) {
-    var abreviacao;
-
-    for (var i = 0; i < tipos_servico.length; i++) {
-        if (tipos_servico[i].tipo_servico_pk == tipo_servico) {
-            abreviacao = tipos_servico[i].tipo_servico_abreviacao;
-            break;
-        }
-    }
-
-    for (var i = 0; i < servicos.length; i++) {
-        if (servicos[i].servico_pk == servico) {
-            abreviacao += servicos[i].servico_abreviacao;
-            break;
-        }
-    }
-
-    return abreviacao + "-";
-}
-
 //Função que realiza o envio de dados via ajax para o servidor, solicitando a inserção de uma nova ordem ou do update de ordem
 send = (imagem) => 
 {
@@ -965,32 +945,32 @@ send = (imagem) =>
   //pre_loader_show();
   const formData = new FormData();
 
-
   if($('#nome-input').val() == "" && $('#cpf-input').val() == "" && $('#email-input').val() == "" && $('#celular-input').val() == "" && $('#telefone-input').val() == ""){
     $('#procedencia_pk').val("1");
-}
+  }
 
 
-if(is_superusuario){
-    formData.append('senha', $("#senha").val());
-}
+  if(is_superusuario){
+      formData.append('senha', $("#senha").val());
+  }
 
-  //console.log( $('#servico_pk option:selected').val());
-  formData.append('descricao', $('#ordem_servico_desc').val());
-  formData.append('servico_fk', $('#servico_pk option:selected').val());
+  formData.append('ordem_servico_pk', $('#ordem_servico_pk').val());
   formData.append('prioridade_fk', $('#prioridade_pk').val());
-  formData.append('situacao_fk', $('#situacao_pk').val());
-  formData.append('estado_pk', $('#uf-input option:selected').text());
-  formData.append('municipio_pk', $('#cidade-input').val());
-  formData.append('logradouro_nome', $('#logradouro-input').val());
-  formData.append('local_num', $('#numero-input').val());
-  formData.append('ponto_referencia', $('#referencia-input').val());
-  formData.append('complemento', $('#complemento-input').val());
-  formData.append('bairro', $('#bairro-input').val());
-  formData.append('latitude', $('#latitude').val());
-  formData.append('longitude', $('#longitude').val());
-  formData.append('procedencia', $('#procedencia_pk').val());
-  formData.append('setor', $('#setor_pk').val());  
+  formData.append('procedencia_fk', $('#procedencia_pk').val());
+  formData.append('servico_fk', $('#servico_pk option:selected').val());
+  formData.append('setor_fk', $('#setor_pk').val());  
+  formData.append('ordem_servico_desc', $('#ordem_servico_desc').val());
+  formData.append('situacao_inicial_fk', $('#situacao_pk').val());
+  formData.append('situacao_atual_fk', $('#situacao_pk').val());
+
+  formData.append('localizacao_lat', $('#latitude').val());
+  formData.append('localizacao_long', $('#longitude').val());
+  formData.append('localizacao_rua', $('#logradouro-input').val());
+  formData.append('localizacao_num', $('#numero-input').val());
+  formData.append('localizacao_bairro', $('#bairro-input').val());
+  formData.append('localizacao_municipio', $('#cidade-input').val());
+  formData.append('localizacao_ponto_referencia', $('#referencia-input').val());
+  
   if($('#procedencia_pk').val() == "2"){
 
     formData.append('pessoa_nome', $('#nome-input').val());
@@ -999,18 +979,13 @@ if(is_superusuario){
     formData.append('contato_cel',$('#celular-input').val());
     formData.append('contato_tel',$('#telefone-input').val());
 
-}
+  }
 
-formData.append('abreviacao', get_abreviacao($('#servico_pk option:selected').val(), $('#tipo_servico option:selected').val()));
-formData.append('img', imagem);
+  formData.append('img', imagem);
 
   // procedencia
-  var URL = ($('#ordem_servico_pk').val() == "") ? base_url + '/ordem_servico/insert' : base_url + '/ordem_servico/update_os';
+  var URL = ($('#ordem_servico_pk').val() == "") ? base_url + '/ordem_servico/save' : base_url + '/ordem_servico/update_os';
   var ab, data_criacao; 
-  if ($('#ordem_servico_pk').val() != "") {
-      formData.append('ordem_servico_pk', $('#ordem_servico_pk').val());
-
-  }   
 
   $.ajax({
       url: URL,
@@ -1320,8 +1295,6 @@ formData.append('img', imagem);
     });
 
 $( "#close-modal" ).click(function() {
-    $("#logradouro-input").addClass('loading');
-    $("#bairro-input").addClass('loading');
     $("#info_cidadao").hide();
     primeiro_editar = true;
 });
