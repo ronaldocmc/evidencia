@@ -65,6 +65,7 @@ class MY_Controller extends CI_Controller
 
                 //Verifica o token e lá dentro cria um novo token
                 $new_token['token'] = verify_token($header_obj['Token'], $this->response);
+
                 
 				if ($new_token['token'] == false) {
 					$this->response->send();
