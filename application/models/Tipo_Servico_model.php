@@ -22,23 +22,23 @@ class Tipo_Servico_model extends MY_Model
     );
 
     // @override
-    public function get($where = null)
+    public function get($select, $where = null)
     {
-        $this->db->select('*');
-        $this->db->from(self::TABLE_NAME);
-        $this->db->join('prioridades', 'prioridades.prioridade_pk = ' . self::TABLE_NAME . '.prioridade_padrao_fk');
-        $this->db->join('departamentos', 'departamentos.departamento_pk = ' . self::TABLE_NAME . '.departamento_fk');
+        $this->CI->db->select($select);
+        $this->CI->db->from(self::TABLE_NAME);
+        $this->CI->db->join('prioridades', 'prioridades.prioridade_pk = ' . self::TABLE_NAME . '.prioridade_padrao_fk');
+        $this->CI->db->join('departamentos', 'departamentos.departamento_pk = ' . self::TABLE_NAME . '.departamento_fk');
         if ($where !== null) {
             if (is_array($where)) {
                 foreach ($where as $field => $value) {
-                    $this->db->where($field, $value);
+                    $this->CI->db->where($field, $value);
                 }
             } else {
-                $this->db->where(self::PRI_INDEX, $where);
+                $this->CI->db->where(self::PRI_INDEX, $where);
             }
         }
-        // var_dump($this->db->get_compiled_select());die();
-        $result = $this->db->get()->result();
+        // var_dump($this->CI->db->get_compiled_select());die();
+        $result = $this->CI->db->get()->result();
 
         if ($result) {
             return $result;

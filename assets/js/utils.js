@@ -19,6 +19,7 @@ try{
   });
 }catch(err){
   console.log(err);
+  alert(err);
 }
 
 
@@ -64,7 +65,7 @@ $(document).ready(function() {
 });
 var noty_id = 0;
 
-alerts = async(status, title = null, msg = null, layout = 'bottomLeft') => {
+alerts = async(status, title = null, msg = "", layout = 'bottomLeft') => {
   var reply;
   switch (status) {
     case 'success': {

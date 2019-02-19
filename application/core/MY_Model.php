@@ -69,9 +69,6 @@ class MY_Model extends Generic_Model
     }
 
     public function update(){
-        return $this->update_object($this->object, $this->object[$this->getPriIndex()]);
-
-
         if(array_key_exists($this->getPriIndex(), $this->object)){
             return $this->update_object($this->object, $this->object[$this->getPriIndex()]);
         } else {
@@ -83,6 +80,7 @@ class MY_Model extends Generic_Model
     }
 
     public function deactivate(){
+
         $this->object = $this->get_one('*', [$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
         // var_dump($this->object);die();
         $this->check_if_key_exists('ativo', $this->object);

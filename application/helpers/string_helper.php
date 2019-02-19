@@ -12,10 +12,10 @@ function get_string($array, $method = NULL, $condition = ' ', $piece = 0){
         }
 
         if($method == NULL){
-            $string.= $array[$i]->nome;
+            $string.= $array[$i]->setor_nome;
         } else {
             if($method == 'explode') {
-             $explode_array = explode($condition, $array[$i]->nome);
+             $explode_array = explode($condition, $array[$i]->setor_nome);
 
              $string.= $explode_array[$piece]; 
          }

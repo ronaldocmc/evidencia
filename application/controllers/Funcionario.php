@@ -27,12 +27,42 @@ class Funcionario extends CRUD_Controller
         $this->load->library('form_validation');
         $this->load->library('upload');
 
+        $this->load->helper('exception');
+
         $this->response = new Response();
     }
 
     public function index()
     {
-        $funcionarios = $this->funcionario_model->get(["organizacao_fk" => $this->session->user['id_organizacao']]);
+        $funcionarios = $this->funcionario_model->get(
+            "funcionarios.funcionario_pk, funcionarios.organizacao_fk, funcionarios.ativo, funcionarios.funcionario_login, funcionarios.funcionario_nome, funcionarios.funcionario_cpf,
+            funcionarios.funcao_fk, funcoes.funcao_nome, funcoes.funcao_pk, organizacoes.organizacao_pk ",
+            // "*",
+            [
+                "organizacao_fk" => $this->session->user['id_organizacao'],
+            ]
+        );
+
+        $func_sets = $this->funcionario_model->get_setores([
+            'funcionarios.organizacao_fk' => $this->session->user['id_organizacao'],
+        ]);
+
+        if ($funcionarios == false) {
+            $funcionarios = [];
+        }
+
+        foreach ($funcionarios as $func) {
+            $setor_aux = [];
+            foreach ($func_sets as $fc) {
+                if ($fc->funcionario_fk == $func->funcionario_pk) {
+                    $setor_aux[] = $fc->setor_fk;
+                }
+            }
+            if (!empty($setor_aux)) {
+                $func->setor_fk = $setor_aux;
+            }
+        }
+
         $funcoes = $this->funcao_model->get_all(
             '*',
             null,
@@ -40,13 +70,26 @@ class Funcionario extends CRUD_Controller
             -1
         );
 
+        $departamentos = $this->departamento_model->get_all(
+            '*',
+            null,
+            -1,
+            -1
+        );
+
+        $setores = $this->setor_model->get_all(
+            '*',
+            null,
+            -1,
+            -1
+        );
+
+        // var_dump($setores);die();
+
         // Passa as funções para o formato necessário no form_dropdown do form_helper (nativo do CI)
         foreach ($funcoes as $key => $f) {
-            $funcoes_drop[$f->funcao_pk] = $f->funcao_nome; 
+            $funcoes_drop[$f->funcao_pk] = $f->funcao_nome;
         }
-
-        
-
 
         // echo "<pre>";var_dump($funcoes);die();
 
@@ -82,10 +125,10 @@ class Funcionario extends CRUD_Controller
             0 => [
                 'src' => 'dashboard/administrador/funcionario/home',
                 'params' => [
-                    'departamentos' => null,
+                    'departamentos' => $departamentos,
                     'funcionarios' => $funcionarios,
                     'funcoes' => $funcoes_drop,
-                    'setores' => null,
+                    'setores' => $setores,
                 ],
             ],
             1 => [
@@ -93,6 +136,83 @@ class Funcionario extends CRUD_Controller
                 'params' => null,
             ],
         ], 'administrador');
+    }
+
+    public function save()
+    {
+        try
+        {
+            $this->funcionario_model->config_form_validation();
+
+            $organizacao_pk = $this->session->user['id_organizacao'];
+
+            $_POST['organizacao_fk'] = $organizacao_pk;
+
+            if ($this->is_superuser()) {
+                $this->add_password_to_form_validation();
+            }
+
+            $this->funcionario_model->fill();
+            $this->funcionario_model->__set("organizacao_fk", $organizacao_pk);
+
+            $this->funcionario_model->run_form_validation();
+
+            $this->begin_transaction();
+
+            if (isset($_POST['funcionario_pk'])) {
+                $this->funcionario_model->__set("funcionario_pk", $_POST['funcionario_pk']);
+                $this->funcionario_model->update_funcionario($_POST['funcionario_pk'], $_POST['setor_fk']);
+            } else {
+                $this->funcionario_model->__set("funcionario_senha", hash(ALGORITHM_HASH, $this->funcionario_model->__get("funcionario_senha") . SALT));
+                $this->funcionario_model->insert_funcionario($_POST['setor_fk']);
+            }
+
+            $this->end_transaction();
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
+
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    public function deactivate()
+    {
+        try {
+            $this->funcionario_model->__set("funcionario_pk", $_POST['funcionario_pk']);
+
+            $this->funcionario_model->deactivate();
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->set_message('Funcionario desativado com sucesso!');
+            $this->response->send();
+
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    public function activate()
+    {
+        try {
+            $this->funcionario_model->__set("funcionario_pk", $_POST['funcionario_pk']);
+
+            $this->funcionario_model->activate();
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->set_message('Funcionario ativado com sucesso!');
+            $this->response->send();
+
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
     }
 
     public function new_email($token, $email_user)
@@ -103,87 +223,23 @@ class Funcionario extends CRUD_Controller
         return $this->send_email->send_email('email/create_password.php', 'Definir Senha de Acesso', $url, $email_user);
     }
 
-    public function generate_recuperation($id_user, $contato_email)
-    {
-        $token = hash(ALGORITHM_HASH, (date("Y-m-d H:i:s") . $id_user . SALT));
-
-        $data_recuperacao = array(
-            'pessoa_fk' => $id_user,
-            'recuperacao_token' => $token,
-        );
-
-        //Realizamos o insert na tabela recuperacao_senha para que o novo usuário
-        $this->load->model('recuperacao_model');
-
-        if ($this->recuperacao_model->insert($data_recuperacao)) {
-            $email = $this->new_email($data_recuperacao['recuperacao_token'], $contato_email);
-
-            if ($email) {
-                $this->response->set_code(Response::SUCCESS);
-                $this->response->set_data(
-                    array(
-                        'mensagem' => "Um e-mail foi enviado para " . $contato_email,
-                        'pessoa_fk' => $id_user,
-                    )
-                );
-            } else {
-                $this->response->set_code(Response::SERVER_FAIL);
-                $this->response->set_data($email);
-                $this->model->reset($id_user);
-            }
-        }
-    }
-
     public function change_password()
     {
-        if ($this->session->has_userdata('user')) {
-            //Pego os dados via post (AJAX)
-            $data = $this->input->post();
+        try {
+            $password = hash(ALGORITHM_HASH, $_POST['funcionario_senha'] . SALT);
 
-            //Premissa que o usuário comum está logado
-            $accepted = true;
+            $this->funcionario_model->__set("funcionario_pk", $_POST['funcionario_pk']);
+            $this->funcionario_model->__set("funcionario_senha", $password);
 
-            if ($this->session->user['is_superusuario']) {
-                //Utilizando o helper de autenticação de senha para realiar o insert
-                $this->load->helper('Password_helper');
-                $accepted = authenticate_operation($data['senha'], $this->session->user['password_user']);
-            }
+            $this->funcionario_model->update();
 
-            if ($accepted) {
-                $where = [
-                    'pessoa_fk' => $data['pessoa_fk'],
-                ];
-
-                $this->form_validation->set_rules(
-                    'new_password',
-                    'Senha',
-                    'trim|required|min_length[8]|max_length[128]'
-                );
-
-                if (!$this->form_validation->run()) {
-
-                    $this->response->set_code(Response::DB_ERROR_UPDATE);
-                    $this->response->set_data("A senha deve possuir 8 ou mais caracteres!");
-
-                } else {
-                    $new_password = hash(ALGORITHM_HASH, $data['new_password'] . SALT);
-                    if ($this->pessoa_model->new_password($where, ['acesso_senha' => $new_password])) {
-                        $this->response->set_code(Response::SUCCESS);
-                        $this->response->set_data("Senha alterada com sucesso!");
-                    } else {
-                        $this->response->set_code(Response::DB_ERROR_UPDATE);
-                        $this->response->set_data("Não foi possível alterar a senha do funcionário no sistema");
-                    }
-                }
-            } else {
-                $this->response->set_code(Response::UNAUTHORIZED);
-                $this->response->set_data("Operação não autorizada! Senha informada incorreta.");
-            }
-
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->set_message('A senha foi alterada!');
             $this->response->send();
-        } else {
-            redirect(base_url('access/index'));
-
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
         }
 
     }
