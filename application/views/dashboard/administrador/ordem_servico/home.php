@@ -157,15 +157,15 @@
                                                     <?=$ordem_servico->ordem_servico_cod?>
                                                 </td>
                                                 <td>
-                                                    <?=$ordem_servico->data_criacao?>
+                                                    <?=$ordem_servico->ordem_servico_criacao?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->prioridade_nome?>
                                                 </td>
                                                 <td>
-                                                    <?=$ordem_servico->logradouro_nome . ", " .
-                                                    $ordem_servico->local_num . " - " .
-                                                    $ordem_servico->bairro_nome?>
+                                                    <?=$ordem_servico->localizacao_nome . ", " .
+                                                    $ordem_servico->localizacao_num . " - " .
+                                                    $ordem_servico->localizacao_bairro?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->servico_nome?>
@@ -178,7 +178,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <?php if($ordem_servico->ordem_servico_status == 1): ?>
+                                                    <?php if($ordem_servico->ativo == 1): ?>
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação">
                                                                 <div class="d-none d-sm-block">
@@ -201,7 +201,7 @@
                                                                 </div>
                                                             </button>
                                                         </div>
-                                                        <?php elseif($ordem_servico->ordem_servico_status == 0):  ?>
+                                                        <?php elseif($ordem_servico->ativo == 0):  ?>
                                                             <div class="btn-group">
                                                                 <button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
                                                                     <div class="d-none d-sm-block">
@@ -263,14 +263,14 @@
                                         <input type="hidden" id="ordem_servico_pk" value="" name="ordem_servico_pk">
                                         <div class="row form-group">
                                             <div class="col-12">
-                                                <label for="ordem_servico_desc">Descrição</label>
+                                                <label for="ordem_servico_desc"><strong>Descrição*</strong></label>
                                                 <textarea class="form-control" id="ordem_servico_desc" name="ordem_servico_desc" class="form-control" required="true" maxlength="200"></textarea>
                                                 <small class="form-text text-muted">Por favor, informe a descrição da Ordem de Serviço</small>
                                             </div>
                                         </div>
                                         <div class="row form-group">
                                             <div class="col-7 col-md-4">
-                                                <label for="departamento">Departamento</label>
+                                                <label for="departamento"><strong>Departamento*</strong></label>
                                                 <select class="form-control" id="departamento" name="departamento" required="true">
                                                     <?php if ($departamentos != null): ?>
                                                         <?php foreach ($departamentos as $d): ?>
@@ -282,12 +282,12 @@
                                                 </select>
                                             </div>
                                             <div class="col-7 col-md-4">
-                                                <label for="tipo_servico">Tipo de Serviço</label>
+                                                <label for="tipo_servico"><strong>Tipo de Serviço*</strong></label>
                                                 <select class="form-control" id="tipo_servico" name="tipo_servico" required="true">
                                                 </select>
                                             </div>
                                             <div class="col-7 col-md-4">
-                                                <label for="servico_pk">Serviço</label>
+                                                <label for="servico_pk"><strong>Serviço*</strong></label>
                                                 <select class="form-control" id="servico_pk" name="servico_pk" required="true">
                                                 </select>
                                                 <small class="form-text text-muted">Por favor, informe o Serviço</small>
@@ -295,7 +295,7 @@
                                         </div>
                                         <div class="row form-group">
                                             <div class="col-7 col-md-4" id="procedencias_options">
-                                                <label for="procedencia_pk">Procedência</label>
+                                                <label for="procedencia_pk"><strong>Procedência*</strong></label>
                                                 <select class="form-control" id="procedencia_pk" name="procedencia_pk" required="true">
                                                     <?php if ($procedencias != null): ?>
                                                         <?php foreach ($procedencias as $pr): ?>
@@ -308,7 +308,7 @@
                                                 <small class="form-text text-muted" id="procedencia_small">Por favor, informe a procedência desta ordem</small>
                                             </div>
                                             <div class="col-7 col-md-4">
-                                                <label for="prioridade_pk">Prioridade</label>
+                                                <label for="prioridade_pk"><strong>Prioridade*</strong></label>
                                                 <select class="form-control" id="prioridade_pk" name="prioridade_pk" required="true">
                                                     <?php if ($prioridades != null): ?>
                                                         <?php foreach ($prioridades as $p): ?>
@@ -321,7 +321,7 @@
                                                 <small class="form-text text-muted">Por favor, informe a Prioridade</small>
                                             </div>
                                             <div class="col-7 col-md-4">
-                                                <label for="situacao_pk">Situação Inicial</label>
+                                                <label for="situacao_pk"><strong>Situação Inicial*</strong></label>
                                                 <select class="form-control" id="situacao_pk" name="situacao_pk" required="true">
                                                     <?php if ($situacoes != null): ?>
                                                         <?php foreach ($situacoes as $s): ?>
@@ -342,7 +342,7 @@
                                         <div class="row form-group">
                                             <div class="col col-md-1">
                                                 <label for="nome-input" class=" form-control-label" required="true">
-                                                    <strong>Nome</strong>
+                                                    Nome
                                                 </label>
                                             </div>
                                             <div class="col-12 col-md-11">
@@ -354,7 +354,7 @@
                                         <div class="row form-group">
                                             <div class="col-12 col-md-1">
                                                 <label for="cpf-input" class=" form-control-label">
-                                                    <strong>CPF</strong>
+                                                    CPF
                                                 </label>
                                             </div>
                                             <div class="col-12 col-md-3">
@@ -362,14 +362,14 @@
                                                 <small class="form-text text-muted">Por favor, informe o CPF do cidadão</small>
                                             </div>
                                             <div class="col-12 col-md-1">
-                                                <label for="telefone-input" class=" form-control-label"><strong>Tel </strong></label>
+                                                <label for="telefone-input" class=" form-control-label">Tel</label>
                                             </div>
                                             <div class="col-12 col-md-3">
                                                 <input type="text" id="telefone-input" name="contato_tel" placeholder="Telefone" class="form-control telefone-input">
                                                 <small class="help-block form-text">Por favor, informe o telefone do cidadão</small>
                                             </div>
                                             <div class="col-12 col-md-1">
-                                                <label for="celular-input" class=" form-control-label"><strong>Cel</strong></label>
+                                                <label for="celular-input" class=" form-control-label">Cel</label>
                                             </div>
                                             <div class="col-12 col-md-3">
                                                 <input type="text" id="celular-input" name="contato_cel" placeholder="Celular" class="form-control celular-input">
@@ -379,7 +379,7 @@
                                         <div class="row form-group">
                                             <div class="col-12 col-md-1">
                                                 <label for="email-input" class=" form-control-label">
-                                                    <strong>Email</strong>
+                                                    Email
                                                 </label>
                                             </div>
                                             <div class="col-12 col-md-11">
@@ -392,17 +392,21 @@
                                 <div class="card bg-light mb-3">
                                     <div class="card-header"><h4 class="card-title"> Localização </h4></div>
                                     <div class="card-body text-secondary">
-                                       <div class="row form-group">
-                                        <div class="col-3 col-md-3">
-                                            <label for="uf-input" class=" form-control-label">Estado</label>
-                                            <select class="form-control loading" id="uf-input" name="estado_pk" required="true"></select>
+                                    <div class="row form-group">
+                                        <div class="col-md-8">
+                                            <label for="cidade-input" class="form-control-label"><strong>Cidade*</strong></label>
+                                            <select class="form-control endereco" id="cidade-input" name="municipio_pk" required="true">
+                                                <?php if ($municipios != null): ?>
+                                                    <?php foreach ($municipios as $m): ?>
+                                                        <option value="<?= $m->municipio_pk ?>">
+                                                            <?= $m->municipio_nome ?>
+                                                        </option>
+                                                    <?php endforeach ?>
+                                                <?php endif ?>
+                                            </select>
                                         </div>
-                                        <div class="col-8 col-md-6">
-                                            <label for="cidade-input" class="form-control-label">Cidade</label>
-                                            <select class="form-control loading endereco" id="cidade-input" name="municipio_pk" required="true"></select>
-                                        </div>
-                                        <div class="col-3 col-md-3">
-                                            <label for="setor_pk">Setor</label>
+                                        <div class="col-md-4">
+                                            <label for="setor_pk"><strong>Setor*</strong></label>
                                             <select class="form-control" id="setor_pk" name="setor_pk" required="true">
                                                 <?php if ($setores != null): ?>
                                                     <?php foreach ($setores as $se): ?>
@@ -415,37 +419,27 @@
                                         </div>
                                     </div>
                                     <div class="row form-group">
-                                        <div class="col-12 col-md-4">
-                                            <label for="referencia-input" class=" form-control-label">Ponto de Referência</label>
-                                            <input type="text" id="referencia-input" name="referencia" class="form-control referencia">
-                                            <small class="form-text text-muted">Insira um ponto de referência para buscar o local</small>
-                                        </div>
-                                        <div class="col-12 col-md-8">
-                                            <!-- O que removi do dropdown: autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]'> 
-                                            <ul class="dropdown-menu" data-return = "#logradouro_pk" data-next="#numero-input">
-                                            </ul>-->
-                                            <label for="logradouro_nome">Logradouro</label>
+                                        <div class="col-md-10">
+                                            <label for="logradouro_nome"><strong>Logradouro*</strong></label>
                                             <input class="form-control loading endereco" type="text" id="logradouro-input" name="logradouro_nome">
                                             <small class="form-text text-muted">Insira o logradouro para buscar o local</small>
                                         </div>
+
+                                         <div class="col-md-2">
+                                            <label for="numero-input" class=" form-control-label"><strong>N°</strong></label>
+                                            <input type="number" id="numero-input" name="local_num" class="form-control numero-input endereco" min="0" required="true">
+                                        </div>
                                     </div>
                                     <div class="row form-group">
-                                     <div class="col-12 col-md-2">
-                                        <label for="numero-input" class=" form-control-label">N°</label>
-                                        <input type="number" id="numero-input" name="local_num" class="form-control numero-input endereco" min="0" required="true">
+
+                                    <div class="col-md-6">
+                                        <label for="bairro-input" class="form-control-label loading"><strong>Bairro</strong></label>
+                                        <input type="text" name="bairro_nome" id="bairro_pk" class="form-control">
                                     </div>
-                                    <div class="col-12 col-md-5">
-                                        <label for="complemento-input" class=" form-control-label">Complemento</label>
-                                        <input type="text" id="complemento-input" name="local_complemento" class="form-control endereco" maxlength="30">
-                                    </div>
-                                    <div class="col-12 col-md-5">
-                                        <label for="bairro-input" class="form-control-label loading">Bairro</label>
-                                        <input type="hidden" name="bairro_nome" id="bairro_pk">
-                                        <div class="dropdown" id="drop-bairro">
-                                            <input class="form-control input-dropdown endereco" type="text" id="bairro-input" name="bairro" autocomplete="off" data-src = '["<?php echo base_url('localizacao/bairros'); ?>","https://viacep.com.br/ws"]' data-index='["bairro_pk","bairro"]' data-value='["bairro_nome","bairro"]' data-params  = '[[["cidade-input",null,"val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["logradouro-input",null,"val"],["json",null,"param"]]]' data-action='["get","get"]' data-arrayret='["data",null]'>
-                                            <ul class="dropdown-menu" data-return = "#bairro_pk" data-next="#bairro-input">
-                                            </ul>
-                                        </div>
+                                    <div class="col-md-6">
+                                        <label for="referencia-input" class=" form-control-label">Ponto de Referência</label>
+                                        <input type="text" id="referencia-input" name="referencia" class="form-control referencia">
+                                        <small class="form-text text-muted">Insira um ponto de referência para buscar o local</small>
                                     </div>
                                 </div>
                                 <div class="row form-group" style="margin-top: 30px !important;">
@@ -780,6 +774,7 @@
                 var is_superusuario = <?php if($superusuario){ echo "true"; }else{ echo "false";} ?>;
                 var procedencias = <?php echo json_encode($procedencias !== false ? $procedencias : []); ?>;
                 var ordens_servico = <?php echo json_encode($ordens_servico !== false ? $ordens_servico : []); ?>;
+                var municipios = <?php echo json_encode($municipios !== false ? $municipios : []); ?>;
                 var organizacao = <?php echo json_encode($this->session->user['id_organizacao']); ?>;
             </script>
 
