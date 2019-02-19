@@ -90,7 +90,7 @@ class Access extends CI_Controller {
 	 */
     private function authenticate($response)
     {
-    	if ($response !== FALSE)
+    	if ($response !== FALSE && $response != null)
     	{
     		if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5'))
     		{
@@ -269,7 +269,8 @@ class Access extends CI_Controller {
                     $access['superusuario_senha'] = hash(ALGORITHM_HASH,$this->input->post('password').SALT);
 
                     $this->load->model('Super_model', 'su_model');
-                    $response = $this->su_model->get($access);
+
+                    $response = $this->su_model->get_one('*', $access);
                 }
                 
                 $this->authenticate($response);
