@@ -63,7 +63,7 @@
                                 <?php 
                                     foreach($motoristas_de_caminhao as $motorista):
                                 ?>    
-                                        <option value="<?= $motorista->funcionario_pk ?>"><?= $motorista->pessoa_nome ?></option>
+                                        <option value="<?= $motorista->funcionario_pk ?>"><?= $motorista->funcionario_nome ?></option>
                                 <?php 
                                     endforeach;
                                 ?>

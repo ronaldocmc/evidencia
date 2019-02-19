@@ -261,7 +261,7 @@ class Access extends CI_Controller {
                     $access['funcionario_senha'] = hash(ALGORITHM_HASH,$this->input->post('password').SALT);
 
                     $this->load->model('Funcionario_model', 'func_model');
-                    $response = $this->func_model->get($access)[0];
+                    $response = $this->func_model->get('*',$access)[0];
                 }
                 else
                 {

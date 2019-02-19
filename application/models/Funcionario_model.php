@@ -55,11 +55,13 @@ class Funcionario_model extends MY_Model
         $this->CI->db->join('funcionarios_setores', 'funcionarios_setores.funcionario_fk = ' . self::TABLE_NAME . '.' . self::PRI_INDEX, 'left');
         $this->CI->db->join('organizacoes', 'organizacoes.organizacao_pk = ' . self::TABLE_NAME . '.organizacao_fk');
         $this->CI->db->join('funcoes', 'funcoes.funcao_pk = funcionarios.funcao_fk');
-        $this->CI->db->group_by('funcionario_pk');
+        $this->CI->db->group_by('funcionarios.funcionario_pk');
 
         if ($where !== null) {
             if (is_array($where)) {
-
+                foreach ($where as $field=>$value) {
+                    $this->CI->db->where($field, $value);
+                }
             } else {
                 $this->CI->db->where(self::PRI_INDEX, $where);
             }
