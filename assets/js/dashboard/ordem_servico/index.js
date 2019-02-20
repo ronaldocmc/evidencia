@@ -27,12 +27,6 @@ var adicionar_mapa_historico = 1;
 // var adicionar_imagem_situacao= 1; 
 // var adicionar_mapa_situacao = 1; 
 //-----------------------------------//
-$(document).ready(function() {
-    $("#data_brasileira").click();
-    $("#data_brasileira").click();
-});
-
-
 
 //Função que aguarda a mudança de departamento. Caso o usuário altere o departamento, é necessário atualizar outros campos, operação
 //que é feita pela função muda_dpto();
@@ -967,7 +961,7 @@ send = (imagem) =>
   formData.append('localizacao_long', $('#longitude').val());
   formData.append('localizacao_rua', $('#logradouro-input').val());
   formData.append('localizacao_num', $('#numero-input').val());
-  formData.append('localizacao_bairro', $('#bairro-input').val());
+  formData.append('localizacao_bairro', $('#bairro_pk').val());
   formData.append('localizacao_municipio', $('#cidade-input').val());
   formData.append('localizacao_ponto_referencia', $('#referencia-input').val());
   

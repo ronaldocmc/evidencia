@@ -9,7 +9,7 @@
                             <i class="zmdi zmdi-plus"></i>novo superusuário</button>
                         </div>
                         <!-- CAMPO HIDDEN PARA O ID -->
-                        <input type="hidden" id="superusuario_pk" name="superusuario_pk" class="form-control">
+                        <input type="hidden" id="pessoa_pk" name="pessoa_pk" class="form-control">
                         <input type="hidden" id="opcao-editar" name="opcao-editar" class="form-control" value="false">
                     </div>
                 </div>
@@ -35,9 +35,9 @@
                                 <table class="table table-striped table-datatable">
                                     <thead>
                                         <tr>
-                                            <th>Nome</th>
-                                            <th>Login</th>
-                                            <th>Opções</th>
+                                            <th>nome</th>
+                                            <th>e-mail</th>
+                                            <th>opções</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -46,12 +46,12 @@
                                         if($superusuarios):
                                         foreach ($superusuarios as $key => $s): ?>
                                             <tr>
-                                                <td> <?=$s->superusuario_nome?> </td>
-                                                <td> <?=$s->superusuario_login?> </td>
+                                                <td> <?=$s->pessoa_nome?> </td>
+                                                <td> <?=$s->contato_email?> </td>
                                                 <td>
-                                                    <?php if ($s->ativo == 1) {?>
+                                                    <?php if ($s->usuario_status == 1) {?>
                                                     <div class="btn-group">
-                                                        <button class="btn btn-sm btn-primary reset_multistep btn-editar-super btn-attr-superusuario_pk" value="<?=$key?>">
+                                                        <button class="btn btn-sm btn-primary reset_multistep btn-editar-super btn-attr-pessoa_pk" value="<?=$key?>">
                                                             <div class="d-none d-sm-block">
                                                                 Editar
                                                             </div>
@@ -59,7 +59,7 @@
                                                                 <i class="fas fa-edit fa-fw"></i>
                                                             </div>
                                                         </button>
-                                                        <button class="btn btn-sm btn-danger btn-attr-superusuario_pk" value="<?=$key?>" data-toggle="modal" data-target="#d-superusuario">
+                                                        <button class="btn btn-sm btn-danger btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#d-superusuario">
                                                             <div class="d-none d-sm-block">
                                                                 Desativar
                                                             </div>
@@ -68,7 +68,7 @@
                                                             </div>
                                                         </button>
                                                     <?php } else {?>
-                                                            <button class="btn btn-sm btn-success btn-attr-superusuario_pk" value="<?=$key?>" data-toggle="modal" data-target="#a-superusuario">
+                                                            <button class="btn btn-sm btn-success btn-attr-pessoa_pk" value="<?=$key?>" data-toggle="modal" data-target="#a-superusuario">
                                                             <div class="d-none d-sm-block">
                                                                 Ativar
                                                             </div>
@@ -114,7 +114,8 @@
                             <!-- progressbar -->
                             <ul class="progressbar">
                                 <li class="active">Informações Pessoais</li>
-                                <li>Acesso</li>
+                                <li>Contato</li>
+                                <li>Imagem</li>
                                 <li>Identificação</li>
                             </ul>
                             <!-- fieldsets -->
@@ -133,12 +134,13 @@
                                         </div>
                                     </div>
                                     <div class="row form-group">
-                                        <div class="col col-md-2">
-                                            <label for="email-input" class=" form-control-label"><strong>E-mail*</strong></label>
+                                        <div class="col-12 col-md-2">
+                                            <label for="cpf-input" class=" form-control-label"><strong>CPF*</strong></label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <input type="text" id="email-input" name="email" placeholder="Endereço de e-mail válido" class="form-control email-input" required maxlength="50" minlength="5" required>
-                                            <small class="form-text text-muted">Por favor, informe o e-mail do superusuário</small>
+                                            <input type="text" id="cpf-input" name="cpf" placeholder="CPF" class="form-control cpf-input" required>
+                                            <small class="form-text text-muted">Por favor, informe o CPF do superusuário</small>
+                                            <a href="#" class="btn btn-primary" onclick="gerarCPF()">Gerar</a>
                                         </div>
                                     </div>
                                 </div>
@@ -150,18 +152,36 @@
                             </div>
                             <div class="card card-step col-12 px-0">
                                 <div class="card-header">
-                                    Acesso
+                                    Contato
                                 </div>
                                 <div class="card-body card-block">
                                     <div class="row form-group">
                                         <div class="col-12 col-md-2">
-                                            <label for="login-input" class=" form-control-label"><strong>Login*</strong></label>
+                                            <label for="email-input" class=" form-control-label"><strong>Email*</strong></label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <input type="login" id="login-input" name="login" placeholder="login" class="form-control login-input" required="true">
-                                            <small class="help-block form-text">Por favor, informe o login do superusuário</small>
+                                            <input type="email" id="email-input" name="email" placeholder="Email" class="form-control email-input" required="true">
+                                            <small class="help-block form-text">Por favor, informe o email do superusuário</small>
                                         </div>
-                                    </div>                                    
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-12 col-md-2">
+                                            <label for="telefone-input" class=" form-control-label">Telefone</label>
+                                        </div>
+                                        <div class="col-12 col-md-10">
+                                            <input type="text" id="telefone-input" name="telefone" placeholder="Telefone" class="form-control telefone-input" >
+                                            <small class="help-block form-text">Por favor, informe o telefone do superusuário</small>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-12 col-md-2">
+                                            <label for="celular-input" class=" form-control-label">Celular</label>
+                                        </div>
+                                        <div class="col-12 col-md-10">
+                                            <input type="text" id="celular-input" name="celular" placeholder="Celular" class="form-control celular-input" >
+                                            <small class="help-block form-text">Por favor, informe o celular do superusuário</small>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-footer text-center">
                                     <button type="button" class="btn btn-secondary previous btn-sm">
@@ -172,7 +192,38 @@
                                     </button>
                                 </div>
                             </div>
-                            
+                            <div class="card card-step col-12 px-0">
+                                <div class="card-header">
+                                    Imagem
+                                </div>
+                                <div class="card-body card-block">
+                                    <div class="row form-group">
+                                        <div class="file-upload col-12">
+                                            <button class="btn btn-secondary col-12" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Salvar Imagem</button>
+                                            <div class="image-upload-wrap">
+                                                <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+                                                <div class="drag-text">
+                                                    <h3>Arraste e solte uma imagem aqui ou selecione Salvar Imagem</h3>
+                                                </div>
+                                            </div>
+                                            <div class="file-upload-content">
+                                                <img id="img-input" class="file-upload-image" src="#" alt="your image"/>
+                                                <div class="col-12">
+                                                    <button type="button" onclick="remove_image()" class="btn btn-danger">Remover Imagem</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <button type="button" class="btn btn-secondary previous btn-sm">
+                                        <i class="fas fa-arrow-circle-left"></i> Anterior
+                                    </button>
+                                    <button type="button" class="btn btn-secondary next btn-sm">
+                                        <i class="fas fa-arrow-circle-right"></i> Próximo
+                                    </button>
+                                </div>
+                            </div>
                             <div class="card card-step col-12 px-0">
                                 <div class="card-header">
                                     Identificação

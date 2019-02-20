@@ -70,8 +70,8 @@ class Ordem_Servico extends CRUD_Controller
             [
                 'procedencias.organizacao_fk' => $this->session->user['id_organizacao']
             ],
-            1,
-            500,
+            -1,
+            -1,
             [
                 ['table' => 'prioridades', 'on' => 'prioridades.prioridade_pk = ordens_servicos.prioridade_fk'],
                 ['table' => 'procedencias', 'on' => 'procedencias.procedencia_pk = ordens_servicos.procedencia_fk'],
@@ -212,7 +212,7 @@ class Ordem_Servico extends CRUD_Controller
             $this->load->model('Organizacao_model', 'organizacao');
             $this->load->library('form_validation');
             $this->load->helper('exception');
-
+            
             $this->ordem_servico->fill();
             $this->localizacao->add_lat_long(
                 $this->input->post('localizacao_lat'),

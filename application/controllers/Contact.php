@@ -458,7 +458,7 @@ class Contact extends CI_Controller
     public function first_login($token)
     {
         $this->load->model('recuperacao_model', 'rmodel');
-        // $this->load->model('funcionario_model');
+        $this->load->model('funcionario_model');
         $this->load->model('super_model');
 
         //Padronizando os dados para select
@@ -467,69 +467,59 @@ class Contact extends CI_Controller
         );
 
         //Chamando função get para realizar a operação e encontrar o usuário especifico do acesso
-        // $retorno = $this->rmodel->get($where);
-        $retorno = $this->rmodel->get_one(
-            '*',
-            $where
-        );
+        $retorno = $this->rmodel->get($where);
+
         
         if ($retorno) //Se o token existir então exibimos a view para preenchimento de senha e login
         {
             $super = $this->super_model->get([
-                'superusuario_pk' => $retorno->superusuario_fk,
-                'ativo' => 0
+                'super_usuarios.pessoa_fk' => $retorno->pessoa_fk,
+                'super_usuarios.usuario_status' => 1
             ]);
 
-            if($super){
+            if ($super===FALSE)
+            {
+                $func = $this->funcionario_model->get([
+                    'funcionarios.pessoa_fk' => $retorno->pessoa_fk,
+                    'funcionarios.funcionario_status' => 1
+                ]);
 
-                $retorno->superusuario_login = $super->superusuario_login;
-        
-                $retorno->organizacao_fk = "admin";
-
-                $this->session->set_flashdata('css', array(
-                    0 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-                    1 => base_url('assets/css/modal_desativar.css'),
-                ));
-
-                $this->session->set_flashdata('scripts', array(
-                    0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-                    1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-                    2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-                    3 => base_url('assets/js/utils.js'),
-                    4 => base_url('assets/js/constants.js'),
-                    5 => base_url('assets/js/jquery.noty.packaged.min.js'),
-                    6 => base_url('assets/js/dashboard/first-login/index.js'),
-                ));
-
-                load_view([
-                    0 => [
-                        'src' => 'dashboard/commons/first-login/home',
-                        'params' => $retorno,
-                    ],
-                    1 => [
-                        'src' => 'access/pre_loader',
-                        'params' => null,
-                    ],
-                ], 'administrador', false);
+                $retorno->organizacao_fk = $func!==FALSE?$func[count($func)-1]->organizacao_fk:"admin";
             }
             else
             {
-                $this->load->view('errors/html/error_404', 
-                    [
-                        'heading' =>  "Não foi possível exibir a página", 
-                        'message' => "Token expirado ou usário não encontrado."
-                    ]
-                );
+                $retorno->organizacao_fk = "admin";
             }
+
+            $this->session->set_flashdata('css', array(
+                0 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
+                1 => base_url('assets/css/modal_desativar.css'),
+            ));
+
+            $this->session->set_flashdata('scripts', array(
+                0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
+                1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
+                2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
+                3 => base_url('assets/js/utils.js'),
+                4 => base_url('assets/js/constants.js'),
+                5 => base_url('assets/js/jquery.noty.packaged.min.js'),
+                6 => base_url('assets/js/dashboard/first-login/index.js'),
+            ));
+
+            load_view([
+                0 => [
+                    'src' => 'dashboard/commons/first-login/home',
+                    'params' => $retorno,
+                ],
+                1 => [
+                    'src' => 'access/pre_loader',
+                    'params' => null,
+                ],
+            ], 'administrador', false);
         } 
         else //Se não, carregamos a view de erro.
         {
-            $this->load->view('errors/html/error_404', 
-                    [
-                        'heading' =>  "Não foi possível exibir a página", 
-                        'message' => "Token expirado."
-                    ]
-                );
+            $this->load->view('errors/html/error_404');
         }
     }
 

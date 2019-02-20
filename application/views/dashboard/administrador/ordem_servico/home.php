@@ -140,7 +140,7 @@
                                 <thead>
                                     <tr>
                                         <th>Código</th>
-                                        <th id="data_brasileira">Data</th>
+                                        <th>Data</th>
                                         <th>Prioridade</th>
                                         <th>Endereço</th>
                                         <th>Serviço</th>
@@ -163,7 +163,7 @@
                                                     <?=$ordem_servico->prioridade_nome?>
                                                 </td>
                                                 <td>
-                                                    <?=$ordem_servico->localizacao_nome . ", " .
+                                                    <?=$ordem_servico->localizacao_rua . ", " .
                                                     $ordem_servico->localizacao_num . " - " .
                                                     $ordem_servico->localizacao_bairro?>
                                                 </td>
@@ -171,7 +171,7 @@
                                                     <?=$ordem_servico->servico_nome?>
                                                 </td>
                                                 <td>
-                                                    <?=$ordem_servico->situacao_nome?>
+                                                    <?=$ordem_servico->situacao_atual_nome?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->setor_nome?>

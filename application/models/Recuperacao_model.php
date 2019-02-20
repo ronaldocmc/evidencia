@@ -1,33 +1,113 @@
-<?php
-require_once APPPATH."core\MY_Model.php";
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+class Recuperacao_model extends CI_Model {
 
-class Recuperacao_model extends MY_Model {
-    const NAME = 'recuperação senha';
-	const TABLE_NAME = 'recuperacoes_senha';
-    const PRI_INDEX = 'superusuario_fk';
-    
-    const FORM = array(
-        'recuperacao_token'
-    );
+    /**
+     * @name string TABLE_NAME Holds the name of the table in use by this model
+     */
+    const TABLE_NAME = 'recuperacoes_senha';
 
-    public function delete_by_token($token)
-    {
-        $this->CI->db->delete($this->getTableName(), ['recuperacao_token' => $token]);
+    /**
+     * @name string PRI_INDEX Holds the name of the tables' primary index used in this model
+     */
+    const PRI_INDEX = 'pessoa_fk';
+
+    /**
+     * Retrieves record(s) from the database
+     *
+     * @param mixed $where Optional. Retrieves only the records matching given criteria, or all records if not given.
+     *                      If associative array is given, it should fit field_name=>value pattern.
+     *                      If string, value will be used to match against PRI_INDEX
+     * @return mixed Single record if ID is given, or array of results
+     */
+    public function get($where = NULL) {
+        $this->db->select('*');
+        $this->db->from(self::TABLE_NAME);
+        if ($where !== NULL) {
+            if (is_array($where)) {
+                foreach ($where as $field=>$value) {
+                    $this->db->where($field, $value);
+                }
+            } else {
+                $this->db->where(self::PRI_INDEX, $where);
+            }
+        }
+        $result = $this->db->get()->result();
+        if ($result) {
+            if ($where !== NULL) {
+                return array_shift($result);
+            } else {
+                return $result;
+            }
+        } else {
+            return false;
+        }
     }
 
+    /**
+     * Inserts new data into database
+     *
+     * @param Array $data Associative array with field_name=>value pattern to be inserted into database
+     * @return mixed Inserted row ID, or false if error occured
+     */
+    public function insert(Array $data) {
+        if ($this->db->insert(self::TABLE_NAME, $data)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-    public function config_form_validation()
-    {
-        $this->CI->form_validation->set_rules(
-            'recuperacao_token',
-            'Token',
-            'trim|required|min_length[6]|max_length[128]'
-        );
+    public function insert_acesso(Array $data) {
+        if ($this->db->insert('acessos', $data)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Updates selected record in the database
+     *
+     * @param Array $data Associative array field_name=>value to be updated
+     * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
+     * @return int Number of affected rows by the update query
+     */
+    public function update(Array $data, $where = array()) {
+            if (!is_array($where)) {
+                $where = array(self::PRI_INDEX => $where);
+            }
+        $this->db->update(self::TABLE_NAME, $data, $where);
+        return $this->db->affected_rows();
+    }
+
+    /**
+     * Deletes specified record from the database
+     *
+     * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
+     * @return int Number of rows affected by the delete query
+     */
+
+    public function delete_token($where){
+        $this->db->delete(self::TABLE_NAME, $where);
+        return $this->db->affected_rows();
+    }
+
+    public function delete($where = array()) {
+        if (!is_array($where)) 
+        {
+            
+        }
+        else
+        {
+            $this->db->where(self::PRI_INDEX, $where[self::PRI_INDEX]);
+            unset($where[self::PRI_INDEX]);
+            foreach ($where as $key => $w) {
+                $this->db->or_where($key,$w);
+            }
+        }
+        $this->db->delete(self::TABLE_NAME);
+        return $this->db->affected_rows();
     }
 }
-
-?>
+        ?>

@@ -19,7 +19,7 @@
                             <div class="card card-step col-12 px-0">
                                 <!-- CAMPO HIDDEN -->
                                 <input type="hidden" value="<?= $recuperacao_token ?>" name="token" id="token">
-                                <input type="hidden" value="<?= $superusuario_fk ?>" name="superusuario_fk" id="superusuario_fk">
+                                <input type="hidden" value="<?= $pessoa_fk ?>" name="pessoa_fk" id="pessoa_fk">
                                  <input type="hidden" value="<?= $organizacao_fk ?>" name="organizacao_fk" id="organizacao_fk">
                                 <div class="container mt-1 form-group">
                                     <h4 style="text-align: center" class="text-danger py-2"><i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
@@ -49,8 +49,8 @@
                                             <label for="login-input" class=" form-control-label"><strong>Login</strong></label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <input type="text" id="login-input" name="acesso_login" placeholder="Login" class="form-control" disabled="true" value="<?= $superusuario_login ?>">
-                                            <small class="help-block form-text">Utilize este login para acessar o sistema</small>
+                                            <input type="text" id="login-input" name="acesso_login" placeholder="Login" class="form-control" required="true" min-lenght="3" max-lenght="60">
+                                            <small class="help-block form-text">Crie um login</small>
                                         </div>
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@
                                 <div class="card-body card-block">
                                     <div class="row form-group" style="text-align: center !important;">
                                         <p>Tudo pronto para criar seu acesso!</p><br>
-                                        <p>Login: <span class="login"></span><?= $superusuario_login ?></p>
+                                        <p>Login: <span class="login"></span>@<?=$organizacao_fk ?></p>
                                     </div>
                                 </div>
                                 <div class="card-footer text-center">
