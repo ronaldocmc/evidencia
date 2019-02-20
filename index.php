@@ -63,7 +63,7 @@ function is_cli()
 
 if(is_cli()){
 	define('ENVIRONMENT', 'testing');
-} else if($_SERVER['SERVER_NAME'] == 'localhost'){
+} else if($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '192.168.137.1'){
 	define('ENVIRONMENT', 'development');	
 } else {
 	define('ENVIRONMENT', 'production');
