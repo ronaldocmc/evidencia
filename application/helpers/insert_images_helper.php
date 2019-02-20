@@ -1,15 +1,18 @@
 <?php
 
 //Definindo as constantes PATH que será utilizada na inserção. 
-define('PATH_OS','./assets/uploads/imagens_situacoes/');
-define('PATH_FUNC','./assets/uploads/perfil_images/');
+define('PATH_OS','assets/uploads/imagens_situacoes/');
+define('PATH_FUNC','assets/uploads/perfil_images/');
 
 //Função que executa o upload das imagens. 
 //Params possui 'id' (os ou func), 'path' (PATH_OS ou PATH_FUNC),'is_os' (TRUE OR FALSE) e 'situation' (nome da situacao)
-function upload_img($params , $base64_images){	
-    
+function upload_img($params , Array $base64_images){	
+
+    date_default_timezone_set('America/Sao_Paulo');
+    $date = date('m_Y');
+
     //Crio um array que será setado com os caminhos das imagens que foram salvas (banco)
-    $array[] = $images_was_uploaded; 
+    $images_uploaded = []; 
 
     //Se uma ou mais imagens foram enviadas, percorreremos: 
     foreach ($base64_images as $image){
@@ -23,55 +26,68 @@ function upload_img($params , $base64_images){
 
         //Decodificando o texto na base 64
         $image_file = base64_decode($image);
-        
-        $final_path = constant($params['path']).$image_name;
 
         //Realizamos um tratamento específico caso as imagens sejam de uma ordem de serviço 
-        if($params['is_os']){
-            $final_path = tratament_for_os($params).$image_name;
+        if($params['is_os'])
+        {
+            $final_path = tratament_for_os($params, $date) . '/' . $image_name;
+            var_dump($final_path);
+        }
+        else
+        {
+            $final_path = constant($params['path']).$image_name;
         }
 
         //Criando e gravando o arquivo da imagem
-        if(!file_put_contents($final_path, $image_file)){
-            throw new Exception([
+        if(!file_put_contents($final_path, $image_file))
+        {
+            // roll_back($images_uploaded);
+            throw new MyException([
                 'Erro ao fazer upload da imagem:', 
                 Response::SERVER_FAIL
                 ]);
-        }else{
-
+        }
+        else
+        {
            //Adicionando o caminho da última imagem armazenada
-            array_push($images_was_uploaded, $final_path);
+            array_push($images_uploaded, $final_path);
         }
     }
 
     //Retorno o array de caminhos
-    return $images_was_uploaded;
+    return $images_uploaded;
 }
 
- function tratament_for_os($params){
+ function tratament_for_os($params, $date){
 
     //A pasta para a OS será criada ou já existirá 
-    $os_path = mkdir(constant($params['path']).hash(ALGORITHM_HASH, $params['id'])); 
+    $os_path = PATH_OS . $date; 
 
     //Verificando se realmente foi criada ou já existia $os_path == TRUE
-    if($os_path){
-
-        //Caso sim, então criamos a pasta situacao
-        $situation_path = mkdir(constant($params['path']).hash(ALGORITHM_HASH, $params['id']).$params['situation']);
-
-        //Se a pasta foi criada normalmente
-        if($situation_path){
-            $path_for_os = constant($params['path']).hash(ALGORITHM_HASH, $params['id']).$params['situation'];
-            return $path_for_os; 
+    if(!is_dir($os_path)){
+        //Caso não, então criamos a pasta situacao
+        if (!mkdir($os_path,0700)) 
+        {
+            throw new MyException("Erro ao criar diretório para imagem(ns){$os_path}", 500);
         }
+
     } 
     
+    return $os_path;
 }
 
 //Função que cria uma pasta caso ela não exista. 
 function makeDir($path)
 {
      return is_dir($path) || mkdir($path);
+}
+
+function roll_back(Array $image_paths)
+{
+    foreach ($image_paths as $path) 
+    {
+        unlink($path);
+    }
 }
 
 ?>

@@ -20,7 +20,7 @@ class Ordem_Servico_model extends MY_Model
         'setor_fk',
         'situacao_inicial_fk',
         'situacao_atual_fk',
-        'ordem_servico_desc',
+        'ordem_servico_desc'
     );
 
     public function config_form_validation_primary_key()
@@ -114,5 +114,26 @@ class Ordem_Servico_model extends MY_Model
         );
 
         return $shortenings[0]->tipo_servico_abreviacao . $shortenings[0]->servico_abreviacao;
+    }
+
+    public function insert_os_images()
+    {
+        $this->CI->db->insert();
+    }
+
+    private function build_images_rows($paths, $os)
+    {
+        $rows = [];
+
+        foreach ($paths as $key => $p)
+        {
+            $rows[$key] = array(
+                'ordem_servico_fk' => $os,
+                'situacao_fk' => $this->__get('situacao_fk'),
+                'imagem_os' => $p,
+            );
+        }
+
+        return $rows;
     }
 }

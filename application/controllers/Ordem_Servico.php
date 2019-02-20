@@ -10,6 +10,8 @@ require_once APPPATH . "core\CRUD_Controller.php";
 
 require_once APPPATH . "models\Ordem_Servico_model.php";
 
+require_once APPPATH . "core\MyException.php";
+
 //TODO mudar para CRUD_Controller
 class Ordem_Servico extends CRUD_Controller
 {
@@ -210,8 +212,20 @@ class Ordem_Servico extends CRUD_Controller
         {
             $this->load->model('Localizacao_model', 'localizacao');
             $this->load->model('Organizacao_model', 'organizacao');
+
             $this->load->library('form_validation');
             $this->load->helper('exception');
+            $this->load->helper('insert_images');
+
+            $paths =  upload_img(
+                [
+                    'id' => '6',
+                    'path' => 'PATH_OS',
+                    'is_os' => true,
+                    'situation' => '1'
+                ],
+                [0 => $this->input->post('img')]
+            );
             
             $this->ordem_servico->fill();
             $this->localizacao->add_lat_long(
