@@ -1,4 +1,4 @@
-<?php   
+<?php
 
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
@@ -51,6 +51,9 @@ class Ordem_Servico extends CRUD_Controller
             ordens_servicos.ativo,
             ordens_servicos.ordem_servico_desc,
             ordens_servicos.ordem_servico_criacao,
+            ordens_servicos.ordem_servico_atualizacao,
+            ordens_servicos.ordem_servico_comentario,
+            ordens_servicos.funcionario_fk,
             prioridades.prioridade_pk,
             prioridades.prioridade_nome,
             servicos.servico_pk,
@@ -67,10 +70,13 @@ class Ordem_Servico extends CRUD_Controller
             localizacoes.localizacao_num,
             localizacoes.localizacao_bairro,
             localizacoes.localizacao_ponto_referencia,
-            municipios.municipio_nome
+            municipios.municipio_nome,
+            funcionarios.funcionario_nome,
+            funcionarios.funcionario_caminho_foto,
+            procedencias.procedencia_nome,
             ',
             [
-                'procedencias.organizacao_fk' => $this->session->user['id_organizacao']
+                'procedencias.organizacao_fk' => $this->session->user['id_organizacao'],
             ],
             -1,
             -1,
@@ -81,14 +87,27 @@ class Ordem_Servico extends CRUD_Controller
                 ['table' => 'situacoes as si', 'on' => 'si.situacao_pk = ordens_servicos.situacao_inicial_fk'],
                 ['table' => 'situacoes as sa', 'on' => 'sa.situacao_pk = ordens_servicos.situacao_atual_fk'],
                 ['table' => 'setores', 'on' => 'setores.setor_pk = ordens_servicos.setor_fk'],
-                ['table' => 'localizacoes', 'on' => 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk'],              
-                ['table' => 'municipios', 'on' => 'municipios.municipio_pk = localizacoes.localizacao_municipio']              
+                ['table' => 'localizacoes', 'on' => 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk'],
+                ['table' => 'municipios', 'on' => 'municipios.municipio_pk = localizacoes.localizacao_municipio'],
+                ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk'],
             ]
         );
+
+        $imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao']);
 
         if ($ordens_servico !== null) {
             foreach ($ordens_servico as $os) {
                 $os->ordem_servico_criacao = date('d/m/Y H:i:s', strtotime($os->ordem_servico_criacao));
+                $os->imagens = [];
+
+                foreach ($imagens as $img) {
+                    if ($os->ordem_servico_pk == $img->ordem_servico_fk) {
+
+                        array_push($os->imagens, $img);
+
+                        unset($img);
+                    }
+                }
             }
         }
 
@@ -106,7 +125,7 @@ class Ordem_Servico extends CRUD_Controller
             -1,
             -1,
             [
-                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
+                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
             ]
         );
 
@@ -130,7 +149,7 @@ class Ordem_Servico extends CRUD_Controller
             -1,
             -1,
             [
-                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk']
+                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk'],
             ]
         );
 
@@ -211,23 +230,13 @@ class Ordem_Servico extends CRUD_Controller
         try
         {
             $this->load->model('Localizacao_model', 'localizacao');
-            $this->load->model('Organizacao_model', 'organizacao');
 
             $this->load->library('form_validation');
             $this->load->helper('exception');
             $this->load->helper('insert_images');
 
-            $paths =  upload_img(
-                [
-                    'id' => '6',
-                    'path' => 'PATH_OS',
-                    'is_os' => true,
-                    'situation' => '1'
-                ],
-                [0 => $this->input->post('img')]
-            );
-            
             $this->ordem_servico->fill();
+
             $this->localizacao->add_lat_long(
                 $this->input->post('localizacao_lat'),
                 $this->input->post('localizacao_long')
@@ -236,10 +245,11 @@ class Ordem_Servico extends CRUD_Controller
 
             $this->ordem_servico->config_form_validation();
             $this->localizacao->config_form_validation();
-            if ($this->input->post('ordem_servico_pk') !== '') 
-            {
+
+            if ($this->input->post('ordem_servico_pk') !== '') {
                 $this->ordem_servico->config_form_validation_primary_key();
             }
+
             $this->organizacao->run_form_validation();
 
             $this->begin_transaction();
@@ -255,13 +265,9 @@ class Ordem_Servico extends CRUD_Controller
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
 
-        } 
-        catch (MyException $e) 
-        {
+        } catch (MyException $e) {
             handle_my_exception($e);
-        } 
-        catch (Exception $e) 
-        {
+        } catch (Exception $e) {
             handle_exception($e);
         }
     }
@@ -270,13 +276,74 @@ class Ordem_Servico extends CRUD_Controller
     {
         $this->ordem_servico->__set("localizacao_fk", $this->localizacao->insert());
         $this->ordem_servico->__set("funcionario_fk", $this->session->user['id_user']);
-        $this->ordem_servico->insert_os($this->session->user['id_organizacao']);
+
+        $id = $this->ordem_servico->insert_os($this->session->user['id_organizacao']);
+
+        $paths = upload_img(
+            [
+                'id' => $id,
+                'path' => 'PATH_OS',
+                'is_os' => true,
+                'situation' => $this->ordem_servico->__get('situacao_atual_fk'),
+            ],
+            [0 => $this->input->post('img')]//talvez seja interessante a view já mandar no formato de array mesmo quando é uma.
+        );
+
+        $this->ordem_servico->insert_images($paths, $id);
     }
 
     private function update()
     {
-        $this->localizacao->update();
-        $this->organizacao->update();
+
+    }
+
+    public function get_historico($id)
+    {
+        $historicos = $this->ordem_servico->get_historico($id);
+
+        $this->response->set_code(Response::SUCCESS);
+        $this->response->add_data('historicos', $historicos);
+        $this->response->send();
+    }
+
+    public function insert_situacao($id)
+    {
+        try {
+            $this->load->helper('exception');
+            $this->load->helper('insert_images');
+
+            $this->ordem_servico->__set("ordem_servico_comentario", $_POST['ordem_servico_comentario']);
+            $this->ordem_servico->__set("situacao_atual_fk", $_POST['situacao_atual_fk']);
+            $this->ordem_servico->__set("ordem_servico_pk", $id);
+
+            $paths = upload_img(
+                [
+                    'id' => $id,
+                    'path' => 'PATH_OS',
+                    'is_os' => true,
+                    'situation' => $this->ordem_servico->__get('situacao_atual_fk'),
+                ],
+                [0 => $this->input->post('image_os')]//talvez seja interessante a view já mandar no formato de array mesmo quando é uma.
+            );
+
+            $this->begin_transaction();
+
+            $this->ordem_servico->handle_historico($id);
+
+            $this->ordem_servico->update();
+
+            $this->ordem_servico->insert_images($paths, $id);
+
+            $this->end_transaction();
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
+
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
     }
 
     public function deactivate()
