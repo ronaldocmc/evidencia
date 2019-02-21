@@ -36,7 +36,7 @@ function send_data(){
 	var data = 
 	{
 		'departamento_pk': $('#departamento_pk').val(),
-		'nome': $('#nome-input').val(),
+		'departamento_nome': $('#nome-input').val(),
 		'senha': $('#senha-input').val()
 	}
 
@@ -44,9 +44,9 @@ function send_data(){
 	btn_load($('.submit'));
 	$('#senha-input').val('')
 
-	$.post(base_url+'/departamento/insert_update',data).done(function (response) {
+	$.post(base_url+'/departamento/save',data).done(function (response) {
 
-		wich_alert(response);
+		console.log(response);
 
 		btn_ativar($('#pula-para-confirmacao'));
 		btn_ativar($('.submit'));
