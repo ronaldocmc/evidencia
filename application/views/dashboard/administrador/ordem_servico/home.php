@@ -53,26 +53,6 @@
                                                 </div>
                                                 <div class="col-md-10 text-guide">Editar uma OS existente</div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-2 icon-guide">
-                                                    <button type="button" class="btn btn-sm btn-danger" disabled="true" title="Desativar">
-                                                        <div class="d-none d-block">
-                                                            <i class="fas fa-times fa-fw"></i>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-10 text-guide">Desativar uma OS inativa</div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2 icon-guide">
-                                                    <button type="button" class="btn btn-sm btn-success" disabled="true" title="Reativar">
-                                                        <div class="d-none d-block">
-                                                            <i class="fas fa-power-off fa-fw"></i>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-10 text-guide">Ativar uma OS novamente</div>
-                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12 functions-page" >
@@ -236,6 +216,7 @@
                                       <div class="card-header"><h4 class="card-title"> Informações Gerais </h4></div>
                                       <div class="card-body text-secondary">
                                         <input type="hidden" id="ordem_servico_pk" value="" name="ordem_servico_pk">
+                                        <input type="hidden" id="localizacao_pk" value="" name="localizacao_pk">
                                         <div class="row form-group">
                                             <div class="col-12">
                                                 <label for="ordem_servico_desc"><strong>Descrição*</strong></label>
@@ -673,6 +654,7 @@
 
             <script type="text/javascript">
                 var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
+                var departamentos = <?php echo json_encode($departamentos !== false ? $departamentos : []); ?>;
                 var prioridades = <?php echo json_encode($prioridades !== false ? $prioridades : []); ?>;
                 var situacoes = <?php echo json_encode($situacoes !== false ? $situacoes : []); ?>;
                 var tipos_servico = <?php echo json_encode($tipos_servico !== false ? $tipos_servico : []); ?>;

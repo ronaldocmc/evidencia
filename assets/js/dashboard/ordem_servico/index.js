@@ -106,8 +106,6 @@ function add_options_servico() {
         if (servicos[i].tipo_servico_fk == tipo_servico) {
 
             $("#servico_pk").append('<option value="' + parseInt(servicos[i].servico_pk) + '">' + servicos[i].servico_nome + '</option>');
-            // console.log(servicos[i].servico_pk);
-            // console.log(servicos[i].servico_nome);
         }
     }
 }
@@ -165,9 +163,6 @@ get_departamento_and_tiposervico = (servico_atual_pk) => {
     let data;
     let tipo_servico_atual = servicos.filter(s => (s.servico_pk == servico_atual_pk))[0];
 
-    console.log("SERVICO ATUAL", servico_atual_pk);
-    console.log("TIPO SERVICO ATUAL", tipo_servico_atual);
-
     data =
         {
             'departamento_nome': tipo_servico_atual.departamento_nome,
@@ -175,7 +170,6 @@ get_departamento_and_tiposervico = (servico_atual_pk) => {
             'tipo_servico_pk': tipo_servico_atual.tipo_servico_pk,
             'tipo_servico_nome': tipo_servico_atual.tipo_servico_nome
         }
-
     return data;
 
 }
@@ -953,6 +947,10 @@ function initMap() {
         formData.append('localizacao_municipio', $('#cidade-input').val());
         formData.append('localizacao_ponto_referencia', $('#referencia-input').val());
 
+        if ($('#ordem_servico_pk').val() !== '' && $('#ordem_servico_pk').val() !== undefined) {
+          formData.append('localizacao_pk', $('#localizacao_pk').val());
+        }
+
         if ($('#procedencia_pk').val() == "2") {
 
             formData.append('pessoa_nome', $('#nome-input').val());
@@ -966,7 +964,7 @@ function initMap() {
         formData.append('img', imagem);
 
         // procedencia
-        var URL = ($('#ordem_servico_pk').val() == "") ? base_url + '/ordem_servico/save' : base_url + '/ordem_servico/update_os';
+        var URL = base_url + '/ordem_servico/save';
         var ab, data_criacao;
 
         $.ajax({
@@ -1170,33 +1168,23 @@ function initMap() {
     $(document).on('click', '.btn_editar', function (event) {
         document.getElementById("ce_ordem_servico").focus();
 
-        $('.submit').attr('disabled', 'disabled');
-        $('.submit').css('cursor', 'default');
-        $('.close').attr('disabled', 'disabled');
-        $('.close').css('cursor', 'default');
-        $('#fechar-historico').attr('disabled', 'disabled');
-        $('#fechar-historico').css('cursor', 'default');
-
         primeiro_editar = true;
 
         $('#titulo').val("Alterar dados ordem de serviço");
 
         $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
         posicao_selecionada = $(this).val();
-        // console.log(posicao_selecionada);
 
-        // console.log("PK:" + ordens_servico[$(this).val()]['ordem_servico_pk']);
-
-        var data = get_departamento_and_tiposervico(ordens_servico[posicao_selecionada]['servico_pk'])//Aqui eu vou fazer uma função que vai requisitar percorrer departamentos e encontrar o fk
-        var servico_selecionado_pk = ordens_servico[posicao_selecionada]['servico_pk'];
+        var data = get_departamento_and_tiposervico(ordens_servico[posicao_selecionada]['servico_fk'])//Aqui eu vou fazer uma função que vai requisitar percorrer departamentos e encontrar o fk
+        var servico_selecionado_pk = ordens_servico[posicao_selecionada]['servico_fk'];
 
 
         $('#ordem_servico_pk').val(parseInt(ordens_servico[posicao_selecionada]['ordem_servico_pk']));
         $('#ordem_servico_desc').val(ordens_servico[posicao_selecionada]['ordem_servico_desc']);
         $('#departamento').val(data.departamento_pk);
-        // add_options_tipo_servico();
-        $('#tipo_servico').val(ordens_servico[posicao_selecionada]['tipo_servico_fk']);
-        // add_options_servico();
+        muda_depto();
+        $('#tipo_servico').val(data.tipo_servico_pk);
+        muda_tipo_servico();
         $('#servico_pk').val(servico_selecionado_pk);
         $('#situacao_pk').val(parseInt(ordens_servico[posicao_selecionada]['situacao_inicial_fk']));
         $('#prioridade_pk').val(parseInt(ordens_servico[posicao_selecionada]['prioridade_fk']));
@@ -1211,10 +1199,10 @@ function initMap() {
             $('#info_cidadao').show();
         }
 
-        $('#setor_pk').val(parseInt(ordens_servico[posicao_selecionada]['setor_pk']));
+        $('#setor_pk').val(parseInt(ordens_servico[posicao_selecionada]['setor_fk']));
         $("#latitude").val(ordens_servico[posicao_selecionada]['localizacao_lat']);
         $("#longitude").val(ordens_servico[posicao_selecionada]['localizacao_long']);
-
+        $("#localizacao_pk").val(ordens_servico[posicao_selecionada]['localizacao_fk']);
         $("#bairro_pk").val(ordens_servico[posicao_selecionada]['localizacao_bairro']);
         $("#logradouro-input").val(ordens_servico[posicao_selecionada]['localizacao_rua']);
         $("#numero-input").val(ordens_servico[posicao_selecionada]['localizacao_num']);

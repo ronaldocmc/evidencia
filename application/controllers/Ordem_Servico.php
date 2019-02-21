@@ -54,15 +54,17 @@ class Ordem_Servico extends CRUD_Controller
             ordens_servicos.ordem_servico_atualizacao,
             ordens_servicos.ordem_servico_comentario,
             ordens_servicos.funcionario_fk,
-            prioridades.prioridade_pk,
+            ordens_servicos.procedencia_fk,
+            ordens_servicos.localizacao_fk,
+            prioridades.prioridade_pk as prioridade_fk,
             prioridades.prioridade_nome,
-            servicos.servico_pk,
+            servicos.servico_pk as servico_fk,
             servicos.servico_nome,
-            si.situacao_pk as situacao_inicial_pk,
+            si.situacao_pk as situacao_inicial_fk,
             si.situacao_nome as situacao_inicial_nome,
-            sa.situacao_pk as situacao_atual_pk,
+            sa.situacao_pk as situacao_atual_fk,
             sa.situacao_nome as situacao_atual_nome,
-            setores.setor_pk,
+            setores.setor_pk as setor_fk,
             setores.setor_nome,
             localizacoes.localizacao_lat,
             localizacoes.localizacao_long,
@@ -150,6 +152,8 @@ class Ordem_Servico extends CRUD_Controller
             -1,
             [
                 ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk'],
+                ['table' => 'tipos_servicos', 'on' => 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk'],
+                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
             ]
         );
 
@@ -230,18 +234,19 @@ class Ordem_Servico extends CRUD_Controller
         try
         {
             $this->load->model('Localizacao_model', 'localizacao');
-
             $this->load->library('form_validation');
             $this->load->helper('exception');
-            $this->load->helper('insert_images');
           
-            $this->ordem_servico->fill();
-
             $this->localizacao->add_lat_long(
                 $this->input->post('localizacao_lat'),
                 $this->input->post('localizacao_long')
             );
+            $this->input->post('localizacao_ponto_referencia') !== '' ?
+                $this->localizacao->__set('localizacao_ponto_referencia', $this->input->post('localizacao_ponto_referencia')) :
+                $this->localizacao->__set('localizacao_ponto_referencia', null);
             $this->localizacao->fill();
+           
+            $this->ordem_servico->fill();
 
             $this->ordem_servico->config_form_validation();
             $this->localizacao->config_form_validation();
@@ -249,6 +254,7 @@ class Ordem_Servico extends CRUD_Controller
             if ($this->input->post('ordem_servico_pk') !== '') {
                 $this->ordem_servico->config_form_validation_primary_key();
             }
+            $this->ordem_servico->run_form_validation();
 
             $this->begin_transaction();
 
@@ -272,6 +278,7 @@ class Ordem_Servico extends CRUD_Controller
 
     private function insert()
     {
+        $this->load->helper('insert_images');
         $this->ordem_servico->__set("localizacao_fk", $this->localizacao->insert());
         $this->ordem_servico->__set("funcionario_fk", $this->session->user['id_user']);
 
@@ -292,7 +299,13 @@ class Ordem_Servico extends CRUD_Controller
 
     private function update()
     {
+        $this->localizacao->__set('localizacao_pk', $this->input->post('localizacao_pk'));
+        $this->localizacao->__set('localizacao_ponto_referencia', $this->input->post('localizacao_ponto_referencia'));
+        $this->localizacao->update();
 
+        $this->ordem_servico->__set('ordem_servico_pk', $this->input->post('ordem_servico_pk'));
+        $this->ordem_servico->__set('localizacao_fk', $this->input->post('localizacao_pk'));
+        $this->ordem_servico->update();
     }
 
     public function get_historico($id)
