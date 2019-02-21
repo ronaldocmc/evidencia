@@ -82,7 +82,8 @@ class AccessWS extends MY_Controller
 
         $obj = json_decode(file_get_contents('php://input'));
 
-        $attempt_result = verify_attempt($this->input->ip_address());
+        $attempt_result = true;
+        // $attempt_result = verify_attempt($this->input->ip_address());
 
         $login = explode('@', $obj->login_user);
 
@@ -112,8 +113,9 @@ class AccessWS extends MY_Controller
                     $this->response->send();
                     die();
                 }
-
+                
                 $user = $this->funcionario_model->get('*', $data)[0];
+                
 
                 if ($user->ativo == 0) {
                     $this->response->set_code(Response::UNAUTHORIZED);
@@ -139,8 +141,6 @@ class AccessWS extends MY_Controller
                     $setores = $this->funcionario_model->get_setores(
                         ["funcionarios.funcionario_pk" => $user->funcionario_pk]
                     );
-
-                    
 
                     if (count($setores) > 0) {
                         $d['setores'] = get_string($setores, 'explode', ' ', 1);
@@ -188,9 +188,11 @@ class AccessWS extends MY_Controller
         $attempt_result = verify_attempt($this->input->ip_address());
 
         if ($attempt_result === true) {
+            
             $obj = apache_request_headers();
 
-            $new_token = verify_token($obj['Token'], $this->response);
+
+            $new_token = verify_token($obj['token'], $this->response);
 
             if ($new_token) {
                 $dados['token'] = $new_token;

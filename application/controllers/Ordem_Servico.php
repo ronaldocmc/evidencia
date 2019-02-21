@@ -234,7 +234,7 @@ class Ordem_Servico extends CRUD_Controller
             $this->load->library('form_validation');
             $this->load->helper('exception');
             $this->load->helper('insert_images');
-
+          
             $this->ordem_servico->fill();
 
             $this->localizacao->add_lat_long(
