@@ -92,13 +92,9 @@ class Ordem_Servico_model extends CI_Model {
                 $this->db->where(self::PRI_INDEX, $where);
             }
         }
-        // echo $this->db->get_compiled_select(); die();
+        //echo $this->db->get_compiled_select(); die();
         $result = $this->db->get()->result();
-        if ($result) {
-            return ($result);
-        } else {
-            return false;
-        }
+        return $result;
     }
 
     public function getJsonForMobile($where) {
