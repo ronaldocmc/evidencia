@@ -643,11 +643,12 @@ function initMap() {
 
                     });
                 }
+                timeline += create_timeline(ordens_servico[posicao_selecionada].ordem_servico_comentario, ordens_servico[posicao_selecionada].funcionario_caminho_foto, ordens_servico[posicao_selecionada].funcionario_nome, ordens_servico[posicao_selecionada].situacao_atual_nome, reformatDate(ordens_servico[posicao_selecionada].ordem_servico_atualizacao));
 
                 if (ordens_servico[posicao_selecionada].imagens.length > 0) {
 
                     ordens_servico[posicao_selecionada].imagens.map((img) => {
-                        html += create_cards("Comentário", img.imagem_os, "Funcionário", img.situacao_nome, img.imagem_os_timestamp, active);
+                        html += create_cards(img.imagem_os, img.situacao_nome, img.imagem_os_timestamp, active);
                         active = "";
                     });
 
@@ -710,7 +711,7 @@ function initMap() {
 
                     response.data.historicos.map((historico, i) => {
 
-                        timeline += create_timeline(historico.historico_ordem_comentario, historico.funcionario_caminho_foto, historico.funcionario_nome, historico.situacao_nome, historico.historico_ordem_tempo);
+                        timeline += create_timeline(historico.historico_ordem_comentario, historico.funcionario_caminho_foto, historico.funcionario_nome, historico.situacao_nome, reformatDate(historico.historico_ordem_tempo));
 
                     });
                 }
@@ -814,16 +815,14 @@ function initMap() {
             '</div></div>';
     }
 
-    function create_cards(description, src, funcionario, situacao, data, active) {
+    function create_cards(src, situacao, data, active) {
 
         return '<div class="carousel-item' + active + ' col-md-4">' +
             '<div class="card historico">' +
             '<img class="card-img-top img-fluid" src="' + src + '">' +
             '<div class="card-body">' +
             '<h4 class="card-title">' + situacao + '</h4>' +
-            '<p class="card-text">' + description + '</p>' +
-            '<p class="card-text"><small class="text-muted">' + data + '</small></p>' +
-            '<p class="card-text"><small class="text-muted"><b>' + funcionario + '</b></small></p>' +
+            '<p class="card-text"><small class="text-muted">' + reformatDate(data) + '</small></p>' +
             '</div>' +
             '</div>' +
             '</div>';
@@ -1199,9 +1198,9 @@ function initMap() {
         $('#tipo_servico').val(ordens_servico[posicao_selecionada]['tipo_servico_fk']);
         // add_options_servico();
         $('#servico_pk').val(servico_selecionado_pk);
-        $('#situacao_pk').val(parseInt(ordens_servico[posicao_selecionada]['situacao_inicial_pk']));
-        $('#prioridade_pk').val(parseInt(ordens_servico[posicao_selecionada]['prioridade_pk']));
-        $('#procedencia_pk').val(parseInt(ordens_servico[posicao_selecionada]['procedencia_pk']));
+        $('#situacao_pk').val(parseInt(ordens_servico[posicao_selecionada]['situacao_inicial_fk']));
+        $('#prioridade_pk').val(parseInt(ordens_servico[posicao_selecionada]['prioridade_fk']));
+        $('#procedencia_pk').val(parseInt(ordens_servico[posicao_selecionada]['procedencia_fk']));
 
         if ($('#procedencia_pk').val() == "2") {
             $('#nome-input').val(ordens_servico[posicao_selecionada]['pessoa_nome']);

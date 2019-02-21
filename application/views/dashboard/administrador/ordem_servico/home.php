@@ -178,49 +178,24 @@
                                                 </td>
 
                                                 <td>
-                                                    <?php if($ordem_servico->ativo == 1): ?>
-                                                        <div class="btn-group">
-                                                            <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação">
-                                                                <div class="d-none d-sm-block">
-                                                                    <i class="fas fa-plus fa-fw"></i>
-                                                                </div>
-                                                            </button>
-                                                            <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
-                                                                <div class="d-none d-sm-block">
-                                                                    <i class="fas fa-edit fa-fw"></i>
-                                                                </div>
-                                                            </button>
-                                                            <button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico" title="Histórico">
-                                                                <div class="d-none d-sm-block">
-                                                                    <i class="far fa-clock fa-fw"></i>
-                                                                </div>
-                                                            </button>
-                                                            <button type="button" class="btn btn-sm btn-danger reset_multistep btn-excluir btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#d_servico" title="Excluir">
-                                                                <div class="d-none d-sm-block">
-                                                                    <i class="fas fa-times fa-fw"></i>
-                                                                </div>
-                                                            </button>
-                                                        </div>
-                                                        <?php elseif($ordem_servico->ativo == 0):  ?>
-                                                            <div class="btn-group">
-                                                                <button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
-                                                                    <div class="d-none d-sm-block">
-                                                                        <i class="fas fa-edit fa-fw"></i>
-                                                                    </div>
-                                                                </button>
-                                                                <button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico" title="Histórico">
-                                                                    <div class="d-none d-sm-block">
-                                                                        <i class="far fa-clock fa-fw"></i>
-                                                                    </div>
-                                                                </button>
-                                                                <button type="button" class="btn btn-sm btn-success reset_multistep btn-ativar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#r_servico" title="Reativar">
-                                                                    <div class="d-none d-sm-block">
-                                                                        <i class="fas fa-power-off fa-fw"></i>
-                                                                    </div>
-                                                                </button>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação">
+                                                            <div class="d-none d-sm-block">
+                                                                <i class="fas fa-plus fa-fw"></i>
                                                             </div>
-                                                        <?php endif; ?>
-                                                    </td>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
+                                                            <div class="d-none d-sm-block">
+                                                                <i class="fas fa-edit fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico" title="Histórico">
+                                                            <div class="d-none d-sm-block">
+                                                                <i class="far fa-clock fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                </td>
                                                 </tr>
                                             <?php endforeach?>
                                         <?php endif?>
@@ -695,76 +670,6 @@
 </div>
 <!-- FECHA MODAL HISTÓRICO -->
 
-<!-- modal histórico -->
-<div class="modal fade" id="d_servico">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Desativar Ordem de Serviço</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <h4 style="text-align: center" class="text-danger">
-                            <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
-                            <p>Ao desativar uma ordem de serviço, as seguintes ações também serão feitas:</p>
-                            <ul style="margin-left: 15px">
-                                <li>Não será possível editar ou visualizar a ordem de serviço.</li>
-                                <li>A ordem de serviço não será exibida em demais módulos.</li>
-                            </ul>
-                        </div>
-                        <?php if ($this->session->user['is_superusuario'] === true): ?>
-                            <div class="form-group">
-                                <input type="password" class="form-control" autocomplete="false" name="pass-modal-desativar" placeholder="Confirme sua senha"
-                                required="required" id="pass-modal-desativar" minlength="8">
-                            </div>
-                        <?php endif;?>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value="">
-                                <i class="fa fa-dot-circle-o"></i> Desativar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- FIM MODAL HISTÓRICO -->
-
-        <!--MODAL REATIVA tipos_servicos -->
-        <div class="modal fade" id="r_servico">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Reativar Ordem de Serviço</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <h4 style="text-align: center" class="text-danger">
-                                    <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
-                                    <p>Ao reativar um serviço, as seguintes ações também serão feitas:</p>
-                                    <ul style="margin-left: 15px">
-                                        <li>Novas ordens de serviço poderão utilizar novamente o serviço ativado.</li>
-
-                                    </ul>
-                                </div>
-                                <?php if ($this->session->user['is_superusuario']): ?>
-                                    <div class="form-group">
-                                        <input type="password" class="form-control" autocomplete="false" name="pass-modal-reativar" placeholder="Confirme sua senha"
-                                        required="required" id="pass-modal-reativar">
-                                    </div>
-                                <?php endif;?>
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Reativar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div> 
-            <!-- FIM MODAL REATIVA -->
 
             <script type="text/javascript">
                 var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;

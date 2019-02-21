@@ -123,9 +123,6 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->db->insert("historicos_ordens", $os);
     }
 
-
-
-
     function generate_os_cod($organization)
     {
         date_default_timezone_set('America/Sao_Paulo');

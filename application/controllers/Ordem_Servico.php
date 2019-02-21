@@ -250,8 +250,6 @@ class Ordem_Servico extends CRUD_Controller
                 $this->ordem_servico->config_form_validation_primary_key();
             }
 
-            $this->organizacao->run_form_validation();
-
             $this->begin_transaction();
 
             if ($this->input->post('ordem_servico_pk') !== '') {
