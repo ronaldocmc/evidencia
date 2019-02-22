@@ -1,6 +1,5 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-
 require_once(dirname(__FILE__)."/Response.php");	
 /**
  * Acess Class
@@ -18,7 +17,6 @@ class Access extends CI_Controller {
 	public $response;
 	
     //-------------------------------------------------------------------------------
-
 	/**
 	 * Construtor da Classe
 	 * 
@@ -34,7 +32,6 @@ class Access extends CI_Controller {
         $this->load->model('Log_model', 'log_model');
 	}
     //--------------------------------------------------------------------------------
-
     /**
 	 * Método padrão da classe Access
 	 * 
@@ -60,9 +57,7 @@ class Access extends CI_Controller {
     		}
     	}
     }
-
 	//--------------------------------------------------------------------------------
-
     /**
 	 * Método para efetuar o logout do sistema. 
 	 * 
@@ -74,14 +69,11 @@ class Access extends CI_Controller {
             'log_pessoa_fk' => $this->session->user['id_user'],
             'log_descricao' => 'Logut'
         ]);
-
 	   session_destroy(); 
         
     	redirect(base_url());
     }
-
 	//--------------------------------------------------------------------------------
-
     /**
 	 * Realiza a autenticação do usuário verificando no model se uma dada combinação
 	 * de login e senha existe e armazena resposta no $response
@@ -101,7 +93,6 @@ class Access extends CI_Controller {
     		{	
     			$this->response->set_code(Response::SUCCESS);
                 $this->response->set_message('Login efetuado com sucesso');
-
     			$userdata =  [
                     'id_user' => isset($response->funcionario_pk) ? $response->funcionario_pk : $response->superusuario_pk,
                     'email_user' => isset($response->funcionario_pk) ? $response->funcionario_login : null,
@@ -114,7 +105,6 @@ class Access extends CI_Controller {
                     'image_user' => isset($response->funcionario_caminho_foto) ? base_url('/assets/uploads/perfil_images/'.$response->funcionario_caminho_foto) : base_url('/assets/img/default.png'),
     				'func_funcao' => isset($response->funcao_nome)?$response->funcao_nome : null
     			];
-
                 $permissions = $this->get_permissions($userdata['func_funcao'], $userdata['is_superusuario']);
                 $this->session->set_userdata('permissions', $permissions);
                 $this->session->set_userdata('user',$userdata);
@@ -132,7 +122,6 @@ class Access extends CI_Controller {
             $this->tentativa_model->insert($attempt);
         }
     }
-
     //Este método irá pegar as permissões do tipo do usuário
     public function get_permissions($func_funcao, $is_superusuario)
     {
@@ -153,7 +142,6 @@ class Access extends CI_Controller {
                     0 => 'superusuario',
                     // 0 => 'organizacao',
                 );
-
                 $method_exceptions = array(
                     0 => array(
                         'controller' => 'organizacao',
@@ -164,12 +152,10 @@ class Access extends CI_Controller {
                         'controller' => 'organizacao',
                         'method'     => 'activate',
                     ),
-
                     2 => array(
                         'controller' => 'organizacao',
                         'method'     => 'index',
                     )
-
                 );
             }
             else
@@ -200,20 +186,15 @@ class Access extends CI_Controller {
                         ),
                     ); 
                 }
-
-
             }
         }
-
         $permissions = array(
             'controller_exceptions' => $controller_exceptions,
             'method_exceptions'     => $method_exceptions
         );
         return $permissions;
     }
-
 	//--------------------------------------------------------------------------------
-
     /**
 	 * Método que recebe as informações de usuário e valida-as e, caso seja valido
 	 * realiza o login e informa o sucesso, caso contrário informa as inconsistências
@@ -229,7 +210,6 @@ class Access extends CI_Controller {
     	$this->load->helper('attempt'); 
     	$this->load->model('tentativa_model');
     	$this->load->library('form_validation');
-
 		//Faz a verificação de que o usuário não trata-se de um robo
         if(ENVIRONMENT == 'testing')
         {
@@ -259,7 +239,6 @@ class Access extends CI_Controller {
                 {
                     $access['funcionario_login'] = $this->input->post('login');
                     $access['funcionario_senha'] = hash(ALGORITHM_HASH,$this->input->post('password').SALT);
-
                     $this->load->model('Funcionario_model', 'func_model');
                     $response = $this->func_model->get('*',$access)[0];
                 }
@@ -267,7 +246,6 @@ class Access extends CI_Controller {
                 {
                     $access['superusuario_login'] = $this->input->post('login');
                     $access['superusuario_senha'] = hash(ALGORITHM_HASH,$this->input->post('password').SALT);
-
                     $this->load->model('Super_model', 'su_model');
                     $response = $this->su_model->get($access);
                 }

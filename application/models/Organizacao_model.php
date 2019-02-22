@@ -77,6 +77,20 @@ class Organizacao_model extends MY_Model {
             'trim|required|regex_match[/[0-9].\-/]|min_length[18]|max_length[18]'
         );
     }
+
+    public function get_and_increase_cod($organization)
+    {
+        $this->CI->db->select('organizacoes.proximo_cod');
+        $this->CI->db->from('organizacoes');
+        $this->CI->db->where('organizacoes.organizacao_pk', $organization);
+        $cod = $this->CI->db->get()->result();
+
+        $this->CI->db->set('organizacoes.proximo_cod', intval($cod[0]->proximo_cod) + 1);
+        $this->CI->db->where('organizacoes.organizacao_pk', $organization);
+        $this->CI->db->update('organizacoes');
+
+        return intval($cod[0]->proximo_cod);
+    }
 }
 
 ?>

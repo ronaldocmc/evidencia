@@ -43,5 +43,18 @@ class Localizacao_model extends MY_Model {
             'trim|required|max_length[128]'
         );
     }
+
+    public function get_cities()
+    {
+        $this->CI->db->select('*');
+        $this->CI->db->from('municipios');
+        return $this->CI->db->get()->result();
+    }
+
+    public function add_lat_long($lat, $long)
+    {
+        $this->__set('localizacao_lat', $lat);
+        $this->__set('localizacao_long', $long);
+    }
 }
 ?>

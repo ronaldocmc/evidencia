@@ -53,30 +53,10 @@ function send_data(){
 
 		if (response.code == 200)
 		{
-			dep  = 
-			{
-				'departamento_nome': data['nome'],
-				'ativo': 1,
-			}
-			if (data['departamento_pk']=='')
-			{
-				dep['departamento_pk'] = response.data['id'];
-				departamentos.push(dep);
-				change_table($('#filter-ativo'));
-			}
-			else
-			{
-				dep['departamento_pk'] = data['departamento_pk'];
-				for (var i in departamentos)
-				{
-					if (departamentos[i]['departamento_pk']==data['departamento_pk'])
-						break;
-				}
-				departamentos[i] = (dep);
-				change_table($('#filter-ativo'));
-			}
-
-			$('#ce_departamento').modal('hide');
+			alerts('success', 'Sucesso', 'Operação realizada com sucesso!');
+			document.location.reload(false);
+		} else {
+			alerts('failed', 'Falha', 'Operação falha!');
 		}
 	}, "json");
 }
@@ -134,39 +114,27 @@ $(document).on('click','.btn-desativar',function(event) {
 
 	$.post(base_url + '/departamento/get_dependents', data, function (response, textStatus, xhr) {
 
-		wich_alert(response)
-
 		if (response.code == 200) {
-		  	html = ''; //esta variável vai servir para eu preencher a div tipo-servicos-dependentes
-		  	title = '';
-            if(response.data.length == 0 || response.data == false){ //se não houver nenhum serviço:
-            	title = "Não há nenhum tipo de serviço dependente deste departamento, portanto você pode desativar este departamento.";
+		  	var title = '';
+		  	var mensagem = '';
+            if(! response.data){ //se não houver nenhum serviço:
+            	$('#btn-desativar').removeAttr('disabled');
+            	title = 'Tudo certo para desativação!'
+            	mensagem = "Não há nenhum tipo de serviço dependente deste departamento, portanto você pode desativar este departamento.";
             }
             else { //se tiver 1 ou mais tipos de serviço dependentes:
-            	var mensagem = "";
-            	if(response.data.length == 1){ 
-            		title = 'Este é o tipo de serviço que será afetado:';
-            	}
-            	else if(response.data.length > 1){
-            		title = 'Estes são os tipos de serviços que serão afetados:';
-            	}
-            	html += "<ul style='margin-left: 15px'>";
-            	for( var i in response.data){
-            		html += '<li>'+ response.data[i].tipo_servico_nome +'</li>';
-            	}
-            	html += "</ul>";
-            	mensagem = "<br><b>OBS:</b> Você não poderá desativar este departamento enquanto houver(em) tipo(s) de serviço(s) dependente(s).<br>";
-            	html += mensagem;
+            	$('#btn-desativar').attr('disabled', 'disabled');
+            	title = 'Impossível desativar o departamento!'
+            	mensagem = "Há tipos de serviços relacionados à esse departamento. Os desative antes.";
 
             } //fecha o 1 ou mais serivços dependentes
-            $('#tipo-servicos-dependentes').html('<br>'+'<h5>'+title + '</h5>' + html+'</br>');
+            $('#tipo-servicos-dependentes').html('<br>'+'<b>'+title + '</b> <br>' + mensagem +'</br>');
             $('#tipo-servicos-dependentes').show();
             $('#loading-departamento-deactivate').hide();
         } else {
         	$('#d-departamento').modal('toggle');
         	$('#loading-departamento-deactivate').hide();
         }
-
     });
 
 });
@@ -221,14 +189,11 @@ $(document).on('click','#btn-desativar',function(event) {
 
 		if (response.code == 200)
 		{
-			for (var i in departamentos)
-			{
-				if (departamentos[i]['departamento_pk']==data['departamento_pk'])
-					break;
-			}
-			departamentos[i]['ativo'] = 0;
-			$('#filter-ativo').change();
-			$('#d-departamento').modal('hide');
+			alerts('success', 'Sucesso', 'Desativação concluída!');
+			document.location.reload(false);
+		} else {
+
+			alerts('failed', 'Falha', 'Desativação falhou!');
 		}
 	});
 });
@@ -260,14 +225,11 @@ activate = (dep_pk, pass) => {
 
 		if (response.code == 200)
 		{
-			for (var i in departamentos)
-			{
-				if (departamentos[i]['departamento_pk']==data['departamento_pk'])
-					break;
-			}
-			departamentos[i]['ativo'] = 1;
-			$('#filter-ativo').change();
-			$('#r-departamento').modal('hide');
+			alerts('success', 'Sucesso', 'Rativação concluída!');
+			document.location.reload(false);
+		} else {
+
+			alerts('failed', 'Falha', 'Reativação falhou!');
 		}
 	});
 }

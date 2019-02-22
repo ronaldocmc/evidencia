@@ -53,26 +53,6 @@
                                                 </div>
                                                 <div class="col-md-10 text-guide">Editar uma OS existente</div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-2 icon-guide">
-                                                    <button type="button" class="btn btn-sm btn-danger" disabled="true" title="Desativar">
-                                                        <div class="d-none d-block">
-                                                            <i class="fas fa-times fa-fw"></i>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-10 text-guide">Desativar uma OS inativa</div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2 icon-guide">
-                                                    <button type="button" class="btn btn-sm btn-success" disabled="true" title="Reativar">
-                                                        <div class="d-none d-block">
-                                                            <i class="fas fa-power-off fa-fw"></i>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-10 text-guide">Ativar uma OS novamente</div>
-                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12 functions-page" >
@@ -136,11 +116,12 @@
                             </div>
                         </div>
                         <div class="table-responsive table--no-card m-b-40">
-                            <table id="ordens_servico" class="table table-striped table-datatable">
+                            <table id="ordens_servico" class="table table-striped">
                                 <thead>
                                     <tr>
+                                        <th id="id_as">id</th>
                                         <th>Código</th>
-                                        <th id="data_brasileira">Data</th>
+                                        <th>Data</th>
                                         <th>Prioridade</th>
                                         <th>Endereço</th>
                                         <th>Serviço</th>
@@ -154,73 +135,51 @@
                                         <?php foreach ($ordens_servico as $key => $ordem_servico): ?>
                                             <tr>
                                                 <td>
+                                                    <?= $ordem_servico->ordem_servico_pk ?>
+                                                </td>
+                                                <td>
                                                     <?=$ordem_servico->ordem_servico_cod?>
                                                 </td>
                                                 <td>
-                                                    <?=$ordem_servico->data_criacao?>
+                                                    <?=$ordem_servico->ordem_servico_criacao?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->prioridade_nome?>
                                                 </td>
                                                 <td>
-                                                    <?=$ordem_servico->logradouro_nome . ", " .
-                                                    $ordem_servico->local_num . " - " .
-                                                    $ordem_servico->bairro_nome?>
+                                                    <?=$ordem_servico->localizacao_rua . ", " .
+                                                    $ordem_servico->localizacao_num . " - " .
+                                                    $ordem_servico->localizacao_bairro?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->servico_nome?>
                                                 </td>
                                                 <td>
-                                                    <?=$ordem_servico->situacao_nome?>
+                                                    <?=$ordem_servico->situacao_atual_nome?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->setor_nome?>
                                                 </td>
 
                                                 <td>
-                                                    <?php if($ordem_servico->ordem_servico_status == 1): ?>
-                                                        <div class="btn-group">
-                                                            <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação">
-                                                                <div class="d-none d-sm-block">
-                                                                    <i class="fas fa-plus fa-fw"></i>
-                                                                </div>
-                                                            </button>
-                                                            <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
-                                                                <div class="d-none d-sm-block">
-                                                                    <i class="fas fa-edit fa-fw"></i>
-                                                                </div>
-                                                            </button>
-                                                            <button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico" title="Histórico">
-                                                                <div class="d-none d-sm-block">
-                                                                    <i class="far fa-clock fa-fw"></i>
-                                                                </div>
-                                                            </button>
-                                                            <button type="button" class="btn btn-sm btn-danger reset_multistep btn-excluir btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#d_servico" title="Excluir">
-                                                                <div class="d-none d-sm-block">
-                                                                    <i class="fas fa-times fa-fw"></i>
-                                                                </div>
-                                                            </button>
-                                                        </div>
-                                                        <?php elseif($ordem_servico->ordem_servico_status == 0):  ?>
-                                                            <div class="btn-group">
-                                                                <button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
-                                                                    <div class="d-none d-sm-block">
-                                                                        <i class="fas fa-edit fa-fw"></i>
-                                                                    </div>
-                                                                </button>
-                                                                <button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico" title="Histórico">
-                                                                    <div class="d-none d-sm-block">
-                                                                        <i class="far fa-clock fa-fw"></i>
-                                                                    </div>
-                                                                </button>
-                                                                <button type="button" class="btn btn-sm btn-success reset_multistep btn-ativar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#r_servico" title="Reativar">
-                                                                    <div class="d-none d-sm-block">
-                                                                        <i class="fas fa-power-off fa-fw"></i>
-                                                                    </div>
-                                                                </button>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação">
+                                                            <div class="d-none d-sm-block">
+                                                                <i class="fas fa-plus fa-fw"></i>
                                                             </div>
-                                                        <?php endif; ?>
-                                                    </td>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_ordem_servico" title="Editar">
+                                                            <div class="d-none d-sm-block">
+                                                                <i class="fas fa-edit fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico" title="Histórico">
+                                                            <div class="d-none d-sm-block">
+                                                                <i class="far fa-clock fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                </td>
                                                 </tr>
                                             <?php endforeach?>
                                         <?php endif?>
@@ -261,16 +220,17 @@
                                       <div class="card-header"><h4 class="card-title"> Informações Gerais </h4></div>
                                       <div class="card-body text-secondary">
                                         <input type="hidden" id="ordem_servico_pk" value="" name="ordem_servico_pk">
+                                        <input type="hidden" id="localizacao_pk" value="" name="localizacao_pk">
                                         <div class="row form-group">
                                             <div class="col-12">
-                                                <label for="ordem_servico_desc">Descrição</label>
+                                                <label for="ordem_servico_desc"><strong>Descrição*</strong></label>
                                                 <textarea class="form-control" id="ordem_servico_desc" name="ordem_servico_desc" class="form-control" required="true" maxlength="200"></textarea>
                                                 <small class="form-text text-muted">Por favor, informe a descrição da Ordem de Serviço</small>
                                             </div>
                                         </div>
                                         <div class="row form-group">
                                             <div class="col-7 col-md-4">
-                                                <label for="departamento">Departamento</label>
+                                                <label for="departamento"><strong>Departamento*</strong></label>
                                                 <select class="form-control" id="departamento" name="departamento" required="true">
                                                     <?php if ($departamentos != null): ?>
                                                         <?php foreach ($departamentos as $d): ?>
@@ -282,12 +242,12 @@
                                                 </select>
                                             </div>
                                             <div class="col-7 col-md-4">
-                                                <label for="tipo_servico">Tipo de Serviço</label>
+                                                <label for="tipo_servico"><strong>Tipo de Serviço*</strong></label>
                                                 <select class="form-control" id="tipo_servico" name="tipo_servico" required="true">
                                                 </select>
                                             </div>
                                             <div class="col-7 col-md-4">
-                                                <label for="servico_pk">Serviço</label>
+                                                <label for="servico_pk"><strong>Serviço*</strong></label>
                                                 <select class="form-control" id="servico_pk" name="servico_pk" required="true">
                                                 </select>
                                                 <small class="form-text text-muted">Por favor, informe o Serviço</small>
@@ -295,7 +255,7 @@
                                         </div>
                                         <div class="row form-group">
                                             <div class="col-7 col-md-4" id="procedencias_options">
-                                                <label for="procedencia_pk">Procedência</label>
+                                                <label for="procedencia_pk"><strong>Procedência*</strong></label>
                                                 <select class="form-control" id="procedencia_pk" name="procedencia_pk" required="true">
                                                     <?php if ($procedencias != null): ?>
                                                         <?php foreach ($procedencias as $pr): ?>
@@ -308,7 +268,7 @@
                                                 <small class="form-text text-muted" id="procedencia_small">Por favor, informe a procedência desta ordem</small>
                                             </div>
                                             <div class="col-7 col-md-4">
-                                                <label for="prioridade_pk">Prioridade</label>
+                                                <label for="prioridade_pk"><strong>Prioridade*</strong></label>
                                                 <select class="form-control" id="prioridade_pk" name="prioridade_pk" required="true">
                                                     <?php if ($prioridades != null): ?>
                                                         <?php foreach ($prioridades as $p): ?>
@@ -321,7 +281,7 @@
                                                 <small class="form-text text-muted">Por favor, informe a Prioridade</small>
                                             </div>
                                             <div class="col-7 col-md-4">
-                                                <label for="situacao_pk">Situação Inicial</label>
+                                                <label for="situacao_pk"><strong>Situação Inicial*</strong></label>
                                                 <select class="form-control" id="situacao_pk" name="situacao_pk" required="true">
                                                     <?php if ($situacoes != null): ?>
                                                         <?php foreach ($situacoes as $s): ?>
@@ -342,7 +302,7 @@
                                         <div class="row form-group">
                                             <div class="col col-md-1">
                                                 <label for="nome-input" class=" form-control-label" required="true">
-                                                    <strong>Nome</strong>
+                                                    Nome
                                                 </label>
                                             </div>
                                             <div class="col-12 col-md-11">
@@ -354,7 +314,7 @@
                                         <div class="row form-group">
                                             <div class="col-12 col-md-1">
                                                 <label for="cpf-input" class=" form-control-label">
-                                                    <strong>CPF</strong>
+                                                    CPF
                                                 </label>
                                             </div>
                                             <div class="col-12 col-md-3">
@@ -362,14 +322,14 @@
                                                 <small class="form-text text-muted">Por favor, informe o CPF do cidadão</small>
                                             </div>
                                             <div class="col-12 col-md-1">
-                                                <label for="telefone-input" class=" form-control-label"><strong>Tel </strong></label>
+                                                <label for="telefone-input" class=" form-control-label">Tel</label>
                                             </div>
                                             <div class="col-12 col-md-3">
                                                 <input type="text" id="telefone-input" name="contato_tel" placeholder="Telefone" class="form-control telefone-input">
                                                 <small class="help-block form-text">Por favor, informe o telefone do cidadão</small>
                                             </div>
                                             <div class="col-12 col-md-1">
-                                                <label for="celular-input" class=" form-control-label"><strong>Cel</strong></label>
+                                                <label for="celular-input" class=" form-control-label">Cel</label>
                                             </div>
                                             <div class="col-12 col-md-3">
                                                 <input type="text" id="celular-input" name="contato_cel" placeholder="Celular" class="form-control celular-input">
@@ -379,7 +339,7 @@
                                         <div class="row form-group">
                                             <div class="col-12 col-md-1">
                                                 <label for="email-input" class=" form-control-label">
-                                                    <strong>Email</strong>
+                                                    Email
                                                 </label>
                                             </div>
                                             <div class="col-12 col-md-11">
@@ -392,17 +352,21 @@
                                 <div class="card bg-light mb-3">
                                     <div class="card-header"><h4 class="card-title"> Localização </h4></div>
                                     <div class="card-body text-secondary">
-                                       <div class="row form-group">
-                                        <div class="col-3 col-md-3">
-                                            <label for="uf-input" class=" form-control-label">Estado</label>
-                                            <select class="form-control loading" id="uf-input" name="estado_pk" required="true"></select>
+                                    <div class="row form-group">
+                                        <div class="col-md-8">
+                                            <label for="cidade-input" class="form-control-label"><strong>Cidade*</strong></label>
+                                            <select class="form-control endereco" id="cidade-input" name="municipio_pk" required="true">
+                                                <?php if ($municipios != null): ?>
+                                                    <?php foreach ($municipios as $m): ?>
+                                                        <option value="<?= $m->municipio_pk ?>">
+                                                            <?= $m->municipio_nome ?>
+                                                        </option>
+                                                    <?php endforeach ?>
+                                                <?php endif ?>
+                                            </select>
                                         </div>
-                                        <div class="col-8 col-md-6">
-                                            <label for="cidade-input" class="form-control-label">Cidade</label>
-                                            <select class="form-control loading endereco" id="cidade-input" name="municipio_pk" required="true"></select>
-                                        </div>
-                                        <div class="col-3 col-md-3">
-                                            <label for="setor_pk">Setor</label>
+                                        <div class="col-md-4">
+                                            <label for="setor_pk"><strong>Setor*</strong></label>
                                             <select class="form-control" id="setor_pk" name="setor_pk" required="true">
                                                 <?php if ($setores != null): ?>
                                                     <?php foreach ($setores as $se): ?>
@@ -415,37 +379,27 @@
                                         </div>
                                     </div>
                                     <div class="row form-group">
-                                        <div class="col-12 col-md-4">
-                                            <label for="referencia-input" class=" form-control-label">Ponto de Referência</label>
-                                            <input type="text" id="referencia-input" name="referencia" class="form-control referencia">
-                                            <small class="form-text text-muted">Insira um ponto de referência para buscar o local</small>
-                                        </div>
-                                        <div class="col-12 col-md-8">
-                                            <!-- O que removi do dropdown: autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]'> 
-                                            <ul class="dropdown-menu" data-return = "#logradouro_pk" data-next="#numero-input">
-                                            </ul>-->
-                                            <label for="logradouro_nome">Logradouro</label>
+                                        <div class="col-md-10">
+                                            <label for="logradouro_nome"><strong>Logradouro*</strong></label>
                                             <input class="form-control loading endereco" type="text" id="logradouro-input" name="logradouro_nome">
                                             <small class="form-text text-muted">Insira o logradouro para buscar o local</small>
                                         </div>
+
+                                         <div class="col-md-2">
+                                            <label for="numero-input" class=" form-control-label"><strong>N°</strong></label>
+                                            <input type="number" id="numero-input" name="local_num" class="form-control numero-input endereco" min="0" required="true">
+                                        </div>
                                     </div>
                                     <div class="row form-group">
-                                     <div class="col-12 col-md-2">
-                                        <label for="numero-input" class=" form-control-label">N°</label>
-                                        <input type="number" id="numero-input" name="local_num" class="form-control numero-input endereco" min="0" required="true">
+
+                                    <div class="col-md-6">
+                                        <label for="bairro-input" class="form-control-label loading"><strong>Bairro</strong></label>
+                                        <input type="text" name="bairro_nome" id="bairro_pk" class="form-control">
                                     </div>
-                                    <div class="col-12 col-md-5">
-                                        <label for="complemento-input" class=" form-control-label">Complemento</label>
-                                        <input type="text" id="complemento-input" name="local_complemento" class="form-control endereco" maxlength="30">
-                                    </div>
-                                    <div class="col-12 col-md-5">
-                                        <label for="bairro-input" class="form-control-label loading">Bairro</label>
-                                        <input type="hidden" name="bairro_nome" id="bairro_pk">
-                                        <div class="dropdown" id="drop-bairro">
-                                            <input class="form-control input-dropdown endereco" type="text" id="bairro-input" name="bairro" autocomplete="off" data-src = '["<?php echo base_url('localizacao/bairros'); ?>","https://viacep.com.br/ws"]' data-index='["bairro_pk","bairro"]' data-value='["bairro_nome","bairro"]' data-params  = '[[["cidade-input",null,"val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["logradouro-input",null,"val"],["json",null,"param"]]]' data-action='["get","get"]' data-arrayret='["data",null]'>
-                                            <ul class="dropdown-menu" data-return = "#bairro_pk" data-next="#bairro-input">
-                                            </ul>
-                                        </div>
+                                    <div class="col-md-6">
+                                        <label for="referencia-input" class=" form-control-label">Ponto de Referência</label>
+                                        <input type="text" id="referencia-input" name="referencia" class="form-control referencia">
+                                        <small class="form-text text-muted">Insira um ponto de referência para buscar o local</small>
                                     </div>
                                 </div>
                                 <div class="row form-group" style="margin-top: 30px !important;">
@@ -701,85 +655,17 @@
 </div>
 <!-- FECHA MODAL HISTÓRICO -->
 
-<!-- modal histórico -->
-<div class="modal fade" id="d_servico">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Desativar Ordem de Serviço</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <h4 style="text-align: center" class="text-danger">
-                            <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
-                            <p>Ao desativar uma ordem de serviço, as seguintes ações também serão feitas:</p>
-                            <ul style="margin-left: 15px">
-                                <li>Não será possível editar ou visualizar a ordem de serviço.</li>
-                                <li>A ordem de serviço não será exibida em demais módulos.</li>
-                            </ul>
-                        </div>
-                        <?php if ($this->session->user['is_superusuario'] === true): ?>
-                            <div class="form-group">
-                                <input type="password" class="form-control" autocomplete="false" name="pass-modal-desativar" placeholder="Confirme sua senha"
-                                required="required" id="pass-modal-desativar" minlength="8">
-                            </div>
-                        <?php endif;?>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value="">
-                                <i class="fa fa-dot-circle-o"></i> Desativar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- FIM MODAL HISTÓRICO -->
-
-        <!--MODAL REATIVA tipos_servicos -->
-        <div class="modal fade" id="r_servico">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Reativar Ordem de Serviço</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <h4 style="text-align: center" class="text-danger">
-                                    <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
-                                    <p>Ao reativar um serviço, as seguintes ações também serão feitas:</p>
-                                    <ul style="margin-left: 15px">
-                                        <li>Novas ordens de serviço poderão utilizar novamente o serviço ativado.</li>
-
-                                    </ul>
-                                </div>
-                                <?php if ($this->session->user['is_superusuario']): ?>
-                                    <div class="form-group">
-                                        <input type="password" class="form-control" autocomplete="false" name="pass-modal-reativar" placeholder="Confirme sua senha"
-                                        required="required" id="pass-modal-reativar">
-                                    </div>
-                                <?php endif;?>
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Reativar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div> 
-            <!-- FIM MODAL REATIVA -->
 
             <script type="text/javascript">
                 var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
+                var departamentos = <?php echo json_encode($departamentos !== false ? $departamentos : []); ?>;
                 var prioridades = <?php echo json_encode($prioridades !== false ? $prioridades : []); ?>;
                 var situacoes = <?php echo json_encode($situacoes !== false ? $situacoes : []); ?>;
                 var tipos_servico = <?php echo json_encode($tipos_servico !== false ? $tipos_servico : []); ?>;
                 var is_superusuario = <?php if($superusuario){ echo "true"; }else{ echo "false";} ?>;
                 var procedencias = <?php echo json_encode($procedencias !== false ? $procedencias : []); ?>;
                 var ordens_servico = <?php echo json_encode($ordens_servico !== false ? $ordens_servico : []); ?>;
+                var municipios = <?php echo json_encode($municipios !== false ? $municipios : []); ?>;
                 var organizacao = <?php echo json_encode($this->session->user['id_organizacao']); ?>;
             </script>
 

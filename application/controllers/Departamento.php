@@ -106,43 +106,20 @@ class Departamento extends CRUD_Controller {
     
     public function get_dependents()
     {
-        // $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
-        // date_default_timezone_set('America/Sao_Paulo');
-
-        // $response = new Response();
-        // $response->set_use_success(false);
-
-        // $departamento = $this->departamento_model->get($this->input->post('departamento_pk'));
-
-        // if ($departamento === false) 
-        // {
-        //     $response->set_code(Response::NOT_FOUND);
-        //     $response->set_message('Departamento não encontrado.');
-        // } 
-        // else 
-        // { //se existe departamento:
-        //     //se a departamento já foi desativada:
-        //     if ($departamento[0]->ativo == 0) 
-        //     {
-        //         $response->set_code(Response::BAD_REQUEST);
-        //         $response->set_message('Departamento desativado.');
-        //     }
-        //     else
-        //     { // se a departamento está ativa: 
-        //         $departamento_pk =  $this->input->post('departamento_pk');
-                
-        //         $tipos_servicos = $this->tipo_servico_model->get(['tipos_servicos.departamento_fk' => $departamento_pk]);                
-                
-        //         $response->set_code(Response::SUCCESS);
-        //         $response->set_data($tipos_servicos);
-        //     }
-        // }
-
         $response = new Response();
-        $response->set_code(Response::SUCCESS);
-        $response->set_data([]);
+
+        $this->load->model('Tipo_Servico_model', 'tipo_servico');
+
+        if ($this->tipo_servico->get_dependents($this->input->post('departamento_pk')) > 0) 
+        {
+            $response->set_data(true);
+        }
+        else
+        {
+            $response->set_data(false);
+        }
+
         $response->send();
-        return;
     }
 
     private function update()
