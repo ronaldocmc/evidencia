@@ -67,6 +67,9 @@
       </div>
 </div>
 
+<!-- Importando DataTable -->
+<script src="<?= 'assets/vendor/datatables/datatables.min.js' ?>"></script>
+<script src="<?= 'assets/vendor/datatables/dataTables.bootstrap4.min.js' ?>"></script>
 
 <!--Importando a biblioteca Jquery na versão 3.3.1 -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

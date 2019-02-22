@@ -438,7 +438,9 @@ class Relatorio extends CRUD_Controller
             0 => base_url('assets/js/constants.js'),
             1 => base_url('assets/js/jquery.noty.packaged.min.js'),
             2 => base_url('assets/js/dashboard/relatorio/relatorios_gerais.js'),
-            3 => base_url('assets/js/utils.js'),
+            3 => base_url('assets/vendor/datatables/datatables.min.js'),
+            4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            5 => base_url('assets/js/utils.js')
         ]);
 
         load_view([
@@ -978,11 +980,13 @@ class Relatorio extends CRUD_Controller
 
         $this->session->set_flashdata('scripts', array(
             0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            2 => base_url('assets/js/utils.js'),
-            3 => base_url('assets/js/constants.js'),
-            4 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            5 => base_url('assets/js/dashboard/relatorio/home.js'),
+            1 => base_url('assets/vendor/datatables/datatables.min.js'),
+            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
+            4 => base_url('assets/js/utils.js'),
+            5 => base_url('assets/js/constants.js'),
+            6 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            7 => base_url('assets/js/dashboard/relatorio/home.js')
         ));
 
         $this->load->helper('form');
