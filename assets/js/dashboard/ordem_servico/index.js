@@ -14,6 +14,7 @@ function btn_ativar(button_submit) {
 }
 
 
+
 //Variáveis globais utilizadas no JS
 var main_map, other_map;
 var main_marker = null;
@@ -870,34 +871,8 @@ function initMap() {
                     //pre_loader_hide();
                 }
                 else if (response.code == 200) {
-                    for (var i in ordens_servico) {
-                        if (ordens_servico[i]['ordem_servico_pk'] == $('#ordem_servico_pk').val()) {
-                            break;
-                        }
-                    }
-
-                    let endereco = ordens_servico[i]['logradouro_nome'] + ", " + ordens_servico[i]['local_num'] + " - " + ordens_servico[i]['bairro_nome'];
-
-                    table.row(i).data([
-                        ordens_servico[i]['ordem_servico_cod'],
-                        ordens_servico[i]['data_criacao'],
-                        ordens_servico[i]['prioridade_nome'],
-                        endereco,
-                        ordens_servico[i]['servico_nome'],
-                        $('#situacao_pk_historico option:selected').text(),
-                        ordens_servico[i]['setor_nome'],
-                        '<div class="btn-group">  <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                        '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                        '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="' + (i) + '" data-target="#d_servico" title="Desativar">' +
-                        '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                    ]).draw();
-                    //pre_loader_hide();
-                    remove_image();
-
-                    $('#atividade').modal('hide');
-                    $('.modal-backdrop').hide();
-
-                    alerts('success', "Sucesso!", response.data.mensagem);
+                    alerts('success', "Sucesso!", "Histórico criado com sucesso!");
+                    document.location.reload(false);
 
                 }
 
@@ -999,114 +974,10 @@ function initMap() {
                 } else if (response.code == 503) {
                     show_errors(response);
                     alerts('failed', response.message, 'Erro na edição de dados');
-                    //pre_loader_hide();
                 }
                 else if (response.code == 200) {
-                    // console.log(response);
-
-                    if ($('#ordem_servico_pk').val() != "") {
-                        cod = ordens_servico[posicao_selecionada]['ordem_servico_cod'];
-                        data_criacao = ordens_servico[posicao_selecionada]['data_criacao'];
-                    } else {
-                        cod = response.data.ordem_servico_cod;
-                        data_criacao = response.data.data_criacao;
-                    }
-
-                    // console.log(cod);
-
-                    os =
-                        {
-                            'ordem_servico_cod': cod,
-                            'data_criacao': data_criacao,
-                            'endereco': response.data.endereco_os,
-                            'coordenada_lat': $('#latitude').val(),
-                            'coordenada_long': $('#longitude').val(),
-                            'historico_ordem_pk': response.data.historico_ordem_pk,
-                            'populacao_os': response.data.populacao_os,
-                            'local_fk': response.data.local_fk,
-                            'ordem_servico_desc': $('#ordem_servico_desc').val(),
-                            'ordem_servico_pk': ($('#ordem_servico_pk').val() == "") ? response.data.ordem_servico_pk : $('#ordem_servico_pk').val(),
-                            'ordem_servico_status': 1,
-                            'prioridade_nome': $('#prioridade_pk option:selected').text(),
-                            'prioridade_pk': $('#prioridade_pk').val(),
-                            'procedencia_nome': $('#procedencia_pk option:selected').text(),
-                            'procedencia_pk': $('#procedencia_pk').val(),
-                            'servico_nome': $('#servico_pk option:selected').text(),
-                            'servico_pk': $('#servico_pk').val(),
-                            'situacao_nome': $('#situacao_pk option:selected').text(),
-                            'situacao_inicial_pk': $('#situacao_pk').val(),
-                            'situacao_atual_pk': $('#situacao_pk').val(),
-                            'tipo_servico_fk': $('#tipo_servico').val(),
-                            'setor_nome': $('#setor_pk option:selected').text(),
-                            'contato_email': $('#email-input').val(),
-                            'contato_cel': $('#celular-input').val(),
-                            'contato_tel': $('#telefone-input').val(),
-                            'pessoa_cpf': $('#cpf-input').val(),
-                            'pessoa_nome': $('#nome-input').val(),
-                            'setor_pk': $('#setor_pk').val()
-                        }
-
-                    if ($('#procedencia_pk').val() == "2") {
-                        let protocolo = create_protocol(os.ordem_servico_cod);
-                        $('#protocol-copy').attr('data-copy', protocolo);
-                        $('#numero-protocolo').html(protocolo);
-                    }
-
-
-                    if ($('#ordem_servico_pk').val() == "") { //verifica se é um insert
-
-                        ordens_servico.push(os);
-                        table.row.add([
-                            os.ordem_servico_cod,
-                            os.data_criacao,
-                            os.prioridade_nome,
-                            os.endereco,
-                            os.servico_nome,
-                            os.situacao_nome,
-                            os.setor_nome,
-                            '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="' + (ordens_servico.length - 1) + '" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (ordens_servico.length - 1) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (ordens_servico.length - 1) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                            '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="' + (ordens_servico.length - 1) + '" data-target="#d_servico" title="Desativar">' +
-                            '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                        ]).draw(false);
-                        alerts('success', 'Sucesso', response.data.mensagem);
-                        remove_image();
-                    }
-                    else {
-                        for (var i in ordens_servico) {
-
-                            if (ordens_servico[i]['ordem_servico_pk'] == $('#ordem_servico_pk').val()) {
-                                os['situacao_atual_pk'] = ordens_servico[i]['situacao_atual_pk'];
-                                break;
-                            }
-                        }
-                        ordens_servico[i] = (os);
-                        table.row(i).data([
-                            os.ordem_servico_cod,
-                            os.data_criacao,
-                            os.prioridade_nome,
-                            os.endereco,
-                            os.servico_nome,
-                            os.situacao_nome,
-                            os.setor_nome,
-                            '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="' + (i) + '" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                            '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="' + (i) + '" data-target="#d_servico" title="Desativar">' +
-                            '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                        ]).draw();
-                        alerts('success', 'Sucesso', response.data.mensagem);
-
-                    }
-                    //pre_loader_hide();
-                    remove_image();
-                    $("#info_cidadao").hide();
-                    $('#ce_ordem_servico').modal('hide');
-                    if ($('#procedencia_pk').val() == "2") {
-                        $('#protocolo').modal('show');
-                    }
-
-
-                    primeiro_editar = false;
+                  alerts('success', 'Sucesso', 'Operação realizada com sucesso');
+                  document.location.reload(false);
                 }
 
             }, //Fecha success
