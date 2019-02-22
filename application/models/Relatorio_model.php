@@ -4,27 +4,143 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-class Relatorio_model extends CI_Model
+require_once APPPATH . "core\MY_Model.php";
+
+class Relatorio_model extends MY_Model
 {
 
-    /**
-     * @name string TABLE_NAME Holds the name of the table in use by this model
-     */
+    const NAME = 'relatorios';
     const TABLE_NAME = 'relatorios';
-
-    /**
-     * @name string PRI_INDEX Holds the name of the tables' primary index used in this model
-     */
     const PRI_INDEX = 'relatorio_pk';
 
-    /**
-     * Retrieves record(s) from the database
-     *
-     * @param mixed $where Optional. Retrieves only the records matching given criteria, or all records if not given.
-     *                      If associative array is given, it should fit field_name=>value pattern.
-     *                      If string, value will be used to match against PRI_INDEX
-     * @return mixed Single record if ID is given, or array of results
-     */
+    const FORM = array(
+        'relatorio_func_responsavel',
+        'relatorio_data_criacao',
+        'ativo',
+        'pegou_no_celular',
+        'relatorio_data_entrega',
+        'relatorio_criador',
+        'relatorio_data_inicio_filtro',
+        'relatorio_data_fim_filtro',
+    );
+
+    public function config_form_validation()
+    {
+
+        $this->CI->form_validation->set_rules(
+            'setor[]',
+            'Setor',
+            'required'
+        );
+
+        $this->CI->form_validation->set_rules(
+            'tipo[]>',
+            'Tipo_Servico',
+            'required'
+        );
+
+        $this->CI->form_validation->set_rules(
+            'data_inicial',
+            'Data_Inicial',
+            'required'
+        );
+
+        $this->CI->form_validation->set_rules(
+            'data_final',
+            'Data_Final',
+            'required'
+        );
+
+        $this->CI->form_validation->set_rules(
+            'funcionario_fk',
+            'Funcionario',
+            'required'
+        );
+    }
+
+    public function insert_filter_data($data, $table_name){
+
+        if($this->CI->db->insert_batch($table_name, $data)){
+            
+            return $this->CI->db->insert_id();
+
+        } else {
+            throw new MyException('Não foi possível inserir na tabela '.$table_name, Response::SERVER_FAIL);
+        }
+    }
+
+    public function insert_report_os(Array $data){
+        if ($this->CI->db->insert('relatorios_os', $data)) {
+            return true;
+        } else {
+            throw new MyException('Não foi possível inserir na tabela relatorio_os', Response::SERVER_FAIL);
+        }
+    }
+}
+
+        // $this->form_validation->set_rules(
+        //     'departamento_fk',
+        //     'departamento_fk',
+        //     'required'
+        // );
+
+        // $this->form_validation->set_rules(
+        //     'procedencia_fk',
+        //     'procedencia_fk',
+        //     'required'
+        // );
+
+        // $this->form_validation->set_rules(
+        //     'situacao_fk',
+        //     'situacao_fk',
+        //     'required'
+        // );
+
+        // $this->form_validation->set_rules(
+        //     'prioridade_fk',
+        //     'prioridade_fk',
+        //     'required'
+        // );
+
+        // $this->form_validation->set_rules(
+        //     'servico_fk',
+        //     'departamento_fk',
+        //     'required'
+        // );
+
+        // $this->form_validation->set_rules(
+        //     'hr_inicial',
+        //     'hr_inicial',
+        //     'required'
+        // );
+
+        // $this->form_validation->set_rules(
+        //     'hr_final',
+        //     'hr_final',
+        //     'required'
+        // );
+
+        // $this->form_validation->set_rules(
+        //     'estado_pk',
+        //     'estado_pk',
+        //     'required'
+        // );
+
+        // $this->form_validation->set_rules(
+        //     'municipio_pk',
+        //     'municipio_pk',
+        //     'required'
+        // );
+
+        // $this->form_validation->set_rules(
+        //     'bairro_pk',
+        //     'bairro_pk',
+        //     'required'
+        // );
+
+    
+
+    /*/GET DE ORDENS DE SERVIÇO PERTENCENTES A RELATÓRIOS
     public function get($where = null)
     {
         $this->db->select('ordens_servicos.ordem_servico_pk,ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_cod, ordens_servicos.ordem_servico_status, servicos.servico_nome,  prioridades.prioridade_nome, procedencias.procedencia_nome, coordenadas.coordenada_lat, coordenadas.coordenada_long, setores.setor_nome, (SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual,(SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial,
@@ -73,19 +189,22 @@ class Relatorio_model extends CI_Model
         }
     }
 
-    public function get_relatorio($id_relatorio){
-       $this->db->select('*');
-       $this->db->from('relatorios');
-       $this->db->where('relatorio_pk', $id_relatorio);
 
-        $result = $this->db->get()->row();
+    //SUBSTITUIDA PELA GET ONE
 
-        if ($result) {
-            return ($result);
-        } else {
-            return false;
-        }
-    }
+    // public function get_relatorio($id_relatorio){
+    //    $this->db->select('*');
+    //    $this->db->from('relatorios');
+    //    $this->db->where('relatorio_pk', $id_relatorio);
+
+    //     $result = $this->db->get()->row();
+
+    //     if ($result) {
+    //         return ($result);
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     public function get_os_nao_verificadas($id_relatorio = NULL)
     {
@@ -111,6 +230,8 @@ class Relatorio_model extends CI_Model
         }
     }
 
+
+    /* /SUBSTITUÍDA PELA GET_ALL 
     public function get_relatorios(){
         $this->db->select('*');
         $this->db->from('relatorios');
@@ -219,7 +340,7 @@ class Relatorio_model extends CI_Model
      *
      * @param Array $data Associative array with field_name=>value pattern to be inserted into database
      * @return mixed Inserted row ID, or false if error occured
-     */
+     
     public function insert(Array $data) {
         if ($this->db->insert(self::TABLE_NAME, $data)) {
             return $this->db->insert_id();
@@ -228,7 +349,7 @@ class Relatorio_model extends CI_Model
         }
     }
 
-    public function insert_relatorios_os(Array $data){
+    public function insert_report_os(Array $data){
         if ($this->db->insert('relatorios_os', $data)) {
             return true;
         } else {
@@ -266,7 +387,7 @@ class Relatorio_model extends CI_Model
      * @param Array $data Associative array field_name=>value to be updated
      * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
      * @return int Number of affected rows by the update query
-     */
+     
 
     // public function update(array $data, $where = array())
     // {
@@ -318,7 +439,7 @@ class Relatorio_model extends CI_Model
      *
      * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
      * @return int Number of rows affected by the delete query
-     */
+     
     public function delete($where = array())
     {
         if (!is_array($where)) {
@@ -336,4 +457,7 @@ class Relatorio_model extends CI_Model
 
         return $this->db->affected_rows();
     }
-}
+    */
+
+
+?>
