@@ -45,55 +45,7 @@ class Ordem_Servico extends CRUD_Controller
 
     public function index()
     {
-        $ordens_servico = $this->ordem_servico->get_all(
-            'ordens_servicos.ordem_servico_pk,
-            ordens_servicos.ordem_servico_cod,
-            ordens_servicos.ativo,
-            ordens_servicos.ordem_servico_desc,
-            ordens_servicos.ordem_servico_criacao,
-            ordens_servicos.ordem_servico_atualizacao,
-            ordens_servicos.ordem_servico_comentario,
-            ordens_servicos.funcionario_fk,
-            ordens_servicos.procedencia_fk,
-            ordens_servicos.localizacao_fk,
-            prioridades.prioridade_pk as prioridade_fk,
-            prioridades.prioridade_nome,
-            servicos.servico_pk as servico_fk,
-            servicos.servico_nome,
-            si.situacao_pk as situacao_inicial_fk,
-            si.situacao_nome as situacao_inicial_nome,
-            sa.situacao_pk as situacao_atual_fk,
-            sa.situacao_nome as situacao_atual_nome,
-            setores.setor_pk as setor_fk,
-            setores.setor_nome,
-            localizacoes.localizacao_lat,
-            localizacoes.localizacao_long,
-            localizacoes.localizacao_rua,
-            localizacoes.localizacao_num,
-            localizacoes.localizacao_bairro,
-            localizacoes.localizacao_ponto_referencia,
-            municipios.municipio_nome,
-            funcionarios.funcionario_nome,
-            funcionarios.funcionario_caminho_foto,
-            procedencias.procedencia_nome,
-            ',
-            [
-                'procedencias.organizacao_fk' => $this->session->user['id_organizacao'],
-            ],
-            -1,
-            -1,
-            [
-                ['table' => 'prioridades', 'on' => 'prioridades.prioridade_pk = ordens_servicos.prioridade_fk'],
-                ['table' => 'procedencias', 'on' => 'procedencias.procedencia_pk = ordens_servicos.procedencia_fk'],
-                ['table' => 'servicos', 'on' => 'servicos.servico_pk = ordens_servicos.servico_fk'],
-                ['table' => 'situacoes as si', 'on' => 'si.situacao_pk = ordens_servicos.situacao_inicial_fk'],
-                ['table' => 'situacoes as sa', 'on' => 'sa.situacao_pk = ordens_servicos.situacao_atual_fk'],
-                ['table' => 'setores', 'on' => 'setores.setor_pk = ordens_servicos.setor_fk'],
-                ['table' => 'localizacoes', 'on' => 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk'],
-                ['table' => 'municipios', 'on' => 'municipios.municipio_pk = localizacoes.localizacao_municipio'],
-                ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk'],
-            ]
-        );
+        $ordens_servico = $this->ordem_servico->get_home($this->session->user['id_organizacao']);
 
         $imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao']);
 
