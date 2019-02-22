@@ -19,9 +19,9 @@ class Servico_model extends MY_Model
     );
 
     // @override
-    function get(array $where = null)
+    function get($select, $where = null)
     {
-        $this->CI->db->select('*');
+        $this->CI->db->select($select);
         $this->CI->db->from(self::TABLE_NAME);
         $this->CI->db->join('situacoes', 'situacoes.situacao_pk = ' . self::TABLE_NAME . '.situacao_padrao_fk', 'left');
         $this->CI->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = ' . self::TABLE_NAME . '.tipo_servico_fk');
@@ -66,7 +66,7 @@ class Servico_model extends MY_Model
             'servico_abreviacao',
             'Abreviação',
             'trim|required|max_length[10]'
-        );        
+        );
 
         $this->CI->form_validation->set_rules(
             'situacao_padrao_fk',

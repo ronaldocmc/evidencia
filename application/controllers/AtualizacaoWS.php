@@ -59,35 +59,73 @@ class AtualizacaoWS extends MY_Controller
         $this->load->helper('attempt');
         $this->load->helper('token');
         $this->load->model('tentativa_model');
-        $this->load->model('atualizacao_model');
+
+        $this->load->model('servico_model');
+        $this->load->model('tipo_servico_model');
+        $this->load->model('prioridade_model');
+        $this->load->model('setor_model');
 
         $obj = json_decode(file_get_contents('php://input'));
-        
+
         $now = date('Y-m-d H:i:s');
         $header_obj = apache_request_headers();
-            
+
         $attempt_result = verify_attempt($this->input->ip_address());
 
-        if ($attempt_result === true) 
-        {
-           
-            $token_decodificado = json_decode(token_decrypt($header_obj['Token']));
-            $last_update = $token_decodificado->last_update;
+        if ($attempt_result === true) {
 
-            $atualizar = $this->atualizacao_model->get($token_decodificado->id_empresa, $last_update, $token_decodificado->id_funcionario);
+            $token_decodificado = json_decode(token_decrypt($header_obj['Token']));
+            // $token_decodificado->id_empresa
+            // $token_decodificado->id_funcionario
+            // $last_update = $token_decodificado->last_update;
+
+            $atualizar['servico'] = $this->servico_model->get(
+                "servicos.*",
+                [
+                'servicos.ativo' => 1,
+                'situacoes.organizacao_fk' => $token_decodificado->id_empresa
+                ]
+            );
+
             
-            $this->response->add_data('atualizacao',$atualizar);
+            $atualizar['tipo_servico'] = $this->tipo_servico_model->get(
+                'tipos_servicos.*',
+                [
+                    'tipos_servicos.ativo' => 1,
+                    "departamentos.organizacao_fk" => $token_decodificado->id_empresa
+                ]
+            );
             
+            $atualizar['prioridade'] = $this->prioridade_model->get_all(
+                '*',
+                ["organizacao_fk" => $token_decodificado->id_empresa],
+                -1,
+                -1
+            );
+
+            
+            $atualizar['setores'] = $this->setor_model->get_all(
+                '*',
+                [
+                    "setores.ativo" => 1,
+                    "organizacao_fk" => $token_decodificado->id_empresa
+                ],
+                -1,
+                -1
+            );
+
+
+            $this->response->add_data('atualizacao', $atualizar);
+
             $data['id_pessoa'] = $token_decodificado->id_pessoa;
             $data['id_empresa'] = $token_decodificado->id_empresa;
             $data['last_update'] = $now;
+            
             $token = generate_token($data);
 
-            $this->response->add_data('token',$token);
+            $this->response->add_data('token', $token);
 
-        }
-        else 
-        {
+        } else {
             $this->response->set_code(Response::FORBIDDEN);
             $this->response->set_message($attempt_result);
         }
@@ -109,26 +147,20 @@ class AtualizacaoWS extends MY_Controller
 
         $attempt_result = verify_attempt($this->input->ip_address());
 
-        if ($attempt_result === true) 
-        {
+        if ($attempt_result === true) {
             $obj = apache_request_headers();
 
             $new_token = verify_token($obj['Token'], $this->response);
 
-            if ($new_token) 
-            {
+            if ($new_token) {
                 $dados['token'] = $new_token;
                 $this->response->set_data($dados);
                 $this->tentativa_model->delete($this->input->ip_address());
-            }
-            else
-            {
+            } else {
                 $this->response->set_code(Response::UNAUTHORIZED);
                 $this->response->set_message('Seção experida');
             }
-        } 
-        else 
-        {
+        } else {
             $this->response->set_code(Response::FORBIDDEN);
             $this->response->set_message($attempt_result);
         }
@@ -146,21 +178,17 @@ class AtualizacaoWS extends MY_Controller
         $this->load->helper('token');
         $this->response = new Response();
 
-        if (verify_token($this->data_json, $this->response)) 
-        {
+        if (verify_token($this->data_json, $this->response)) {
             $obj = apache_request_headers();
 
             $this->data_json['pessoa_fk'] = $obj['access_id'];
 
-            if (!$this->modeltoken->delete($this->data_json['pessoa_fk'])) 
-            {
+            if (!$this->modeltoken->delete($this->data_json['pessoa_fk'])) {
                 $this->data_json['pessoa_fk'] = null;
                 $this->data_json['token'] = null;
                 $this->data_json['timestamp'] = null;
             }
-        } 
-        else 
-        {
+        } else {
             $this->response->set_data(Response::LOGOUT_ERROR);
             $this->response->set_message('Erro ao sair');
         }

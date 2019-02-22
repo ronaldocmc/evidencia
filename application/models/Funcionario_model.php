@@ -84,7 +84,7 @@ class Funcionario_model extends MY_Model
 
     function get_setores($where)
     {
-        $this->CI->db->select("*");
+        $this->CI->db->select("setores.*");
         $this->CI->db->from('funcionarios_setores');
         $this->CI->db->join('setores', 'funcionarios_setores.setor_fk = setores.setor_pk');
         $this->CI->db->join('funcionarios', 'funcionarios_setores.funcionario_fk = funcionarios.funcionario_pk');
