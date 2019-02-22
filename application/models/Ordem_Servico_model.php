@@ -23,6 +23,60 @@ class Ordem_Servico_model extends MY_Model
         'ordem_servico_desc',
     );
 
+    public function get_home($organization)
+    {
+        $this->CI->db->select('
+            ordens_servicos.ordem_servico_pk,
+            ordens_servicos.ordem_servico_cod,
+            ordens_servicos.ativo,
+            ordens_servicos.ordem_servico_desc,
+            ordens_servicos.ordem_servico_criacao,
+            ordens_servicos.ordem_servico_atualizacao,
+            ordens_servicos.ordem_servico_comentario,
+            ordens_servicos.funcionario_fk,
+            ordens_servicos.procedencia_fk,
+            ordens_servicos.localizacao_fk,
+            prioridades.prioridade_pk as prioridade_fk,
+            prioridades.prioridade_nome,
+            servicos.servico_pk as servico_fk,
+            servicos.servico_nome,
+            si.situacao_pk as situacao_inicial_fk,
+            si.situacao_nome as situacao_inicial_nome,
+            sa.situacao_pk as situacao_atual_fk,
+            sa.situacao_nome as situacao_atual_nome,
+            setores.setor_pk as setor_fk,
+            setores.setor_nome,
+            localizacoes.localizacao_lat,
+            localizacoes.localizacao_long,
+            localizacoes.localizacao_rua,
+            localizacoes.localizacao_num,
+            localizacoes.localizacao_bairro,
+            localizacoes.localizacao_ponto_referencia,
+            municipios.municipio_nome,
+            funcionarios.funcionario_nome,
+            funcionarios.funcionario_caminho_foto,
+            procedencias.procedencia_nome
+            ');
+        $this->CI->db->from('ordens_servicos');
+        $this->CI->db->where('procedencias.organizacao_fk', $organization);
+
+        $this->CI->db->join('prioridades', 'prioridades.prioridade_pk = ordens_servicos.prioridade_fk');
+        $this->CI->db->join('procedencias', 'procedencias.procedencia_pk = ordens_servicos.procedencia_fk');
+        $this->CI->db->join('servicos', 'servicos.servico_pk = ordens_servicos.servico_fk');
+        $this->CI->db->join('situacoes as si', 'si.situacao_pk = ordens_servicos.situacao_inicial_fk');
+        $this->CI->db->join('situacoes as sa', 'sa.situacao_pk = ordens_servicos.situacao_atual_fk');
+        $this->CI->db->join('setores', 'setores.setor_pk = ordens_servicos.setor_fk');
+        $this->CI->db->join('localizacoes', 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk');
+        $this->CI->db->join('municipios', 'municipios.municipio_pk = localizacoes.localizacao_municipio');
+        $this->CI->db->join('funcionarios', 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk');
+
+        $this->CI->db->order_by('ordens_servicos.ordem_servico_pk', 'DESC');
+
+        $result = $this->CI->db->get()->result();
+        return $result;
+
+    }
+
     function config_form_validation_primary_key()
     {
         $this->CI->form_validation->set_rules(
