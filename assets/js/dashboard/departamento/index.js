@@ -53,30 +53,10 @@ function send_data(){
 
 		if (response.code == 200)
 		{
-			dep  = 
-			{
-				'departamento_nome': data['nome'],
-				'ativo': 1,
-			}
-			if (data['departamento_pk']=='')
-			{
-				dep['departamento_pk'] = response.data['id'];
-				departamentos.push(dep);
-				change_table($('#filter-ativo'));
-			}
-			else
-			{
-				dep['departamento_pk'] = data['departamento_pk'];
-				for (var i in departamentos)
-				{
-					if (departamentos[i]['departamento_pk']==data['departamento_pk'])
-						break;
-				}
-				departamentos[i] = (dep);
-				change_table($('#filter-ativo'));
-			}
-
-			$('#ce_departamento').modal('hide');
+			alerts('success', 'Sucesso', 'Operação realizada com sucesso!');
+			document.location.reload(false);
+		} else {
+			alerts('failed', 'Falha', 'Operação falha!');
 		}
 	}, "json");
 }
@@ -133,8 +113,6 @@ $(document).on('click','.btn-desativar',function(event) {
 	}
 
 	$.post(base_url + '/departamento/get_dependents', data, function (response, textStatus, xhr) {
-
-		wich_alert(response)
 
 		if (response.code == 200) {
 		  	html = ''; //esta variável vai servir para eu preencher a div tipo-servicos-dependentes
@@ -221,14 +199,11 @@ $(document).on('click','#btn-desativar',function(event) {
 
 		if (response.code == 200)
 		{
-			for (var i in departamentos)
-			{
-				if (departamentos[i]['departamento_pk']==data['departamento_pk'])
-					break;
-			}
-			departamentos[i]['ativo'] = 0;
-			$('#filter-ativo').change();
-			$('#d-departamento').modal('hide');
+			alerts('success', 'Sucesso', 'Desativação concluída!');
+			document.location.reload(false);
+		} else {
+
+			alerts('failed', 'Falha', 'Desativação falhou!');
 		}
 	});
 });
@@ -260,14 +235,11 @@ activate = (dep_pk, pass) => {
 
 		if (response.code == 200)
 		{
-			for (var i in departamentos)
-			{
-				if (departamentos[i]['departamento_pk']==data['departamento_pk'])
-					break;
-			}
-			departamentos[i]['ativo'] = 1;
-			$('#filter-ativo').change();
-			$('#r-departamento').modal('hide');
+			alerts('success', 'Sucesso', 'Rativação concluída!');
+			document.location.reload(false);
+		} else {
+
+			alerts('failed', 'Falha', 'Reativação falhou!');
 		}
 	});
 }
