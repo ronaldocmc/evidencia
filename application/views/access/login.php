@@ -67,12 +67,13 @@
       </div>
 </div>
 
+<!--Importando a biblioteca Jquery na versão 3.3.1 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <!-- Importando DataTable -->
 <script src="<?= 'assets/vendor/datatables/datatables.min.js' ?>"></script>
 <script src="<?= 'assets/vendor/datatables/dataTables.bootstrap4.min.js' ?>"></script>
 
-<!--Importando a biblioteca Jquery na versão 3.3.1 -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <!--Importando arquivo js do bootstrap-->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
