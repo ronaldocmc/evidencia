@@ -14,6 +14,7 @@ function btn_ativar(button_submit) {
 }
 
 
+
 //Variáveis globais utilizadas no JS
 var main_map, other_map;
 var main_marker = null;
@@ -106,8 +107,6 @@ function add_options_servico() {
         if (servicos[i].tipo_servico_fk == tipo_servico) {
 
             $("#servico_pk").append('<option value="' + parseInt(servicos[i].servico_pk) + '">' + servicos[i].servico_nome + '</option>');
-            // console.log(servicos[i].servico_pk);
-            // console.log(servicos[i].servico_nome);
         }
     }
 }
@@ -165,9 +164,6 @@ get_departamento_and_tiposervico = (servico_atual_pk) => {
     let data;
     let tipo_servico_atual = servicos.filter(s => (s.servico_pk == servico_atual_pk))[0];
 
-    console.log("SERVICO ATUAL", servico_atual_pk);
-    console.log("TIPO SERVICO ATUAL", tipo_servico_atual);
-
     data =
         {
             'departamento_nome': tipo_servico_atual.departamento_nome,
@@ -175,7 +171,6 @@ get_departamento_and_tiposervico = (servico_atual_pk) => {
             'tipo_servico_pk': tipo_servico_atual.tipo_servico_pk,
             'tipo_servico_nome': tipo_servico_atual.tipo_servico_nome
         }
-
     return data;
 
 }
@@ -876,34 +871,8 @@ function initMap() {
                     //pre_loader_hide();
                 }
                 else if (response.code == 200) {
-                    for (var i in ordens_servico) {
-                        if (ordens_servico[i]['ordem_servico_pk'] == $('#ordem_servico_pk').val()) {
-                            break;
-                        }
-                    }
-
-                    let endereco = ordens_servico[i]['logradouro_nome'] + ", " + ordens_servico[i]['local_num'] + " - " + ordens_servico[i]['bairro_nome'];
-
-                    table.row(i).data([
-                        ordens_servico[i]['ordem_servico_cod'],
-                        ordens_servico[i]['data_criacao'],
-                        ordens_servico[i]['prioridade_nome'],
-                        endereco,
-                        ordens_servico[i]['servico_nome'],
-                        $('#situacao_pk_historico option:selected').text(),
-                        ordens_servico[i]['setor_nome'],
-                        '<div class="btn-group">  <button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                        '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                        '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="' + (i) + '" data-target="#d_servico" title="Desativar">' +
-                        '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                    ]).draw();
-                    //pre_loader_hide();
-                    remove_image();
-
-                    $('#atividade').modal('hide');
-                    $('.modal-backdrop').hide();
-
-                    alerts('success', "Sucesso!", response.data.mensagem);
+                    alerts('success', "Sucesso!", "Histórico criado com sucesso!");
+                    document.location.reload(false);
 
                 }
 
@@ -953,6 +922,10 @@ function initMap() {
         formData.append('localizacao_municipio', $('#cidade-input').val());
         formData.append('localizacao_ponto_referencia', $('#referencia-input').val());
 
+        if ($('#ordem_servico_pk').val() !== '' && $('#ordem_servico_pk').val() !== undefined) {
+          formData.append('localizacao_pk', $('#localizacao_pk').val());
+        }
+
         if ($('#procedencia_pk').val() == "2") {
 
             formData.append('pessoa_nome', $('#nome-input').val());
@@ -966,7 +939,7 @@ function initMap() {
         formData.append('img', imagem);
 
         // procedencia
-        var URL = ($('#ordem_servico_pk').val() == "") ? base_url + '/ordem_servico/save' : base_url + '/ordem_servico/update_os';
+        var URL = base_url + '/ordem_servico/save';
         var ab, data_criacao;
 
         $.ajax({
@@ -1001,114 +974,10 @@ function initMap() {
                 } else if (response.code == 503) {
                     show_errors(response);
                     alerts('failed', response.message, 'Erro na edição de dados');
-                    //pre_loader_hide();
                 }
                 else if (response.code == 200) {
-                    // console.log(response);
-
-                    if ($('#ordem_servico_pk').val() != "") {
-                        cod = ordens_servico[posicao_selecionada]['ordem_servico_cod'];
-                        data_criacao = ordens_servico[posicao_selecionada]['data_criacao'];
-                    } else {
-                        cod = response.data.ordem_servico_cod;
-                        data_criacao = response.data.data_criacao;
-                    }
-
-                    // console.log(cod);
-
-                    os =
-                        {
-                            'ordem_servico_cod': cod,
-                            'data_criacao': data_criacao,
-                            'endereco': response.data.endereco_os,
-                            'coordenada_lat': $('#latitude').val(),
-                            'coordenada_long': $('#longitude').val(),
-                            'historico_ordem_pk': response.data.historico_ordem_pk,
-                            'populacao_os': response.data.populacao_os,
-                            'local_fk': response.data.local_fk,
-                            'ordem_servico_desc': $('#ordem_servico_desc').val(),
-                            'ordem_servico_pk': ($('#ordem_servico_pk').val() == "") ? response.data.ordem_servico_pk : $('#ordem_servico_pk').val(),
-                            'ordem_servico_status': 1,
-                            'prioridade_nome': $('#prioridade_pk option:selected').text(),
-                            'prioridade_pk': $('#prioridade_pk').val(),
-                            'procedencia_nome': $('#procedencia_pk option:selected').text(),
-                            'procedencia_pk': $('#procedencia_pk').val(),
-                            'servico_nome': $('#servico_pk option:selected').text(),
-                            'servico_pk': $('#servico_pk').val(),
-                            'situacao_nome': $('#situacao_pk option:selected').text(),
-                            'situacao_inicial_pk': $('#situacao_pk').val(),
-                            'situacao_atual_pk': $('#situacao_pk').val(),
-                            'tipo_servico_fk': $('#tipo_servico').val(),
-                            'setor_nome': $('#setor_pk option:selected').text(),
-                            'contato_email': $('#email-input').val(),
-                            'contato_cel': $('#celular-input').val(),
-                            'contato_tel': $('#telefone-input').val(),
-                            'pessoa_cpf': $('#cpf-input').val(),
-                            'pessoa_nome': $('#nome-input').val(),
-                            'setor_pk': $('#setor_pk').val()
-                        }
-
-                    if ($('#procedencia_pk').val() == "2") {
-                        let protocolo = create_protocol(os.ordem_servico_cod);
-                        $('#protocol-copy').attr('data-copy', protocolo);
-                        $('#numero-protocolo').html(protocolo);
-                    }
-
-
-                    if ($('#ordem_servico_pk').val() == "") { //verifica se é um insert
-
-                        ordens_servico.push(os);
-                        table.row.add([
-                            os.ordem_servico_cod,
-                            os.data_criacao,
-                            os.prioridade_nome,
-                            os.endereco,
-                            os.servico_nome,
-                            os.situacao_nome,
-                            os.setor_nome,
-                            '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="' + (ordens_servico.length - 1) + '" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (ordens_servico.length - 1) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (ordens_servico.length - 1) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                            '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="' + (ordens_servico.length - 1) + '" data-target="#d_servico" title="Desativar">' +
-                            '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                        ]).draw(false);
-                        alerts('success', 'Sucesso', response.data.mensagem);
-                        remove_image();
-                    }
-                    else {
-                        for (var i in ordens_servico) {
-
-                            if (ordens_servico[i]['ordem_servico_pk'] == $('#ordem_servico_pk').val()) {
-                                os['situacao_atual_pk'] = ordens_servico[i]['situacao_atual_pk'];
-                                break;
-                            }
-                        }
-                        ordens_servico[i] = (os);
-                        table.row(i).data([
-                            os.ordem_servico_cod,
-                            os.data_criacao,
-                            os.prioridade_nome,
-                            os.endereco,
-                            os.servico_nome,
-                            os.situacao_nome,
-                            os.setor_nome,
-                            '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="' + (i) + '" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                            '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                            '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="' + (i) + '" data-target="#d_servico" title="Desativar">' +
-                            '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                        ]).draw();
-                        alerts('success', 'Sucesso', response.data.mensagem);
-
-                    }
-                    //pre_loader_hide();
-                    remove_image();
-                    $("#info_cidadao").hide();
-                    $('#ce_ordem_servico').modal('hide');
-                    if ($('#procedencia_pk').val() == "2") {
-                        $('#protocolo').modal('show');
-                    }
-
-
-                    primeiro_editar = false;
+                  alerts('success', 'Sucesso', 'Operação realizada com sucesso');
+                  document.location.reload(false);
                 }
 
             }, //Fecha success
@@ -1170,33 +1039,23 @@ function initMap() {
     $(document).on('click', '.btn_editar', function (event) {
         document.getElementById("ce_ordem_servico").focus();
 
-        $('.submit').attr('disabled', 'disabled');
-        $('.submit').css('cursor', 'default');
-        $('.close').attr('disabled', 'disabled');
-        $('.close').css('cursor', 'default');
-        $('#fechar-historico').attr('disabled', 'disabled');
-        $('#fechar-historico').css('cursor', 'default');
-
         primeiro_editar = true;
 
         $('#titulo').val("Alterar dados ordem de serviço");
 
         $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
         posicao_selecionada = $(this).val();
-        // console.log(posicao_selecionada);
 
-        // console.log("PK:" + ordens_servico[$(this).val()]['ordem_servico_pk']);
-
-        var data = get_departamento_and_tiposervico(ordens_servico[posicao_selecionada]['servico_pk'])//Aqui eu vou fazer uma função que vai requisitar percorrer departamentos e encontrar o fk
-        var servico_selecionado_pk = ordens_servico[posicao_selecionada]['servico_pk'];
+        var data = get_departamento_and_tiposervico(ordens_servico[posicao_selecionada]['servico_fk'])//Aqui eu vou fazer uma função que vai requisitar percorrer departamentos e encontrar o fk
+        var servico_selecionado_pk = ordens_servico[posicao_selecionada]['servico_fk'];
 
 
         $('#ordem_servico_pk').val(parseInt(ordens_servico[posicao_selecionada]['ordem_servico_pk']));
         $('#ordem_servico_desc').val(ordens_servico[posicao_selecionada]['ordem_servico_desc']);
         $('#departamento').val(data.departamento_pk);
-        // add_options_tipo_servico();
-        $('#tipo_servico').val(ordens_servico[posicao_selecionada]['tipo_servico_fk']);
-        // add_options_servico();
+        muda_depto();
+        $('#tipo_servico').val(data.tipo_servico_pk);
+        muda_tipo_servico();
         $('#servico_pk').val(servico_selecionado_pk);
         $('#situacao_pk').val(parseInt(ordens_servico[posicao_selecionada]['situacao_inicial_fk']));
         $('#prioridade_pk').val(parseInt(ordens_servico[posicao_selecionada]['prioridade_fk']));
@@ -1211,10 +1070,10 @@ function initMap() {
             $('#info_cidadao').show();
         }
 
-        $('#setor_pk').val(parseInt(ordens_servico[posicao_selecionada]['setor_pk']));
+        $('#setor_pk').val(parseInt(ordens_servico[posicao_selecionada]['setor_fk']));
         $("#latitude").val(ordens_servico[posicao_selecionada]['localizacao_lat']);
         $("#longitude").val(ordens_servico[posicao_selecionada]['localizacao_long']);
-
+        $("#localizacao_pk").val(ordens_servico[posicao_selecionada]['localizacao_fk']);
         $("#bairro_pk").val(ordens_servico[posicao_selecionada]['localizacao_bairro']);
         $("#logradouro-input").val(ordens_servico[posicao_selecionada]['localizacao_rua']);
         $("#numero-input").val(ordens_servico[posicao_selecionada]['localizacao_num']);
