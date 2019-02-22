@@ -116,9 +116,10 @@
                             </div>
                         </div>
                         <div class="table-responsive table--no-card m-b-40">
-                            <table id="ordens_servico" class="table table-striped table-datatable">
+                            <table id="ordens_servico" class="table table-striped">
                                 <thead>
                                     <tr>
+                                        <th id="id_as">id</th>
                                         <th>Código</th>
                                         <th>Data</th>
                                         <th>Prioridade</th>
@@ -133,6 +134,9 @@
                                     <?php if ($ordens_servico != null): ?>
                                         <?php foreach ($ordens_servico as $key => $ordem_servico): ?>
                                             <tr>
+                                                <td>
+                                                    <?= $ordem_servico->ordem_servico_pk ?>
+                                                </td>
                                                 <td>
                                                     <?=$ordem_servico->ordem_servico_cod?>
                                                 </td>
