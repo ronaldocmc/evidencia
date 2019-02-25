@@ -22,15 +22,16 @@ remove_image = () => {
   removeUpload();
 }
 
-$(document).on('click','.btn-attr-pessoa_pk',function(){
-  $('#pessoa_pk').val(superusuarios[$(this).val()]['pessoa_pk']);
+$(document).on('click','.btn-attr-superusuario_pk',function(){
+  console.log(superusuarios[$(this).val()]['superusuario_pk']);
+  $('#superusuario_pk').val(superusuarios[$(this).val()]['superusuario_pk']);
   posicao_selecionada = $(this).val();
 });
 
 $('#btn-deactivate').click(() => {
   var data = 
   {
-    'pessoa_pk': $('#pessoa_pk').val(),
+    'superusuario_pk': $('#superusuario_pk').val(),
     'senha': $('#pass-modal-desativar').val()
   }
 
@@ -54,7 +55,7 @@ $('#btn-deactivate').click(() => {
 $('#btn-activate').click(() => {
   var data = 
   {
-    'pessoa_pk': $('#pessoa_pk').val(),
+    'superusuario_pk': $('#superusuario_pk').val(),
     'senha': $('#pass-modal-ativar').val()
   }
 
@@ -85,15 +86,15 @@ update_table = () => {
       $.each(superusuarios, function (i, user) {
         if(user.usuario_status == 1){
         table.row.add([
-          user.pessoa_nome,
-          user.contato_email,
-          '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
+          user.superusuario_nome,
+          user.superusuario_login,
+          '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
         ]).draw(false);
       }else{
         table.row.add([
-          user.pessoa_nome,
-          user.contato_email,
-          '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
+          user.superusuario_nome,
+          user.superusuario_login,
+          '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
         ]).draw(false);
       }
       });
@@ -103,9 +104,9 @@ update_table = () => {
       $.each(superusuarios, function (i, user) {
         if (user.usuario_status == 1) {
           table.row.add([
-            user.pessoa_nome,
-            user.contato_email,
-            '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-attr-pessoa_pk btn-danger" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
+            user.superusuario_nome,
+            user.superusuario_login,
+            '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-attr-superusuario_pk btn-danger" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
           ]).draw(false);
         }
       });
@@ -115,10 +116,10 @@ update_table = () => {
     $.each(superusuarios, function (i, user) {
       if (user.usuario_status == 0) {
         table.row.add([
-          user.pessoa_nome,
-          user.contato_email,
+          user.superusuario_nome,
+          user.superusuario_login,
           '<div class="btn-group">' +
-            '<button type="button" class="btn btn-sm btn-success btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
+            '<button type="button" class="btn btn-sm btn-success btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
         ]).draw(false);
       }
     });
@@ -155,18 +156,24 @@ send = (imagem) => {
   btn_load($('.submit'));
 
   const formData = new FormData();
-  formData.append('pessoa_nome', $('#nome-input').val());
-  formData.append('pessoa_cpf', $('#cpf-input').val());
-  formData.append('contato_email', $('#email-input').val());
-  formData.append('contato_tel', $('#telefone-input').val());
-  formData.append('contato_cel', $('#celular-input').val());
+  // formData.append('superusuario_nome', $('#nome-input').val());
+  // formData.append('pessoa_cpf', $('#cpf-input').val());
+  // formData.append('superusuario_login', $('#email-input').val());
+  // formData.append('contato_tel', $('#telefone-input').val());
+  // formData.append('contato_cel', $('#celular-input').val());
+  // formData.append('img_su', imagem);
+  
   formData.append('senha', $('#pass-modal-edit').val());
-  formData.append('img_su', imagem);
+  formData.append('superusuario_nome', $('#nome-input').val());
+  formData.append('superusuario_email', $('#email-input').val());
+  formData.append('superusuario_login', $('#login-input').val());
 
-  var URL = ($('#pessoa_pk').val() == "") ? base_url + '/superusuario/insert' : base_url + '/superusuario/update';
+  console.log($('#superusuario_pk').val());
 
-  if ($('#pessoa_pk').val() != "") {
-    formData.append('pessoa_pk', $('#pessoa_pk').val());
+  var URL = ($('#superusuario_pk').val() == "") ? base_url + '/superusuario/insert' : base_url + '/superusuario/update';
+
+  if ($('#superusuario_pk').val() != "") {
+    formData.append('superusuario_pk', $('#superusuario_pk').val());
   }
 
   $.ajax({
@@ -189,36 +196,37 @@ send = (imagem) => {
         alerts('failed', 'Erro!', 'Senha incorreta.');
       }
       else if(response.code == 200){
+        alerts('success', 'Sucesso!', 'Superusuário inserido com sucesso');
         superusuario =
           {
-            'pessoa_fk': ($('#pessoa_pk').val() == "") ? response.data.pessoa_fk : $('#pessoa_pk').val(),
-            'pessoa_nome': $('#nome-input').val(),
-            'pessoa_cpf': $('#cpf-input').val(),
-            'contato_email': $('#email-input').val(),
-            'contato_tel': $('#telefone-input').val(),
-            'contato_cel': $('#celular-input').val(),
-            'img_su': imagem,
-            'pessoa_pk': ($('#pessoa_pk').val() == "") ? response.data.pessoa_fk : $('#pessoa_pk').val()
+            'superusuario_pk': ($('#superusuario_pk').val() == "") ? response.data.superusuario_pk : $('#superusuario_pk').val(),
+            'superusuario_nome': $('#nome-input').val(),
+            'superusuario_login': $('#login-input').val(),
+            // 'superusuario_login': $('#email-input').val(),
+            // 'contato_tel': $('#telefone-input').val(),
+            // 'contato_cel': $('#celular-input').val(),
+            // 'img_su': imagem,
+            // 'superusuario_pk': ($('#superusuario_pk').val() == "") ? response.data.pessoa_fk : $('#superusuario_pk').val()
           }
-        if ($('#pessoa_pk').val() == "") { //verifica se é um insert
+        if ($('#superusuario_pk').val() == "") { //verifica se é um insert
           superusuarios.push(superusuario);
           table.row.add([
-            superusuario.pessoa_nome,
-            superusuario.contato_email,
-            '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super btn-attr-pessoa_pk" data-toggle="modal" value="' + (superusuarios.length - 1) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (superusuarios.length - 1) + '" data-target="#d-superusuario">Desativar</button></div>'
+            superusuario.superusuario_nome,
+            superusuario.superusuario_login,
+            '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super btn-attr-superusuario_pk" data-toggle="modal" value="' + (superusuarios.length - 1) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-superusuario_pk" data-toggle="modal" value="' + (superusuarios.length - 1) + '" data-target="#d-superusuario">Desativar</button></div>'
           ]).draw(false);
           alerts('success', 'Sucesso!', 'Superusuário inserido com sucesso');
         } else {
 
           for (var i in superusuarios) {
-            if (superusuarios[i]['pessoa_pk'] == $('#pessoa_pk').val())
+            if (superusuarios[i]['superusuario_pk'] == $('#superusuario_pk').val())
               break;
           }
           superusuarios[i] = (superusuario);
           table.row(i).data([
-            superusuario.pessoa_nome,
-            superusuario.contato_email,
-            '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
+            superusuario.superusuario_nome,
+            superusuario.superusuario_login,
+            '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
           ]).draw();
           alerts('success', 'Sucesso!', 'Superusuário modificado com sucesso');
         }
@@ -242,7 +250,7 @@ send = (imagem) => {
 $('#novo_sup_btn').on('click', function () {
   $('#titulo').html("Novo Superusuário");
   $('#ce_superusuario').modal('show');
-  $('#pessoa_pk').val("");
+  $('#superusuario_pk').val("");
 });
 
 /* Quando clica em editar superusuário, muda o titulo do modal
@@ -253,12 +261,14 @@ $('#novo_sup_btn').on('click', function () {
 
 $(document).on('click', '.btn-editar-super', function (event) {
   $('#titulo').html("Editar Superusuário");
-  $('#pessoa_pk').val(superusuarios[posicao_selecionada]['pessoa_pk']);
-  $('#nome-input').val(superusuarios[posicao_selecionada]['pessoa_nome']);
-  $('#cpf-input').val(superusuarios[posicao_selecionada]['pessoa_cpf']);
-  $('#email-input').val(superusuarios[posicao_selecionada]['contato_email']);
-  $('#telefone-input').val(superusuarios[posicao_selecionada]['contato_tel']);
-  $('#celular-input').val(superusuarios[posicao_selecionada]['contato_cel']);
+  $('#superusuario_pk').val(superusuarios[posicao_selecionada]['superusuario_pk']);
+  $('#nome-input').val(superusuarios[posicao_selecionada]['superusuario_nome']);
+  $('#email-input').val(superusuarios[posicao_selecionada]['superusuario_email']);
+  $('#login-input').val(superusuarios[posicao_selecionada]['superusuario_login']);
+  // $('#email-input').val(superusuarios[posicao_selecionada]['superusuario_login']);
+  // $('#telefone-input').val(superusuarios[posicao_selecionada]['contato_tel']);
+  // $('#celular-input').val(superusuarios[posicao_selecionada]['contato_cel']);
+  $('#login-input').prop('disabled', 'true');
   $('#ce_superusuario').modal('show');
 });
 
