@@ -10,6 +10,7 @@ class Super_model extends MY_Model {
 	const TABLE_NAME = 'superusuarios';
     const PRI_INDEX = 'superusuario_pk';
     
+    
     const FORM = array(
         'superusuario_pk',
         'superusuario_nome',
