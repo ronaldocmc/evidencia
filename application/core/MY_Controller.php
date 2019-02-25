@@ -83,4 +83,27 @@ class MY_Controller extends CI_Controller
         }
         $this->$method();
     }
+
+    public function begin_transaction()
+    {
+        $this->db->trans_start();
+    }
+
+
+    public function end_transaction()
+    {
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            if(is_array($this->db->error())){
+                throw new MyException('Erro ao realizar operação.<br>'.implode('<br>',$this->db->error()), Response::SERVER_FAIL);
+            } else {
+                throw new MyException('Erro ao realizar operação.<br>'.$this->db->error(), Response::SERVER_FAIL);
+            }
+        }
+        else
+        {
+            $this->db->trans_commit();
+        }
+    }
 }
