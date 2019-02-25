@@ -58,7 +58,8 @@ class Relatorio_model extends MY_Model
         );
     }
 
-    public function insert_filter_data($data, $table_name){
+    public function insert_filter_data($data, $table_name)
+    {
 
         if($this->CI->db->insert_batch($table_name, $data)){
             
@@ -69,119 +70,70 @@ class Relatorio_model extends MY_Model
         }
     }
 
-    public function insert_report_os(Array $data){
+    public function insert_report_os(Array $data)
+    {
         if ($this->CI->db->insert('relatorios_os', $data)) {
             return true;
         } else {
             throw new MyException('Não foi possível inserir na tabela relatorio_os', Response::SERVER_FAIL);
         }
     }
-}
 
-        // $this->form_validation->set_rules(
-        //     'departamento_fk',
-        //     'departamento_fk',
-        //     'required'
-        // );
-
-        // $this->form_validation->set_rules(
-        //     'procedencia_fk',
-        //     'procedencia_fk',
-        //     'required'
-        // );
-
-        // $this->form_validation->set_rules(
-        //     'situacao_fk',
-        //     'situacao_fk',
-        //     'required'
-        // );
-
-        // $this->form_validation->set_rules(
-        //     'prioridade_fk',
-        //     'prioridade_fk',
-        //     'required'
-        // );
-
-        // $this->form_validation->set_rules(
-        //     'servico_fk',
-        //     'departamento_fk',
-        //     'required'
-        // );
-
-        // $this->form_validation->set_rules(
-        //     'hr_inicial',
-        //     'hr_inicial',
-        //     'required'
-        // );
-
-        // $this->form_validation->set_rules(
-        //     'hr_final',
-        //     'hr_final',
-        //     'required'
-        // );
-
-        // $this->form_validation->set_rules(
-        //     'estado_pk',
-        //     'estado_pk',
-        //     'required'
-        // );
-
-        // $this->form_validation->set_rules(
-        //     'municipio_pk',
-        //     'municipio_pk',
-        //     'required'
-        // );
-
-        // $this->form_validation->set_rules(
-        //     'bairro_pk',
-        //     'bairro_pk',
-        //     'required'
-        // );
-
-    
-
-    /*/GET DE ORDENS DE SERVIÇO PERTENCENTES A RELATÓRIOS
-    public function get($where = null)
+    public function get_orders_of_report($where = null)
     {
-        $this->db->select('ordens_servicos.ordem_servico_pk,ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_cod, ordens_servicos.ordem_servico_status, servicos.servico_nome,  prioridades.prioridade_nome, procedencias.procedencia_nome, coordenadas.coordenada_lat, coordenadas.coordenada_long, setores.setor_nome, (SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual,(SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial,
-           (SELECT historicos_ordens.historico_ordem_tempo FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as data_criacao,
-           tipos_servicos.tipo_servico_nome, 
-           locais.local_complemento, locais.local_num, logradouros.logradouro_nome, bairros.bairro_nome, municipios.municipio_nome, municipios.estado_fk, coordenadas.local_fk, departamento_nome, relatorios_os.os_verificada as status_os
+        $this->CI->db->select(
+                'ordens_servicos.ordem_servico_pk,
+                ordens_servicos.ordem_servico_desc, 
+                ordens_servicos.ordem_servico_cod, 
+                ordens_servicos.situacao_atual_fk,
+                ordens_servicos.ordem_servico_comentario,
+                ordens_servicos.ordem_servico_atualizacao,
+                ordens_servicos.ordem_servico_criacao,
+                servicos.servico_nome,
+                servicos.servico_pk,
+                tipos_servicos.tipo_servico_pk,
+                tipos_servicos.tipo_servico_nome,
+                prioridades.prioridade_pk,  
+                prioridades.prioridade_nome, 
+                procedencias.procedencia_nome, 
+                localizacoes.localizacao_pk,
+                localizacoes.localizacao_lat,
+                localizacoes.localizacao_long,
+                localizacoes.localizacao_rua,
+                localizacoes.localizacao_num,
+                localizacoes.localizacao_bairro,
+                situacoes.situacao_nome,
+                setores.setor_nome,
+                setores.setor_pk,
+                departamentos.departamento_nome,
+                departamentos.departamento_pk
+           ');
 
-           ')
-        ;
-        $this->db->from('relatorios_os');
-        $this->db->join('ordens_servicos', 'relatorios_os.os_fk = ordens_servicos.ordem_servico_pk');
-        $this->db->join('servicos','servicos.servico_pk = ordens_servicos.servico_fk');
-        $this->db->join('historicos_ordens','historicos_ordens.ordem_servico_fk =  ordens_servicos.ordem_servico_pk');
-        //$this->db->join('imagens_situacoes', 'historicos_ordens.historico_ordem_pk = imagens_situacoes.historico_ordem_fk', 'LEFT');
-        $this->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
-        $this->db->join('situacoes','situacoes.situacao_pk = historicos_ordens.situacao_fk');
-        $this->db->join('prioridades','prioridades.prioridade_pk = ordens_servicos.prioridade_fk');
-        $this->db->join('procedencias','procedencias.procedencia_pk = ordens_servicos.procedencia_fk');
-        $this->db->join('setores','setores.setor_pk= ordens_servicos.setor_fk');
-        $this->db->join('coordenadas','coordenadas.coordenada_pk = ordens_servicos.coordenada_fk');
-        $this->db->join('locais', 'coordenadas.local_fk = locais.local_pk');
-        $this->db->join('logradouros', 'locais.logradouro_fk = logradouros.logradouro_pk');
-        $this->db->join('bairros', 'locais.bairro_fk = bairros.bairro_pk');
-        $this->db->join('municipios', 'bairros.municipio_fk = municipios.municipio_pk');
-        $this->db->join('departamentos', 'departamentos.departamento_pk = tipos_servicos.departamento_fk');
-        // $this->db->join('ordens_servicos', 'ordens_servicos.ordem_servico_pk = relatorios_os.os_fk');
-        $this->db->group_by('ordens_servicos.ordem_servico_pk');
+        $this->CI->db->from('relatorios_os');
+        $this->CI->db->join('ordens_servicos', 'relatorios_os.os_fk = ordens_servicos.ordem_servico_pk');
+        $this->CI->db->join('servicos','servicos.servico_pk = ordens_servicos.servico_fk');
+        $this->CI->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
+        $this->CI->db->join('situacoes','situacoes.situacao_pk = ordens_servicos.situacao_atual_fk');
+        $this->CI->db->join('prioridades','prioridades.prioridade_pk = ordens_servicos.prioridade_fk');
+        $this->CI->db->join('procedencias','procedencias.procedencia_pk = ordens_servicos.procedencia_fk');
+        $this->CI->db->join('setores','setores.setor_pk = ordens_servicos.setor_fk');
+        $this->CI->db->join('localizacoes', 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk');
+        $this->CI->db->join('departamentos', 'departamentos.departamento_pk = tipos_servicos.departamento_fk');
+        $this->CI->db->group_by('ordens_servicos.ordem_servico_pk');
 
         if ($where !== NULL) {
             if (is_array($where)) {
-                foreach ($where as $field=>$value) {
-                    $this->db->where($field, $value);
+                foreach ($where as $field => $value) {
+                    $this->CI->db->where($field, $value);
                 }
             } else {
-                $this->db->where(self::PRI_INDEX, $where);
+                $this->CI->db->where(self::PRI_INDEX, $where);
             }
         }
 
         //echo $this->db->get_compiled_select(); die();
 
-        $result = $this->db->get()->result();
+        $result = $this->CI->db->get()->result();
         if ($result) {
             return ($result);
         } else {
@@ -189,7 +141,8 @@ class Relatorio_model extends MY_Model
         }
     }
 
-
+}
+    /*
     //SUBSTITUIDA PELA GET ONE
 
     // public function get_relatorio($id_relatorio){

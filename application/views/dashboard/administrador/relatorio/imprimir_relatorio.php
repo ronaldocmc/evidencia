@@ -29,7 +29,7 @@
                 <b>Funcionário</b>
             </div>
             <div class="card-body">
-            <?= $funcionario->pessoa_nome ?>
+            <?= $funcionario->funcionario_nome ?>
             </div>
         </div>
 
@@ -38,7 +38,7 @@
                 <b>Gerado em</b>
             </div>
             <div class="card-body">
-            <?= date("d/m/Y", strtotime($relatorio->data_criacao)) ?>
+            <?= date("d/m/Y", strtotime($relatorio->relatorio_data_criacao)) ?>
             </div>
         </div>
 
@@ -104,17 +104,17 @@
                 </td>
                 <td>
                     <span style="display: none">
-                        <?=$ordem_servico->data_criacao?></span>
-                    <?= $ordem_servico->data_criacao ?>
+                        <?=$ordem_servico->ordem_servico_criacao?></span>
+                    <?= $ordem_servico->ordem_servico_criacao ?>
                 </td>
                 <td>
                     <?=$ordem_servico->prioridade_nome?>
                 </td>
                 <td>
                     <span style="text-align: justify;">
-                        <?=$ordem_servico->logradouro_nome . ", " .
-                                                                $ordem_servico->local_num . " - " .
-                                                                $ordem_servico->bairro_nome?>
+                        <?=$ordem_servico->localizacao_rua. ", " .
+                                                                $ordem_servico->localizacao_num . " - " .
+                                                                $ordem_servico->localizacao_bairro?>
                     </span>
                 </td>
                 <td>
@@ -125,7 +125,7 @@
                     <?=$ordem_servico->setor_nome?>
                 </td>
                 <td>
-                    <?= $ordem_servico->status_os_string ?>
+                    <?= $ordem_servico->situacao_nome ?>
                 </td>
 
             </tr>

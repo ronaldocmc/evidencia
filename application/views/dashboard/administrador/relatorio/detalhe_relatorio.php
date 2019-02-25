@@ -27,12 +27,12 @@
             <div class="row py-2">
                 <div class="col-lg-12">
                     <div class="au-card d-flex flex-column">
-                        <h2 class="title-1 m-b-25"> Relatório do
-                            <?= $funcionario->pessoa_nome ?> do dia
-                            <?= date("d/m/Y", strtotime($relatorio->data_criacao)) ?>
+                        <h3 class="title-1 m-b-25"> Relatório do dia <?= date("d/m/Y", strtotime($relatorio->relatorio_data_criacao)) ?>
+                        <h3 class="title-2 m-b-25" style="margin-bottom: 5px; padding-bottom: 5px;"> Revisor responsável: <?= $funcionario->funcionario_nome ?> </h3>
+                            
                             <?php 
 
-                                    if($relatorio->status == 1)
+                                    if($relatorio->pegou_no_celular == 1)
                                     {
                                         $font_size = 12;
                                         $label = "ENTREGUE";
@@ -43,9 +43,10 @@
                                         $class = "warning";
                                     }
                                     ?>
-
-                            <span style="font-size:<?= $font_size ?>pt;" class="badge badge-pill badge-<?= $class ?>">
+                            <div class = "col-12 col-md-12">
+                            <span style="font-size:<?= $font_size ?>pt; margin: 2px;" class="badge badge-pill badge-<?= $class ?> pull-right">
                                 <?= $label ?></span></h2>
+                            </div>
                         <div class="card-group">
 
                             <div class="card">
@@ -87,13 +88,13 @@
                             <?php endif; ?>
                         </div>
 
-                            <a target="blank" href="<?= base_url('relatorio/imprimir_relatorio/'.$relatorio->relatorio_pk) ?>" class="au-btn au-btn-icon btn au-btn--blue pull-right">
+                            <a target="_blank" href="<?= base_url('relatorio/report_details/'.$relatorio->relatorio_pk.'/TRUE') ?>" class="au-btn au-btn-icon btn au-btn--blue pull-right">
                                 <i class="fas fa-print"></i>Imprimir relatório
                             </a>
 
 
                         <div class="table-responsive table--no-card m-b-40 mt-5">
-                            <table id="ordens_servico" class="table table-striped table-datatable">
+                            <table id="os_table" class="table table-striped table-datatable">
                                 <thead>
                                     <tr>
                                         <th>Código</th>
@@ -118,17 +119,17 @@
                                         </td>
                                         <td>
                                             <span style="display: none">
-                                                <?=$ordem_servico->data_criacao?></span>
-                                            <?= $ordem_servico->data_criacao ?>
+                                                <?=$ordem_servico->ordem_servico_atualizacao?></span>
+                                            <?= $ordem_servico->ordem_servico_atualizacao ?>
                                         </td>
                                         <td>
                                             <?=$ordem_servico->prioridade_nome?>
                                         </td>
                                         <td>
                                             <span style="text-align: justify;">
-                                                <?=$ordem_servico->logradouro_nome . ", " .
-                                                                $ordem_servico->local_num . " - " .
-                                                                $ordem_servico->bairro_nome?>
+                                                <?=$ordem_servico->localizacao_rua . ", " .
+                                                                $ordem_servico->localizacao_num . " - " .
+                                                                $ordem_servico->localizacao_bairro?>
                                             </span>
                                         </td>
                                         <td>
@@ -139,7 +140,7 @@
                                             <?=$ordem_servico->setor_nome?>
                                         </td>
                                         <td>
-                                            <?= $ordem_servico->status_os_string ?>
+                                            <?= $ordem_servico->ordem_servico_comentario ?>
                                         </td>
                                         <td>
                                             <div class="btn-group">
@@ -374,7 +375,7 @@
                                                     foreach($funcionarios as $func):
                                                         ?>
                                                 <option value="<?= $func->funcionario_pk ?>">
-                                                    <?= $func->pessoa_nome ?>
+                                                    <?= $func->funcionario_nome?>
                                                 </option>
                                                 <?php
                                                     endforeach;
@@ -467,7 +468,7 @@
 </div>
 
 <script type="text/javascript">
-    var ordens_servico = <? php echo json_encode($ordens_servicos !== false ? $ordens_servicos : []); ?>;
+    var ordens_servico = <?php echo json_encode($ordens_servicos !== false ? $ordens_servicos : []); ?>;
 </script>
 <!-- END MAIN CONTENT-->
 <!-- END PAGE CONTAINER-->
