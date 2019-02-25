@@ -408,7 +408,11 @@ class Contact extends CI_Controller
             );
 
             //Chamando função get para realizar a operação e encontrar o usuário especifico do acesso
-            $retorno = $this->rmodel->get($where);
+            // $retorno = $this->rmodel->get($where);
+            $retorno = $this->rmodel->get_one(
+                '*',
+                $where
+            );
             if ($retorno) //Se o token existir então inserimos o novo acesso
             {
                 //Padronizando dados recebidos via post para inserção
@@ -473,8 +477,8 @@ class Contact extends CI_Controller
         if ($retorno) //Se o token existir então exibimos a view para preenchimento de senha e login
         {
             $super = $this->super_model->get([
-                'super_usuarios.pessoa_fk' => $retorno->pessoa_fk,
-                'super_usuarios.usuario_status' => 1
+                'superusuario_pk' => $retorno->superusuario_fk,
+                'ativo' => 0
             ]);
 
             if ($super===FALSE)
@@ -519,7 +523,12 @@ class Contact extends CI_Controller
         } 
         else //Se não, carregamos a view de erro.
         {
-            $this->load->view('errors/html/error_404');
+            $this->load->view('errors/html/error_404', 
+                    [
+                        'heading' =>  "Não foi possível exibir a página", 
+                        'message' => "Token expirado ou usário não encontrado."
+                    ]
+                );
         }
     }
 
