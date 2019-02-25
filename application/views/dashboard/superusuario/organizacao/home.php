@@ -204,6 +204,8 @@
                                                     </select>
                                                     <small class="help-block form-text">Por favor, informe a cidade</small>
                                                 </div>
+                                                <input type="hidden" name="estado-input" id="estado-input">
+                                                <input type="hidden" name="municipio-nome" id="municipio-nome">
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col-12 col-md-2">
