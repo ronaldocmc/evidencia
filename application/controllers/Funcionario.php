@@ -26,6 +26,7 @@ class Funcionario extends CRUD_Controller
 
         $this->load->library('form_validation');
         $this->load->library('upload');
+        $this->load->helper('insert_images');
 
         $this->load->helper('exception');
 
@@ -35,7 +36,7 @@ class Funcionario extends CRUD_Controller
     public function index()
     {
         $funcionarios = $this->funcionario_model->get(
-            "funcionarios.funcionario_pk, funcionarios.organizacao_fk, funcionarios.ativo, funcionarios.funcionario_login, funcionarios.funcionario_nome, funcionarios.funcionario_cpf,
+            "funcionarios.funcionario_pk, funcionarios.organizacao_fk, funcionarios.ativo, funcionarios.funcionario_login, funcionarios.funcionario_nome, funcionarios.funcionario_caminho_foto, funcionarios.funcionario_cpf,
             funcionarios.funcao_fk, funcoes.funcao_nome, funcoes.funcao_pk, organizacoes.organizacao_pk ",
             // "*",
             [
@@ -163,10 +164,42 @@ class Funcionario extends CRUD_Controller
 
             if (isset($_POST['funcionario_pk'])) {
                 $this->funcionario_model->__set("funcionario_pk", $_POST['funcionario_pk']);
+
+                $path = upload_img(
+                    [
+                        'id' => $_POST['funcionario_pk'],
+                        'path' => 'PATH_FUNC',
+                        'is_os' => false,
+                    ],
+                    [0 => $this->input->post('img')]
+                );
+
+                if($path != null){
+                    $this->funcionario_model->__set("funcionario_caminho_foto", $path[0]);
+                    $this->response->add_data("path", $path[0]);
+                }
                 $this->funcionario_model->update_funcionario($_POST['funcionario_pk'], $_POST['setor_fk']);
+
+                
             } else {
-                $this->funcionario_model->__set("funcionario_senha", hash(ALGORITHM_HASH, $this->funcionario_model->__get("funcionario_senha") . SALT));
-                $this->funcionario_model->insert_funcionario($_POST['setor_fk']);
+
+                $this->funcionario_model->__set("funcionario_senha", hash(ALGORITHM_HASH, $_POST['funcionario_senha'] . SALT));
+
+                $id = $this->funcionario_model->insert_funcionario($_POST['setor_fk']);
+
+                $path = upload_img(
+                    [
+                        'id' => $id,
+                        'path' => 'PATH_FUNC',
+                        'is_os' => false,
+                    ],
+                    [0 => $this->input->post('img')]
+                );
+
+                if ($path != null) {
+                    $this->funcionario_model->update_image($path[0], $id);
+                    $this->response->add_data("path", $path[0]);
+                }
             }
 
             $this->end_transaction();

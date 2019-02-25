@@ -16,8 +16,7 @@ function upload_img($params, array $base64_images)
     $images_uploaded = [];
 
 
-
-    if ($base64_images[0] != null) {
+    if ($base64_images[0] != "null" ) {
 
         //Se uma ou mais imagens foram enviadas, percorreremos:
         foreach ($base64_images as $image) {
@@ -52,6 +51,8 @@ function upload_img($params, array $base64_images)
                 array_push($images_uploaded, $final_path);
             }
         }
+    }else{
+        $images_uploaded = null;
     }
 
     //Retorno o array de caminhos

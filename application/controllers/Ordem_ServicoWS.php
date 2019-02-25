@@ -156,6 +156,8 @@ class Ordem_ServicoWS extends MY_Controller
 
             $where['sa.organizacao_fk'] = $empresa;
 
+            $where['ordens_servicos.situacao_atual_fk != 3 AND ordens_servicos.situacao_atual_fk != 4 AND ordens_servicos.situacao_atual_fk != '] = 5;
+
             $ordens_servico = $this->ordem_servico->get_all(
                 'ordens_servicos.ordem_servico_pk,
                 ordens_servicos.ordem_servico_cod,

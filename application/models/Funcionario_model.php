@@ -124,12 +124,16 @@ class Funcionario_model extends MY_Model
         $insert_setores = $this->explode_setores($data_setores, $id);
 
         $this->CI->db->insert_batch('funcionarios_setores', $insert_setores);
+
+        return $id;
     }
 
     function update_funcionario($id, $data_setores)
     {
-        $insert_setores = [];
+        $insert_setores = [];       
+
         $this->update();
+
         if($data_setores != ""){
             $insert_setores = $this->explode_setores($data_setores, $id);
 
@@ -142,7 +146,11 @@ class Funcionario_model extends MY_Model
             $this->CI->db->insert_batch('funcionarios_setores', $insert_setores);
         }
         
+    }
 
+    function update_image($path, $id){
+        $this->CI->db->where("funcionario_pk",$id)
+        ->update(self::TABLE_NAME, ["funcionario_caminho_foto" => $path]);
     }
 
     function explode_setores($data_setores, $id)

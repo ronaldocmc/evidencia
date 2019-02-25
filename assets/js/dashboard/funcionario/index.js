@@ -5,6 +5,7 @@ var botao = null;
 $(document).on('click', '.btn_novo', function () {
   botao = ".submit";
   $('#ce_funcionario .modal-title').html("Novo Funcionário");
+  $('#show-img-funcionario').attr('src',"");
 });
 
 $(".press_enter").on("keydown", function (event) {
@@ -218,11 +219,21 @@ update_table = () => {
   }
 }
 
+//Função que converte um blob em base64, utiliza callback porque precisa ser sincrona
+var blobToBase64 = function (blob, cb) {
+  var reader = new FileReader();
+  reader.onload = function () {
+      var base64 = reader.result;
+      // var base64 = dataUrl.split(',')[1];
+      cb(base64);
+  };
+  reader.readAsDataURL(blob);
+};
 
 function send() {
   try {
     $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => {
-      this.send(blob);
+      blobToBase64(blob, this.send);
     });
   } catch (err) {
     this.send(null);
@@ -232,7 +243,7 @@ function send() {
 function send_data() {
   try {
     $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => {
-      this.send(blob);
+      blobToBase64(blob, this.send);
     });
   } catch (err) {
     this.send(null);
@@ -265,9 +276,11 @@ send = (imagem) => {
 
   if ($('#pessoa_pk').val() != "") {
     formData.append('funcionario_pk', $('#pessoa_pk').val());
-  }else{
+  } else {
     formData.append('funcionario_senha', $('#funcionario_senha').val());
   }
+
+  console.log($('#funcionario_senha'));
 
   $.ajax({
     url: URL,
@@ -281,7 +294,7 @@ send = (imagem) => {
 
       if (response.code !== 200) {
         show_errors(response);
-        alerts('failed', 'Erro!', 'O formulário apresenta algum(ns) erro(s)');
+        alerts('failed', 'Erro!', 'O formulário apresenta algum(ns) erro(s) de validação');
         //pre_loader_hide();
       }
       else {
@@ -295,7 +308,8 @@ send = (imagem) => {
             'funcao_nome': funcoes[$('#funcao-input').val()],
             'departamento_fk': $('#departamento-input').val(),
             'setor_fk': $('#setor-input').val(),
-            'ativo': 1
+            'ativo': 1,
+            'funcionario_caminho_foto': response.data.path
           }
         if ($('#pessoa_pk').val() == "") { //verifica se é um insert
           funcionarios.push(funcionario);
@@ -353,34 +367,17 @@ $(document).on('click', '.btn-editar', function (event) {
   else {
     $('#setor-input').val([]);
   }
+
+  $('#show-img-funcionario').attr('src',funcionarios[posicao_selecionada].funcionario_caminho_foto);
+  
+  
   $('#pessoa_pk').val(funcionarios[posicao_selecionada]['funcionario_pk']);
   $('#nome-input').val(funcionarios[posicao_selecionada]['funcionario_nome']);
   $('#cpf-input').val(funcionarios[posicao_selecionada]['funcionario_cpf']);
   $('#email-input').val(funcionarios[posicao_selecionada]['funcionario_login']);
-  $('#telefone-input').val(funcionarios[posicao_selecionada]['contato_tel']);
-  $('#celular-input').val(funcionarios[posicao_selecionada]['contato_cel']);
   $('#funcao-input option[value=' + funcionarios[posicao_selecionada]['funcao_pk'] + ']').prop('selected', true);
   $('#departamento-input option[value=' + funcionarios[posicao_selecionada]['departamento_pk'] + ']').prop('selected', true);
-  if (funcionarios[posicao_selecionada]['logradouro_nome'] != null) {
-    $('#logradouro-input').val(funcionarios[posicao_selecionada]['logradouro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
-  }
-  $('#numero-input').val(funcionarios[posicao_selecionada]['local_num']);
-  $('#complemento-input').val(funcionarios[posicao_selecionada]['local_complemento']);
-  if (funcionarios[posicao_selecionada]['bairro_nome'] != null) {
-    $('#bairro-input').val(funcionarios[posicao_selecionada]['bairro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
-  }
 
-
-  if ($("#uf-input :selected").text() != funcionarios[$(this).val()]["estado_pk"]) {
-    $("#uf-input option").filter(function () {
-      return this.text == funcionarios['id_org']["estado_pk"];
-    }).attr('selected', true);
-
-    // change_uf($("#uf-input").val(), $("#uf-input option:selected").text(), funcionarios[$(this).val()]["municipio_pk"]);
-  }
-  else {
-    $("#cidade-input").val(funcionarios[$(this).val()]["municipio_pk"]);
-  }
   change_funcao();
 });
 
