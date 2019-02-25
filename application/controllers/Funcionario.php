@@ -47,6 +47,8 @@ class Funcionario extends CRUD_Controller
             'funcionarios.organizacao_fk' => $this->session->user['id_organizacao'],
         ]);
 
+        // var_dump($func_sets);die();
+
         if ($funcionarios == false) {
             $funcionarios = [];
         }

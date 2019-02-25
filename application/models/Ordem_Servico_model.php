@@ -97,6 +97,15 @@ class Ordem_Servico_model extends MY_Model
         ->get()->result();  
     }
 
+    function get_images_id($id){
+        return $this->CI->db
+        ->select("*")
+        ->from("imagens_os")
+        ->where("imagens_os.ordem_servico_fk", $id)
+        ->join("situacoes","imagens_os.situacao_fk = situacoes.situacao_pk")
+        ->get()->result();  
+    }
+
     // A localização e funcionario já devem estar setados no array
     // A organização deve ser passada pois no WS não existirá sessão
     function insert_os($organization)
