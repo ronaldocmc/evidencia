@@ -25,7 +25,6 @@ class Ordem_ServicoWS extends MY_Controller
         $this->response = new Response();
         parent::__construct($this->response);
 
-
         date_default_timezone_set('America/Sao_Paulo');
         exit();
     }
@@ -61,8 +60,6 @@ class Ordem_ServicoWS extends MY_Controller
         $this->load->library('form_validation');
 
         try {
-
-            $this->response = new Response();
 
             $obj = json_decode(file_get_contents('php://input'));
             $this->load->model('Localizacao_model', 'localizacao');
@@ -108,16 +105,6 @@ class Ordem_ServicoWS extends MY_Controller
 
             $this->end_transaction();
 
-            
-            $data['id_pessoa'] = $token_decodificado->id_pessoa;
-            $data['id_funcionario'] = $token_decodificado->id_funcionario;
-            $data['id_empresa'] = $token_decodificado->id_empresa;
-            $data['last_update'] = $token_decodificado->last_update;
-
-            $token = generate_token($data);
-
-            $this->response->add_data('token', $token);
-
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
 
@@ -155,6 +142,8 @@ class Ordem_ServicoWS extends MY_Controller
             }
 
             $where['sa.organizacao_fk'] = $empresa;
+
+            $where['ordens_servicos.situacao_atual_fk != 3 AND ordens_servicos.situacao_atual_fk != 4 AND ordens_servicos.situacao_atual_fk != '] = 5;
 
             $ordens_servico = $this->ordem_servico->get_all(
                 'ordens_servicos.ordem_servico_pk,
@@ -203,17 +192,6 @@ class Ordem_ServicoWS extends MY_Controller
             );
 
             $this->response->add_data("ordens", $ordens_servico);
-
-            $token_decodificado = json_decode(token_decrypt($obj['token']));
-
-            $data['id_pessoa'] = $token_decodificado->id_pessoa;
-            $data['id_funcionario'] = $token_decodificado->id_funcionario;
-            $data['id_empresa'] = $token_decodificado->id_empresa;
-            $data['last_update'] = $token_decodificado->last_update;
-
-            $token = generate_token($data);
-
-            $this->response->add_data('token', $token);
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
@@ -268,17 +246,6 @@ class Ordem_ServicoWS extends MY_Controller
             $this->ordem_servico->insert_images($paths, $_POST['ordem_servico_pk']);
 
             $this->end_transaction();
-
-            $token_decodificado = json_decode(token_decrypt($headers['token']));
-
-            $data['id_pessoa'] = $token_decodificado->id_pessoa;
-            $data['id_funcionario'] = $token_decodificado->id_funcionario;
-            $data['id_empresa'] = $token_decodificado->id_empresa;
-            $data['last_update'] = $token_decodificado->last_update;
-
-            $token = generate_token($data);
-
-            $this->response->add_data('token', $token);
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();

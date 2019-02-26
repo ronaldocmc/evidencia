@@ -120,15 +120,6 @@ class AtualizacaoWS extends MY_Controller
 
             $this->response->add_data('atualizacao', $atualizar);
 
-            $data['id_pessoa'] = $token_decodificado->id_pessoa;
-            $data['id_funcionario'] = $token_decodificado->id_funcionario;
-            $data['id_empresa'] = $token_decodificado->id_empresa;
-            $data['last_update'] = $now;
-
-            $token = generate_token($data);
-
-            $this->response->add_data('token', $token);
-
         } else {
             $this->response->set_code(Response::FORBIDDEN);
             $this->response->set_message($attempt_result);
@@ -138,65 +129,4 @@ class AtualizacaoWS extends MY_Controller
         $this->__destruct();
     }
 
-    /**
-     * Método responsável efetuar o login de um usuário do app, após ele abrir o app
-     * é enviada uma requisição mandando o token e o id do usuário.
-     */
-    public function login_token()
-    {
-        $this->response = new Response();
-        $this->load->helper('attempt');
-        $this->load->helper('token');
-        $this->load->model('tentativa_model');
-
-        $attempt_result = verify_attempt($this->input->ip_address());
-
-        if ($attempt_result === true) {
-            $obj = apache_request_headers();
-
-            $new_token = verify_token($obj['Token'], $this->response);
-
-            if ($new_token) {
-                $dados['token'] = $new_token;
-                $this->response->set_data($dados);
-                $this->tentativa_model->delete($this->input->ip_address());
-            } else {
-                $this->response->set_code(Response::UNAUTHORIZED);
-                $this->response->set_message('Seção experida');
-            }
-        } else {
-            $this->response->set_code(Response::FORBIDDEN);
-            $this->response->set_message($attempt_result);
-        }
-        $this->response->send();
-        $this->__destruct();
-    }
-
-    /**
-     * Método responsável por deslogar o usuário logado, destruindo o seu token
-     * da tabela de token.
-     */
-    public function quit()
-    {
-        $this->load->model('token_model', 'modeltoken');
-        $this->load->helper('token');
-        $this->response = new Response();
-
-        if (verify_token($this->data_json, $this->response)) {
-            $obj = apache_request_headers();
-
-            $this->data_json['pessoa_fk'] = $obj['access_id'];
-
-            if (!$this->modeltoken->delete($this->data_json['pessoa_fk'])) {
-                $this->data_json['pessoa_fk'] = null;
-                $this->data_json['token'] = null;
-                $this->data_json['timestamp'] = null;
-            }
-        } else {
-            $this->response->set_data(Response::LOGOUT_ERROR);
-            $this->response->set_message('Erro ao sair');
-        }
-        $this->response->send();
-        $this->__destruct();
-    }
 }
