@@ -68,7 +68,6 @@ class Ordem_ServicoWS extends MY_Controller
 
             $_POST = get_object_vars($obj);
             $_POST['img'] = isset($obj->img) ? $obj->img : null;
-            $_POST['localizacao_municipio'] = 1; // ISSO ESTÁ FIXO PRUDENTE
 
             $this->ordem_servico->fill();
 
@@ -76,7 +75,6 @@ class Ordem_ServicoWS extends MY_Controller
                 $this->input->post('localizacao_lat'),
                 $this->input->post('localizacao_long')
             );
-
             $this->localizacao->fill();
 
             $this->ordem_servico->config_form_validation();
@@ -85,6 +83,15 @@ class Ordem_ServicoWS extends MY_Controller
             $token_decodificado = json_decode(token_decrypt($headers['token']));
 
             $this->begin_transaction();
+
+            $city = $this->localizacao->get_cities([
+                'municipio_nome' => $this->input->post('localizacao_municipio')
+            ]);
+            if (count($city) === 0)
+            {
+                throw new MyException("Cidade inválida. Consulte o suporte em sua organização.", 400);
+            }
+            $this->localizacao->__set('localizacao_municipio', $city[0]->municipio_pk);
 
             $this->ordem_servico->__set("localizacao_fk", $this->localizacao->insert());
             $this->ordem_servico->__set("funcionario_fk", $token_decodificado->id_funcionario);
@@ -220,8 +227,6 @@ class Ordem_ServicoWS extends MY_Controller
             
             $_POST = get_object_vars($obj);
             $_POST['img'] = isset($obj->img) ? $obj->img : null;
-
-            // var_dump($obj);die();
 
             $this->ordem_servico->__set("ordem_servico_comentario", $_POST['ordem_servico_comentario']);
             $this->ordem_servico->__set("situacao_atual_fk", $_POST['situacao_atual_fk']);

@@ -44,10 +44,19 @@ class Localizacao_model extends MY_Model {
         );
     }
 
-    public function get_cities()
+    public function get_cities(Array $where = null)
     {
         $this->CI->db->select('*');
         $this->CI->db->from('municipios');
+        
+        if ($where !== null) 
+        {
+            foreach ($where as $key => $value) 
+            {
+                $this->CI->db->where($key, $value);
+            }
+        }
+
         return $this->CI->db->get()->result();
     }
 

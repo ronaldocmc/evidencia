@@ -329,12 +329,16 @@ class Ordem_Servico_model extends MY_Model
     {
         $rows = [];
 
-        foreach ($paths as $key => $p) {
-            $rows[$key] = array(
-                'ordem_servico_fk' => $os,
-                'situacao_fk' => $this->__get('situacao_atual_fk'),
-                'imagem_os' => $p,
-            );
+        if ($paths !== null) 
+        {
+            foreach ($paths as $key => $p) 
+            {
+                $rows[$key] = array(
+                    'ordem_servico_fk' => $os,
+                    'situacao_fk' => $this->__get('situacao_atual_fk'),
+                    'imagem_os' => $p,
+                );
+            }
         }
 
         return $rows;
