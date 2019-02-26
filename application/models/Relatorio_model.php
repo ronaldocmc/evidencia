@@ -24,15 +24,6 @@ class Relatorio_model extends MY_Model
         'relatorio_data_fim_filtro',
     );
 
-    public function config_password_validation(){
-        
-        $this->CI->form_validation->set_rules(
-            'senha',
-            'Senha',
-            'required'
-        );   
-    }
-
     public function config_form_validation()
     {
 
@@ -144,12 +135,7 @@ class Relatorio_model extends MY_Model
             return $this->CI->db->count_all_results();
         }
 
-        $result = $this->CI->db->get()->result();
-        if ($result) {
-            return ($result);
-        } else {
-            return false;
-        }
+        return $this->CI->db->get()->result();
     }
 
 }
