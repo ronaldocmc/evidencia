@@ -87,14 +87,7 @@ class FuncionarioWS extends MY_Controller
 
             $this->end_transaction();
 
-      
-
-            $data['id_pessoa'] = $token_decodificado->id_pessoa;
-            $data['id_funcionario'] = $token_decodificado->id_funcionario;
-            $data['id_empresa'] = $token_decodificado->id_empresa;
-            $data['last_update'] = $token_decodificado->last_update;
-
-            $token = generate_token($data);
+    
 
             $this->response->add_data('token', $token);
 

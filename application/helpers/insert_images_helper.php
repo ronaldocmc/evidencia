@@ -16,7 +16,7 @@ function upload_img($params, array $base64_images)
     $images_uploaded = [];
 
 
-    if ($base64_images[0] != "null" ) {
+    if ($base64_images[0] != "null" && $base64_images[0] != null) {
 
         //Se uma ou mais imagens foram enviadas, percorreremos:
         foreach ($base64_images as $image) {

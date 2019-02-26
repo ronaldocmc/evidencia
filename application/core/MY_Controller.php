@@ -56,6 +56,7 @@ class MY_Controller extends CI_Controller
         } else {
             //Verifica as tentativas
             $attempt_result = verify_attempt($this->input->ip_address());
+
             
             
 			//Se ele estiver liberado
@@ -64,14 +65,14 @@ class MY_Controller extends CI_Controller
                 $header_obj = apache_request_headers();
 
                 //Verifica o token e lá dentro cria um novo token
-                $new_token['token'] = verify_token($header_obj['token'], $this->response);
+                $new_token = verify_token($header_obj['token'], $this->response);
 
-                
-				if ($new_token['token'] == false) {
+
+				if ($new_token == false) {
 					$this->response->send();
 					die();
 				}else{
-                    $this->response->set_data($new_token);
+                    $this->response->add_data("token",$new_token);
                 }
 			} else {
                 $this->response->set_code(Response::FORBIDDEN);
