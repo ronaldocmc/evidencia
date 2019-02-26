@@ -28,12 +28,15 @@ function send_data(){
 
 		var data = 
 		{
+			// 'organizacao_pk': $('#dominio-input').val(),
 			'organizacao_nome': $('#nome-input').val(),
 			'organizacao_cnpj': $('#cnpj-input').val(),
 			'localizacao_rua': $('#logradouro-input').val(),
 			'localizacao_num': $('#numero-input').val(),
 			'localizacao_bairro': $('#bairro-input').val(),
 			'localizacao_municipio': $('#cidade-input').val(),
+			'municipio_nome': $('#municipio-nome').val(),
+			'estado_fk': $('#estado-input').val(),
 			'senha': $('#senha-input').val()
 		}
 
@@ -68,27 +71,33 @@ function send_data(){
     	{
     		org  = 
     		{
-    			'organizacao_pk': data['dominio'],
+    			'organizacao_pk': data['organizacao_pk'],
     			'organizacao_nome': data['organizacao_nome'],
     			'organizacao_cnpj': data['organizacao_cnpj'],
     			'localizacao_rua': data['localizacao_rua'],
 				'localizacao_num': data['localizacao_num'],
 				'localizacao_municipio': data['localizacao_municipio'],
-    			'localizacao_bairro':data['localizacao_bairro'],
+				'municipio_nome': data['municipio_nome'],				
+				'localizacao_bairro':data['localizacao_bairro'],
+				'estado_fk': data['estado_fk'],
     			'ativo': 1
-    		}
-    		if (data['organizacao_pk']=='')
+			}
+
+    		if ($('#organizacao_pk').val() == '')
     		{
     			organizacoes.push(org);
-    			alerts('success','Sucesso!','Organização inserida com sucesso');
+				alerts('success','Sucesso!','Organização inserida com sucesso');
+				document.location.reload(false);
     		}
     		else
     		{
+				
     			for (var i in organizacoes)
     			{
     				if (organizacoes[i]['organizacao_pk']==data['organizacao_pk'])
     					break;
-    			}
+				}
+				
     			organizacoes[i] = (org);
     			alerts('success','Sucesso!','Organização modificada com sucesso');
     		}
@@ -125,7 +134,9 @@ function send_data(){
 		$('#logradouro-input').val(organizacoes[$(this).val()]["localizacao_rua"].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
 		$('#numero-input').val(organizacoes[$(this).val()]["localizacao_num"]);
 		$('#bairro-input').val(organizacoes[$(this).val()]["localizacao_bairro"]);
+		$('#estado-input').val(organizacoes[$(this).val()]['estado_fk']);
 		$("#cidade-input").val(organizacoes[$(this).val()]["municipio_pk"]);
+		$("#municipio-nome").val(organizacoes[$(this).val()]["municipio_nome"]);		
 		// if ($("#uf-input :selected").text() != organizacoes[$(this).val()]["estado_pk"])
 		// {
 		// 	$("#uf-input option").filter(function() {
@@ -265,7 +276,7 @@ function send_data(){
 					table.row.add([
 						org.organizacao_nome,
 						org.organizacao_pk,
-						org.localizacao_rua.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+', '+org.localizacao_num+' - '+org.localizacao_bairro.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+' - '+org.municipio_nome+' - '+'SP',
+						org.localizacao_rua.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+', '+org.localizacao_num+' - '+org.localizacao_bairro.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+' - '+org.municipio_nome+'/'+ org.estado_fk,
 						'<div class="btn-group">'+
 						'<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+(i)+'" data-target="#ce_organizacao">'+
 						'<div class="d-none d-sm-block">'+
@@ -300,7 +311,7 @@ function send_data(){
 					table.row.add([
 						org.organizacao_nome,
 						org.organizacao_pk,
-						org.localizacao_rua.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+', '+org.localizacao_num+' - '+org.localizacao_bairro.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+' - '+org.municipio_nome+' - '+'SP',
+						org.localizacao_rua.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+', '+org.localizacao_num+' - '+org.localizacao_bairro.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+' - '+org.municipio_nome+'/'+org.estado_fk,
 						'<div class="btn-group">'+
 						'<button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="'+ (i) +'" data-target="#r-organizacao">'+
 						'<div class="d-none d-sm-block">'+
@@ -323,7 +334,7 @@ function send_data(){
 					table.row.add([
 						org.organizacao_nome,
 						org.organizacao_pk,
-						org.localizacao_rua.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+', '+org.localizacao_num+' - '+org.localizacao_bairro.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+' - '+org.municipio_nome+' - '+'SP',						
+						org.localizacao_rua.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+', '+org.localizacao_num+' - '+org.localizacao_bairro.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+' - '+org.municipio_nome+'/'+org.estado_fk,						
 						'<div class="btn-group">'+
 						'<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="'+(i)+'" data-target="#ce_organizacao">'+
 						'<div class="d-none d-sm-block">'+
@@ -362,7 +373,7 @@ function send_data(){
 					table.row.add([
 						org.organizacao_nome,
 						org.organizacao_pk,
-						org.localizacao_rua.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+', '+org.localizacao_num+' - '+org.localizacao_bairro.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+' - '+org.municipio_nome+' - '+'SP',						
+						org.localizacao_rua.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+', '+org.localizacao_num+' - '+org.localizacao_bairro.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())+' - '+org.municipio_nome+'/'+org.estado_fk,						
 						'<div class="btn-group">'+
 						'<button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="'+ (i) +'" data-target="#r-organizacao">'+
 						'<div class="d-none d-sm-block">'+
