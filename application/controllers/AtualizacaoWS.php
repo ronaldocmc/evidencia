@@ -64,6 +64,7 @@ class AtualizacaoWS extends MY_Controller
         $this->load->model('tipo_servico_model');
         $this->load->model('prioridade_model');
         $this->load->model('setor_model');
+        $this->load->model('funcionario_model');
 
         $obj = json_decode(file_get_contents('php://input'));
 
@@ -82,20 +83,19 @@ class AtualizacaoWS extends MY_Controller
             $atualizar['servico'] = $this->servico_model->get(
                 "servicos.*",
                 [
-                'servicos.ativo' => 1,
-                'situacoes.organizacao_fk' => $token_decodificado->id_empresa
+                    'servicos.ativo' => 1,
+                    'situacoes.organizacao_fk' => $token_decodificado->id_empresa,
                 ]
             );
 
-            
             $atualizar['tipo_servico'] = $this->tipo_servico_model->get(
                 'tipos_servicos.*',
                 [
                     'tipos_servicos.ativo' => 1,
-                    "departamentos.organizacao_fk" => $token_decodificado->id_empresa
+                    "departamentos.organizacao_fk" => $token_decodificado->id_empresa,
                 ]
             );
-            
+
             $atualizar['prioridade'] = $this->prioridade_model->get_all(
                 '*',
                 ["organizacao_fk" => $token_decodificado->id_empresa],
@@ -103,24 +103,28 @@ class AtualizacaoWS extends MY_Controller
                 -1
             );
 
-            
-            $atualizar['setores'] = $this->setor_model->get_all(
+            $atualizar['setores'] = $this->funcionario_model->get_setores(
+                [
+                    "funcionarios_setores.funcionario_fk" => $token_decodificado->id_funcionario,
+                ]
+            );
+
+            $atualizar['prioridades'] = $this->prioridade_model->get_all(
                 '*',
                 [
-                    "setores.ativo" => 1,
-                    "organizacao_fk" => $token_decodificado->id_empresa
+                    "organizacao_fk" => $token_decodificado->id_empresa,
                 ],
                 -1,
                 -1
             );
 
-
             $this->response->add_data('atualizacao', $atualizar);
 
             $data['id_pessoa'] = $token_decodificado->id_pessoa;
+            $data['id_funcionario'] = $token_decodificado->id_funcionario;
             $data['id_empresa'] = $token_decodificado->id_empresa;
             $data['last_update'] = $now;
-            
+
             $token = generate_token($data);
 
             $this->response->add_data('token', $token);
