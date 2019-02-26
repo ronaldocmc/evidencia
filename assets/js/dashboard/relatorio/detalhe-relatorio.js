@@ -34,9 +34,11 @@ $(document).on('click','#btn-trocar-funcionario',function(event) {
 	var data = 
 	{	
 		'funcionario_fk': $('#novo-funcionario').val()
-	}
+    }
+    
+    console.log(data);
 
-	$.post(base_url+'/Relatorio/change_employee/'+id_relatorio,data).done(function (response) {	
+	$.post(base_url+'/Relatorio/change_worker/'+id_relatorio,data).done(function (response) {	
 
         if (response.code == 501)
 		{
@@ -58,9 +60,11 @@ $(document).on('click','#btn-trocar-funcionario',function(event) {
 
 $(document).on('click','#btn-deletar-relatorio',function(event) {
     btn_load($('#btn-deletar-relatorio'));
+
 	var id_relatorio = $('#id-relatorio').val();
-	var data = {}
-	$.post(base_url+'/Relatorio/destroy/'+id_relatorio, data).done(function (response) {
+    var data = {}
+    
+	$.post(base_url+'/Relatorio/deactivate/'+id_relatorio, data).done(function (response) {
 		btn_ativar($('#btn-deletar-relatorio'));
         if (response.code == 501)
 		{
@@ -80,7 +84,7 @@ $(document).on('click','#btn-deletar-relatorio',function(event) {
         }
 		else if(response.code == 200)
 		{
-			window.location.href = base_url;
+			window.location.href = base_url+'/Relatorio/novo_relatorio/';
 		}
 	});
 });
@@ -118,45 +122,50 @@ function initMap()
     });
 }
 
+    function padroniza_data(data){
+        
+        string_date = data.split(" ");
+        let date = new Date(string_date[0]);
+
+        return ((date.getDate() + 1) + ' / ' + (date.getMonth() + 1) +' / ' + date.getFullYear());
+    }
 
     //Função que aguarda o clique no botão editar e preenche os campos do modal
     $(document).on('click', '.btn_editar', function (event) 
     {
-        primeiro_editar = true;
 
 
         $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
         posicao_selecionada = $(this).val();
 
         //var data = get_departamento_and_tiposervico(ordens_servico[posicao_selecionada]['tipo_servico_fk'])//Aqui eu vou fazer uma função que vai requisitar percorrer departamentos e encontrar o fk
-        var servico_selecionado_pk = ordens_servico[posicao_selecionada]['data_criacao'];
-        console.log('Data:'+ordens_servico[posicao_selecionada]['data_criacao']);
-        $('#os_data').val(ordens_servico[posicao_selecionada]['data_criacao']);
+        var servico_selecionado_pk = ordens_servico[posicao_selecionada]['ordem_servico_criacao'];
+        $('#os_data').val(padroniza_data(ordens_servico[posicao_selecionada]['ordem_servico_criacao']));
         $('#codigo_os').val(ordens_servico[posicao_selecionada]['ordem_servico_cod']);
         $('#ordem_servico_pk').val(parseInt(ordens_servico[posicao_selecionada]['ordem_servico_pk']));
         $('#ordem_servico_desc').val(ordens_servico[posicao_selecionada]['ordem_servico_desc']);
         $('#departamento').val(ordens_servico[posicao_selecionada]['departamento_nome']);
         $('#tipo_servico').val(ordens_servico[posicao_selecionada]['tipo_servico_nome']);
         $('#servico_pk').val(ordens_servico[posicao_selecionada]['servico_nome']);
-        $('#situacao_pk').val(ordens_servico[posicao_selecionada]['situacao_atual']);
-        console.log($('#situacao_pk').val());
+        $('#situacao_pk').val(ordens_servico[posicao_selecionada]['situacao_nome']);
+        // console.log($('#situacao_pk').val());
         $('#prioridade_pk').val(ordens_servico[posicao_selecionada]['prioridade_nome']);
         $('#procedencia_pk').val(ordens_servico[posicao_selecionada]['procedencia_nome']);
         $('#setor_pk').val(ordens_servico[posicao_selecionada]['setor_nome']);
-        $("#latitude").val(ordens_servico[posicao_selecionada]['coordenada_lat']);
-        $("#longitude").val(ordens_servico[posicao_selecionada]['coordenada_long']);
+        $("#latitude").val(ordens_servico[posicao_selecionada]['localizacao_lat']);
+        $("#longitude").val(ordens_servico[posicao_selecionada]['localizacao_long']);
         $("#image-upload-div").hide();
-        $("#bairro-input").val(ordens_servico[posicao_selecionada]['bairro_nome']);
-        $("#logradouro-input").val(ordens_servico[posicao_selecionada]['logradouro_nome']);   
-        $("#numero-input").val(ordens_servico[posicao_selecionada]['local_num']);    
-        $("#estado_pk").val(ordens_servico[posicao_selecionada]['estado_fk']);
-        $("#cidade-input").val(ordens_servico[posicao_selecionada]['municipio_nome']);
-        $("#complemento-input").val(ordens_servico[posicao_selecionada]['local_complemento']);
+        $("#bairro-input").val(ordens_servico[posicao_selecionada]['localizacao_bairro']);
+        $("#logradouro-input").val(ordens_servico[posicao_selecionada]['localizacao_rua']);   
+        $("#numero-input").val(ordens_servico[posicao_selecionada]['localizacao_num']);    
+        $("#estado_pk").val("SP");
+        $("#cidade-input").val("Presidente Prudente");
+        $("#complemento-input").val(ordens_servico[posicao_selecionada]['localizacao_ponto_referencia']);
 
         var data_local;
         var local = "";
 
-        var latlng = {lat: parseFloat(ordens_servico[posicao_selecionada]['coordenada_lat']), lng: parseFloat(ordens_servico[posicao_selecionada]['coordenada_long'])}
+        var latlng = {lat: parseFloat(ordens_servico[posicao_selecionada]['localizacao_lat']), lng: parseFloat(ordens_servico[posicao_selecionada]['localizacao_long'])}
         populaLatLong(latlng);
         main_map.setCenter(latlng);
         criarMarcacao(latlng);
@@ -200,14 +209,14 @@ $("#btn-restaurar").click(function() {
         'senha' : senha
     }
 
-    $.post(base_url+'/Relatorio/restaurar_os/'+id_relatorio,data).done(function (response) {
+    $.post(base_url+'/Relatorio/receive_report/'+id_relatorio,data).done(function (response) {
         btn_ativar($('#btn-deletar-relatorio'));
         if (response.code == 200) {
-            alerts('success','Sucesso!','Relatório entregue com sucesso.');
+            alerts('success','Sucesso!','Relatório recebido com sucesso.');
             $('#restaurar_os').modal('hide');
         }
         else if (response.code == 404) {
-            alerts('success','Sucesso!','Não há ordens de serviço para serem finalizadas.');
+            alerts('success','Sucesso!','Relatório já foi recebido! Não há ordens de serviço para serem finalizadas.');
             $('#restaurar_os').modal('hide');
         }
         else if (response.code == 401) {
@@ -215,6 +224,6 @@ $("#btn-restaurar").click(function() {
         }
 
         $("#pass-modal-restaurar").val("");
-        window.location.href = base_url+'/Relatorio/detalhes_relatorio/'+id_relatorio;
+        window.location.href = base_url+'/Relatorio';
     }, "json");
 });
