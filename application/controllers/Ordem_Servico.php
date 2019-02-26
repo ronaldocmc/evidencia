@@ -325,7 +325,7 @@ class Ordem_Servico extends CRUD_Controller
             ['ordens_servicos.ordem_servico_pk' => $ordem_servico_pk]
         );
         $os_hist = $this->ordem_servico->get_historico($ordem_servico_pk);
-        $os_images = $this->ordem_servico->get_images_specific($ordem_servico_pk);
+        $os_images = $this->ordem_servico->get_images_id($ordem_servico_pk);
 
         $response = new Response();
         $response->add_data('historico', $os_hist);
