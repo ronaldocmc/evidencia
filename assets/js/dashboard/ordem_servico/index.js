@@ -696,12 +696,6 @@ function initMap() {
                 $('#fechar-atividade').removeAttr('disabled');
                 $('#fechar-atividade').css('cursor', 'pointer');
 
-                console.log(response);
-
-
-
-                console.log(ordens_servico[posicao_selecionada].historico_ordem_comentario, ordens_servico[posicao_selecionada].funcionario_caminho_foto, ordens_servico[posicao_selecionada].funcionario_nome, ordens_servico[posicao_selecionada].situacao_nome, reformatDate(ordens_servico[posicao_selecionada].ordem_servico_atualizacao));
-
                 if (response.data.historicos != []) {
 
                     response.data.historicos.map((historico, i) => {

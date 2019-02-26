@@ -138,43 +138,43 @@
 if ($funcionarios):
 
     foreach ($funcionarios as $key => $f): ?>
-		                                    <tr>
-		                                        <td>
-		                                            <?=$f->funcionario_nome?>
-		                                        </td>
-		                                        <td>
-		                                            <?=$f->funcionario_login?>
-		                                        </td>
-		                                        <td>
-		                                            <?=$f->funcao_nome?>
-		                                        </td>
-		                                        <td>
-		                                            <div class="btn-group">
+				                                    <tr>
+				                                        <td>
+				                                            <?=$f->funcionario_nome?>
+				                                        </td>
+				                                        <td>
+				                                            <?=$f->funcionario_login?>
+				                                        </td>
+				                                        <td>
+				                                            <?=$f->funcao_nome?>
+				                                        </td>
+				                                        <td>
+				                                            <div class="btn-group">
 
-		                                                <?php if ($f->ativo == 1): ?>
-		                                                <button
-		                                                    class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk"
-		                                                    value="<?=$key?>" data-toggle="modal" data-target="#ce_funcionario"
-		                                                    title="Editar">
-		                                                    <div class="d-none d-sm-block">
-		                                                        <i class="fas fa-edit fa-fw"></i>
-		                                                    </div>
-		                                                </button>
-		                                                <button class="btn btn-sm btn-danger btn-desativar btn-attr-pessoa_pk"
-		                                                    value="<?=$key?>" data-toggle="modal" data-target="#d_funcionario"
-		                                                    title="Desativar">
-		                                                    <div class="d-none d-sm-block">
-		                                                        <i class="fas fa-times fa-fw"></i>
-		                                                    </div>
-		                                                </button>
-		                                                <button class="btn btn-sm btn-info btn-attr-pessoa_pk" value="<?=$key?>"
-		                                                    data-toggle="modal" data-target="#p_funcionario"
-		                                                    title="Alterar senha">
-		                                                    <div class="d-none d-sm-block">
-		                                                        <i class="fas fa-lock"></i>
-		                                                    </div>
-		                                                </button>
-		                                                <?php else: ?>
+				                                                <?php if ($f->ativo == 1): ?>
+				                                                <button
+				                                                    class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk"
+				                                                    value="<?=$key?>" data-toggle="modal" data-target="#ce_funcionario"
+				                                                    title="Editar">
+				                                                    <div class="d-none d-sm-block">
+				                                                        <i class="fas fa-edit fa-fw"></i>
+				                                                    </div>
+				                                                </button>
+				                                                <button class="btn btn-sm btn-danger btn-desativar btn-attr-pessoa_pk"
+				                                                    value="<?=$key?>" data-toggle="modal" data-target="#d_funcionario"
+				                                                    title="Desativar">
+				                                                    <div class="d-none d-sm-block">
+				                                                        <i class="fas fa-times fa-fw"></i>
+				                                                    </div>
+				                                                </button>
+				                                                <button class="btn btn-sm btn-info btn-attr-pessoa_pk" value="<?=$key?>"
+				                                                    data-toggle="modal" data-target="#p_funcionario"
+				                                                    title="Alterar senha">
+				                                                    <div class="d-none d-sm-block">
+				                                                        <i class="fas fa-lock"></i>
+				                                                    </div>
+				                                                </button>
+				                                                <?php else: ?>
                                                 <button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk"
                                                     value="<?=$key?>" data-toggle="modal" data-target="#a_funcionario"
                                                     title="Reativar">
@@ -399,9 +399,14 @@ endforeach
                                 <div class="card-body card-block">
                                     <div class="row form-group">
                                         <div class="file-upload col-12">
-                                            <button class="btn btn-secondary col-12" type="button"
+                                        <div style="text-align: center">
+                                                <img width="300px" src="" id="show-img-funcionario" alt="">
+                                            <br>
+                                            </div>
+                                        <button class="btn btn-secondary col-12" type="button"
                                                 onclick="$('.file-upload-input').trigger( 'click' )">Carregar
                                                 Foto</button>
+
                                             <div class="image-upload-wrap">
                                                 <input class="file-upload-input" name="img" type='file'
                                                     onchange="readURL(this);" accept="image/*" />

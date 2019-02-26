@@ -12,7 +12,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 require_once dirname(__FILE__) . "/Response.php";
 require_once dirname(__FILE__) . "/Localizacao.php";
-require_once APPPATH . "core/MY_Controller.php";
+require_once APPPATH . "core\MY_Controller.php";
+require_once APPPATH . "core\MyException.php";
 
 class Ordem_ServicoWS extends MY_Controller
 {
@@ -24,7 +25,7 @@ class Ordem_ServicoWS extends MY_Controller
         $this->response = new Response();
         parent::__construct($this->response);
 
-		date_default_timezone_set('America/Sao_Paulo');
+        date_default_timezone_set('America/Sao_Paulo');
         exit();
     }
 
@@ -36,380 +37,223 @@ class Ordem_ServicoWS extends MY_Controller
 
     }
 
-    public function index(){
+    public function index()
+    {
 
-	}
+    }
 
-	// Método responsável por inserir os históricos de uma ordem de serviço.
-	public function put(){
-		
-		$this->load->model('ordem_servico_model');
-		$this->load->model('servico_model');
-		$this->load->model('funcionario_model');
-		$this->load->model('historico_model');
-		$this->load->helper('token_helper');
-		$this->response = new Response();
-
-		$obj = json_decode(file_get_contents('php://input'));
-		$headers = apache_request_headers();
-		
-		$data_historico = [
-			'ordem_servico_fk' => $obj->ordem_servico_fk,
-			'historico_ordem_comentario' => $obj->comentario,
-			'funcionario_fk' => get('id_funcionario', $headers['Token']),
-			'situacao_fk'	=> $obj->situacao_fk,
-		];	            		
-
-		$return_historico = $this->historico_model->insert($data_historico);
-
-
-		if ($obj->foto != NULL) 
-		{
-			//Se ele enviou, então realizamos o upload. Caso os dados estejam duplicados esses dados são removidos
-			$file = $this->upload_img($obj->ordem_servico_fk ,$obj->foto);
-
-			//Padronizando os dados para efetuar o insert
-			$data_imagem = array(
-				'historico_ordem_fk' => $return_historico['id'],
-				'imagem_situacao_caminho' => $file
-			);
-
-			$setou = $this->ordem_servico_model->insert_image($data_imagem);
-
-			if($setou['code'] == 0)
-			{
-				$this->response->set_code(Response::SUCCESS);
-				$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
-			}
-			else
-			{
-				$this->response->set_code(Response::DB_ERROR_INSERT);
-				$this->response->set_data("Não foi possivel inserir a imagem!");
-			}
-		}
-		else
-		{
-			$this->response->set_code(Response::SUCCESS);
-			$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
-		} 
-
-		$this->response->send();
-	}
-
-
+   
     /**
      * Método responsável por receber os dados de uma ordem de serviço e fazer a inserção
      */
+
     public function post()
     {
-		$this->load->model('Ordem_Servico_model', 'ordem_servico_model');
-		$this->load->model('Servico_model', 'servico_model');
-		$this->load->model('Funcionario_model', 'funcionario_model');
-		$this->load->model('Historico_model', 'historico_model');
-		$this->load->helper('token_helper');
+        $this->load->model('Ordem_Servico_model', 'ordem_servico');
+        $this->load->model('Servico_model', 'servico_model');
+        $this->load->model('Funcionario_model', 'funcionario_model');
+        $this->load->model('Localizacao_model', 'localizacao');
 
-		$this->response = new Response();
-
-		
-        $obj = json_decode(file_get_contents('php://input'));
-
-		$headers = apache_request_headers();
-
-        //Setando as regras do form_validation para ordens de serviço
-        $_POST['latitude'] = $obj->latitude;
-        $_POST['longitude'] = $obj->longitude;
-        $_POST['logradouro_nome'] = $obj->logradouro_nome;
-        $_POST['local_num'] = $obj->local_num;
-        $_POST['bairro'] = $obj->bairro;
-        $_POST['municipio_pk'] = "3541406";
-        $_POST['estado_pk'] = "SP";
-        $_POST['prioridade_fk'] = $obj->prioridade_fk;
-        $_POST['situacao_fk'] = $obj->situacao_fk;
-        $_POST['procedencia'] = $obj->procedencia;
-        $_POST['setor'] = $obj->setor;
-        $_POST['descricao'] = $obj->descricao;
-        $_POST['servico_fk'] = $obj->servico_fk;
-        $_POST['image'] = isset($obj->uri) ? $obj->uri : null;
-		
-        $this->config_form_validation();
-        
-		
-		if ($this->form_validation->run()) 
-		{
-			//Recebendo os dados preenchidos pelo usuário via post
-            $data_ordem = $this->input->post();
-            		
-            
-			//Verificando se o serviço passado é um serviço válido para a respectiva organização 
-
-				$local = new Localizacao();
-
-				$return_local = $local->insert();
-
-
-				if ($return_local->code != 200)
-				{
-					return $return_local;
-				}
-
-				$data_coordenadas = null;
-
-	            //Padronizando os dados de Coordenadas
-				if ($return_local->__get('data')['id'] != null)
-				{	
-					$data_coordenadas = [
-						'coordenada_lat' => $data_ordem['latitude'],
-						'coordenada_long' => $data_ordem['longitude'],
-						'local_fk' => $return_local->__get('data')['id']
-					];
-				}
-				else
-				{
-					$this->response->set_code(Response::DB_ERROR_GET);
-					$this->response->set_data(['erro' => 'Erro no local']);
-					$this->response->send();
-					return;
-				}
-
-				$return_coordenada = $this->ordem_servico_model->insert_coordenada($data_coordenadas);
-				$abreviacao = $this->ordem_servico_model->get_abreviacoes($data_ordem['servico_fk']);
-
-				$proximo_cod = $this->ordem_servico_model->get_cont_and_update(get('id_empresa', $headers['Token']));
-				$abreviacao .= date('Y') . "/" . $proximo_cod;
-
-				// Configuração do horário para pegar o ano e gerar o código da OS
-	            date_default_timezone_set('America/Sao_Paulo');
-
-            	$data_ordem_servico = [
-            		'coordenada_fk' => $return_coordenada['id'],
-            		'prioridade_fk' => $data_ordem['prioridade_fk'],
-            		'procedencia_fk' => $data_ordem['procedencia'],
-            		'ordem_servico_status' => 1,
-            		'ordem_servico_desc' => $data_ordem['descricao'],
-            		'servico_fk' => $data_ordem['servico_fk'],
-            		'setor_fk' => $data_ordem['setor'],
-            		'ordem_servico_cod' => $abreviacao
-				];
-
-            	$return_ordem = $this->ordem_servico_model->insert_os($data_ordem_servico);
-									
-            	if($return_ordem['db_error']['code'] == 0)
-            	{
-					
-					$situacao = $this->servico_model->get_current(['servico_pk' => $data_ordem['servico_fk']]);								
-					$id_funcionario = $this->funcionario_model->get(['funcionarios.pessoa_fk' => get('id_pessoa', $headers['Token'])]);
-
-            		$data_historico = [
-            			'ordem_servico_fk' => $return_ordem['id'],
-            			'funcionario_fk' => $id_funcionario[0]->funcionario_pk,
-            			'situacao_fk'	=> $obj->situacao_fk,
-            		];	            		
-
-					$return_historico = $this->historico_model->insert($data_historico);
-					
-            		if($return_historico['db_error']['code'] == 0)
-            		{
-
-        				if ($_POST['image'] != NULL) 
-        				{
-                			//Se ele enviou, então realizamos o upload. Caso os dados estejam duplicados esses dados são removidos
-        					$file = $this->upload_img($return_ordem['id'],$_POST['image']);
-
-                    		//Padronizando os dados para efetuar o insert
-        					$data_imagem = array(
-        						'historico_ordem_fk' => $return_historico['id'],
-        						'imagem_situacao_caminho' => $file,
-        					);
-
-        					$setou = $this->ordem_servico_model->insert_image($data_imagem);
-
-        					if($setou['code'] == 0)
-        					{
-        						$this->response->set_code(Response::SUCCESS);
-        						$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
-        					}
-        					else
-        					{
-        						$this->response->set_code(Response::DB_ERROR_INSERT);
-        						$this->response->set_data("Não foi possivel inserir a imagem!");
-        					}
-
-            			}
-            			else
-            			{
-            				$this->response->set_code(Response::SUCCESS);
-            				$this->response->set_data("Ordem de serviço foi cadastrada e histórico registrado com sucesso!");
-            			}
-            		}
-            		else
-            		{
-            			$this->response->set_code(Response::DB_ERROR_INSERT);
-            			$this->response->set_data("Não foi possivel inserir o histórico de ordem de serviço");
-            		}
-
-            	}
-
-            	else
-            	{
-            		if($return_ordem['db_error']['code'] == 503)
-            		{
-            			$this->response->set_code(Response::DB_ERROR_INSERT);
-            			$this->response->set_data("Não foi possivel inserir a ordem de serviço!");
-            		}
-            	}
-            }
-            else
-            {
-                $this->response->set_code(Response::BAD_REQUEST);
-                $this->response->set_data($this->form_validation->errors_array()); 
-            }
-                
-        $this->response->send();
-	} 
-	    
-    
-
-    public function config_form_validation()
-	{
+        $this->load->helper('exception');
+        $this->load->helper('token_helper');
+        $this->load->helper('insert_images');
         $this->load->library('form_validation');
-    //Configurando as regras de validação do formulário para dados de LOCALIZAÇÃO
-		$this->form_validation->set_rules(
-			'latitude',
-			'Latitude',
-			'required|trim'
-		);
 
-		$this->form_validation->set_rules(
-			'longitude',
-			'Longitude',
-			'required|trim'
-		);
+        try {
 
-		$this->form_validation->set_rules(
-			'logradouro_nome',
-			'Logradouro_nome',
-			'required'
-		);
+            $obj = json_decode(file_get_contents('php://input'));
+            $this->load->model('Localizacao_model', 'localizacao');
 
-		$this->form_validation->set_rules(
-			'local_num',
-			'Local_num',
-			'required'
-		);
+            $headers = apache_request_headers();
 
-		$this->form_validation->set_rules(
-			'bairro',
-			'Bairro',
-			'required'
-		);
+            $_POST = get_object_vars($obj);
+            $_POST['img'] = isset($obj->img) ? $obj->img : null;
+            $_POST['localizacao_municipio'] = 1; // ISSO ESTÁ FIXO PRUDENTE
 
-		$this->form_validation->set_rules(
-			'municipio_pk',
-			'Cidade',
-			'required'
-		);
+            $this->ordem_servico->fill();
 
-		$this->form_validation->set_rules(
-			'estado_pk',
-			'Estado',
-			'trim|max_length[2]'
-		);
+            $this->localizacao->add_lat_long(
+                $this->input->post('localizacao_lat'),
+                $this->input->post('localizacao_long')
+            );
 
-    //Configurando as regras de validação do formulário para dados Prioridade, Procedência e Status
+            $this->localizacao->fill();
 
-		$this->form_validation->set_rules(
-			'prioridade_fk',
-			'Prioridade',
-			'trim|required|is_natural_no_zero'
-		);
+            $this->ordem_servico->config_form_validation();
+            $this->localizacao->config_form_validation();
 
-		$this->form_validation->set_rules(
-			'procedencia',
-			'Prioridade',
-			'trim|required|is_natural_no_zero'
-		);
+            $token_decodificado = json_decode(token_decrypt($headers['token']));
 
-		$this->form_validation->set_rules(
-			'setor',
-			'Setor',
-			'trim|required|is_natural_no_zero'
-		);
+            $this->begin_transaction();
 
-    //Configurando as regras de validação do formulário para dados descrição
-		$this->form_validation->set_rules(
-			'descricao', 
-			'Descricao',
-			'trim|required|max_length[500]'
-		);
+            $this->ordem_servico->__set("localizacao_fk", $this->localizacao->insert());
+            $this->ordem_servico->__set("funcionario_fk", $token_decodificado->id_funcionario);
 
-    //Configurando as regras de validação do formulário para dados de serviço
-		$this->form_validation->set_rules(
-			'servico_fk', 
-			'servico',
-			'trim|required|is_natural_no_zero'
-		);  	
-	}
+            $id = $this->ordem_servico->insert_os($token_decodificado->id_empresa);
 
-    
-    //Função que executa o upload da imagem de perfil do usuário
-	public function upload_img($id_ordem,$base64_image)
-	{
-		$path = "./assets/uploads/imagens_situacoes/";
-		$name = hash(ALGORITHM_HASH, $id_ordem . uniqid(rand(), true)).".jpg";
+            $paths = upload_img(
+                [
+                    'id' => $id,
+                    'path' => 'PATH_OS',
+                    'is_os' => true,
+                    'situation' => $this->ordem_servico->__get('situacao_atual_fk'),
+                ],
+                [0 => $this->input->post('img')]//talvez seja interessante a view já mandar no formato de array mesmo quando é uma.
+            );
 
-		list($type, $base64_image) = explode(';', $base64_image);
-		list(, $base64_image)      = explode(',', $base64_image);
-		
-		$data = base64_decode($base64_image);
+            $this->ordem_servico->insert_images($paths, $id);
 
-		file_put_contents($path.$name, $data);
+            $this->end_transaction();
 
-		return $path.$name;
-	}
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
 
-	
-	public function get(){
-		// Destrói a sessão que ele cria automaticamente, pois tava dando erro
-		$this->session->sess_destroy();
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
 
-		isset($_GET['id']) ? $id = $_GET['id'] : $id = null;
+    public function get()
+    {
+        // Destrói a sessão que ele cria automaticamente, pois tava dando erro
+        $this->session->sess_destroy();
 
-		$this->load->model('Ordem_Servico_model', 'ordem_servico_model');
-		$this->load->model('Historico_model', 'historico_model');
-		
-		// Pega os headers para acessar o token
-		$obj = apache_request_headers();
+        try {
 
+            isset($_GET['id']) ? $id = $_GET['id'] : $id = null;
 
-		// Decripta o token
-		$empresa = get('id_empresa', $obj['Token']);
-		
-		$where['departamentos.organizacao_fk'] = $empresa;
+            $this->load->model('Ordem_Servico_model', 'ordem_servico');
 
-		// Se foi especificada uma OS, pega só ela
-		if($id != null)
-		{
-			$where['ordens_servicos.ordem_servico_pk'] = $id;
+            $obj = apache_request_headers();
 
-			$ordens_servico = $this->ordem_servico_model->getEspecifico($where);
-	
-			$ordens_servico['historico'] = $this->historico_model->getHistoricoForMobile([
-				'historicos_ordens.ordem_servico_fk' => $id
-			]);
+            // Decripta o token
+            $empresa = get('id_empresa', $obj['token']);
 
-			$this->response->add_data("ordem",$ordens_servico);
-		}
-		// Caso contrário, chama um stored procedure que pega todas com o histórico aberto ou em andamento
-		else
-		{
-			$where['id_organizacao'] = get('id_empresa', $obj['Token']);
-			$where['id_funcionario'] = get('id_funcionario', $obj['Token']);
+            if ($id != null) {
+                $where['ordens_servicos.ordem_servico_pk'] = $id;
 
-			$ordens_servico = $this->ordem_servico_model->getJsonForMobile($where);
+                $historico = $this->ordem_servico->get_historico($id);
+                $imagens = $this->ordem_servico->get_images_id($id);
 
-			$this->response->add_data("ordens", $ordens_servico);
-		}
+                $this->response->add_data("historico", $historico);
+                $this->response->add_data("imagens", $imagens);
+            }
 
-		$this->response->send();
-	}
+            $where['sa.organizacao_fk'] = $empresa;
+
+            $where['ordens_servicos.situacao_atual_fk != 3 AND ordens_servicos.situacao_atual_fk != 4 AND ordens_servicos.situacao_atual_fk != '] = 5;
+
+            $ordens_servico = $this->ordem_servico->get_all(
+                'ordens_servicos.ordem_servico_pk,
+                ordens_servicos.ordem_servico_cod,
+                ordens_servicos.ativo,
+                ordens_servicos.ordem_servico_desc,
+                ordens_servicos.ordem_servico_criacao,
+                ordens_servicos.ordem_servico_atualizacao,
+                ordens_servicos.ordem_servico_comentario,
+                ordens_servicos.funcionario_fk,
+                prioridades.prioridade_pk,
+                prioridades.prioridade_nome,
+                servicos.servico_pk,
+                servicos.servico_nome,
+                si.situacao_pk as situacao_inicial_pk,
+                si.situacao_nome as situacao_inicial_nome,
+                sa.situacao_pk as situacao_atual_pk,
+                sa.situacao_nome as situacao_atual_nome,
+                setores.setor_pk,
+                setores.setor_nome,
+                localizacoes.localizacao_lat,
+                localizacoes.localizacao_long,
+                localizacoes.localizacao_rua,
+                localizacoes.localizacao_num,
+                localizacoes.localizacao_bairro,
+                localizacoes.localizacao_ponto_referencia,
+                municipios.municipio_nome,
+                funcionarios.funcionario_nome,
+                funcionarios.funcionario_caminho_foto,
+                procedencias.procedencia_nome,
+                ',
+                $where,
+                -1,
+                -1,
+                [
+                    ['table' => 'prioridades', 'on' => 'prioridades.prioridade_pk = ordens_servicos.prioridade_fk'],
+                    ['table' => 'procedencias', 'on' => 'procedencias.procedencia_pk = ordens_servicos.procedencia_fk'],
+                    ['table' => 'servicos', 'on' => 'servicos.servico_pk = ordens_servicos.servico_fk'],
+                    ['table' => 'situacoes as si', 'on' => 'si.situacao_pk = ordens_servicos.situacao_inicial_fk'],
+                    ['table' => 'situacoes as sa', 'on' => 'sa.situacao_pk = ordens_servicos.situacao_atual_fk'],
+                    ['table' => 'setores', 'on' => 'setores.setor_pk = ordens_servicos.setor_fk'],
+                    ['table' => 'localizacoes', 'on' => 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk'],
+                    ['table' => 'municipios', 'on' => 'municipios.municipio_pk = localizacoes.localizacao_municipio'],
+                    ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk'],
+                ]
+            );
+
+            $this->response->add_data("ordens", $ordens_servico);
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
+
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    public function put()
+    {
+        $this->load->model('Ordem_Servico_model', 'ordem_servico');
+
+        $this->load->helper('exception');
+        $this->load->helper('token_helper');
+        $this->load->helper('insert_images');
+        $this->load->library('form_validation');
+
+        try {
+
+            $obj = json_decode(file_get_contents('php://input'));
+            $headers = apache_request_headers();
+
+            
+            $_POST = get_object_vars($obj);
+            $_POST['img'] = isset($obj->img) ? $obj->img : null;
+
+            // var_dump($obj);die();
+
+            $this->ordem_servico->__set("ordem_servico_comentario", $_POST['ordem_servico_comentario']);
+            $this->ordem_servico->__set("situacao_atual_fk", $_POST['situacao_atual_fk']);
+            $this->ordem_servico->__set("ordem_servico_pk", $_POST['ordem_servico_pk']);
+
+            $paths = upload_img(
+                [
+                    'id' => $_POST['ordem_servico_pk'],
+                    'path' => 'PATH_OS',
+                    'is_os' => true,
+                    'situation' => $this->ordem_servico->__get('situacao_atual_fk'),
+                ],
+                [0 => $this->input->post('img')]//talvez seja interessante a view já mandar no formato de array mesmo quando é uma.
+            );
+
+            $this->begin_transaction();
+
+            $this->ordem_servico->handle_historico($_POST['ordem_servico_pk']);
+
+            $this->ordem_servico->update();
+
+            $this->ordem_servico->insert_images($paths, $_POST['ordem_servico_pk']);
+
+            $this->end_transaction();
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
+
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
 }

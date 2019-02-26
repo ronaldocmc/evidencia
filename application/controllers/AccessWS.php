@@ -115,6 +115,8 @@ class AccessWS extends MY_Controller
                 }
                 
                 $user = $this->funcionario_model->get('*', $data)[0];
+
+                // var_dump($user);die();
                 
 
                 if ($user->ativo == 0) {
