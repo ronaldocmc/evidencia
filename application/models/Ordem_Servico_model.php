@@ -23,7 +23,7 @@ class Ordem_Servico_model extends MY_Model
         'ordem_servico_desc',
     );
 
-    public function get_home($organization)
+    public function get_home($organization, Array $where = null)
     {
         $this->CI->db->select('
             ordens_servicos.ordem_servico_pk,
@@ -58,7 +58,6 @@ class Ordem_Servico_model extends MY_Model
             procedencias.procedencia_nome
             ');
         $this->CI->db->from('ordens_servicos');
-        $this->CI->db->where('procedencias.organizacao_fk', $organization);
 
         $this->CI->db->join('prioridades', 'prioridades.prioridade_pk = ordens_servicos.prioridade_fk');
         $this->CI->db->join('procedencias', 'procedencias.procedencia_pk = ordens_servicos.procedencia_fk');
@@ -70,11 +69,58 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->db->join('municipios', 'municipios.municipio_pk = localizacoes.localizacao_municipio');
         $this->CI->db->join('funcionarios', 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk');
 
+        $this->CI->db->where('procedencias.organizacao_fk', $organization);
+        if ($where !== null) 
+        {
+            foreach ($where as $field=>$value) 
+            {
+                $this->CI->db->where($field, $value);
+            }
+        }
         $this->CI->db->order_by('ordens_servicos.ordem_servico_pk', 'DESC');
 
         $result = $this->CI->db->get()->result();
         return $result;
+    }
 
+    public function get_map($where)
+    {
+        $this->CI->db->select('*');
+        $this->CI->db->from('ordens_servicos');
+        $this->CI->db->join('localizacoes', 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk');
+        $this->CI->db->join('servicos', 'servicos.servico_pk = ordens_servicos.servico_fk');
+        $this->CI->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
+
+        $dates['data_final'] = array_pop($where);
+        $dates['data_inicial'] = array_pop($where);
+        
+        foreach ($where as $field=>$value) 
+        {
+            if ($value !== '') 
+            {
+                $this->CI->db->where($field, $value);
+            }
+        }
+
+        if ($dates['data_inicial'] === '' && $dates['data_final'] === '') 
+        {
+            // pass
+        } 
+        elseif ($dates['data_inicial'] !== '' && $dates['data_final'] !== '') 
+        {
+            $this->CI->db->where('ordem_servico_criacao >=', $dates['data_inicial']);
+            $this->CI->db->where('ordem_servico_criacao <=', $dates['data_final']);
+        } 
+        elseif ($dates['data_inicial'] !== '') 
+        {
+            $this->CI->db->where('ordem_servico_criacao >=', $dates['data_inicial']);
+        }
+        elseif ($dates['data_final'] !== '') 
+        {
+            $this->CI->db->where('ordem_servico_criacao <=', $dates['data_final']);
+        }
+
+        return $this->CI->db->get()->result();
     }
 
     function config_form_validation_primary_key()
@@ -132,7 +178,8 @@ class Ordem_Servico_model extends MY_Model
         );
     }
 
-    function get_historico($id){
+    function get_historico($id)
+    {
         return $this->CI->db
         ->select("historicos_ordens.*, funcionarios.funcionario_caminho_foto, funcionarios.funcionario_nome, situacoes.situacao_nome")
         ->from("historicos_ordens")
@@ -142,7 +189,8 @@ class Ordem_Servico_model extends MY_Model
         ->get()->result();       
     }
 
-    function get_images($organizacao){
+    function get_images($organizacao)
+    {
         return $this->CI->db
         ->select("*")
         ->from("imagens_os")
@@ -151,6 +199,16 @@ class Ordem_Servico_model extends MY_Model
         ->get()->result();  
     }
 
+    function get_images_specific($ordem_servico)
+    {
+        return $this->CI->db
+        ->select("*")
+        ->from("imagens_os")
+        ->where("imagens_os.ordem_servico_fk", $ordem_servico)
+        ->join("situacoes","imagens_os.situacao_fk = situacoes.situacao_pk")
+        ->get()->result();  
+    }
+  
     function get_images_id($id){
         return $this->CI->db
         ->select("*")
@@ -168,7 +226,8 @@ class Ordem_Servico_model extends MY_Model
         return $this->insert();
     }
 
-    function handle_historico($id){
+    function handle_historico($id)
+    {
         $os = $this->CI->db
         ->select("
         ordem_servico_pk as ordem_servico_fk, 

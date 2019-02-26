@@ -1,6 +1,6 @@
 var main_map;
 var main_marker = null;
-var markers;
+var markers = null;
 var markers_situacao;
 var ordens_servico;
 var colors = ['ff0000', 'ffff00', 'ff00ff', '0000ff', '00ff00'];
@@ -12,77 +12,77 @@ function initMap() {
         zoom: 14
     });
     
-    $(document).ready(function () {
-        btn_load($('#filtrar'));
-        $('.carousel').carousel();
+    // $(document).ready(function () {
+    //     btn_load($('#filtrar'));
+    //     $('.carousel').carousel();
 
-        let date = new Date();
+    //     let date = new Date();
 
-        let filters = {
-            data_inicial: (date.getFullYear()) + '-' + (date.getMonth() + 1)+ '-' + (date.getDate() - 1),
-            data_final: (date.getFullYear()) + '-' + (date.getMonth() + 1)+ '-' + (date.getDate()) + ' 23:59:59'
-        };
-        let url = base_url + '/ordem_servico/json';
+    //     let filters = {
+    //         data_inicial: (date.getFullYear()) + '-' + (date.getMonth() + 1)+ '-' + (date.getDate() - 1),
+    //         data_final: (date.getFullYear()) + '-' + (date.getMonth() + 1)+ '-' + (date.getDate()) + ' 23:59:59'
+    //     };
+    //     let url = base_url + '/ordem_servico/json';
 
-        $.post(url, filters)
-        .done(function(response) {
-            markers = [];
-            response.data.map(function (ordem){
-                popula_markers(ordem);
-            });
-        })
+    //     $.post(url, filters)
+    //     .done(function(response) {
+    //         markers = [];
+    //         response.data.map(function (ordem){
+    //             popula_markers(ordem);
+    //         });
+    //     })
 
-        .fail(function(response) {
+    //     .fail(function(response) {
 
-        });
+    //     });
 
-        btn_ativar($('#filtrar'));
-    });
+    //     btn_ativar($('#filtrar'));
+    // });
 
     function seleciona_imagem(ordem) {
         let imagem = '../assets/img/icons/Markers/Status/';
 
-        if(ordem.departamento == "1"){
+        if(ordem.departamento_fk == "1"){
             imagem += "Coleta/";
         }
 
-        if(ordem.departamento == "2"){
+        if(ordem.departamento_fk == "2"){
             imagem += "Limpeza/";
         }
 
-        if(ordem.prioridade == "1"){
+        if(ordem.prioridade_fk == "1"){
             imagem += "Baixa/";
         }
 
-        if(ordem.prioridade == "2"){
+        if(ordem.prioridade_fk == "2"){
             imagem += "Alta/";
         }
 
-        if(ordem.prioridade == "4"){
+        if(ordem.prioridade_fk == "4"){
             imagem += "Media/";
         }
 
-        if(ordem.situacao_atual_pk == "1"){
+        if(ordem.situacao_atual_fk == "1"){
             imagem += "Aberta/"
         }
 
-        if(ordem.situacao_atual_pk == "2"){
+        if(ordem.situacao_atual_fk == "2"){
             imagem += "Andamento/"
         }
 
-        if(ordem.situacao_atual_pk == "3"){
+        if(ordem.situacao_atual_fk == "3"){
             imagem += "Recusado/"
         }
 
-        if(ordem.situacao_atual_pk == "4"){
+        if(ordem.situacao_atual_fk == "4"){
             imagem += "Recusado/"
         }
 
-        if(ordem.situacao_atual_pk == "5"){
+        if(ordem.situacao_atual_fk == "5"){
             imagem += "Finalizado/"
         }
 
-        switch(ordem.servico){
+        switch(ordem.servico_fk){
             case "1":
             imagem +=  "Marker_Fossa.png";
             break;
@@ -156,25 +156,21 @@ function initMap() {
     function request_data(id, setor) {
         remove_data();
 
-
         $.ajax({
-            url: base_url + '/ordem_servico/json_especifico/' + id + '/' + 0,
+            url: base_url + '/ordem_servico/get_specific/' + id + '/' + 0,
             dataType: "json",
-            success: function (response) {       
-                $("#v_descricao").html(response.ordem.descricao);
-                $("#v_codigo").html(response.ordem.codigo);
-                $("#v_setor").html(setor);
-                $("#v_servico").html(response.ordem.servico);
-
-                
+            success: function (response) {     
+                $("#v_descricao").html(response.data.ordem_servico[0].ordem_servico_desc);
+                $("#v_codigo").html(response.data.ordem_servico[0].ordem_servico_cod);
+                $("#v_setor").html(response.data.ordem_servico[0].setor_nome);
+                $("#v_servico").html(response.data.ordem_servico[0].servico_nome);
 
                 var html = "";
                 var indicators = "";
                 var active = " active";
                 var timeline = "";
 
-
-                if(response.ordem.historico.length > 2){
+                if(response.data.historico.length > 2){
                     html +=     '<div id="myCarousel" class="carousel slide"data-ride="carousel">' +
                     '<div class="carousel-inner row w-100 mx-auto"></div>' +
                     '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
@@ -195,26 +191,23 @@ function initMap() {
 
                 $('#card_slider').html(html);
                 html = "";
-                response.ordem.historico.map((historico, i) => {
 
-                    if (historico.comentario == null) {
-                        historico.comentario = "Nenhum comentário adicionado.";
+                response.data.historico.map((historico, i) => {
+                    if (historico.historico_ordem_comentario == null) {
+                        historico.historico_ordem_comentario = "Nenhum comentário adicionado.";
                     }
-                    if(historico.funcionario_foto != null){
-                        timeline += create_timeline(historico.comentario, historico.funcionario, base_url + '/assets/uploads/perfil_images/' + historico.funcionario_foto, historico.situacao, reformatDate(historico.data));
+                    if(historico.funcionario_caminho_foto != null){
+                        timeline += create_timeline(historico.historico_ordem_comentario, historico.funcionario_nome, base_url + '/assets/uploads/perfil_images/' + historico.funcionario_caminho_foto, historico.situacao_nome, reformatDate(historico.historico_ordem_tempo));
                     }else{
-                        timeline += create_timeline(historico.comentario, historico.funcionario, base_url + '/assets/uploads/perfil_images/default.png', historico.situacao, reformatDate(historico.data));
-                    }
-                    if (historico.foto != null) {
-                        html += create_cards(historico.comentario,  base_url + historico.foto.replace('./', '/'), historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                        active ="";
-                    } else {
-                        html += create_cards(historico.comentario,  base_url + '/assets/uploads/imagens_situacoes/no-image.png', historico.funcionario, historico.situacao, reformatDate(historico.data), active);
-                        active ="";
+                        timeline += create_timeline(historico.historico_ordem_comentario, historico.funcionario_nome, base_url + '/assets/uploads/perfil_images/default.png', historico.situacao_nome, reformatDate(historico.historico_ordem_tempo));
                     }
 
                 });
+                timeline += create_timeline(response.data.ordem_servico[0].ordem_servico_comentario, response.data.ordem_servico[0].funcionario_nome, base_url + '/assets/uploads/perfil_images/' + response.data.ordem_servico[0].funcionario_caminho_foto, response.data.ordem_servico[0].situacao_atual_nome, reformatDate(response.data.ordem_servico[0].ordem_servico_criacao));
 
+                response.data.imagens.map((img, i) => { 
+                    html += create_cards(base_url + '/' + img.imagem_os.replace('./', '/'), img.situacao_nome, img.imagem_os_timestamp, active);
+                });
 
                 $('#v_loading').hide();
                 $('.carousel-inner').html(html);
@@ -242,24 +235,22 @@ function initMap() {
         '</div>' +
         '<div class="qa-message-content">' +
         '<b>Situação: </b>' + situacao +
-        '<br>' + comentario +
+        '<br>' + (comentario !== null ? comentario : 'Nenhum comentário adicionado.') +
         '</div>' +
         '</div></div>';
     }
 
-    function create_cards(description, src, funcionario, situacao, data, active) {
+    function create_cards(src, situacao, data, active) {
 
-        return '<div class="carousel-item col-md-4' + active + '">' +
-        '<div class="card">' +
-        '<img class="card-img-top img-fluid" src="' + src +'">'+
-        '<div class="card-body">' +
-        '<h4 class="card-title">'+ situacao + '</h4>' +
-        '<p class="card-text">'+ description +'</p>' +  
-        '<p class="card-text"><small class="text-muted">'+ data + '</small></p>' +
-        '<p class="card-text"><small class="text-muted"><b>'+ funcionario + '</b></small></p>' +
-        '</div>' +
-        '</div>' +
-        '</div>';
+        return '<div class="carousel-item' + active + ' col-md-4">' +
+            '<div class="card historico">' +
+            '<img class="card-img-top img-fluid" src="' + src + '">' +
+            '<div class="card-body">' +
+            '<h4 class="card-title">' + situacao + '</h4>' +
+            '<p class="card-text"><small class="text-muted">' + reformatDate(data) + '</small></p>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
     }
 
     var departamento = $('#departamento_pk');
@@ -359,20 +350,20 @@ function initMap() {
 
         var marker = new google.maps.Marker({
             position: { 
-                lat: parseFloat(ordem.latitude), 
-                lng: parseFloat(ordem.longitude)
+                lat: parseFloat(ordem.localizacao_lat), 
+                lng: parseFloat(ordem.localizacao_long)
             },
             map: main_map,
             icon: imagem,
-            id: ordem.id,
-            departamento: ordem.departamento,
-            tipo_servico: ordem.tipo_servico,
-            servico: ordem.servico,
-            situacao: ordem.situacao_atual_pk,
-            data_criacao: ordem.data_criacao, 
-            prioridade: ordem.prioridade,
-            setor: ordem.setor,
-            title: ordem.rua + ", " + ordem.numero + " - " + ordem.bairro + ". " + ordem.ponto_referencia
+            id: ordem.ordem_servico_pk,
+            departamento: ordem.departamento_fk,
+            tipo_servico: ordem.tipo_servico_pk,
+            servico: ordem.servico_fk,
+            situacao: ordem.situacao_atual_fk,
+            data_criacao: ordem.ordem_servico_criacao, 
+            prioridade: ordem.prioridade_fk,
+            setor: ordem.setor_fk,
+            title: ordem.localizacao_rua + ", " + ordem.localizacao_num + " - " + ordem.localizacao_bairro
         });
 
         marker.addListener('click', function () {
@@ -388,13 +379,12 @@ function initMap() {
         btn_load($('#filtrar'));
 
         let filters = get_filters();
-        let url = base_url + '/ordem_servico/json';
+        let url = base_url + '/ordem_servico/get_map';
 
         $.post(url, filters)
         .done(function(response) {
             removeAll();
             markers = [];
-
             response.data.map(function(ordem) {
                 popula_markers(ordem);
             });
@@ -407,19 +397,21 @@ function initMap() {
     });
 
     function removeAll(){
-        markers.map((marker) => {
-            marker.setMap();
-            marker.setVisible(false);
-        });
+        if (markers !== null) {
+            markers.map((marker) => {
+                marker.setMap();
+                marker.setVisible(false);
+            });
+        }
     }
 
     function get_filters() {
         let filters = {
-            departamento: departamento.val() != -1 ? departamento.val() : null,
-            tipo_servico: tipo_servico.val() != -1 ? tipo_servico.val() : null,
-            servico: servico.val() != -1 ? servico.val() : null,
-            prioridade: prioridade.val() != -1 ? prioridade.val() : null,
-            situacao: situacao.val() != -1 ? situacao.val() : null,
+            departamento_fk: departamento.val() != -1 ? departamento.val() : null,
+            tipo_servico_pk: tipo_servico.val() != -1 ? tipo_servico.val() : null,
+            servico_fk: servico.val() != -1 ? servico.val() : null,
+            prioridade_fk: prioridade.val() != -1 ? prioridade.val() : null,
+            situacao_atual_fk: situacao.val() != -1 ? situacao.val() : null,
             data_inicial: de.val() != -1 ? de.val() : null,
             data_final: ate.val() != -1 ? ate.val() : null,
         };
