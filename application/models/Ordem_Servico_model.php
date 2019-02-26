@@ -243,16 +243,6 @@ class Ordem_Servico_model extends MY_Model
         ->join("situacoes","imagens_os.situacao_fk = situacoes.situacao_pk")
         ->get()->result();  
     }
-
-    function get_images_specific($ordem_servico)
-    {
-        return $this->CI->db
-        ->select("*")
-        ->from("imagens_os")
-        ->where("imagens_os.ordem_servico_fk", $ordem_servico)
-        ->join("situacoes","imagens_os.situacao_fk = situacoes.situacao_pk")
-        ->get()->result();  
-    }
   
     function get_images_id($id){
         return $this->CI->db
