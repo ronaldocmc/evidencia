@@ -309,13 +309,28 @@ class Ordem_Servico extends CRUD_Controller
         }
     }
 
-    public function deactivate()
+    public function get_map()
     {
-        //TODO
+        $ordens_servico = $this->ordem_servico->get_map($this->input->post());
+
+        $response = new Response();
+        $response->set_data($ordens_servico);
+        $response->send();
     }
 
-    public function activate()
+    public function get_specific($ordem_servico_pk)
     {
-        //TODO
+        $ordem_servico = $this->ordem_servico->get_home(
+            $this->session->user['id_organizacao'],
+            ['ordens_servicos.ordem_servico_pk' => $ordem_servico_pk]
+        );
+        $os_hist = $this->ordem_servico->get_historico($ordem_servico_pk);
+        $os_images = $this->ordem_servico->get_images_specific($ordem_servico_pk);
+
+        $response = new Response();
+        $response->add_data('historico', $os_hist);
+        $response->add_data('imagens', $os_images);
+        $response->add_data('ordem_servico', $ordem_servico);
+        $response->send();
     }
 }
