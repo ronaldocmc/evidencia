@@ -209,14 +209,14 @@ $("#btn-restaurar").click(function() {
         'senha' : senha
     }
 
-    $.post(base_url+'/Relatorio/restaurar_os/'+id_relatorio,data).done(function (response) {
+    $.post(base_url+'/Relatorio/receive_report/'+id_relatorio,data).done(function (response) {
         btn_ativar($('#btn-deletar-relatorio'));
         if (response.code == 200) {
-            alerts('success','Sucesso!','Relatório entregue com sucesso.');
+            alerts('success','Sucesso!','Relatório recebido com sucesso.');
             $('#restaurar_os').modal('hide');
         }
         else if (response.code == 404) {
-            alerts('success','Sucesso!','Não há ordens de serviço para serem finalizadas.');
+            alerts('success','Sucesso!','Relatório já foi recebido! Não há ordens de serviço para serem finalizadas.');
             $('#restaurar_os').modal('hide');
         }
         else if (response.code == 401) {
@@ -224,6 +224,6 @@ $("#btn-restaurar").click(function() {
         }
 
         $("#pass-modal-restaurar").val("");
-        window.location.href = base_url+'/Relatorio/detalhes_relatorio/'+id_relatorio;
+        window.location.href = base_url+'/Relatorio';
     }, "json");
 });

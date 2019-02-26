@@ -24,6 +24,15 @@ class Relatorio_model extends MY_Model
         'relatorio_data_fim_filtro',
     );
 
+    public function config_password_validation(){
+        
+        $this->CI->form_validation->set_rules(
+            'senha',
+            'Senha',
+            'required'
+        );   
+    }
+
     public function config_form_validation()
     {
 
@@ -79,7 +88,7 @@ class Relatorio_model extends MY_Model
         }
     }
 
-    public function get_orders_of_report($where = null)
+    public function get_orders_of_report($where = null, $count = FALSE)
     {
         $this->CI->db->select(
                 'ordens_servicos.ordem_servico_pk,
@@ -131,7 +140,9 @@ class Relatorio_model extends MY_Model
             }
         }
 
-        //echo $this->db->get_compiled_select(); die();
+        if($count == TRUE){
+            return $this->CI->db->count_all_results();
+        }
 
         $result = $this->CI->db->get()->result();
         if ($result) {

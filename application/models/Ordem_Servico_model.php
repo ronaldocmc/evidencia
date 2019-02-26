@@ -21,6 +21,7 @@ class Ordem_Servico_model extends MY_Model
         'situacao_inicial_fk',
         'situacao_atual_fk',
         'ordem_servico_desc',
+        'ordem_servico_comentario'
     );
 
     public function get_home($organization)

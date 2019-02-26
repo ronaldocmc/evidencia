@@ -32,15 +32,34 @@
                             
                             <?php 
 
-                                    if($relatorio->pegou_no_celular == 1)
+                                    if($relatorio->pegou_no_celular == 1 && $relatorio->relatorio_situacao == 'Entregue')
                                     {
-                                        $font_size = 12;
+                                        $font_size = 9;
                                         $label = "ENTREGUE";
-                                        $class = "success";
-                                    }else{
+                                        $class = "secondary";
+                                    }
+                                    
+                                    if($relatorio->pegou_no_celular == 0 && $relatorio->relatorio_situacao == 'Andamento')
+                                    {
                                         $font_size = 9;
                                         $label = "EM ANDAMENTO";
                                         $class = "warning";
+                                    }
+
+                                    if($relatorio->pegou_no_celular == 1 && $relatorio->relatorio_situacao == 'Finalizado')
+                                    {
+                                        $font_size = 9;
+                                        $label = "FINALIZADO";
+                                        $class = "success";
+
+                                    }
+
+                                    if($relatorio->pegou_no_celular == 1 && $relatorio->relatorio_situacao == 'Não Finalizado')
+                                    {
+                                        $font_size = 9;
+                                        $label = "NÃO FINALIZADO";
+                                        $class = "warning";
+
                                     }
                                     ?>
                             <div class = "col-12 col-md-12">

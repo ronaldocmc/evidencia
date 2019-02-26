@@ -125,23 +125,23 @@
                                             foreach ($relatorios as $key => $r): ?>
                                                <tr>
                                                    <td>
-                                                       <?=$r->pessoa_nome ?>
+                                                       <?=$r->funcionario_nome ?>
                                                    </td>
                                                    <td>
                                                        <?= $r->quantidade_os ?>
                                                    </td>
                                                    <td>
-                                                     <?= $r->status_string ?>
+                                                     <?= $r->relatorio_situacao ?>
                                                    </td>
                                                    <td>
-                                                       <?= $r->data_criacao ?>
+                                                       <?= $r->relatorio_data_criacao ?>
                                                     </td>
                                                     <td>
-                                                       <?= $r->data_entrega ?>
+                                                       <?= $r->relatorio_data_entrega ?>
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a class="btn btn-sm btn-primary" href="<?= base_url('relatorio/detalhes_relatorio/'.$r->relatorio_pk) ?>">
+                                                            <a class="btn btn-sm btn-primary" href="<?= base_url('relatorio/report_details/'.$r->relatorio_pk) ?>">
                                                                    <div class="d-none d-sm-block">
                                                                        Detalhes
                                                                    </div>
@@ -150,7 +150,7 @@
                                                                    </div>
                                                                </a>
                                                                
-                                                               <a class="btn btn-sm btn-success" target="blank" href="<?= base_url('relatorio/imprimir_relatorio/'.$r->relatorio_pk) ?>">
+                                                               <a class="btn btn-sm btn-success" target="_blank" href="<?= base_url('relatorio/report_details/'.$r->relatorio_pk.'/TRUE') ?>">
                                                                    <div class="d-none d-sm-block">
                                                                        Imprimir
                                                                    </div>

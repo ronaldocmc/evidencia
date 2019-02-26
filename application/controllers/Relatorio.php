@@ -175,6 +175,8 @@ class Relatorio extends CRUD_Controller
             $this->report_model->__set('relatorio_criador', $this->session->user['id_user']);
             $this->report_model->__set('relatorio_data_inicio_filtro', $this->input->post('data_inicial'));
             $this->report_model->__set('relatorio_data_fim_filtro', $this->input->post('data_final'));
+            $this->report_model->__set('relatorio_situacao', 'Andamento');
+            
 
             //DAQUI ATÉ O END DA TRANSACTION PODE SER FEITO DEPOIS DE TODAS VERIFICAÇÕES.
             //Abrindo uma transaction para caso de falhas de inserção
@@ -240,6 +242,7 @@ class Relatorio extends CRUD_Controller
             [
                 'pegou_no_celular' => 1,
                 'relatorio_func_responsavel' => $this->input->post('funcionario_fk'),
+                'ativo' => 1
             ],
             -1,
             -1
@@ -410,12 +413,12 @@ class Relatorio extends CRUD_Controller
 
     }
 
-    public function report_details($report_id, $print = FALSE)
+    public function report_details($report_id, $print = false)
     {
 
         $report_data = $this->report_model->get_one('*', ['relatorio_pk' => $report_id]);
 
-        if ($report_data && $report_data->ativo == 1) {
+        if ($report_data) {
 
             $workers = $this->funcionario_model->get(
                 "funcionarios.funcionario_pk, funcionarios.funcionario_nome",
@@ -461,30 +464,30 @@ class Relatorio extends CRUD_Controller
             $this->session->set_flashdata('mapa', [
                 0 => true,
             ]);
-            
-            if(!$print){
-            load_view([
-                0 => [
-                    'src' => 'dashboard/administrador/relatorio/detalhe_relatorio',
-                    'params' => [
+
+            if (!$print) {
+                load_view([
+                    0 => [
+                        'src' => 'dashboard/administrador/relatorio/detalhe_relatorio',
+                        'params' => [
+                            'ordens_servicos' => $ordens_servicos,
+                            'funcionario' => $responsible,
+                            'funcionarios' => $workers,
+                            'relatorio' => $report_data,
+                            'filtros' => $strings_filters,
+                        ],
+                    ],
+                ], 'administrador');
+            } else {
+
+                $this->load->view('dashboard/administrador/relatorio/imprimir_relatorio',
+                    array(
                         'ordens_servicos' => $ordens_servicos,
                         'funcionario' => $responsible,
-                        'funcionarios' => $workers,
                         'relatorio' => $report_data,
                         'filtros' => $strings_filters,
-                    ],
-                ],
-            ], 'administrador');
-        }else{
-
-            $this->load->view('dashboard/administrador/relatorio/imprimir_relatorio',
-            array(
-                'ordens_servicos' => $ordens_servicos,
-                'funcionario' => $responsible,
-                'relatorio' => $report_data,
-                'filtros' => $strings_filters,
-            ));
-        }
+                    ));
+            }
 
         } else {
             $response = new Response();
@@ -515,40 +518,6 @@ class Relatorio extends CRUD_Controller
         return checkdate($tempDate[1], $tempDate[2], $tempDate[0]);
     }
 
-    // Retorna o relatório que está em aberto do funcionário
-    // public function get_relatorio_do_funcionario($id_funcionario)
-    // {
-    //     $this->load->model('relatorio_model');
-
-    //     //precisamos descobrir o id do relatório que está em aberto do funcionário:
-    //     $relatorio = $this->relatorio_model->get_relatorio_do_funcionario($id_funcionario);
-
-    //     //se o relatório existir:
-    //     if ($relatorio) {
-    //         //vamos pegar todas as ordens de serviços que pertence a este relatório:
-
-    //         // $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $relatorio->relatorio_pk]);
-    //         // return $ordens_servicos;
-
-    //         return $this->get_ordens_relatorio($relatorio->relatorio_pk);
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // public function get_ordens_relatorio($id_relatorio)
-    // {
-    //     $this->load->model('relatorio_model');
-
-    //     $ordens_servicos = $this->relatorio_model->get(['relatorio_fk' => $id_relatorio]);
-
-    //     return $ordens_servicos;
-    // }
-
-    // /**
-    //  * Vamos verificar se o relatório já foi iniciado se o funcionário
-    //  * pegar o relatório através do celular.
-    //  **/
     private function verify_report_was_started($id)
     {
         $report = $this->report_model->get_one('relatorios.pegou_no_celular', ['relatorio_pk' => $id]);
@@ -595,14 +564,6 @@ class Relatorio extends CRUD_Controller
 
         $this->response->send();
     }
-
-    // /**
-    // Recebe por parâmetro o id do relatório.
-    // Destruir um relatório gera as seguintes operações:
-    // 1 - As ordens de serviço vinculadas a ele recebem um novo historico_ordem com o estado Aberto;
-    // 2 - Devemos apagar os relatorios_os vinculados ao ID do relatorio;
-    // 3 - Por fim destruimos o relatório.
-    //  **/
 
     public function deactivate($id)
     {
@@ -653,192 +614,178 @@ class Relatorio extends CRUD_Controller
         $this->response->send();
     }
 
-    // /**
+    private function get_all_reports()
+    {
+
+        $reports = $this->report_model->get_all(
+            '*',
+            null, // ['relatorios.ativo' => 1],
+            -1,
+            -1,
+            [
+                ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = relatorios.relatorio_func_responsavel'],
+            ]);
+
+        if ($reports) {
+            //arrumar a data:
+            foreach ($reports as $r) {
+
+                $r->relatorio_data_criacao = date('d/m/Y H:i:s', strtotime($r->relatorio_data_criacao));
+                $r->quantidade_os = $this->report_model->get_orders_of_report(['relatorio_fk' => $r->relatorio_pk], true);
+
+                if ($r->relatorio_data_entrega == null) {
+                    $r->relatorio_data_entrega = '-- --';
+                } else {
+                    $r->relatorio_data_entrega = date('d/m/Y H:i:s', strtotime($r->relatorio_data_entrega));
+                }
+            }
+        }
+
+        return $reports;
+    }
+
     // Index será responsável pela listagem dos relatórios
-    //  **/
-    // public function index()
-    // {
-    //     $this->load->model('relatorio_model');
-    //     $relatorios = $this->relatorio_model->get_relatorios();
+    public function index()
+    {
 
-    //     if ($relatorios !== false) {
-    //         //arrumar a data:
-    //         foreach ($relatorios as $relatorio) {
-    //             $relatorio->data_criacao = date('d/m/Y H:i:s', strtotime($relatorio->data_criacao));
-    //             if ($relatorio->status == 0) {
-    //                 $relatorio->status_string = 'Em Andamento';
-    //             } else if ($relatorio->status == 1) {
-    //                 $relatorio->status_string = 'Entregue';
-    //             }
+        $reports = $this->get_all_reports();
 
-    //             if ($relatorio->data_entrega == null) {
-    //                 $relatorio->data_entrega = '-- --';
-    //             } else {
-    //                 $relatorio->data_entrega = date('d/m/Y H:i:s', strtotime($relatorio->data_entrega));
-    //             }
-    //         }
-    //     }
+        // var_dump($reports);die();
 
-    //     $this->session->set_flashdata('css', array(
-    //         0 => base_url('assets/vendor/cropper/cropper.css'),
-    //         1 => base_url('assets/vendor/input-image/input-image.css'),
-    //         2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-    //         3 => base_url('assets/css/modal_desativar.css'),
-    //         4 => base_url('assets/css/user_guide.css'),
-    //     ));
+        $this->session->set_flashdata('css', array(
+            0 => base_url('assets/vendor/cropper/cropper.css'),
+            1 => base_url('assets/vendor/input-image/input-image.css'),
+            2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
+            3 => base_url('assets/css/modal_desativar.css'),
+            4 => base_url('assets/css/user_guide.css'),
+        ));
 
-    //     $this->session->set_flashdata('scripts', array(
-    //         0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-    //         1 => base_url('assets/vendor/datatables/datatables.min.js'),
-    //         2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-    //         3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-    //         4 => base_url('assets/js/utils.js'),
-    //         5 => base_url('assets/js/constants.js'),
-    //         6 => base_url('assets/js/jquery.noty.packaged.min.js'),
-    //         7 => base_url('assets/js/dashboard/relatorio/home.js')
-    //     ));
+        $this->session->set_flashdata('scripts', array(
+            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
+            1 => base_url('assets/vendor/datatables/datatables.min.js'),
+            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
+            4 => base_url('assets/js/utils.js'),
+            5 => base_url('assets/js/constants.js'),
+            6 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            7 => base_url('assets/js/dashboard/relatorio/home.js'),
+        ));
 
-    //     $this->load->helper('form');
-    //     load_view([
-    //         0 => [
-    //             'src' => 'dashboard/administrador/relatorio/home',
-    //             'params' => [
-    //                 'relatorios' => $relatorios,
-    //             ],
-    //         ],
-    //         1 => [
-    //             'src' => 'access/pre_loader',
-    //             'params' => null,
-    //         ],
-    //     ], 'administrador');
-    // }
+        $this->load->helper('form');
+        load_view([
+            0 => [
+                'src' => 'dashboard/administrador/relatorio/home',
+                'params' => [
+                    'relatorios' => $reports,
+                ],
+            ],
+            1 => [
+                'src' => 'access/pre_loader',
+                'params' => null,
+            ],
+        ], 'administrador');
+    }
 
-    // public function restaurar_os($id_relatorio = null)
-    // {
-    //     $this->load->model('Relatorio_model', 'relatorio_model');
-    //     $response = new Response();
+    public function receive_report($report_id = NULL)
+    {
 
-    //     $this->form_validation->set_rules(
-    //         'senha',
-    //         'senha',
-    //         'required'
-    //     );
+        $this->load->helper('password_helper');
 
-    //     $this->load->model('Acesso_model', 'acesso_model');
+        $this->report_model->config_password_validation();
+        $this->report_model->run_form_validation();
 
-    //     // Verifica a senha do funcionário
-    //     $acesso = $this->acesso_model->get([
-    //         'pessoa_fk' => $this->session->user['id_user'],
-    //         'acesso_senha' => hash(ALGORITHM_HASH, $this->input->post('senha') . SALT),
-    //     ]);
+        if (!authenticate_operation($this->input->post('senha'), $this->session->user['password_user'])) {
+            $this->response->set_code(Response::UNAUTHORIZED);
+            $this->response->send();
+            return;
+        }
 
-    //     if ($acesso === false) {
-    //         $response->set_code(Response::UNAUTHORIZED);
-    //         $response->send();
-    //         return;
-    //     } else {
-    //         if ($id_relatorio === null) {
-    //             $relatorios = $this->relatorio_model->get_objects(['relatorios.status' => 0]);
+        if ($report_id === NULL) {
 
-    //             if ($relatorios !== false) {
-    //                 foreach ($relatorios as $r) {
-    //                     $this->restaurar_os_relatorio($r->relatorio_pk);
-    //                 }
-    //             }
-    //         } else {
-    //             $this->restaurar_os_relatorio($id_relatorio);
-    //         }
-    //         $response->set_code(Response::SUCCESS);
-    //     }
-    //     $response->send();
-    // }
+            $reports = $this->report_model->get_all('*', ['pegou_no_celular' => 1, 'ativo' => 1], -1, -1);
 
-    // private function restaurar_os_relatorio($id_relatorio)
-    // {
-    //     $this->load->model('Relatorio_model', 'relatorio_model');
-    //     $ordens_servico = $this->relatorio_model->get_os_nao_verificadas($id_relatorio);
+            if ($reports) {
+                foreach ($reports as $r) {
+                    $this->restore_orders_of_report($r->relatorio_pk);
+                }
+            } else {
+                $this->response->set_code(Response::NOT_FOUND);
+                $this->response->set_data(['message' => 'Não há relatórios para serem recebidos.']);
+            }
 
-    //     // Verifica se há OS não finalizadas
-    //     if ($ordens_servico !== false) {
-    //         $this->load->model('Historico_model', 'historico_model');
-    //         $completo = true;
+        } else {
 
-    //         foreach ($ordens_servico as $os) {
-    //             // Para cada OS, é pego o último registro do histórico
-    //             $hist = $this->historico_model->get_max_data_os($os->os_fk);
+            $report = $this->report_model->get_one('*', ['pegou_no_celular' => 1, 'ativo' => 1, 'relatorios.relatorio_pk' => $report_id]);
 
-    //             // Se for em andamento, não foi finalizada, logo, deve ser inserido um novo histórico
-    //             // a colocando em aberto novamente, informando que não foi finalizada no relatório
-    //             if ($hist[0]->situacao_fk == '2') //2 é EM ANDAMENTO
-    //             {
-    //                 $return = $this->historico_model->insert([
-    //                     'ordem_servico_fk' => $os->os_fk,
-    //                     'funcionario_fk' => $this->session->user['id_funcionario'],
-    //                     'situacao_fk' => '1',
-    //                     'historico_ordem_comentario' => 'Não foi feito no relatório',
-    //                 ]);
+            if($report !== NULL){
+                $this->restore_orders_of_report($report_id);
 
-    //                 //2 significa que não foi concluída.
-    //                 $this->relatorio_model->update_relatorios_os_verificada(
-    //                     ['os_fk' => $os->os_fk, 'os_verificada' => 0], 2
-    //                 );
+                $this->response->set_code(Response::SUCCESS);
+                $this->response->set_data(['message' => 'Relatórios recebidos com sucesso!']);
+            }else{
+                echo "Entrei aqui!"; die();
+                $this->response->set_code(Response::NOT_FOUND);
+                $this->response->set_data(['message' => 'O relatório já foi recebido!']);
+            }
+        }
 
-    //                 $completo = false;
-    //             }
-    //             // Caso esteja finalizada, seu status na tabela de relatorio_os é alterado para verificado
-    //             else {
-    //                 $this->relatorio_model->update_relatorios_os_verificada(
-    //                     ['os_fk' => $os->os_fk, 'os_verificada' => 0], 1
-    //                 );
-    //             }
-    //         }
-    //         //após verificar todas as ordens, setamos o status do relatório para 1 ou 2 para indicar que o relatório foi entregue completo ou incompleto.
-    //         if ($completo) {
-    //             // Completo
-    //             $this->relatorio_model->update(['status' => 1], ['relatorio_pk' => $id_relatorio]);
-    //         } else {
-    //             // Incompleto
-    //             $this->relatorio_model->update(['status' => 2], ['relatorio_pk' => $id_relatorio]);
-    //         }
+        $this->response->send();
+    }
 
-    //         $this->relatorio_model->set_data_entrega($id_relatorio);
-    //     } else {
-    //         return;
-    //     }
-    // }
+    private function restore_orders_of_report($id)
+    {   
+        $all_executed = TRUE;
+        $ordens_servico = $this->report_model->get_orders_of_report(['relatorio_fk' => $id]);
 
-    // public function print_report($id)
-    // {
+        try {
+            $this->begin_transaction();
+            foreach ($ordens_servico as $os) {
 
-    //     $report = $this->report_model->get_one('*', ['relatorio_pk' => $id]);
+                if ($os->situacao_atual_fk == '2') //2 é EM ANDAMENTO
+                {
 
-    //     if ($report && $report->ativo == 1) {
+                    //Registrando no histórico o último dado atualizado da OS
+                    $this->ordem_servico_model->handle_historico($os->ordem_servico_pk);
 
-    //         $funcionario = $this->funcionario_model->get_one('*', ['funcionario_pk' => $report->funcionario_fk]);
-    //         $ordens_servicos = $this->select_orders_of_report($id_relatorio);
+                    //Setando o FORM da ordem de serviço com os dados de atualização
+                    $this->ordem_servico_model->__set('ordem_servico_pk', $os->ordem_servico_pk);
+                    $this->ordem_servico_model->__set('situacao_atual_fk', 1);
+                    $this->ordem_servico_model->__set('ordem_servico_comentario', 'Ordem de Serviço não executada no relatório.');
+                    $this->ordem_servico_model->__set('ordem_servico_atualizacao', date('Y-m-d H:i:s'));
 
-    //         $filtro_data = $this->relatorio_model->get_filtro_relatorio_data($id_relatorio);
-    //         $filtro_setores = $this->relatorio_model->get_filtro_relatorio_setores($id_relatorio);
-    //         $filtro_tipos_servicos = $this->relatorio_model->get_filtro_relatorio_tipos_servicos($id_relatorio);
+                    //Atualizando a situação atual da ordem de serviço (Situação 2 - Em andamento)
+                    $this->ordem_servico_model->update();
 
-    //         //criar o método que preenche o filtro data
-    //         $string_filtros['data'] = $this->get_string_filtro_data($filtro_data);
+                    $all_executed = FALSE;
 
-    //         //criar um método para preecnher os filtros:
-    //         $string_filtros['setor'] = $this->get_string_filtro_setores($filtro_setores);
+                }
+            }
 
-    //         $string_filtros['tipos_servicos'] = $this->get_string_filtro_tipos_servicos($filtro_tipos_servicos);
+            $this->report_model->__set('relatorio_data_entrega', date('Y-m-d H:i:s'));
+            $this->report_model->__set('relatorio_situacao', 'Finalizado');
+            $this->report_model->__set('relatorio_pk', $id);
+            $this->report_model->__set('ativo', 0);
+
+            if(!$all_executed){
+                $this->report_model->__set('relatorio_situacao', 'Não Finalizado'); 
+            }
+
+            $this->report_model->update();
+            $this->end_transaction();
+
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
 
 
-    //     } else {
-    //         $response = new Response();
-    //         $response->set_code(Response::NOT_FOUND);
-    //         $response->set_data("Relatório não encontrado.");
-    //         $response->send();
 
-    //     }
-    // }
 
+
+
+    //DAQUI PARA BAIXO POSSÍVELMENTE LIXO
     // public function mapa()
     // {
     //     $this->load->model('Prioridade_model', 'prioridade_model');
