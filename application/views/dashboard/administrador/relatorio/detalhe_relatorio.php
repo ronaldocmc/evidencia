@@ -31,39 +31,40 @@
                         <h3 class="title-2 m-b-25" style="margin-bottom: 5px; padding-bottom: 5px;"> Revisor responsável: <?= $funcionario->funcionario_nome ?> </h3>
                             
                             <?php 
+                                // var_dump($relatorio); die();
 
-                                    if($relatorio->pegou_no_celular == 1 && $relatorio->relatorio_situacao == 'Entregue')
+                                    if($relatorio->relatorio_situacao == 'Entregue' || $relatorio->relatorio_situacao == '')
                                     {
-                                        $font_size = 9;
+                                        // $font_size = 9;
                                         $label = "ENTREGUE";
                                         $class = "secondary";
                                     }
                                     
-                                    if($relatorio->pegou_no_celular == 0 && $relatorio->relatorio_situacao == 'Andamento')
+                                    if($relatorio->relatorio_situacao == 'Andamento')
                                     {
-                                        $font_size = 9;
+                                        // $font_size = 9;
                                         $label = "EM ANDAMENTO";
-                                        $class = "warning";
+                                        $class = "primary";
                                     }
 
-                                    if($relatorio->pegou_no_celular == 1 && $relatorio->relatorio_situacao == 'Finalizado')
+                                    if($relatorio->relatorio_situacao == 'Finalizado')
                                     {
-                                        $font_size = 9;
+                                        // $font_size = 9;
                                         $label = "FINALIZADO";
                                         $class = "success";
 
                                     }
 
-                                    if($relatorio->pegou_no_celular == 1 && $relatorio->relatorio_situacao == 'Não Finalizado')
+                                    if($relatorio->relatorio_situacao == 'Não Finalizado')
                                     {
-                                        $font_size = 9;
+                                        // $font_size = 9;
                                         $label = "NÃO FINALIZADO";
-                                        $class = "warning";
+                                        $class = "danger";
 
                                     }
                                     ?>
                             <div class = "col-12 col-md-12">
-                            <span style="font-size:<?= $font_size ?>pt; margin: 2px;" class="badge badge-pill badge-<?= $class ?> pull-right">
+                            <span style="font-size:9pt; margin: 2px;" class="badge badge-pill badge-<?= $class ?> pull-right">
                                 <?= $label ?></span></h2>
                             </div>
                         <div class="card-group">
