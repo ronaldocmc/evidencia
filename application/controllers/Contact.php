@@ -303,7 +303,7 @@ class Contact extends CI_Controller
 
         $attempt_response = verify_attempt_restore($this->input->ip_address(),$this->input->post('email'));
 
-        if ($captcha_response === true && $attempt_response === true) 
+        if ($attempt_response === true) 
         {
             $this->form_validation->set_rules('email',
                 'Email',
@@ -362,14 +362,11 @@ class Contact extends CI_Controller
         } 
         else 
         {
-            if ($captcha_response !== true) 
-            {
-                $this->response->set_code(Response::UNAUTHORIZED);
-                $this->response->set_message('Acesso negado. ' . $captcha_response);
-            } 
-            else 
-            {
-                $this->response->set_code(Response::FORBIDDEN);
+            $this->response->set_code(Response::FORBIDDEN);
+            
+            if(is_array($attempt_response)){
+                $this->response->set_message(implode('<br>', $attempt_response));
+            } else {
                 $this->response->set_message('Acesso bloqueado. ' . $attempt_response);
             }
         }
