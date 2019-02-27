@@ -79,6 +79,15 @@ class Relatorio_model extends MY_Model
         }
     }
 
+    public function get_images($relatorio_pk){
+        return $this->CI->db
+        ->select("imagens_os.*")
+        ->from("relatorios_os")
+        ->where("relatorios_os.relatorio_fk",$relatorio_pk)
+        ->join("imagens_os", "relatorios_os.os_fk = imagens_os.ordem_servico_fk")
+        ->get()->result();
+    }
+
     public function get_orders_of_report($where = null, $count = FALSE)
     {
         $this->CI->db->select(
