@@ -9,7 +9,7 @@ require_once APPPATH . "core\MY_Model.php";
 class Relatorio_model extends MY_Model
 {
 
-    const NAME = 'relatorios';
+    const NAME = 'relatório';
     const TABLE_NAME = 'relatorios';
     const PRI_INDEX = 'relatorio_pk';
 
