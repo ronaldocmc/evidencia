@@ -63,10 +63,20 @@ function is_cli()
 
 if(is_cli()){
 	define('ENVIRONMENT', 'testing');
-} else if($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '192.168.137.1'){
+} else if($_SERVER['SERVER_NAME'] == 'localhost'){
 	define('ENVIRONMENT', 'development');	
 } else {
 	define('ENVIRONMENT', 'production');
+}
+
+if(is_cli()){
+	define('ENVIRONMENT', 'testing');
+} else {
+	switch($_SERVER['SERVER_NAME']){
+		case 'localhost': define('ENVIRONMENT', 'development');	break;
+		case 'sistema-evidencia.azurewebsites.net': define('ENVIRONMENT', 'release'); break;
+		default: define('ENVIRONMENT', 'production'); break;
+	}
 }
 
 
