@@ -28,7 +28,7 @@ class Relatorio extends CRUD_Controller
         $this->response = new Response();
     }
 
-    public function novo()
+    public function novo_relatorio()
     {
         //Carregando os models para recuperação de dados a serem exibidos na view Novo Relatório
         $this->load->model('Servico_model', 'servico_model');
@@ -110,7 +110,7 @@ class Relatorio extends CRUD_Controller
             throw new MyException('Data final inválida.', Response::BAD_REQUEST);
         }
 
-        if ($initial_time > $final_time) {
+        if ($initial > $final) {
             throw new MyException("A data inicial deve ser menor ou igual a data final.", Response::BAD_REQUEST);
         }
     }
@@ -394,8 +394,10 @@ class Relatorio extends CRUD_Controller
         return $data_filter;
     }
 
-    private function get_report_detail_data($report_id)
+    private function get_report_detail_data($report)
     {
+        $report_id = $report->relatorio_pk;
+
         $workers = $this->funcionario_model->get(
             "funcionarios.funcionario_pk, funcionarios.funcionario_nome",
             [
@@ -406,7 +408,7 @@ class Relatorio extends CRUD_Controller
 
         $responsible = $this->funcionario_model->get_one(
             'funcionario_pk, funcionario_nome', 
-            ['funcionario_pk' => $report_data->relatorio_func_responsavel]
+            ['funcionario_pk' => $report->relatorio_func_responsavel]
         );
 
         //Recebendo as ordens de serviço do relatório em questão
@@ -415,13 +417,13 @@ class Relatorio extends CRUD_Controller
         //Recebendo os filtros utilizados no relatório
         $data_filters = $this->get_filters($report_id);
 
-        $strings_filters = $this->get_strings_filters($report_data, $data_filters['setores'], $data_filters['tipos_servicos']);
+        $strings_filters = $this->get_strings_filters($report, $data_filters['setores'], $data_filters['tipos_servicos']);
 
         $params = [
             'ordens_servicos' => $ordens_servicos,
             'funcionario' => $responsible,
             'funcionarios' => $workers,
-            'relatorio' => $report_data,
+            'relatorio' => $report,
             'filtros' => $strings_filters,
         ];
 
@@ -468,7 +470,7 @@ class Relatorio extends CRUD_Controller
             $this->load->view([
                 0 => [
                     'src'    => 'dashboard/administrador/relatorio/imprimir_relatorio',
-                    'params' => $this->get_report_detail_data($report_id)
+                    'params' => $this->get_report_detail_data($report)
                 ], 'administrador' 
             ]);
 
@@ -490,7 +492,7 @@ class Relatorio extends CRUD_Controller
                 load_view([
                     0 => [
                         'src'    => 'dashboard/administrador/relatorio/detalhe_relatorio',
-                        'params' => $this->get_report_detail_data($report_id)
+                        'params' => $this->get_report_detail_data($report)
                     ],
                 ], 'administrador');
         } else {
@@ -576,6 +578,7 @@ class Relatorio extends CRUD_Controller
                 $this->ordem_servico_model->update();
             }
 
+            $this->report_model->__set('relatorio_situacao', 'Destruído');
             $this->report_model->deactivate();
             $this->end_transaction();
 
@@ -850,7 +853,7 @@ class Relatorio extends CRUD_Controller
     //     ], 'administrador');
     // }
 
-    // public function relatorios_gerais()
+// public function relatorios_gerais()
     // {
     //     $this->load->model('departamento_model');
     //     $this->load->model('setor_model');
