@@ -70,20 +70,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
-if(ENVIRONMENT == 'production'){
-	$active_group = 'production';
-} else {
-	$active_group = 'development';
-}
 
 $query_builder = TRUE;
 
-$db['development'] = array(
+$db = array(
 	'dsn'	=> '',
 	'hostname' => 'dbprdevidencia01.mysql.database.azure.com',
 	'username' => 'admin_prudenco@dbprdevidencia01',
 	'password' => 'Developers10',
-	'database' => 'evidencia',
+	// 'database' => 'evidencia',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -103,28 +98,85 @@ $db['development'] = array(
 	'save_queries' => TRUE
 );
 
+switch(ENVIRONMENT){
+	case 'production':
+		$db['database'] = 'evidencia-producao';
+		$db['production'] = $db;
+		$active_group = 'production';
 
-$db['production'] = array(
-	'dsn'	=> '',
-	'hostname' => 'dbprdevidencia01.mysql.database.azure.com',
-	'username' => 'admin_prudenco@dbprdevidencia01',
-	'password' => 'Developers10',
-	'database' => 'evidencia-producao',
-	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
-	'pconnect' => FALSE,
-	'db_debug' => FALSE,
-	'cache_on' => FALSE,
-	'cachedir' => '',
-	'char_set' => 'utf8',
-	'dbcollat' => 'utf8_general_ci',
-	'swap_pre' => '',
-	'encrypt' => array(
-        'ssl_ca' => realpath('./assets/ssl/BaltimoreCyberTrustRoot.crt.pem'),
-        'ssl_verify' => FALSE
-    ),
-	'compress' => FALSE,
-	'stricton' => FALSE,
-	'failover' => array(),
-	'save_queries' => TRUE
-);
+		break;
+
+	case 'development':
+		$db['database'] = 'evidencia';
+		$db['development'] = $db;
+		$active_group = 'development';
+
+		break;
+
+	case 'release':
+		$db['database'] = 'evidencia-release';
+		$db['release'] = $db;
+		$active_group = 'release';
+
+		break;
+}
+
+
+// if(ENVIRONMENT == 'production'){
+// 	$active_group = 'production';
+// } else {
+// 	$active_group = 'development';
+// }
+
+
+
+// $db['development'] = array(
+// 	'dsn'	=> '',
+// 	'hostname' => 'dbprdevidencia01.mysql.database.azure.com',
+// 	'username' => 'admin_prudenco@dbprdevidencia01',
+// 	'password' => 'Developers10',
+// 	'database' => 'evidencia',
+// 	'dbdriver' => 'mysqli',
+// 	'dbprefix' => '',
+// 	'pconnect' => FALSE,
+// 	'db_debug' => FALSE,
+// 	'cache_on' => FALSE,
+// 	'cachedir' => '',
+// 	'char_set' => 'utf8',
+// 	'dbcollat' => 'utf8_general_ci',
+// 	'swap_pre' => '',
+// 	'encrypt' => array(
+//         'ssl_ca' => realpath('./assets/ssl/BaltimoreCyberTrustRoot.crt.pem'),
+//         'ssl_verify' => FALSE
+//     ),
+// 	'compress' => FALSE,
+// 	'stricton' => FALSE,
+// 	'failover' => array(),
+// 	'save_queries' => TRUE
+// );
+
+
+// $db['production'] = array(
+// 	'dsn'	=> '',
+// 	'hostname' => 'dbprdevidencia01.mysql.database.azure.com',
+// 	'username' => 'admin_prudenco@dbprdevidencia01',
+// 	'password' => 'Developers10',
+// 	'database' => 'evidencia-producao',
+// 	'dbdriver' => 'mysqli',
+// 	'dbprefix' => '',
+// 	'pconnect' => FALSE,
+// 	'db_debug' => FALSE,
+// 	'cache_on' => FALSE,
+// 	'cachedir' => '',
+// 	'char_set' => 'utf8',
+// 	'dbcollat' => 'utf8_general_ci',
+// 	'swap_pre' => '',
+// 	'encrypt' => array(
+//         'ssl_ca' => realpath('./assets/ssl/BaltimoreCyberTrustRoot.crt.pem'),
+//         'ssl_verify' => FALSE
+//     ),
+// 	'compress' => FALSE,
+// 	'stricton' => FALSE,
+// 	'failover' => array(),
+// 	'save_queries' => TRUE
+// );
