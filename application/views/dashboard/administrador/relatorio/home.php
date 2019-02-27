@@ -141,7 +141,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a class="btn btn-sm btn-primary" href="<?= base_url('relatorio/report_details/'.$r->relatorio_pk) ?>">
+                                                            <a class="btn btn-sm btn-primary" href="<?= base_url('relatorio/detalhes/'.$r->relatorio_pk) ?>">
                                                                    <div class="d-none d-sm-block">
                                                                        Detalhes
                                                                    </div>
@@ -150,7 +150,7 @@
                                                                    </div>
                                                                </a>
                                                                
-                                                               <a class="btn btn-sm btn-success" target="_blank" href="<?= base_url('relatorio/report_details/'.$r->relatorio_pk.'/TRUE') ?>">
+                                                               <a class="btn btn-sm btn-success" target="_blank" href="<?= base_url('relatorio/imprimir/'.$r->relatorio_pk) ?>">
                                                                    <div class="d-none d-sm-block">
                                                                        Imprimir
                                                                    </div>
