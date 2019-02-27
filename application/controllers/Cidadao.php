@@ -2,6 +2,7 @@
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 require_once(dirname(__FILE__)."/Response.php");	
+require_once APPPATH . "core/MyException.php";
 /**
  * Acess Class
  *
@@ -20,10 +21,8 @@ class Cidadao extends CI_Controller {
 	function __construct() 
 	{
 		parent::__construct();
-		date_default_timezone_set('America/Sao_Paulo');
 		$this->response = new Response();
-        $this->load->model('Log_model', 'log_model');
-	}
+    }
     //--------------------------------------------------------------------------------
 
     /**
@@ -39,33 +38,47 @@ class Cidadao extends CI_Controller {
 	//--------------------------------------------------------------------------------
 
 
-    public function getOs(){
-        $this->load->model('Ordem_Servico_model', 'ordem_servico_model');
-        $json['os'] = $this->ordem_servico_model->getCidadao(
-            array(
-                'ordem_servico_cod' => "/".$_GET['protocol']
-            )
-        );
-
-        // var_dump($json['os']->ordem_servico_pk);die();
-        
-        if($json['os'] != false){
-        // if($json['os'] != false || ($json['os']->situacao_atual == 1 || $json['os']->situacao_atual == 2)){
-            $json['code'] = 200;
-
-            $json['historico'] = $this->ordem_servico_model->getHistorico(
-                array(
-                    'ordem_servico_fk' => $json['os']->ordem_servico_pk
-                )
-            );
+    public function getOs()
+    {
+        try {
+            $this->response = new Response();
+            $this->load->helper('exception');
+            $this->load->model('Ordem_Servico_model', 'ordem_servico');
             
+            $os = $this->ordem_servico->get_all(
+                '*',
+                ['ordem_servico_cod' => $_GET['protocol']],
+                -1,
+                -1,
+                [
+                    ['table' => 'servicos', 'on' => 'servicos.servico_pk = ordens_servicos.servico_fk'],
+                    ['table' => 'prioridades', 'on' => 'prioridades.prioridade_pk = ordens_servicos.prioridade_fk'],
+                    ['table' => 'procedencias', 'on' => 'procedencias.procedencia_pk = ordens_servicos.procedencia_fk'],
+                    ['table' => 'situacoes as si', 'on' => 'si.situacao_pk = ordens_servicos.situacao_inicial_fk'],
+                    ['table' => 'situacoes as sa', 'on' => 'sa.situacao_pk = ordens_servicos.situacao_atual_fk'],
+                    ['table' => 'localizacoes', 'on' => 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk'],
+                    ['table' => 'municipios', 'on' => 'municipios.municipio_pk = localizacoes.localizacao_municipio']
+                ]
+            );
 
-        }else{
-            $json['historico'] = [];
-            $json['code'] = 404;
+            if (count($os) === 0) 
+            {
+                throw new MyException('Ordem de Serviço não encontrada.', 404);   
+            }
+
+            $this->response->add_data('os', $os);
+            $this->response->add_data(
+                'historico',
+                $this->ordem_servico->get_historico($os[0]->ordem_servico_pk)
+            );
+            $this->response->add_data(
+                'imagens',
+                $this->ordem_servico->get_images_id($os[0]->ordem_servico_pk)
+            );
+
+            $this->response->send();
+        } catch (MyException $e) {
+            handle_my_exception($e);
         }
-
-		header('Content-Type: application/json; charset=utf-8');
-		echo json_encode($json,JSON_UNESCAPED_UNICODE);
     }
 }
