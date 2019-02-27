@@ -200,7 +200,6 @@
             $('#loading').hide();
 
             if (response.code == 200) {
-                console.log(response);
                 $(os_search).hide();
                 $(os).fadeIn(500);
 
