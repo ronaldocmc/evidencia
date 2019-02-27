@@ -87,10 +87,6 @@ class FuncionarioWS extends MY_Controller
 
             $this->end_transaction();
 
-    
-
-            $this->response->add_data('token', $token);
-
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
 
