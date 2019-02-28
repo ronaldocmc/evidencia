@@ -172,22 +172,21 @@ class Relatorio extends CRUD_Controller
     }
 
 
-    private function verify_reports_on_working($worker_id)
+    private function verify_reports_of_worker($worker_id)
     {
         $report_on_working = $this->report_model->get_all(
             '*',
             [
-                'pegou_no_celular' => 1,
                 'relatorio_func_responsavel' => $worker_id,
                 'ativo' => 1
             ],
             -1,
             -1
         );
-
-        if (count($report_on_working) > 0) 
+        
+        if (!empty($report_on_working)) 
         {
-            throw new MyException('Há um relatório em andamento para este funcionário que necessita ser finalizado.', Response::BAD_REQUEST);
+            throw new MyException('Não foi possível executar operação! Funcionário já possui outro relatório em andamento.', Response::BAD_REQUEST);
         }
 
     }
@@ -218,7 +217,7 @@ class Relatorio extends CRUD_Controller
             $filter = $this->input->post();
 
             //Verificando se existe um relatório em andamento para o funcionário selecionado
-            $this->verify_reports_on_working($this->input->post('funcionario_fk'));
+            $this->verify_reports_of_worker($this->input->post('funcionario_fk'));
             
             //Recuperando as ordens de serviço que pertencerão ao relatório conforme especificação do filtro
             $ordens_servicos = $this->ordem_servico_model->get_for_new_report($filter);
@@ -530,12 +529,15 @@ class Relatorio extends CRUD_Controller
         }
     }
 
+    
+
     // Recebe por parâmetro o id do relatório
     public function change_worker($id)
     {
         try {
             $this->verify_report_was_started($id);
-            
+            $this->verify_reports_of_worker($this->input->post('funcionario_fk'));
+
             $this->report_model->__set('relatorio_pk', $id);
             $this->report_model->__set('relatorio_func_responsavel', $this->input->post('funcionario_fk'));
 
@@ -578,7 +580,8 @@ class Relatorio extends CRUD_Controller
                 $this->ordem_servico_model->update();
             }
 
-            $this->report_model->__set('relatorio_situacao', 'Destruído');
+            $this->report_model->__set('relatorio_situacao', 'Inativo');
+            $this->report_model->__set('Ativo', 0);
             $this->report_model->deactivate();
             $this->end_transaction();
 
@@ -599,7 +602,7 @@ class Relatorio extends CRUD_Controller
 
         $reports = $this->report_model->get_all(
             '*',
-            null, // ['relatorios.ativo' => 1],
+            null, //['relatorios.ativo' => 1],
             -1,
             -1,
             [
