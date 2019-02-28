@@ -88,7 +88,7 @@
                                 <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
                             </div>
                         </div>
-                        <div align="center" class="center" id="nao_encontrada">
+                        <div align="center" id="nao_encontrada">
                             <h3> Desculpe, evidência não encontrada. </h3>
                         </div>
 
@@ -106,11 +106,9 @@
 
 
                         <section id="os">
-
                             <div class="col-md-12 p-5" id="finalizado">
                                 <div class="alert alert-success" role="alert">
-                                    <h4 class="alert-heading">Evidência finalizada!</h4>
-                                    <p>Essa evidência já foi finalizada</p>
+                                    <h4 class="alert-heading" align="center">Evidência finalizada!</h4>
                                 </div>
                             </div>
 
@@ -118,7 +116,6 @@
                                 <div class="col-md-6">
                                     <span class="font-weight-bold">Localização: </span>
                                     <p class="mb-1" id="os_local"></p>
-                                    <!-- <p>Acme Inc</p> -->
                                     <p class="mb-1" id="os_city"></p>
                                     <span class="font-weight-bold">Descrição: </span>
                                     <p class="mb-1" id="os_desc"></p>
@@ -238,7 +235,7 @@
                     $('#title_fotos').html('Essa evidência não possui fotos.');
                 }
             }
-            else if (response.data.code == 404) {
+            else if (response.code == 404) {
                 $('#nao_encontrada').show();
             }
         });
