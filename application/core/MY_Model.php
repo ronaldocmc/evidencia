@@ -2,9 +2,8 @@
     exit('No direct script access allowed');
 }
 
-echo APPPATH;
-require_once(APPPATH."core\Generic_Model.php");
-require_once(APPPATH."core\MyException.php");
+require_once(APPPATH."core/Generic_Model.php");
+require_once(APPPATH."core/MyException.php");
 //require_once dirname(__FILE__) . "/Generic_Model.php";
 // require_once dirname(__FILE__) . "/MyException.php";
 class MY_Model extends Generic_Model
