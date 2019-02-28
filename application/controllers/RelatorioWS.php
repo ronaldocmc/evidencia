@@ -75,7 +75,7 @@ class RelatorioWS extends MY_Controller
                 -1
             );
 
-            if ($relatorio == null){
+            if ($relatorio == null) {
                 throw new MyException('Nenhum relatório ativo foi encontrado!', Response::NOT_FOUND);
             }
 
@@ -138,31 +138,45 @@ class RelatorioWS extends MY_Controller
      **/
     public function put()
     {
-        $this->load->helper('attempt');
-        $this->load->helper('token');
-        $this->load->model('tentativa_model');
-        $this->load->model('atualizacao_model');
+        $this->load->model('Relatorio_model', 'relatorio');
+        $this->load->model('Ordem_servico_model', 'ordem_servico');
+        $this->load->helper('exception');
 
-        $header_obj = apache_request_headers();
+        try {
 
-        $attempt_result = verify_attempt($this->input->ip_address());
+            $obj = json_decode(file_get_contents('php://input'));
+            $headers = apache_request_headers();
+            $token_decodificado = json_decode(token_decrypt($headers['token']));
 
-        if ($attempt_result === true) {
+            $this->begin_transaction();
 
-            $token_decodificado = json_decode(token_decrypt($header_obj['Token']));
-            $id_funcionario = $token_decodificado->id_funcionario;
+            $report = $this->relatorio->get_one('*', ['relatorio_func_responsavel' => $token_decodificado->id_funcionario]);
+            $not_finished = $this->relatorio->not_finished($report->relatorio_pk);
 
-            $this->update_relatorio($id_funcionario);
-            //se deu certo vai enviar o response dentro desse método
+            foreach ($not_finished as $os) {
+                $this->ordem_servico->__set("ordem_servico_comentario", "Não foi concluído no relatório de " . $report->relatorio_data_criacao . ".");
+                $this->ordem_servico->__set("situacao_atual_fk", 1);
+                $this->ordem_servico->__set("ordem_servico_pk",$os->os_fk);
+
+                $this->ordem_servico->handle_historico($_POST['ordem_servico_pk']);
+                $this->ordem_servico->update();
+            }
+
+            $this->relatorio->__set("relatorio_pk", $report->relatorio_pk);
+            $this->relatorio->__set("ativo", 0);
+
+            $this->relatorio->update();
+
+            $this->end_transaction();
+
             $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
 
-        } else {
-            $this->response->set_code(Response::FORBIDDEN);
-            $this->response->set_message($attempt_result);
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
         }
-
-        $this->response->send();
-        $this->__destruct();
     }
 
     /**
