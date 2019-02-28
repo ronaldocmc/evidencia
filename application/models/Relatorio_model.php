@@ -147,6 +147,18 @@ class Relatorio_model extends MY_Model
         return $this->CI->db->get()->result();
     }
 
+    public function not_finished($relatorio_pk){
+        // $where['ordens_servicos.situacao_atual_fk != 3 AND ordens_servicos.situacao_atual_fk != 4 AND ordens_servicos.situacao_atual_fk != '] = 5;
+
+        return $this->CI->db
+        ->select('relatorios_os.os_fk')
+        ->from('relatorios_os')
+        ->join('ordens_servicos','ordens_servicos.ordem_servico_pk = relatorios_os.os_fk')
+        ->where('relatorios_os.relatorio_fk',$relatorio_pk) //todas as ordens do relatório especificado
+        ->where('ordens_servicos.situacao_atual_fk', 2) //que estão em andamento
+        ->get()->result();        
+    }
+
 }
     /*
     //SUBSTITUIDA PELA GET ONE
