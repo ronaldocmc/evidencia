@@ -164,11 +164,10 @@ class Relatorio extends CRUD_Controller
     {   
         $this->report_model->__set('relatorio_func_responsavel', $this->input->post('funcionario_fk'));
         $this->report_model->__set('ativo', 1);
-        $this->report_model->__set('pegou_no_celular', 0);
         $this->report_model->__set('relatorio_criador', $this->session->user['id_user']);
         $this->report_model->__set('relatorio_data_inicio_filtro', $this->input->post('data_inicial'));
         $this->report_model->__set('relatorio_data_fim_filtro', $this->input->post('data_final'));
-        $this->report_model->__set('relatorio_situacao', 'Andamento');
+        $this->report_model->__set('relatorio_situacao', 'Criado');
     }
 
 
@@ -251,7 +250,6 @@ class Relatorio extends CRUD_Controller
             //Setando os campos do Object Relatório no model.
             $this->set_report_fields();
             
-
             //DAQUI ATÉ O END DA TRANSACTION PODE SER FEITO DEPOIS DE TODAS VERIFICAÇÕES.
             //Abrindo uma transaction para caso de falhas de inserção
             $this->begin_transaction();
@@ -460,19 +458,18 @@ class Relatorio extends CRUD_Controller
     public function imprimir($report_id)
     {
         $report = $this->report_model->get_one('*', ['relatorio_pk' => $report_id]);
-
+        
         if($report){
 
             $this->load_css_detail();
             $this->load_script_detail();
 
-            $this->load->view([
+            load_view([
                 0 => [
                     'src'    => 'dashboard/administrador/relatorio/imprimir_relatorio',
                     'params' => $this->get_report_detail_data($report)
-                ], 'administrador' 
-            ]);
-
+                ],
+            ], 'administrador');
         } else {
             $this->load->view('errors/html/error_404');
         }
@@ -521,10 +518,10 @@ class Relatorio extends CRUD_Controller
 
     private function verify_report_was_started($id)
     {
-        $report = $this->report_model->get_one('relatorios.pegou_no_celular', ['relatorio_pk' => $id]);
+        $report = $this->report_model->get_one('relatorios.relatorio_situacao', ['relatorio_pk' => $id]);
 
         //ou seja, se o relatório já foi iniciado:
-        if ($report->pegou_no_celular == 1) {
+        if ($report->relatorio_situacao == 'Em andamento') {
             throw new MyException("O funcionário já recebeu o relatório no celular. Impossível realizar operação.", Response::UNAUTHORIZED);
         }
     }
@@ -580,9 +577,10 @@ class Relatorio extends CRUD_Controller
                 $this->ordem_servico_model->update();
             }
 
-            $this->report_model->__set('relatorio_situacao', 'Inativo');
             $this->report_model->__set('Ativo', 0);
-            $this->report_model->deactivate();
+            $this->report_model->__set('relatorio_situacao', 'Inativo');
+
+            $this->report_model->update();
             $this->end_transaction();
 
             $this->response->set_code(Response::SUCCESS);
@@ -676,7 +674,7 @@ class Relatorio extends CRUD_Controller
 
     private function receive_all_reports()
     {
-        $reports = $this->report_model->get_all('*', ['pegou_no_celular' => 1, 'ativo' => 1], -1, -1);
+        $reports = $this->report_model->get_all('*', ['relatorio_situacao' => 'Em andamento', 'ativo' => 1], -1, -1);
 
         if ($reports) {
             foreach ($reports as $r) {
@@ -689,7 +687,7 @@ class Relatorio extends CRUD_Controller
 
     private function receive_single_report($report_id)
     {
-        $report = $this->report_model->get_one('*', ['pegou_no_celular' => 1, 'ativo' => 1, 'relatorios.relatorio_pk' => $report_id]);
+        $report = $this->report_model->get_one('*', ['relatorio_situacao' => 'Em andamento', 'ativo' => 1, 'relatorios.relatorio_pk' => $report_id]);
 
         if($report !== NULL){
             $this->restore_orders_of_report($report_id);
@@ -759,12 +757,12 @@ class Relatorio extends CRUD_Controller
             }
 
             $this->report_model->__set('relatorio_data_entrega', date('Y-m-d H:i:s'));
-            $this->report_model->__set('relatorio_situacao', 'Finalizado');
+            $this->report_model->__set('relatorio_situacao', 'Entregue');
             $this->report_model->__set('relatorio_pk', $id);
             $this->report_model->__set('ativo', 0);
 
             if(!$all_executed){
-                $this->report_model->__set('relatorio_situacao', 'Não Finalizado'); 
+                $this->report_model->__set('relatorio_situacao', 'Entregue incompleto'); 
             }
 
             $this->report_model->update();

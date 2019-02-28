@@ -150,6 +150,16 @@
                                                                    </div>
                                                                </a>
                                                                
+                                                               <?php if($r->relatorio_situacao == 'Inativo'): ?>
+                                                               <a class="btn btn-sm btn-danger" disabled="true" style="color: white";>
+                                                                   <div class="d-none d-sm-block">
+                                                                       Inativo
+                                                                   </div>
+                                                                   <div class="d-block d-sm-none">
+                                                                   <i class="fas fa-minus-circle"></i>
+                                                                   </div>
+                                                               </a>
+                                                                <?php else:?>
                                                                <a class="btn btn-sm btn-success" target="_blank" href="<?= base_url('relatorio/imprimir/'.$r->relatorio_pk) ?>">
                                                                    <div class="d-none d-sm-block">
                                                                        Imprimir
@@ -158,6 +168,7 @@
                                                                    <i class="fas fa-print"></i>
                                                                    </div>
                                                                </a>
+                                                               <?php endif;?>
                                                         </div>
                                                     </td>
                                                 </tr>
