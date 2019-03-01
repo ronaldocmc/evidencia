@@ -90,6 +90,7 @@ $('#btn-deactivate').click(() => {
       alerts('failed', 'Erro!', 'Houve um erro ao desativar.');
     }
     update_table();
+    document.location.reload(false);
   });
 });
 
@@ -116,6 +117,7 @@ $('#btn-activate').click(() => {
       alerts('failed', 'Erro!', 'Houve um erro ao ativar.');
     }
     update_table();
+    document.location.reload(false);
   });
 });
 
@@ -289,6 +291,7 @@ send = (imagem) => {
     processData: false,
     contentType: false,
     success: function (response) {
+      document.location.reload(false);
       btn_ativar($('#pula-para-confirmacao'));
       btn_ativar($('.submit'));
 
@@ -324,6 +327,7 @@ send = (imagem) => {
       }
       //pre_loader_hide();
       remove_image();
+
       btn_ativar($('#pula-para-confirmacao'));
       btn_ativar($('.submit'));
     },
