@@ -6,7 +6,7 @@ require_once(dirname(__FILE__)."/Response.php");
  *
  * @package     Evidencia
  * @category    Controller
- * @author      Pedro Cerdeirinha & Matheus Palmeira 
+ * @author      Pedro Cerdeirinha & Matheus Palmeira & Darlan
  */
 class Access extends CI_Controller {
 	/**
@@ -30,13 +30,9 @@ class Access extends CI_Controller {
 		date_default_timezone_set('America/Sao_Paulo');
 		$this->response = new Response();
         $this->load->model('Log_model', 'log_model');
-	}
-    //--------------------------------------------------------------------------------
-    /**
-	 * Método padrão da classe Access
-	 * 
-	 * @return void
-	 */
+        $this->load->helper('exception');
+    }
+    
     public function index()
     {
     	if ($this->session->user['id_user'] === NULL)
@@ -57,6 +53,7 @@ class Access extends CI_Controller {
     		}
     	}
     }
+
 	//--------------------------------------------------------------------------------
     /**
 	 * Método para efetuar o logout do sistema. 
@@ -73,127 +70,116 @@ class Access extends CI_Controller {
         
     	redirect(base_url());
     }
-	//--------------------------------------------------------------------------------
-    /**
-	 * Realiza a autenticação do usuário verificando no model se uma dada combinação
-	 * de login e senha existe e armazena resposta no $response
-	 *
-	 * @param       array  $access
-	 */
-    private function authenticate($response)
+
+    private function load_login()
     {
-    	if ($response !== FALSE && $response != null)
-    	{
-    		if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5'))
-    		{
-    			$this->response->set_code(Response::UNAUTHORIZED);
-    			$this->response->set_message('Você não tem autorização para acessar o sistema');
-    		}
-    		else
-    		{	
-    			$this->response->set_code(Response::SUCCESS);
-                $this->response->set_message('Login efetuado com sucesso');
-    			$userdata =  [
-                    'id_user' => isset($response->funcionario_pk) ? $response->funcionario_pk : $response->superusuario_pk,
-                    'email_user' => isset($response->funcionario_pk) ? $response->funcionario_login : null,
-                    'password_user' => isset($response->organizacao_pk) ? $response->funcionario_senha : $response->superusuario_senha,
-                    'id_organizacao' => isset($response->organizacao_pk) ? $response->organizacao_pk : 'admin',
-                    'name_user' => isset($response->funcionario_nome) ? $response->funcionario_nome : $response->superusuario_nome,
-                    'name_organizacao' => isset($response->organizacao_nome)?$response->organizacao_nome:'Superusuario',
-                    'is_superusuario' => isset($response->organizacao_pk) ? FALSE : TRUE,
-                    'image_user_min' => isset($response->funcionario_caminho_foto) ? base_url('/assets/uploads/perfil_images/min/'.$response->funcionario_caminho_foto) : base_url('/assets/img/default.png'),
-                    'image_user' => isset($response->funcionario_caminho_foto) ? base_url('/assets/uploads/perfil_images/'.$response->funcionario_caminho_foto) : base_url('/assets/img/default.png'),
-    				'func_funcao' => isset($response->funcao_nome)?$response->funcao_nome : null
-    			];
-                $permissions = $this->get_permissions($userdata['func_funcao'], $userdata['is_superusuario']);
-                $this->session->set_userdata('permissions', $permissions);
-                $this->session->set_userdata('user',$userdata);
-                $this->tentativa_model->delete($this->input->ip_address());
+        $this->load->helper('recaptcha');
+        $this->load->helper('attempt'); 
+        $this->load->model('tentativa_model');
+        $this->load->library('form_validation');
+        $this->load->model('Funcionario_model', 'funcionario');
+
+        $this->set_rules_form_validation();
+    }
+
+    private function check_login_attempts()
+    {
+        if(ENVIRONMENT != 'testing'){
+
+            $response = verify_attempt($this->input->ip_address());
+
+            if($response != TRUE){
+                throw new MyException('Número de tentativas excedidas. ' . $response, Response::FORBIDDEN);
             }
-        }
-        else
-        {
-            $this->response->set_code(Response::NOT_FOUND);
-            $this->response->set_message('Usuário não encontrado!');
-            $attempt = [
-                'tentativa_ip' => $this->input->ip_address(),
-                'tentativa_tempo' => date('Y/m/d H:i:s')
-            ];
-            $this->tentativa_model->insert($attempt);
+
         }
     }
-    //Este método irá pegar as permissões do tipo do usuário
-    public function get_permissions($func_funcao, $is_superusuario)
+
+    private function is_superuser()
     {
-        $controller_exceptions = array();
-        $method_exceptions     = array();
-        $permissions           = array();
-        
-        if($is_superusuario)
-        {
-            //pass;
-        }
-        else
-        {
-            if($func_funcao == 'Administrador')
-            {   
-                    //exceptions são os controllers que ele não tem permissão para acessar
-                $controller_exceptions = array(
-                    0 => 'superusuario',
-                    // 0 => 'organizacao',
-                );
-                $method_exceptions = array(
-                    0 => array(
-                        'controller' => 'organizacao',
-                        'method'     => 'deactivate',
-                    ),
-                    
-                    1 => array(
-                        'controller' => 'organizacao',
-                        'method'     => 'activate',
-                    ),
-                    2 => array(
-                        'controller' => 'organizacao',
-                        'method'     => 'index',
-                    )
-                );
-            }
-            else
-            {
-                if($func_funcao == 'Atendente')
-                {
-                    $controller_exceptions = array(
-                        0 => 'organizacao',
-                        1 => 'superusuario',
-                        2 => 'departamento',
-                        3 => 'funcionario',
-                        4 => 'prioridade',
-                        5 => 'servico',
-                        6 => 'setor',
-                        7 => 'situacao',
-                        8 => 'tipo_servico'
-                    );
-                    
-                    //agora temos o caso se ele tem permissão para acessar um controller, mas não tem permissão para acessar um método do controlador:
-                    $method_exceptions = array(
-                        0 =>  array(
-                            'controller' => 'dashboard',
-                            'method'     => 'superusuario'
-                        ),
-                        1 => array(
-                            'controller' => 'ordem_servico',
-                            'method'     => 'deactivate'
-                        ),
-                    ); 
-                }
-            }
-        }
-        $permissions = array(
-            'controller_exceptions' => $controller_exceptions,
-            'method_exceptions'     => $method_exceptions
-        );
-        return $permissions;
+        $login_array = explode('@',$this->input->post('login'));
+
+        return ($login_array[1] == 'admin');
     }
+
+    private function clear_login_attempts()
+    {
+        $this->tentativa_model->delete($this->input->ip_address());
+    }
+
+    private function check_permissions($user)
+    {
+        if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5')){
+            throw new MyException('Você não tem autorização para acessar o sistema', Response::UNAUTHORIZED);
+        }
+    }
+
+    private function set_session_superuser($superuser)
+    {
+        $userdata =  [
+            'id_user'           => $superuser->superusuario_pk,
+            'email_user'        => null,
+            'password_user'     => $superuser->superusuario_senha,
+            'id_organizacao'    => 'admin',
+            'name_user'         => $superuser->superusuario_nome,
+            'name_organizacao'  => 'Superusuario',
+            'is_superusuario'   => TRUE,
+            'image_user_min'    => base_url('/assets/img/default.png'),
+            'image_user'        => base_url('/assets/img/default.png'),
+            'func_funcao'       => null
+        ];
+
+        $this->session->set_userdata('user', $userdata);
+    }
+
+    private function set_session($user)
+    {
+        $userdata =  [
+            'id_user'           => $user->funcionario_pk,
+            'email_user'        => $user->funcionario_login,
+            'password_user'     => $user->funcionario_senha,
+            'id_organizacao'    => $user->organizacao_pk,
+            'name_user'         => $user->funcionario_nome,
+            'name_organizacao'  => $user->organizacao_nome,
+            'is_superusuario'   => FALSE,
+            'image_user_min'    => base_url('/assets/uploads/perfil_images/min/'.$user->funcionario_caminho_foto),
+            'image_user'        => base_url('/assets/uploads/perfil_images/'.$user->funcionario_caminho_foto),
+            'func_funcao'       => $user->funcao_nome
+        ];
+
+
+        $this->session->set_userdata('user', $userdata);
+    }
+
+    private function authenticate_superuser()
+    {
+        $this->load->model('Super_model', 'superuser');
+
+        $this->superuser->__set('superusuario_login', $this->input->post('login'));
+        $this->superuser->__set('superusuario_senha', hash(ALGORITHM_HASH,$this->input->post('password').SALT));
+
+        $superuser = $this->superuser->get_one_or_404('*');
+
+        $this->set_session_superuser($superuser);
+
+        $this->clear_login_attempts();
+    }
+
+    private function authenticate_user()
+    {
+        $this->funcionario->__set('funcionario_login', $this->input->post('login'));
+        $this->funcionario->__set('funcionario_senha', hash(ALGORITHM_HASH,$this->input->post('password').SALT));
+
+        $worker = $this->funcionario->get_or_404();
+
+        $this->check_permissions($worker);
+
+        $this->set_session($worker);
+
+        $this->clear_login_attempts();
+    }
+
+
 	//--------------------------------------------------------------------------------
     /**
 	 * Método que recebe as informações de usuário e valida-as e, caso seja valido
@@ -206,63 +192,47 @@ class Access extends CI_Controller {
 	 */
     public function login() 
     {
-    	$this->load->helper('recaptcha');
-    	$this->load->helper('attempt'); 
-    	$this->load->model('tentativa_model');
-    	$this->load->library('form_validation');
-		//Faz a verificação de que o usuário não trata-se de um robo
-        if(ENVIRONMENT == 'testing')
-        {
-            $attempt_response = TRUE;
-        }
-        else
-        {
-        	$attempt_response = verify_attempt($this->input->ip_address());
-        }
-        
-    	if ($attempt_response)
-    	{	
-    		$this->form_validation->set_rules('login', 
-    			'Login',
-    			'trim|required|regex_match[/[a-zA-Z0-9_\-.+]+@[a-zA-Z0-9-]+/]|min_length[8]|max_length[128]'
-    		);
-    		$this->form_validation->set_rules('password',
-    			'Senha', 
-    			'trim|required|min_length[8]|max_length[128]'
-    		);
-         
-    		if ($this->form_validation->run() === TRUE) 
-    		{
-                $response = '';
-    			$login = explode('@',$this->input->post('login'));
-                if ($login[1] != 'admin') 
-                {
-                    $access['funcionario_login'] = $this->input->post('login');
-                    $access['funcionario_senha'] = hash(ALGORITHM_HASH,$this->input->post('password').SALT);
-                    $this->load->model('Funcionario_model', 'func_model');
-                    $response = $this->func_model->get('*',$access)[0];
-                }
-                else
-                {
-                    $access['superusuario_login'] = $this->input->post('login');
-                    $access['superusuario_senha'] = hash(ALGORITHM_HASH,$this->input->post('password').SALT);
-                    $this->load->model('Super_model', 'su_model');
-                    $response = $this->su_model->get_one('*', $access);
-                }
-                
-                $this->authenticate($response);
-    		} 
-    		else 
-    		{	    		
-    			$this->response->set_code(Response::BAD_REQUEST);
-    			$this->response->set_message(implode('<br>', $this->form_validation->errors_array()));
-    		}
-    	} 
-    	else
-    	{
-			$this->response->set_code(Response::FORBIDDEN);
-            $this->response->set_message('Número de tentativas excedidas. ' . $attempt_response);
-    	}
-    	$this->response->send();          
+        try{
+
+            $this->load_login();
+
+            $this->check_login_attempts();
+
+            $this->funcionario->run_form_validation();
+
+            if($this->is_superuser())
+            {
+                $this->authenticate_superuser();
+            } 
+            else 
+            {
+                $this->authenticate_user();
+            }
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->set_message('Login efetuado com sucesso');
+            $this->response->send();     
+
+        }catch(MyException $e){
+            handle_my_exception($e);
+        } catch(Exception $e){
+            handle_exception($e);
+        }  
+     }
+
+
+
+    private function set_rules_form_validation()
+    {
+        $this->form_validation->set_rules('login', 
+            'Login',
+            'trim|required|regex_match[/[a-zA-Z0-9_\-.+]+@[a-zA-Z0-9-]+/]|min_length[8]|max_length[128]'
+        );
+
+        $this->form_validation->set_rules('password',
+            'Senha', 
+            'trim|required|min_length[8]|max_length[128]'
+        );
     }
+
 }
