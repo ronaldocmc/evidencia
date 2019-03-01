@@ -1166,7 +1166,6 @@ class Ordem_Servico extends CRUD_Controller {
 		{
 			$result = $this->ordem_servico_model->getJsonForWeb();	
 		}
-
 		// Seleciona qual flag de filtro deverá ser usada, de acordo com as datas e situação
 		$filtro = $this->seleciona_filtro(
 			$this->input->post('data_inicial'),
@@ -1267,7 +1266,7 @@ class Ordem_Servico extends CRUD_Controller {
 	// Método auxiliar para filtrar as os de acordo com os filtros escolhidos no mapa
 	private function filtra_ordens_view($ordens, $data_inicial, $data_final, $situacao, $filtro)
 	{
-		$return = null;
+		$return = [];
 
 		foreach ($ordens as $os)
 		{
