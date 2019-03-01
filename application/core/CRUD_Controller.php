@@ -42,7 +42,9 @@ class CRUD_Controller extends CI_Controller
         {
             $this->set_pseudo_session();
             $this->verify_password_superuser();
-            $this->check_permissions();
+            if(!$this->is_superuser()){
+                $this->check_permissions();
+            }
         }        
         else
         {
