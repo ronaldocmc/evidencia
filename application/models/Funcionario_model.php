@@ -3,12 +3,13 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core\MY_Model.php";
+require_once APPPATH . "core/MY_Model.php";
+require_once APPPATH."core/MyException.php";
 
 class Funcionario_model extends MY_Model
 {
 
-    const NAME = 'funcionarios';
+    const NAME = 'funcionário';
     const TABLE_NAME = 'funcionarios';
     const PRI_INDEX = 'funcionario_pk';
 
@@ -46,6 +47,27 @@ class Funcionario_model extends MY_Model
             'Organizacao',
             'trim|required'
         );
+    }
+
+    // @override
+    function get_or_404()
+    {   
+        $this->CI->db->select('*');
+        $this->CI->db->from(self::TABLE_NAME);
+        $this->CI->db->join('organizacoes', 'organizacoes.organizacao_pk = ' . self::TABLE_NAME . '.organizacao_fk');
+        $this->CI->db->join('funcoes', 'funcoes.funcao_pk = funcionarios.funcao_fk');
+        
+        foreach($this->object as $k => $v){
+            $this->CI->db->where($k, $this->object[$k]);
+        }
+
+        $res = $this->CI->db->get()->row();
+
+        if($res == NULL || $res == FALSE){
+            throw new MyException('Usuário e/ou senha inválidos.', Response::NOT_FOUND);
+        } else {
+            return $res;
+        }
     }
 
     function get($select = "*", $where = null)
