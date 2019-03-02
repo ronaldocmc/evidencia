@@ -64,7 +64,7 @@ if(is_cli()){
 } else {
 	switch($_SERVER['SERVER_NAME']){
 		case 'localhost': define('ENVIRONMENT', 'development');	break;
-		case 'sistema-evidencia.azurewebsites.net': define('ENVIRONMENT', 'release'); break;
+		case 'evidencia-release.azurewebsites.net': define('ENVIRONMENT', 'release'); break;
 		default: define('ENVIRONMENT', 'production'); break;
 	}
 }

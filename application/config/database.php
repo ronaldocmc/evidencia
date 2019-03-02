@@ -114,7 +114,7 @@ switch(ENVIRONMENT){
 		break;
 
 	case 'release':
-		$db['database'] = 'evidencia-release';
+		$db['database'] = 'evidencia';
 		$db['release'] = $db;
 		$active_group = 'release';
 
