@@ -175,6 +175,7 @@ class Relatorio extends CRUD_Controller
         $report_on_working = $this->report_model->get_all(
             '*',
             [
+				'relatorio_situacao' => "Em andamento",
                 'relatorio_func_responsavel' => $worker_id,
                 'ativo' => 1
             ],
