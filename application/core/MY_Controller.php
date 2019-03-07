@@ -64,8 +64,8 @@ class MY_Controller extends CI_Controller
                 
                 $header_obj = apache_request_headers();
 
-                echo "<pre>";
-                var_dump($header_obj);die();
+                // echo "<pre>";
+                // var_dump($header_obj);die();
 
                 //Verifica o token e lá dentro cria um novo token
                 $new_token = verify_token($header_obj['Token'], $this->response);
