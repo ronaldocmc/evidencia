@@ -28,7 +28,7 @@ class Relatorio extends CRUD_Controller
         $this->response = new Response();
     }
 
-    public function novo()
+    public function novo_relatorio()
     {
         //Carregando os models para recuperação de dados a serem exibidos na view Novo Relatório
         $this->load->model('Servico_model', 'servico_model');
@@ -110,7 +110,7 @@ class Relatorio extends CRUD_Controller
             throw new MyException('Data final inválida.', Response::BAD_REQUEST);
         }
 
-        if ($initial_time > $final_time) {
+        if ($initial > $final) {
             throw new MyException("A data inicial deve ser menor ou igual a data final.", Response::BAD_REQUEST);
         }
     }
@@ -163,31 +163,29 @@ class Relatorio extends CRUD_Controller
     private function set_report_fields()
     {   
         $this->report_model->__set('relatorio_func_responsavel', $this->input->post('funcionario_fk'));
-        $this->report_model->__set('ativo', 1);
-        $this->report_model->__set('pegou_no_celular', 0);
         $this->report_model->__set('relatorio_criador', $this->session->user['id_user']);
         $this->report_model->__set('relatorio_data_inicio_filtro', $this->input->post('data_inicial'));
         $this->report_model->__set('relatorio_data_fim_filtro', $this->input->post('data_final'));
-        $this->report_model->__set('relatorio_situacao', 'Andamento');
+        $this->report_model->__set('relatorio_situacao', 'Criado');
     }
 
 
-    private function verify_reports_on_working($worker_id)
+    private function verify_reports_of_worker($worker_id)
     {
         $report_on_working = $this->report_model->get_all(
             '*',
             [
-                'pegou_no_celular' => 1,
+				'relatorio_situacao' => "Em andamento",
                 'relatorio_func_responsavel' => $worker_id,
                 'ativo' => 1
             ],
             -1,
             -1
         );
-
-        if (count($report_on_working) > 0) 
+        
+        if (!empty($report_on_working)) 
         {
-            throw new MyException('Há um relatório em andamento para este funcionário que necessita ser finalizado.', Response::BAD_REQUEST);
+            throw new MyException('Não foi possível executar operação! Funcionário já possui outro relatório em andamento.', Response::BAD_REQUEST);
         }
 
     }
@@ -218,7 +216,7 @@ class Relatorio extends CRUD_Controller
             $filter = $this->input->post();
 
             //Verificando se existe um relatório em andamento para o funcionário selecionado
-            $this->verify_reports_on_working($this->input->post('funcionario_fk'));
+            $this->verify_reports_of_worker($this->input->post('funcionario_fk'));
             
             //Recuperando as ordens de serviço que pertencerão ao relatório conforme especificação do filtro
             $ordens_servicos = $this->ordem_servico_model->get_for_new_report($filter);
@@ -252,7 +250,6 @@ class Relatorio extends CRUD_Controller
             //Setando os campos do Object Relatório no model.
             $this->set_report_fields();
             
-
             //DAQUI ATÉ O END DA TRANSACTION PODE SER FEITO DEPOIS DE TODAS VERIFICAÇÕES.
             //Abrindo uma transaction para caso de falhas de inserção
             $this->begin_transaction();
@@ -394,8 +391,10 @@ class Relatorio extends CRUD_Controller
         return $data_filter;
     }
 
-    private function get_report_detail_data($report_id)
+    private function get_report_detail_data($report)
     {
+        $report_id = $report->relatorio_pk;
+
         $workers = $this->funcionario_model->get(
             "funcionarios.funcionario_pk, funcionarios.funcionario_nome",
             [
@@ -406,7 +405,7 @@ class Relatorio extends CRUD_Controller
 
         $responsible = $this->funcionario_model->get_one(
             'funcionario_pk, funcionario_nome', 
-            ['funcionario_pk' => $report_data->relatorio_func_responsavel]
+            ['funcionario_pk' => $report->relatorio_func_responsavel]
         );
 
         //Recebendo as ordens de serviço do relatório em questão
@@ -415,13 +414,13 @@ class Relatorio extends CRUD_Controller
         //Recebendo os filtros utilizados no relatório
         $data_filters = $this->get_filters($report_id);
 
-        $strings_filters = $this->get_strings_filters($report_data, $data_filters['setores'], $data_filters['tipos_servicos']);
+        $strings_filters = $this->get_strings_filters($report, $data_filters['setores'], $data_filters['tipos_servicos']);
 
         $params = [
             'ordens_servicos' => $ordens_servicos,
             'funcionario' => $responsible,
             'funcionarios' => $workers,
-            'relatorio' => $report_data,
+            'relatorio' => $report,
             'filtros' => $strings_filters,
         ];
 
@@ -459,19 +458,18 @@ class Relatorio extends CRUD_Controller
     public function imprimir($report_id)
     {
         $report = $this->report_model->get_one('*', ['relatorio_pk' => $report_id]);
-
+        
         if($report){
 
             $this->load_css_detail();
             $this->load_script_detail();
 
-            $this->load->view([
+            load_view([
                 0 => [
                     'src'    => 'dashboard/administrador/relatorio/imprimir_relatorio',
-                    'params' => $this->get_report_detail_data($report_id)
-                ], 'administrador' 
-            ]);
-
+                    'params' => $this->get_report_detail_data($report)
+                ],
+            ], 'administrador');
         } else {
             $this->load->view('errors/html/error_404');
         }
@@ -490,7 +488,7 @@ class Relatorio extends CRUD_Controller
                 load_view([
                     0 => [
                         'src'    => 'dashboard/administrador/relatorio/detalhe_relatorio',
-                        'params' => $this->get_report_detail_data($report_id)
+                        'params' => $this->get_report_detail_data($report)
                     ],
                 ], 'administrador');
         } else {
@@ -520,20 +518,23 @@ class Relatorio extends CRUD_Controller
 
     private function verify_report_was_started($id)
     {
-        $report = $this->report_model->get_one('relatorios.pegou_no_celular', ['relatorio_pk' => $id]);
+        $report = $this->report_model->get_one('relatorios.relatorio_situacao', ['relatorio_pk' => $id]);
 
         //ou seja, se o relatório já foi iniciado:
-        if ($report->pegou_no_celular == 1) {
+        if ($report->relatorio_situacao == 'Em andamento') {
             throw new MyException("O funcionário já recebeu o relatório no celular. Impossível realizar operação.", Response::UNAUTHORIZED);
         }
     }
+
+    
 
     // Recebe por parâmetro o id do relatório
     public function change_worker($id)
     {
         try {
             $this->verify_report_was_started($id);
-            
+            $this->verify_reports_of_worker($this->input->post('funcionario_fk'));
+
             $this->report_model->__set('relatorio_pk', $id);
             $this->report_model->__set('relatorio_func_responsavel', $this->input->post('funcionario_fk'));
 
@@ -576,7 +577,10 @@ class Relatorio extends CRUD_Controller
                 $this->ordem_servico_model->update();
             }
 
-            $this->report_model->deactivate();
+            $this->report_model->__set('Ativo', 0);
+            $this->report_model->__set('relatorio_situacao', 'Inativo');
+
+            $this->report_model->update();
             $this->end_transaction();
 
             $this->response->set_code(Response::SUCCESS);
@@ -596,7 +600,7 @@ class Relatorio extends CRUD_Controller
 
         $reports = $this->report_model->get_all(
             '*',
-            null, // ['relatorios.ativo' => 1],
+            null, //['relatorios.ativo' => 1],
             -1,
             -1,
             [
@@ -670,7 +674,7 @@ class Relatorio extends CRUD_Controller
 
     private function receive_all_reports()
     {
-        $reports = $this->report_model->get_all('*', ['pegou_no_celular' => 1, 'ativo' => 1], -1, -1);
+        $reports = $this->report_model->get_all('*', ['relatorio_situacao' => 'Em andamento', 'ativo' => 1], -1, -1);
 
         if ($reports) {
             foreach ($reports as $r) {
@@ -683,7 +687,7 @@ class Relatorio extends CRUD_Controller
 
     private function receive_single_report($report_id)
     {
-        $report = $this->report_model->get_one('*', ['pegou_no_celular' => 1, 'ativo' => 1, 'relatorios.relatorio_pk' => $report_id]);
+        $report = $this->report_model->get_one('*', ['relatorio_situacao' => 'Em andamento', 'ativo' => 1, 'relatorios.relatorio_pk' => $report_id]);
 
         if($report !== NULL){
             $this->restore_orders_of_report($report_id);
@@ -753,12 +757,11 @@ class Relatorio extends CRUD_Controller
             }
 
             $this->report_model->__set('relatorio_data_entrega', date('Y-m-d H:i:s'));
-            $this->report_model->__set('relatorio_situacao', 'Finalizado');
+            $this->report_model->__set('relatorio_situacao', 'Entregue');
             $this->report_model->__set('relatorio_pk', $id);
-            $this->report_model->__set('ativo', 0);
 
             if(!$all_executed){
-                $this->report_model->__set('relatorio_situacao', 'Não Finalizado'); 
+                $this->report_model->__set('relatorio_situacao', 'Entregue incompleto'); 
             }
 
             $this->report_model->update();
@@ -850,7 +853,7 @@ class Relatorio extends CRUD_Controller
     //     ], 'administrador');
     // }
 
-    // public function relatorios_gerais()
+// public function relatorios_gerais()
     // {
     //     $this->load->model('departamento_model');
     //     $this->load->model('setor_model');
