@@ -1,4 +1,5 @@
 <IfModule mod_rewrite.c>
+  SetEnv CI_ENV 'release'
   Options +FollowSymlinks
   RewriteEngine on
   RewriteBase /
