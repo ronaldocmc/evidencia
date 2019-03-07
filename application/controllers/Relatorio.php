@@ -163,7 +163,6 @@ class Relatorio extends CRUD_Controller
     private function set_report_fields()
     {   
         $this->report_model->__set('relatorio_func_responsavel', $this->input->post('funcionario_fk'));
-        $this->report_model->__set('ativo', 1);
         $this->report_model->__set('relatorio_criador', $this->session->user['id_user']);
         $this->report_model->__set('relatorio_data_inicio_filtro', $this->input->post('data_inicial'));
         $this->report_model->__set('relatorio_data_fim_filtro', $this->input->post('data_final'));
@@ -759,7 +758,6 @@ class Relatorio extends CRUD_Controller
             $this->report_model->__set('relatorio_data_entrega', date('Y-m-d H:i:s'));
             $this->report_model->__set('relatorio_situacao', 'Entregue');
             $this->report_model->__set('relatorio_pk', $id);
-            $this->report_model->__set('ativo', 0);
 
             if(!$all_executed){
                 $this->report_model->__set('relatorio_situacao', 'Entregue incompleto'); 
