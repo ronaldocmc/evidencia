@@ -59,14 +59,14 @@ function is_cli()
 	return (PHP_SAPI === 'cli' OR defined('STDIN'));
 }
 
-//define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
-
 if(is_cli()){
 	define('ENVIRONMENT', 'testing');
-} else if($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '192.168.137.1'){
-	define('ENVIRONMENT', 'development');	
 } else {
-	define('ENVIRONMENT', 'production');
+	switch($_SERVER['SERVER_NAME']){
+		case 'localhost': define('ENVIRONMENT', 'development');	break;
+		case 'evidencia-release.azurewebsites.net': define('ENVIRONMENT', 'release'); break;
+		default: define('ENVIRONMENT', 'production'); break;
+	}
 }
 
 
@@ -87,6 +87,7 @@ switch (ENVIRONMENT)
 		//ini_set('display_errors', 0);
 	break;
 
+	case 'release':
 	case 'testing':
 	case 'production':
 		ini_set('display_errors', 0);
