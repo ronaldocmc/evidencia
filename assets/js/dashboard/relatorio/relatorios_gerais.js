@@ -103,7 +103,7 @@ $("#confirmar").click(function() {
 		console.log(response);
 		if (response.code == 200) {
 			alerts('success','Sucesso!', response.data.message);
-			window.location.href = base_url+'/Relatorio/report_details/'+response.data.id;
+			window.location.href = base_url+'/Relatorio/detalhes/'+response.data.id;
 		}
 		else if (response.code == 400) {
 			alerts('failed','Erro!',response.data.message);

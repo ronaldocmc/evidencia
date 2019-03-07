@@ -81,7 +81,7 @@
 
 
 
-    <table id="ordens_servico" class="table table-striped table-datatable">
+    <table id="table_os" class="table table-striped table-datatable">
         <thead>
             <tr>
                 <th>Código</th>

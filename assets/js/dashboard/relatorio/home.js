@@ -32,7 +32,7 @@ $("#btn-restaurar").click(function() {
 	$.post(base_url+'/Relatorio/receive_report/', data).done(function (response) {
 		btn_ativar($('#btn-restaurar'));
 		if (response.code == 200) {
-			alerts('success','Sucesso!','Relatórios entregues com sucesso.');
+			alerts('success','Sucesso!','Relatórios recebidos com sucesso.');
 			$('#restaurar_os').modal('hide');
 		}
 		else if (response.code == 404) {

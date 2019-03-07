@@ -65,6 +65,23 @@ class MY_Model extends Generic_Model
         return $this->object[$key];
     }
 
+    public function get_one_or_404($select, $where = NULL)
+    {
+        $res = NULL;
+
+        if($where == NULL){
+           $res = $this->get_one($select, $this->object);
+        } else {
+            $res = $this->get_one($select, $where);
+        }
+
+        if($res == NULL || $res == FALSE){
+            throw MyException($this->getName(). ' não encontrado.', Response::NOT_FOUND);
+        } else {
+            return $res;
+        }
+    }
+
     public function insert(){
         return $this->insert_object($this->object);
     }

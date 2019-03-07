@@ -17,12 +17,21 @@ class Relatorio_model extends MY_Model
         'relatorio_func_responsavel',
         'relatorio_data_criacao',
         'ativo',
-        'pegou_no_celular',
         'relatorio_data_entrega',
         'relatorio_criador',
         'relatorio_data_inicio_filtro',
         'relatorio_data_fim_filtro',
+        'relatorio_situacao'
     );
+
+    public function config_password_validation(){
+        
+        $this->CI->form_validation->set_rules(
+            'senha',
+            'Senha',
+            'required'
+        );   
+    }
 
     public function config_form_validation()
     {
@@ -144,7 +153,12 @@ class Relatorio_model extends MY_Model
             return $this->CI->db->count_all_results();
         }
 
-        return $this->CI->db->get()->result();
+        $result = $this->CI->db->get()->result();
+        if ($result) {
+            return ($result);
+        } else {
+            return false;
+        }
     }
 
     public function not_finished($relatorio_pk){

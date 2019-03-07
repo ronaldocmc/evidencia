@@ -10,12 +10,19 @@
                         <h2 class="title-1">Painel de Gerenciamento de Relatórios </h2>
                     </div>
 
-                    <?php if($relatorio->pegou_no_celular == 0): ?>
+                    <?php if($relatorio->relatorio_situacao == 'Criado'): ?>
                     <button class="au-btn au-btn-icon au-btn--blue" data-toggle="modal" data-target="#delegar_para_outra_pessoa">
                         <i class="zmdi zmdi-refresh"></i>Trocar Funcionário</button>
 
                     <button class="au-btn au-btn-icon btn au-btn--blue pull-right" data-toggle="modal" data-target="#d-relatorio">
                         <i class="zmdi zmdi-delete"></i>Destruir Relatório</button>
+                    <?php endif; ?>
+
+                    <?php if($relatorio->relatorio_situacao == 'Em andamento'): ?>
+                        <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo pull-right"
+                                data-toggle="modal" data-target="#restaurar_os">
+                                Receber Relatório
+                        </button>
                     <?php endif; ?>
                 </div>
             </div>
@@ -31,39 +38,48 @@
                         <h3 class="title-2 m-b-25" style="margin-bottom: 5px; padding-bottom: 5px;"> Revisor responsável: <?= $funcionario->funcionario_nome ?> </h3>
                             
                             <?php 
+                                // var_dump($relatorio); die();
 
-                                    if($relatorio->pegou_no_celular == 1 && $relatorio->relatorio_situacao == 'Entregue')
+                                    if($relatorio->relatorio_situacao == 'Entregue incompleto')
                                     {
-                                        $font_size = 9;
-                                        $label = "ENTREGUE";
-                                        $class = "secondary";
-                                    }
-                                    
-                                    if($relatorio->pegou_no_celular == 0 && $relatorio->relatorio_situacao == 'Andamento')
-                                    {
-                                        $font_size = 9;
-                                        $label = "EM ANDAMENTO";
+                                        // $font_size = 9;
+                                        $label = "ENTREGUE INCOMPLETO";
                                         $class = "warning";
                                     }
-
-                                    if($relatorio->pegou_no_celular == 1 && $relatorio->relatorio_situacao == 'Finalizado')
+                                    
+                                    if($relatorio->relatorio_situacao == 'Criado')
                                     {
-                                        $font_size = 9;
-                                        $label = "FINALIZADO";
+                                        // $font_size = 9;
+                                        $label = "CRIADO";
+                                        $class = "primary";
+                                    }
+
+                                    if($relatorio->relatorio_situacao == 'Entregue')
+                                    {
+                                        // $font_size = 9;
+                                        $label = "Entregue";
                                         $class = "success";
 
                                     }
 
-                                    if($relatorio->pegou_no_celular == 1 && $relatorio->relatorio_situacao == 'Não Finalizado')
+                                    if($relatorio->relatorio_situacao == 'Inativo')
                                     {
-                                        $font_size = 9;
-                                        $label = "NÃO FINALIZADO";
-                                        $class = "warning";
+                                        // $font_size = 9;
+                                        $label = "INATIVO";
+                                        $class = "danger";
+
+                                    }
+
+                                    if($relatorio->relatorio_situacao == 'Em andamento')
+                                    {
+                                        // $font_size = 9;
+                                        $label = "EM ANDAMENTO";
+                                        $class = "primary";
 
                                     }
                                     ?>
                             <div class = "col-12 col-md-12">
-                            <span style="font-size:<?= $font_size ?>pt; margin: 2px;" class="badge badge-pill badge-<?= $class ?> pull-right">
+                            <span style="font-size:9pt; margin: 2px;" class="badge badge-pill badge-<?= $class ?> pull-right">
                                 <?= $label ?></span></h2>
                             </div>
                         <div class="card-group">
@@ -98,19 +114,11 @@
                             </div>
 
                         </div>
-                        <div class="py-4">
-                            <?php if($relatorio->pegou_no_celular == 1): ?>
-                            <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo align-middle"
-                                data-toggle="modal" data-target="#restaurar_os">
-                                Receber Relatório
-                            </button>
-                            <?php endif; ?>
-                        </div>
-
-                            <a target="_blank" href="<?= base_url('relatorio/report_details/'.$relatorio->relatorio_pk.'/TRUE') ?>" class="au-btn au-btn-icon btn au-btn--blue pull-right">
+                        
+                            <a target="blank" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk) ?>" class="au-btn au-btn-icon btn au-btn--blue pull-right" style="margin-top: 10px;">
                                 <i class="fas fa-print"></i>Imprimir relatório
                             </a>
-
+    
 
                         <div class="table-responsive table--no-card m-b-40 mt-5">
                             <table id="os_table" class="table table-striped table-datatable">

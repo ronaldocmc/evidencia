@@ -44,9 +44,11 @@ $(document).on('click','#btn-trocar-funcionario',function(event) {
 		{
             btn_ativar($('#btn-trocar-funcionario'));
 			alerts('failed','Erro!','Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
-		} else if(response.code == 401)
-        {
-            alerts('failed','Erro!', response.data);
+		} else if(response.code == 401 || response.code == 400)
+        {   
+            btn_ativar($('#btn-trocar-funcionario'));
+            alerts('failed','Erro!', response.data.mensagem);
+
         }
 		else if(response.code == 200)
 		{

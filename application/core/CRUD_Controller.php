@@ -25,41 +25,147 @@ class CRUD_Controller extends CI_Controller
 
     public function __construct()
     {
+        $this->ci = &get_instance();
 
-        if ($this->ci = &get_instance() === null) 
+        if($this->ci === NULL)
         {
             $this->is_web = true;
             parent::__construct();
-            $this->ci = &get_instance();
-            
-            if ($this->session->has_userdata('user'))
-            {
-                $this->pseudo_session['id_organizacao'] = $this->session->user['id_organizacao'];
-                $this->pseudo_session['id_user'] = $this->session->user['id_user'];
-                $this->verify_user();
-                $this->verify_authentication();
-            }        
-            else
-            {
-                redirect(base_url());
+
+            $this->check_if_has_user();
+        }
+    }
+
+    private function check_if_has_user()
+    {
+        if ($this->session->has_userdata('user'))
+        {
+            $this->set_pseudo_session();
+            $this->verify_password_superuser();
+            if(!$this->is_superuser()){
+                $this->check_permissions();
             }
-        } 
-        else 
-        { 
+        }        
+        else
+        {
+            redirect(base_url());
+        }
+    }
 
-            // PEGAR DO TOKEN E PASSAR PARA A PSEUDO_SESSION
+    private function check_permissions()
+    {        
+        $this->check_if_current_controller_is_allowed();
+     
+        $this->check_if_current_method_is_allowed();
+    }
 
-            // $this->pseudo_session['id_organizacao'] = $this->session->user['id_organizacao'];
-            // $this->pseudo_session['id_user'] = $this->session->user['id_user'];
+    private function set_pseudo_session()
+    {
+        $this->pseudo_session['id_organizacao'] = $this->session->user['id_organizacao'];
+        $this->pseudo_session['id_user'] = $this->session->user['id_user'];
+    }
+
+    private function check_if_current_controller_is_allowed()
+    {
+        $function = $this->session->user['func_funcao'];
+
+        $current_controller = $this->get_current_controller();
+
+        $controller_exceptions = $this->load_controller_exceptions($function);
+
+        if(array_key_exists($current_controller, $controller_exceptions))
+        {
+            $this->load_view_unauthorized();
+            return;
+        }
+    }
+
+    private function get_current_controller()
+    {
+        return strtolower($this->uri->segment(1));
+    }
+
+    private function get_current_method()
+    {
+        return strtolower($this->uri->segment(2));
+    }
+
+    private function check_if_current_method_is_allowed()
+    {
+        $function = $this->session->user['func_funcao'];
+
+        $current_controller = $this->get_current_controller();
+        $current_method = $this->get_current_method();
+
+        $controller_exceptions = $this->load_controller_exceptions($function);
+
+        $method_exceptions = $this->load_method_exceptions($function);
+
+        if(array_key_exists($current_controller, $controller_exceptions))
+        {
+            if(array_key_exists($current_method, $method_exceptions))
+            {
+                $this->load_view_unauthorized();
+                return;
+            }
         }
 
     }
 
+    private function load_method_exceptions($function)
+    {
+        if($function == 'Administrador'){
+            return array(
+                0 => [
+                'controller' => 'organizacao',
+                'methods'    => ['deactivate', 'activate', 'index']
+                ]
+            );
+        }
+        
+        if($function == 'Atendente'){
+            return array(
+                0 => [
+                    'controller' => 'dashboard',
+                    'methods'    => ['superusuario']
+                ],
+                1 => [
+                    'controller' => 'ordem_servico',
+                    'methods'    => 'deactivate'
+                ]
+            );
+        }
+    }
+
+
+    private function load_controller_exceptions($function)
+    {
+        if($function == 'Administrador'){
+            return array(
+                0 => 'superusuario',
+                // 0 => 'organizacao',
+            );
+        }
+
+        if($function == 'Atendente'){
+            return array(
+                0 => 'organizacao',
+                1 => 'superusuario',
+                2 => 'departamento',
+                3 => 'funcionario',
+                4 => 'prioridade',
+                5 => 'servico',
+                6 => 'setor',
+                7 => 'situacao',
+                8 => 'tipo_servico'
+            );
+        }
+    }
 
     /**
-    Este método verifica se o usuário tem permissão para acessar aquela view.
-    **/
-    private function verify_authentication()
+     * Este método verifica se o usuário tem permissão para acessar aquela view.
+     */
+    private function verify_permission()
     {
 
         if($this->session->permissions)
@@ -116,18 +222,6 @@ class CRUD_Controller extends CI_Controller
                 $this->load_view_unauthorized();   
             }
         }
-
-        // Salva no log que o usuário acesso o método do controlador
-        if ($current_method !== null && $current_method !== "") 
-        {
-            if ($this->store_log($current_method))
-            {
-                $this->log_model->insert([
-                    'log_pessoa_fk' => $this->session->user['id_user'],
-                    'log_descricao' => 'Acessou ' . $current_method . ' do controlador ' . $current_controller
-                ]);
-            }
-        }
     }
 
     private function load_view_unauthorized()
@@ -141,44 +235,57 @@ class CRUD_Controller extends CI_Controller
     }
 
     /**
-    
-    Esse método verifica apenas se é superusuário e se o campo de senha ao realizar um dos métodos está correto.
-
-    **/
-    private function verify_user()
+     * Esse método verifica apenas se é superusuário e 
+     * se o campo de senha ao realizar um dos métodos está correto.
+     */
+    private function verify_password_superuser()
     {
         if ($this->session->user['is_superusuario']) 
         {
-
             $method = null;
-
-            if (null !== $this->uri->segment(2)) 
+            
+            /**
+             * URI Segment:
+             * 0 - HOST - localhost
+             * 1 - Controller - Funcionario
+             * 2 - Method - activate
+             */
+            if ($this->uri->segment(2) !== null) 
             {
                 $method = $this->uri->segment(2);
+                
+                if ($this->method_authorization($method)) 
+                {
+                    $this->authenticate_password();
+                }
+                
             }
+        }   
+    }
 
-            if (
-                $method == 'insert' ||
+
+    private function authenticate_password()
+    {
+        $response = new Response();
+                    
+        // Validação da sua senha
+        if (!authenticate_operation($this->input->post('senha'), $this->session->user['password_user'])) 
+        {
+            // Caso a senha esteja incorreta
+            $response->set_code(Response::UNAUTHORIZED);
+            $response->set_data(['password_user' => 'Senha informada incorreta']);
+            $response->send();
+            die();
+        }
+    }
+
+    private function method_authorization($method)
+    {
+       return ($method == 'insert' ||
                 $method == 'update' ||
                 $method == 'activate' ||
                 $method == 'deactivate' ||
-                $method == 'insert_update') 
-            {
-
-                $response = new Response();
-
-                // Validação da sua senha
-                if (!authenticate_operation($this->input->post('senha'), $this->session->user['password_user'])) 
-                {
-                    // Caso a senha esteja incorreta
-                    $response->set_code(Response::UNAUTHORIZED);
-                    $response->set_data(['password_user' => 'Senha informada incorreta']);
-                    $response->send();
-                    die();
-                }
-            }
-
-        }   
+                $method == 'insert_update');
     }
 
     private function send_response($response)
@@ -193,12 +300,7 @@ class CRUD_Controller extends CI_Controller
 
     private function store_log($method)
     {
-        if (
-            $method == 'insert' ||
-            $method == 'update' ||
-            $method == 'activate' ||
-            $method == 'deactivate' ||
-            $method == 'insert_update')
+        if ($this->method_authorization($method))
         {
             return TRUE;
         }
@@ -206,7 +308,6 @@ class CRUD_Controller extends CI_Controller
         {
             return FALSE;
         }
-
     }
 
 
