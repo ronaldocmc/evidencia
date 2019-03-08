@@ -7,7 +7,6 @@ if (!defined('BASEPATH')) {
 require_once dirname(__FILE__) . "/Response.php";
 require_once APPPATH . "core/CRUD_Controller.php";
 require_once dirname(__FILE__) . "/Response.php";
-require_once 'vendor/autoload.php';
 
 class Relatorio extends CRUD_Controller
 {
