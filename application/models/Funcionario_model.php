@@ -143,10 +143,12 @@ class Funcionario_model extends MY_Model
 
         $id = $this->insert();
 
-        $insert_setores = $this->explode_setores($data_setores, $id);
-
-        $this->CI->db->insert_batch('funcionarios_setores', $insert_setores);
-
+        if($data_setores != '')
+        {
+            $insert_setores = $this->explode_setores($data_setores, $id);
+            $this->CI->db->insert_batch('funcionarios_setores', $insert_setores);
+        }
+        
         return $id;
     }
 
