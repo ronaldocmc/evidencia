@@ -150,7 +150,12 @@ class RelatorioWS extends MY_Controller
 
             $this->begin_transaction();
 
-            $report = $this->relatorio->get_one('*', ['relatorio_func_responsavel' => $token_decodificado->id_funcionario]);
+            $report = $this->relatorio->get_one('*', 
+            [
+                'relatorio_func_responsavel' => $token_decodificado->id_funcionario,
+                'ativo' => 1,   
+            ]);
+
             $not_finished = $this->relatorio->not_finished($report->relatorio_pk);
 
             foreach ($not_finished as $os) {
@@ -161,9 +166,15 @@ class RelatorioWS extends MY_Controller
                 $this->ordem_servico->handle_historico($_POST['ordem_servico_pk']);
                 $this->ordem_servico->update();
             }
+            if(count($not_finished) > 0){
+                $this->relatorio->__set("relatorio_situacao", "Entregue incompleto");
+            }else{
+                $this->relatorio->__set("relatorio_situacao", "Entregue");
+            }
 
             $this->relatorio->__set("relatorio_pk", $report->relatorio_pk);
             $this->relatorio->__set("ativo", 0);
+            $this->relatorio->__set("relatorio_data_entrega", date('Y-m-d H:i:s'));
 
             $this->relatorio->update();
 
