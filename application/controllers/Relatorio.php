@@ -27,6 +27,74 @@ class Relatorio extends CRUD_Controller
         $this->response = new Response();
     }
 
+    public function mapa()
+    {
+        $this->load->model('Prioridade_model', 'prioridade_model');
+        $this->load->model('Situacao_model', 'situacao_model');
+        $this->load->model('Departamento_model', 'departamento_model');
+        $this->load->model('Servico_model', 'servico_model');
+        $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
+        $this->load->helper('form');
+        $prioridades = $this->prioridade_model->get([
+            'organizacao_fk' => $this->session->user['id_organizacao'],
+        ]);
+        $situacoes = $this->situacao_model->get([
+            'organizacao_fk' => $this->session->user['id_organizacao'],
+        ]);
+        $servicos = $this->servico_model->get([
+            'situacoes.organizacao_fk' => $this->session->user['id_organizacao'],
+        ]);
+        $departamentos = $this->departamento_model->get([
+            'departamentos.organizacao_fk' => $this->session->user['id_organizacao'],
+        ]);
+        $tipos_servicos = $this->tipo_servico_model->get([
+            'departamentos.organizacao_fk' => $this->session->user['id_organizacao'],
+        ]);
+        $this->session->set_flashdata('css', [
+            0 => base_url('assets/css/modal_desativar.css'),
+            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
+            2 => base_url('assets/css/loading_input.css'),
+            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            4 => base_url('assets/css/modal_map.css'),
+            5 => base_url('assets/css/timeline.css'),
+            6 => base_url('assets/css/style_card.css'),
+            7 => base_url('assets/css/user_guide.css'),
+        ]);
+        $this->session->set_flashdata('scripts', [
+            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
+            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
+            2 => base_url('assets/js/masks.js'),
+            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
+            4 => base_url('assets/vendor/datatables/datatables.min.js'),
+            5 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            6 => base_url('assets/js/utils.js'),
+            7 => base_url('assets/js/constants.js'),
+            8 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            9 => base_url('assets/js/dashboard/ordem_servico/relatorio.js'),
+            10 => base_url('assets/vendor/select-input/select-input.js'),
+            11 => base_url('assets/js/localizacao.js'),
+        ]);
+        $this->session->set_flashdata('mapa', [
+            0 => true,
+        ]);
+        load_view([
+            0 => [
+                'src' => 'dashboard/administrador/mapa/home',
+                'params' => [
+                    'prioridades' => $prioridades,
+                    'situacoes' => $situacoes,
+                    'servicos' => $servicos,
+                    'departamentos' => $departamentos,
+                    'tipos_servicos' => $tipos_servicos,
+                ],
+            ],
+            1 => [
+                'src' => 'access/pre_loader',
+                'params' => null,
+            ],
+        ], 'administrador');
+    }
+
     public function novo_relatorio()
     {
         //Carregando os models para recuperação de dados a serem exibidos na view Novo Relatório
