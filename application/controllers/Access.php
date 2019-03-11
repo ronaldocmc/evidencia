@@ -142,11 +142,10 @@ class Access extends CI_Controller {
             'name_user'         => $user->funcionario_nome,
             'name_organizacao'  => $user->organizacao_nome,
             'is_superusuario'   => FALSE,
-            'image_user_min'    => base_url('/assets/uploads/perfil_images/min/'.$user->funcionario_caminho_foto),
-            'image_user'        => base_url('/assets/uploads/perfil_images/'.$user->funcionario_caminho_foto),
+            'image_user_min'    => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
+            'image_user'        => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
             'func_funcao'       => $user->funcao_nome
         ];
-
 
         $this->session->set_userdata('user', $userdata);
     }
