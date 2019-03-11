@@ -29,27 +29,48 @@ class Relatorio extends CRUD_Controller
 
     public function mapa()
     {
-        $this->load->model('Prioridade_model', 'prioridade_model');
-        $this->load->model('Situacao_model', 'situacao_model');
-        $this->load->model('Departamento_model', 'departamento_model');
-        $this->load->model('Servico_model', 'servico_model');
-        $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
+        $this->load->model('Prioridade_model', 'prioridade');
+        $this->load->model('Situacao_model', 'situacao');
+        $this->load->model('Departamento_model', 'departamento');
+        $this->load->model('Servico_model', 'servico');
+        $this->load->model('Tipo_Servico_model', 'tipo_servico');
         $this->load->helper('form');
-        $prioridades = $this->prioridade_model->get([
-            'organizacao_fk' => $this->session->user['id_organizacao'],
-        ]);
-        $situacoes = $this->situacao_model->get([
-            'organizacao_fk' => $this->session->user['id_organizacao'],
-        ]);
-        $servicos = $this->servico_model->get([
-            'situacoes.organizacao_fk' => $this->session->user['id_organizacao'],
-        ]);
-        $departamentos = $this->departamento_model->get([
-            'departamentos.organizacao_fk' => $this->session->user['id_organizacao'],
-        ]);
-        $tipos_servicos = $this->tipo_servico_model->get([
-            'departamentos.organizacao_fk' => $this->session->user['id_organizacao'],
-        ]);
+        $prioridades = $this->prioridade->get_all(
+            '*',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+        $situacoes = $this->situacao->get_all(
+            '*',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+        $servicos = $this->servico->get_all(
+            '*',
+            ['situacoes.organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1,
+            [
+                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk']
+            ]
+        );
+        $departamentos = $this->departamento->get_all(
+            '*',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+        $tipos_servicos = $this->tipo_servico->get_all(
+            '*',
+            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1,
+            [
+                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
+            ]
+        );
         $this->session->set_flashdata('css', [
             0 => base_url('assets/css/modal_desativar.css'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
@@ -70,9 +91,9 @@ class Relatorio extends CRUD_Controller
             6 => base_url('assets/js/utils.js'),
             7 => base_url('assets/js/constants.js'),
             8 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            9 => base_url('assets/js/dashboard/ordem_servico/relatorio.js'),
+            9 => base_url('assets/js/dashboard/mapa/mapa.js'),
             10 => base_url('assets/vendor/select-input/select-input.js'),
-            11 => base_url('assets/js/localizacao.js'),
+            11 => base_url('assets/js/localizacao.js')
         ]);
         $this->session->set_flashdata('mapa', [
             0 => true,
