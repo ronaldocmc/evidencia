@@ -28,29 +28,8 @@ $(".submit").click(function(){
 
   		if(response.code == 200)
   		{
-  			setor  = 
-	  			{
-	  				'setor_nome': data['setor_nome'],
-	  				'setor_status': 1,
-	  			}
-  			if (data['setor_pk']=='')
-  			{
-  					setor['setor_pk'] = response.data['id'];
-		  			setores.push(setor);
-		  			change_table($('#filter-ativo'));
-  			}
-  			else
-  			{
-  				setor['setor_pk'] = data['setor_pk'];
-  				for (var i in setores)
-  				{
-  					if (setores[i]['setor_pk']==data['setor_pk'])
-  						break;
-  				}
-  				setores[i] = (setor);
-  				change_table($('#filter-ativo'));
-  			}
-  			$('#ce_setor').modal('hide');
+  			alerts('success','Sucesso!','Operação realizada com sucesso!');
+  			document.location.reload(false);
 		}
 	}, "json");
 });
@@ -112,14 +91,7 @@ $(document).on('click','#btn-desativar',function(event) {
 		if (response.code == 200)
 		{
 			alerts('success','Sucesso!','Departamento desativado com sucesso');
-			for (var i in setores)
-			{
-				if (setores[i]['setor_pk']==data['setor_pk'])
-					break;
-			}
-			setores[i]['setor_status'] = 0;
-			$('#filter-ativo').change();
-			$('#d-setor').modal('hide');
+			document.location.reload(false);		
 		}
 	});
 });
@@ -148,14 +120,7 @@ activate = (setor_pk, pass) => {
 		if (response.code == 200)
 		{
 			alerts('success','Sucesso!','Departamento reativado com sucesso');
-			for (var i in setores)
-			{
-				if (setores[i]['setor_pk']==data['setor_pk'])
-					break;
-			}
-			setores[i]['setor_status'] = 1;
-			$('#filter-ativo').change();
-			$('#r-setor').modal('hide');
+			document.location.reload(false);
 		}
 	});
 }
