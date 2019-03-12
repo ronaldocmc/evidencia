@@ -281,6 +281,7 @@ function initMap() {
     var servico = $('#servico_pk');
     var prioridade = $('#prioridade_pk');
     var situacao = $('#situacao_pk');
+    var setor = $('#setor_pk');
     var de = $('#de');
     var ate = $('#ate');
 
@@ -414,7 +415,6 @@ function initMap() {
             });
         })
         .fail(function(response) {
-            // console.log(response);
         });
 
         btn_ativar($('#filtrar'));
@@ -435,6 +435,7 @@ function initMap() {
             tipo_servico_pk: tipo_servico.val() != -1 ? tipo_servico.val() : null,
             servico_fk: servico.val() != -1 ? servico.val() : null,
             prioridade_fk: prioridade.val() != -1 ? prioridade.val() : null,
+            setor_fk: setor.val() != -1 ? setor.val() : null,
             situacao_atual_fk: situacao.val() != -1 ? situacao.val() : null,
             data_inicial: de.val() != -1 ? de.val() : null,
             data_final: ate.val() != -1 ? ate.val() : null,
