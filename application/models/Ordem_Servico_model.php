@@ -91,6 +91,7 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->db->join('localizacoes', 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk');
         $this->CI->db->join('servicos', 'servicos.servico_pk = ordens_servicos.servico_fk');
         $this->CI->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
+        $this->CI->db->join('setores', 'setores.setor_pk = ordens_servicos.setor_fk');
 
         $dates['data_final'] = array_pop($where);
         $dates['data_inicial'] = array_pop($where);
