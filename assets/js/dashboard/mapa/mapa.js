@@ -11,33 +11,56 @@ function initMap() {
         center: { lat: -22.114184, lng: -51.405798 },
         zoom: 14
     });
+
+    function lastWeek(){
+        var today = new Date();
+        var lastweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
+        return lastweek;
+    }
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
     
-    // $(document).ready(function () {
-    //     btn_load($('#filtrar'));
-    //     $('.carousel').carousel();
+    $(document).ready(function () {
 
-    //     let date = new Date();
+        btn_load($('#filtrar'));
+        $('.carousel').carousel();
 
-    //     let filters = {
-    //         data_inicial: (date.getFullYear()) + '-' + (date.getMonth() + 1)+ '-' + (date.getDate() - 1),
-    //         data_final: (date.getFullYear()) + '-' + (date.getMonth() + 1)+ '-' + (date.getDate()) + ' 23:59:59'
-    //     };
-    //     let url = base_url + '/ordem_servico/json';
+        let date = new Date();
 
-    //     $.post(url, filters)
-    //     .done(function(response) {
-    //         markers = [];
-    //         response.data.map(function (ordem){
-    //             popula_markers(ordem);
-    //         });
-    //     })
+        let filters = {
+            data_inicial: (date.getFullYear()) + '-' + (date.getMonth() + 1)+ '-' + (date.getDate() - 7),
+            data_final: (date.getFullYear()) + '-' + (date.getMonth() + 1)+ '-' + (date.getDate())
+        };
 
-    //     .fail(function(response) {
+        $('#de').val(formatDate(lastWeek()));
+        $('#ate').val(formatDate(new Date()));
 
-    //     });
+        let url = base_url + '/ordem_servico/get_map';
 
-    //     btn_ativar($('#filtrar'));
-    // });
+
+        $.post(url, filters)
+        .done(function(response) {
+            markers = [];
+            response.data.map(function(ordem) {
+                popula_markers(ordem);
+            });
+        })
+        .fail(function(response) {
+
+        });
+
+        btn_ativar($('#filtrar'));
+    });
 
     function seleciona_imagem(ordem) {
         let imagem = '../assets/img/icons/Markers/Status/';
@@ -258,6 +281,7 @@ function initMap() {
     var servico = $('#servico_pk');
     var prioridade = $('#prioridade_pk');
     var situacao = $('#situacao_pk');
+    var setor = $('#setor_pk');
     var de = $('#de');
     var ate = $('#ate');
 
@@ -376,6 +400,7 @@ function initMap() {
     }
 
     $('#filtrar').click(function () {
+        $('#p_ordens').hide();
         btn_load($('#filtrar'));
 
         let filters = get_filters();
@@ -390,7 +415,6 @@ function initMap() {
             });
         })
         .fail(function(response) {
-            // console.log(response);
         });
 
         btn_ativar($('#filtrar'));
@@ -411,6 +435,7 @@ function initMap() {
             tipo_servico_pk: tipo_servico.val() != -1 ? tipo_servico.val() : null,
             servico_fk: servico.val() != -1 ? servico.val() : null,
             prioridade_fk: prioridade.val() != -1 ? prioridade.val() : null,
+            setor_fk: setor.val() != -1 ? setor.val() : null,
             situacao_atual_fk: situacao.val() != -1 ? situacao.val() : null,
             data_inicial: de.val() != -1 ? de.val() : null,
             data_final: ate.val() != -1 ? ate.val() : null,
