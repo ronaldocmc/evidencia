@@ -241,7 +241,7 @@
                                             </div>
                                             <div class="account-dropdown__body">
                                                 <div class="account-dropdown__item">
-                                                    <a href="<?php echo base_url('pessoa/profile') ?>">
+                                                    <a href="<?php echo base_url('funcionario/minha_conta') ?>">
                                                         <i class="zmdi zmdi-account"></i>Conta</a>
                                                 </div>
                                             </div>

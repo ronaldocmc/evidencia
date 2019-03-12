@@ -872,5 +872,4 @@ class Relatorio extends CRUD_Controller
             handle_exception($e);
         }
     }
-
 }
