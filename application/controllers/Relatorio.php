@@ -90,6 +90,7 @@ class Relatorio extends CRUD_Controller
         $this->load->model('Departamento_model', 'departamento');
         $this->load->model('Servico_model', 'servico');
         $this->load->model('Tipo_Servico_model', 'tipo_servico');
+        $this->load->model('Setor_model', 'setor');
         $this->load->helper('form');
         $prioridades = $this->prioridade->get_all(
             '*',
@@ -127,6 +128,13 @@ class Relatorio extends CRUD_Controller
                 ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
             ]
         );
+        $setores = $this->setor->get_all(
+            '*',
+            ['setores.organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+        
         $this->session->set_flashdata('css', [
             0 => base_url('assets/css/modal_desativar.css'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
@@ -163,7 +171,8 @@ class Relatorio extends CRUD_Controller
                     'situacoes' => $situacoes,
                     'servicos' => $servicos,
                     'departamentos' => $departamentos,
-                    'tipos_servicos' => $tipos_servicos
+                    'tipos_servicos' => $tipos_servicos,
+                    'setores' => $setores
                 ],
             ],
             1 => [
@@ -559,7 +568,7 @@ class Relatorio extends CRUD_Controller
                     'src'    => 'dashboard/administrador/relatorio/imprimir_relatorio',
                     'params' => $this->get_report_detail_data($report)
                 ],
-            ], 'administrador');
+            ], 'administrador', false);
         } else {
             $this->load->view('errors/html/error_404');
         }
