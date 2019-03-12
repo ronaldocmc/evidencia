@@ -141,6 +141,147 @@ class Funcionario extends CRUD_Controller
         ], 'administrador');
     }
 
+    private function load_css()
+    {
+        $this->session->set_flashdata('css', array(
+            0 => base_url('assets/vendor/cropper/cropper.css'),
+            1 => base_url('assets/vendor/input-image/input-image.css'),
+            2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
+            3 => base_url('assets/css/modal_desativar.css'),
+            4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            5 => base_url('assets/css/loading_input.css')
+        ));
+    }
+
+    private function load_scripts()
+    {
+        $this->session->set_flashdata('scripts', array(
+            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
+            1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
+            2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
+            3 => base_url('assets/vendor/cropper/cropper.js'),
+            4 => base_url('assets/vendor/input-image/input-image.js'),
+            5 => base_url('assets/vendor/datatables/datatables.min.js'),
+            6 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            7 => base_url('assets/js/masks.js'),
+            8 => base_url('assets/js/utils.js'),
+            9 => base_url('assets/js/constants.js'),
+            10 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            11 => base_url('assets/js/dashboard/pessoa/index.js'),
+            12 => base_url('assets/vendor/select-input/select-input.js')
+        ));
+    }
+
+    private function load_view()
+    {
+        $this->funcionario_model->__set('funcionario_pk', $this->session->user['id_user']);
+        $return['worker'] = $this->funcionario_model->get_or_404();
+
+
+        load_view([
+            0 => [
+                'src' => 'dashboard/commons/profile/home',
+                'params' => $return,
+            ],
+            1 => [
+                'src' => 'access/pre_loader',
+                'params' => null,
+            ],
+        ], $this->session->user['is_superusuario']?'superusuario':'administrador');
+    }
+
+    public function minha_conta()
+    {
+        $this->load_css();
+        $this->load_scripts();
+        $this->load_view();
+    }
+    
+    private function check_old_password()
+    {
+        $this->add_password_to_form_validation();
+        $this->funcionario_model->run_form_validation();
+        $old_password = $this->input->post('senha');
+
+        if (!authenticate_operation($this->input->post('senha'), $this->session->user['password_user'])) 
+        {
+            throw new MyException('Senha informada incorreta', Response::UNAUTHORIZED);
+        }
+    }
+
+    public function update_password()
+    {
+        try{
+            $this->check_old_password();
+
+            $this->begin_transaction();
+
+            $this->funcionario_model->__set('funcionario_pk', $this->session->user['id_user']);
+            
+            $this->funcionario_model->__set('funcionario_senha', 
+                hash(ALGORITHM_HASH, $this->input->post('new_password') . SALT));
+
+            $this->funcionario_model->update_funcionario($this->session->user['id_user']);
+
+            $this->end_transaction();
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
+
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    private function update()
+    {
+        $this->funcionario_model->__set("funcionario_pk", $_POST['funcionario_pk']);
+
+        $path = upload_img(
+            [
+                'id' => $_POST['funcionario_pk'],
+                'path' => 'PATH_FUNC',
+                'is_os' => false,
+            ],
+            [0 => $this->input->post('img')]
+        );
+
+        if($path != null){
+            $this->funcionario_model->__set("funcionario_caminho_foto", $path[0]);
+            $this->response->add_data("path", $path[0]);
+        }
+
+        if(isset($_POST['setor_fk']))
+        {
+            $this->funcionario_model->update_funcionario($_POST['funcionario_pk'], $_POST['setor_fk']);
+        } else {
+            $this->funcionario_model->update_funcionario($_POST['funcionario_pk']);
+        }
+    }
+
+    private function insert()
+    {
+        $this->funcionario_model->__set("funcionario_senha", hash(ALGORITHM_HASH, $_POST['funcionario_senha'] . SALT));
+
+        $id = $this->funcionario_model->insert_funcionario($_POST['setor_fk']);
+
+        $path = upload_img(
+            [
+                'id' => $id,
+                'path' => 'PATH_FUNC',
+                'is_os' => false,
+            ],
+            [0 => $this->input->post('img')]
+        );
+
+        if ($path != null) {
+            $this->funcionario_model->update_image($path[0], $id);
+            $this->response->add_data("path", $path[0]);
+        }
+    }
+
     public function save()
     {
         try
@@ -163,43 +304,9 @@ class Funcionario extends CRUD_Controller
             $this->begin_transaction();
 
             if (isset($_POST['funcionario_pk'])) {
-                $this->funcionario_model->__set("funcionario_pk", $_POST['funcionario_pk']);
-
-                $path = upload_img(
-                    [
-                        'id' => $_POST['funcionario_pk'],
-                        'path' => 'PATH_FUNC',
-                        'is_os' => false,
-                    ],
-                    [0 => $this->input->post('img')]
-                );
-
-                if($path != null){
-                    $this->funcionario_model->__set("funcionario_caminho_foto", $path[0]);
-                    $this->response->add_data("path", $path[0]);
-                }
-                $this->funcionario_model->update_funcionario($_POST['funcionario_pk'], $_POST['setor_fk']);
-
-                
+                $this->update();               
             } else {
-
-                $this->funcionario_model->__set("funcionario_senha", hash(ALGORITHM_HASH, $_POST['funcionario_senha'] . SALT));
-
-                $id = $this->funcionario_model->insert_funcionario($_POST['setor_fk']);
-
-                $path = upload_img(
-                    [
-                        'id' => $id,
-                        'path' => 'PATH_FUNC',
-                        'is_os' => false,
-                    ],
-                    [0 => $this->input->post('img')]
-                );
-
-                if ($path != null) {
-                    $this->funcionario_model->update_image($path[0], $id);
-                    $this->response->add_data("path", $path[0]);
-                }
+                $this->insert();
             }
 
             $this->end_transaction();
