@@ -114,20 +114,22 @@ class AccessWS extends MY_Controller
                     die();
                 }
                 
-                $user = $this->funcionario_model->get('*', $data)[0];
+                $user = $this->funcionario_model->get('*', $data);
 
                 // var_dump($user);die();
                 
 
-                if ($user->ativo == 0) {
-                    $this->response->set_code(Response::UNAUTHORIZED);
-                    $this->response->set_message('Usuário desativado');
-                    $this->response->set_data(null);
-                    $this->response->send();
-                    die();
-                }
+                if ($user[0]) {
+                    $user = $user[0];
 
-                if ($user) {
+                    if ($user->ativo == 0) {
+                        $this->response->set_code(Response::UNAUTHORIZED);
+                        $this->response->set_message('Usuário desativado');
+                        $this->response->set_data(null);
+                        $this->response->send();
+                        die();
+                    }
+
                     $data_token['id_pessoa'] = $user->funcionario_pk;
                     $data_token['id_funcionario'] = $user->funcionario_pk;
                     $data_token['id_empresa'] = $user->organizacao_fk;
