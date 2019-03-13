@@ -227,6 +227,7 @@ class Ordem_ServicoWS extends MY_Controller
             
             $_POST = get_object_vars($obj);
             $_POST['img'] = isset($obj->img) ? $obj->img : null;
+            $_POST['ordem_servico_comentario'] = isset($obj->ordem_servico_comentario) ? $obj->ordem_servico_comentario : 'Nenhum comentário adicionado.';
 
             $this->ordem_servico->__set("ordem_servico_comentario", $_POST['ordem_servico_comentario']);
             $this->ordem_servico->__set("situacao_atual_fk", $_POST['situacao_atual_fk']);
