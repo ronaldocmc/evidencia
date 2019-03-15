@@ -510,6 +510,17 @@ class Relatorio extends CRUD_Controller
         //Recebendo as ordens de serviço do relatório em questão
         $ordens_servicos = $this->select_orders_of_report($report_id);
 
+        foreach ($ordens_servicos as $os) 
+        {
+            $images = $this->ordem_servico_model->get_images_id($os->ordem_servico_pk);
+            if (!empty($images)) 
+            {
+                // última imagem
+                $os->image = array_pop($images)->imagem_os;
+            }
+            $os->ordem_servico_criacao = date('d/m/Y H:i:s', strtotime($os->ordem_servico_criacao));
+        }
+
         //Recebendo os filtros utilizados no relatório
         $data_filters = $this->get_filters($report_id);
 
