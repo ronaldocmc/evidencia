@@ -81,7 +81,7 @@
 
 
 
-    <table id="table_os" class="table table-striped table-datatable">
+    <table id="table_os" class="table">
         <thead>
             <tr>
                 <th>Código</th>
@@ -91,14 +91,14 @@
                 <th>Serviço</th>
                 <th>Setor</th>
                 <th>Situação</th>
+                <th>Foto</th>
             </tr>
         </thead>
         <tbody>
             <?php $count = 0; ?>
             <?php if ($ordens_servicos != null): ?>
             <?php foreach ($ordens_servicos as $key => $ordem_servico): ?>
-            <?php if($count % 2 == 0){$color="gray";}else{ $color="white";} ?>
-            <tr style="background-color: <?= $color ?>;-webkit-print-color-adjust: exact; ">
+            <tr>
                 <td>
                     <?=$ordem_servico->ordem_servico_cod?>
                 </td>
@@ -126,6 +126,13 @@
                 </td>
                 <td>
                     <?= $ordem_servico->situacao_nome ?>
+                </td>
+                <td>
+                    <?php if (isset($ordem_servico->image)): ?>
+                        <img src="<?= base_url($ordem_servico->image) ?>">
+                    <?php else: ?>
+                        Sem Imagem
+                    <?php endif ?>
                 </td>
 
             </tr>
