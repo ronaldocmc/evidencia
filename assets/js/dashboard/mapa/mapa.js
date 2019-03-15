@@ -12,9 +12,9 @@ function initMap() {
         zoom: 14
     });
 
-    function lastWeek(){
+    function lastWeek() {
         var today = new Date();
-        var lastweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
+        var lastweek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
         return lastweek;
     }
 
@@ -29,7 +29,7 @@ function initMap() {
 
         return [year, month, day].join('-');
     }
-    
+
     $(document).ready(function () {
 
         btn_load($('#filtrar'));
@@ -38,8 +38,8 @@ function initMap() {
         let date = new Date();
 
         let filters = {
-            data_inicial: (date.getFullYear()) + '-' + (date.getMonth() + 1)+ '-' + (date.getDate() - 7),
-            data_final: (date.getFullYear()) + '-' + (date.getMonth() + 1)+ '-' + (date.getDate())
+            data_inicial: (date.getFullYear()) + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 7),
+            data_final: (date.getFullYear()) + '-' + (date.getMonth() + 1) + '-' + (date.getDate())
         };
 
         $('#de').val(formatDate(lastWeek()));
@@ -49,117 +49,35 @@ function initMap() {
 
 
         $.post(url, filters)
-        .done(function(response) {
-            markers = [];
-            response.data.map(function(ordem) {
-                popula_markers(ordem);
-            });
-        })
-        .fail(function(response) {
+            .done(function (response) {
+                markers = [];
+                response.data.map(function (ordem) {
+                    popula_markers(ordem);
+                });
+            })
+            .fail(function (response) {
 
-        });
+            });
 
         btn_ativar($('#filtrar'));
     });
 
-    function seleciona_imagem(ordem) {
+    function seleciona_imagem(prioridade) {
         let imagem = '../assets/img/icons/Markers/Status/';
 
-        if(ordem.departamento_fk == "1"){
-            imagem += "Coleta/";
-        }
-
-        if(ordem.departamento_fk == "2"){
-            imagem += "Limpeza/";
-        }
-
-        if(ordem.prioridade_fk == "1"){
-            imagem += "Baixa/";
-        }
-
-        if(ordem.prioridade_fk == "2"){
-            imagem += "Alta/";
-        }
-
-        if(ordem.prioridade_fk == "4"){
-            imagem += "Media/";
-        }
-
-        if(ordem.situacao_atual_fk == "1"){
-            imagem += "Aberta/"
-        }
-
-        if(ordem.situacao_atual_fk == "2"){
-            imagem += "Andamento/"
-        }
-
-        if(ordem.situacao_atual_fk == "3"){
-            imagem += "Recusado/"
-        }
-
-        if(ordem.situacao_atual_fk == "4"){
-            imagem += "Recusado/"
-        }
-
-        if(ordem.situacao_atual_fk == "5"){
-            imagem += "Finalizado/"
-        }
-
-        switch(ordem.servico_fk){
-            case "1":
-            imagem +=  "Marker_Fossa.png";
-            break;
-            case "2":
-            imagem +=  "Marker_Fossa.png";
-            break;
-            case "3":
-            imagem +=  "Marker_Animal_Morto.png";
-            break;
-            case "4":
-            imagem +=  "Marker_Sofa.png";
-            break;
-            case "5":
-            imagem +=  "Marker_Galhos.png";
-            break;
-            case "6": 
-            imagem += "Marker_Lixo.png";
-            break;
-            case "7": 
-            imagem += "Marker_Lixao.png";
-            break;
-            case "8": 
-            imagem += "Marker_Eletro.png";
-            break;
-            case "9": 
-            imagem += "Marker_Feira.png";
-            break;
-            case "10": 
-            imagem += "Marker_Mobiliario.png";
-            break;
-            case "11": 
-            imagem += "Marker_Madeira.png";
-            break;
-            case "12": 
-            imagem += "Marker_Carpinagem.png";
-            break;
-            case "13": 
-            imagem += "Marker_Carpinagem.png";
-            break;
-            case "14": 
-            imagem += "Marker_Entulho.png";
-            break;
-            case "15": 
-            imagem += "Marker_Escola.png";
-            break;
-            case "16": 
-            imagem += "Marker_Grama.png";
-            break;
-            case "17": 
-            imagem = "";
-            break;
-            case "18": 
-            imagem += "Marker_Cacamba.png";
-            break;
+        switch (prioridade) {
+            case "1": {
+                imagem += "prioridade_baixa.png";
+                break;
+            }
+            case "2": {
+                imagem += "prioridade_alta.png";
+                break;
+            }
+            case "4":{
+                imagem += "prioridade_media.png";
+                break;
+            }
         }
 
         return imagem;
@@ -182,7 +100,7 @@ function initMap() {
         $.ajax({
             url: base_url + '/ordem_servico/get_specific/' + id + '/' + 0,
             dataType: "json",
-            success: function (response) {     
+            success: function (response) {
                 $("#v_descricao").html(response.data.ordem_servico[0].ordem_servico_desc);
                 $("#v_codigo").html(response.data.ordem_servico[0].ordem_servico_cod);
                 $("#v_setor").html(response.data.ordem_servico[0].setor_nome);
@@ -193,23 +111,23 @@ function initMap() {
                 var active = " active";
                 var timeline = "";
 
-                if(response.data.historico.length > 2){
-                    html +=     '<div id="myCarousel" class="carousel slide"data-ride="carousel">' +
-                    '<div class="carousel-inner row w-100 mx-auto"></div>' +
-                    '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
-                    '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
-                    '<span class="sr-only">Previous</span>' +
-                    '</a>' +
-                    '<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">' +
-                    '<span class="carousel-control-next-icon" style="color: black;" aria-hidden="true"></span>' +
-                    '<span class="sr-only">Next</span>'+
-                    '</a>'+
-                    '</div>';
-                }else{
+                if (response.data.historico.length > 2) {
+                    html += '<div id="myCarousel" class="carousel slide"data-ride="carousel">' +
+                        '<div class="carousel-inner row w-100 mx-auto"></div>' +
+                        '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
+                        '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
+                        '<span class="sr-only">Previous</span>' +
+                        '</a>' +
+                        '<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">' +
+                        '<span class="carousel-control-next-icon" style="color: black;" aria-hidden="true"></span>' +
+                        '<span class="sr-only">Next</span>' +
+                        '</a>' +
+                        '</div>';
+                } else {
 
                     html += '<div id="card_imagens">' +
-                    '<div class="carousel-inner row w-100 mx-auto"></div>' +
-                    '</div>';
+                        '<div class="carousel-inner row w-100 mx-auto"></div>' +
+                        '</div>';
                 }
 
                 $('#card_slider').html(html);
@@ -219,16 +137,16 @@ function initMap() {
                     if (historico.historico_ordem_comentario == null) {
                         historico.historico_ordem_comentario = "Nenhum comentário adicionado.";
                     }
-                    if(historico.funcionario_caminho_foto != null){
+                    if (historico.funcionario_caminho_foto != null) {
                         timeline += create_timeline(historico.historico_ordem_comentario, historico.funcionario_nome, base_url + '/assets/uploads/perfil_images/' + historico.funcionario_caminho_foto, historico.situacao_nome, reformatDate(historico.historico_ordem_tempo));
-                    }else{
+                    } else {
                         timeline += create_timeline(historico.historico_ordem_comentario, historico.funcionario_nome, base_url + '/assets/uploads/perfil_images/default.png', historico.situacao_nome, reformatDate(historico.historico_ordem_tempo));
                     }
 
                 });
                 timeline += create_timeline(response.data.ordem_servico[0].ordem_servico_comentario, response.data.ordem_servico[0].funcionario_nome, base_url + '/assets/uploads/perfil_images/' + response.data.ordem_servico[0].funcionario_caminho_foto, response.data.ordem_servico[0].situacao_atual_nome, reformatDate(response.data.ordem_servico[0].ordem_servico_criacao));
 
-                response.data.imagens.map((img, i) => { 
+                response.data.imagens.map((img, i) => {
                     html += create_cards(base_url + '/' + img.imagem_os.replace('./', '/'), img.situacao_nome, img.imagem_os_timestamp, active);
                 });
 
@@ -241,26 +159,26 @@ function initMap() {
 
     function create_timeline(comentario, funcionario, funcionario_foto, situacao, data) {
         return '<div class="message-item">' +
-        '<div class="message-inner">' +
-        '<div class="message-head clearfix">' +
-        '<div class="avatar pull-left"><a href="#"><img class="message-foto-perfil" src="' + funcionario_foto + '"></a></div>' +
-        '<div class="user-detail">' +
-        '<h5 class="handle">' + funcionario + '</h5>' +
-        '<div class="post-meta">' +
-        '<div class="asker-meta">' +
-        '<span class="qa-message-what"></span>' +
-        '<span class="qa-message-when">' +
-        '<span class="qa-message-when-data">' + data + '</span>' +
-        '</span>' +
-        '</div>' +
-        '</div>' +
-        '</div>' +
-        '</div>' +
-        '<div class="qa-message-content">' +
-        '<b>Situação: </b>' + situacao +
-        '<br>' + (comentario !== null ? comentario : 'Nenhum comentário adicionado.') +
-        '</div>' +
-        '</div></div>';
+            '<div class="message-inner">' +
+            '<div class="message-head clearfix">' +
+            '<div class="avatar pull-left"><a href="#"><img class="message-foto-perfil" src="' + funcionario_foto + '"></a></div>' +
+            '<div class="user-detail">' +
+            '<h5 class="handle">' + funcionario + '</h5>' +
+            '<div class="post-meta">' +
+            '<div class="asker-meta">' +
+            '<span class="qa-message-what"></span>' +
+            '<span class="qa-message-when">' +
+            '<span class="qa-message-when-data">' + data + '</span>' +
+            '</span>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="qa-message-content">' +
+            '<b>Situação: </b>' + situacao +
+            '<br>' + (comentario !== null ? comentario : 'Nenhum comentário adicionado.') +
+            '</div>' +
+            '</div></div>';
     }
 
     function create_cards(src, situacao, data, active) {
@@ -370,11 +288,11 @@ function initMap() {
     }
 
     function popula_markers(ordem) {
-        let imagem = seleciona_imagem(ordem);
+        let imagem = seleciona_imagem(ordem.prioridade_fk);
 
         var marker = new google.maps.Marker({
-            position: { 
-                lat: parseFloat(ordem.localizacao_lat), 
+            position: {
+                lat: parseFloat(ordem.localizacao_lat),
                 lng: parseFloat(ordem.localizacao_long)
             },
             map: main_map,
@@ -384,7 +302,7 @@ function initMap() {
             tipo_servico: ordem.tipo_servico_pk,
             servico: ordem.servico_fk,
             situacao: ordem.situacao_atual_fk,
-            data_criacao: ordem.ordem_servico_criacao, 
+            data_criacao: ordem.ordem_servico_criacao,
             prioridade: ordem.prioridade_fk,
             setor: ordem.setor_fk,
             title: ordem.localizacao_rua + ", " + ordem.localizacao_num + " - " + ordem.localizacao_bairro
@@ -392,9 +310,9 @@ function initMap() {
 
         marker.addListener('click', function () {
             main_map.panTo(marker.getPosition());
-            request_data(this.id, marker.setor); 
+            request_data(this.id, marker.setor);
             $('#v_evidencia').modal('show');
-        }); 
+        });
 
         markers.push(marker);
     }
@@ -407,20 +325,20 @@ function initMap() {
         let url = base_url + '/ordem_servico/get_map';
 
         $.post(url, filters)
-        .done(function(response) {
-            removeAll();
-            markers = [];
-            response.data.map(function(ordem) {
-                popula_markers(ordem);
+            .done(function (response) {
+                removeAll();
+                markers = [];
+                response.data.map(function (ordem) {
+                    popula_markers(ordem);
+                });
+            })
+            .fail(function (response) {
             });
-        })
-        .fail(function(response) {
-        });
 
         btn_ativar($('#filtrar'));
     });
 
-    function removeAll(){
+    function removeAll() {
         if (markers !== null) {
             markers.map((marker) => {
                 marker.setMap();
@@ -444,14 +362,14 @@ function initMap() {
         return filters;
     }
 
-    function btn_load(button_submit){
+    function btn_load(button_submit) {
         button_submit.attr('disabled', 'disabled');
         button_submit.css('cursor', 'default');
         button_submit.find('i').removeClass();
         button_submit.find('i').addClass('fa fa-refresh fa-spin');
     }
 
-    function btn_ativar(button_submit){
+    function btn_ativar(button_submit) {
         button_submit.removeAttr('disabled');
         button_submit.css('cursor', 'pointer');
         button_submit.find('i').removeClass();
