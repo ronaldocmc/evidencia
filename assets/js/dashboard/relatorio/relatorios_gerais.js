@@ -77,8 +77,7 @@ function enviar(relatorio, filtro) {
 $("#gerar_relatorio").click(function() {
 
 	btn_load($('#gerar_relatorio'));
-	form = $('form#submit-form').serialize();
-	console.log(form);
+	form = $('#submit-form').serialize();
 
 	$.post(base_url+'/Relatorio/select_os_by_filter',form).done(function (response) {
 		btn_ativar($('#gerar_relatorio'));
