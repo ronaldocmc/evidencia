@@ -39,13 +39,18 @@
                         <div class="row">
                          <div class="col-md-6">
                             <h5><b>Escolha o(s) setor(es):</b></h5><br>
-                            <?php 
-                            foreach($setores as $setor):
+                            <select class="selectpicker" multiple data-selected-text-format="count > 3">
+                                <?php 
+                                foreach($setores as $setor):
+                                    ?>
+                                    <option value="<?= $setor->setor_pk ?>">
+                                        <?= $setor->setor_nome ?>
+                                    </option>
+                                    <!-- <input type="checkbox" id="setor-<?= $setor->setor_pk ?>" name="setor[]" value="<?= $setor->setor_pk ?>"><label for="setor-<?= $setor->setor_pk ?>"> <?= $setor->setor_nome ?></label>  <br> -->
+                                    <?php
+                                endforeach;
                                 ?>
-                                <input type="checkbox" id="setor-<?= $setor->setor_pk ?>" name="setor[]" value="<?= $setor->setor_pk ?>"><label for="setor-<?= $setor->setor_pk ?>"> <?= $setor->setor_nome ?></label>  <br>
-                                <?php
-                            endforeach;
-                            ?>
+                            </select>
                         </div>
                         <div class="col-md-6">
                             <h5><b>Escolha o(s) tipo(s) de serviço(s):</b></h5> <br>

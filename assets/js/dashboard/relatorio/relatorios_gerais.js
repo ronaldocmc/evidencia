@@ -100,7 +100,7 @@ $("#confirmar").click(function() {
 
 	$.post(base_url+'/Relatorio/create_new_report',form).done(function (response) {
 		btn_ativar($('#confirmar'));
-		console.log(response);
+		
 		if (response.code == 200) {
 			alerts('success','Sucesso!', response.data.message);
 			window.location.href = base_url+'/Relatorio/detalhes/'+response.data.id;
