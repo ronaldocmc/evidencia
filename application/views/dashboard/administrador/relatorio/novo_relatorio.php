@@ -39,32 +39,37 @@
                         <div class="row">
                          <div class="col-md-6">
                             <h5><b>Escolha o(s) setor(es):</b></h5><br>
-                            <select class="selectpicker" multiple data-selected-text-format="count > 3">
+                            <select class="form-control" id="setor" name="setor[]" multiple>
                                 <?php 
                                 foreach($setores as $setor):
                                     ?>
                                     <option value="<?= $setor->setor_pk ?>">
                                         <?= $setor->setor_nome ?>
                                     </option>
-                                    <!-- <input type="checkbox" id="setor-<?= $setor->setor_pk ?>" name="setor[]" value="<?= $setor->setor_pk ?>"><label for="setor-<?= $setor->setor_pk ?>"> <?= $setor->setor_nome ?></label>  <br> -->
                                     <?php
                                 endforeach;
                                 ?>
                             </select>
+                            <small>Segure Crtl para selecionar mais de uma opção</small>
                         </div>
                         <div class="col-md-6">
                             <h5><b>Escolha o(s) tipo(s) de serviço(s):</b></h5> <br>
-                            <?php 
-                            foreach($tipos_servicos as $tipo):
-                                ?>
-                                <input type="checkbox" id="tipo-servico-<?= $tipo->tipo_servico_pk ?>" name="tipo[]>" value="<?= $tipo->tipo_servico_pk ?>"><label for="tipo-servico-<?= $tipo->tipo_servico_pk ?>"> <?= $tipo->tipo_servico_nome ?></label> <br>
-                            <?php endforeach; ?>
+                            <select class="form-control" multiple id="tipo" name="tipo[]">
+                                <?php 
+                                foreach($tipos_servicos as $tipo):
+                                    ?>
+                                    <option value="<?= $tipo->tipo_servico_pk ?>">
+                                        <?= $tipo->tipo_servico_nome ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <small>Segure Crtl para selecionar mais de uma opção</small>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="row pt-5 d-flex justify-content-center">
-                            <h5><b>Selecione o revisor:</b></h5> <br>
-                            <select class="form-control" name="funcionario_fk">
+                            <h5><b>Selecione o revisor:</b></h5>
+                            <select class="form-control pt-1" name="funcionario_fk">
                                 <?php 
                                     foreach($motoristas_de_caminhao as $motorista):
                                 ?>    
@@ -75,6 +80,7 @@
                             </select>
                         </div>
                     </div>
+
 
                     </form>
                     <div class="col-md-12">
