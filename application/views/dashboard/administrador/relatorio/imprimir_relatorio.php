@@ -81,7 +81,7 @@
 
 
 
-    <table id="table_os" class="table table-striped table-datatable">
+    <table id="table_os" class="table">
         <thead>
             <tr>
                 <th>Código</th>
@@ -90,15 +90,15 @@
                 <th>Endereço</th>
                 <th>Serviço</th>
                 <th>Setor</th>
-                <th>Situação</th>
+                <th>Foto</th>
+                <th>Avaliação</th>
             </tr>
         </thead>
         <tbody>
             <?php $count = 0; ?>
             <?php if ($ordens_servicos != null): ?>
             <?php foreach ($ordens_servicos as $key => $ordem_servico): ?>
-            <?php if($count % 2 == 0){$color="gray";}else{ $color="white";} ?>
-            <tr style="background-color: <?= $color ?>;-webkit-print-color-adjust: exact; ">
+            <tr>
                 <td>
                     <?=$ordem_servico->ordem_servico_cod?>
                 </td>
@@ -121,11 +121,29 @@
                     <?=$ordem_servico->servico_nome?>
                 </td>
 
-                <td>
+                <td width="75">
                     <?=$ordem_servico->setor_nome?>
                 </td>
-                <td>
-                    <?= $ordem_servico->situacao_nome ?>
+                <td width="100">
+                    <?php if (isset($ordem_servico->image)): ?>
+                        <img src="<?= base_url($ordem_servico->image) ?>">
+                    <?php else: ?>
+                        Sem Imagem
+                    <?php endif ?>
+                </td>
+                <td width="200">
+                    <input type="checkbox" id="situacao_1">
+                    <label for="situacao_1"> Não resolvido</label>
+                    <br>
+                    <input type="checkbox" id="situacao_2">
+                    <label for="situacao_2"> Recusado(Não procede)</label>
+                    <br>
+                    <input type="checkbox" id="situacao_3">
+                    <label for="situacao_3"> Recusado(Repetido)</label>
+                    <br>
+                    <input type="checkbox" id="situacao_4">
+                    <label for="situacao_4"> Finalizado</label>
+                    <br>
                 </td>
 
             </tr>
