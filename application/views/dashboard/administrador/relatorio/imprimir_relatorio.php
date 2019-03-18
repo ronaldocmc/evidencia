@@ -90,7 +90,6 @@
                 <th>Endereço</th>
                 <th>Serviço</th>
                 <th>Setor</th>
-                <th>Situação</th>
                 <th>Foto</th>
                 <th>Avaliação</th>
             </tr>
@@ -124,9 +123,6 @@
 
                 <td width="75">
                     <?=$ordem_servico->setor_nome?>
-                </td>
-                <td>
-                    <?= $ordem_servico->situacao_nome ?>
                 </td>
                 <td width="100">
                     <?php if (isset($ordem_servico->image)): ?>
