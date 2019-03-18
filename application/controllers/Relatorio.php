@@ -301,8 +301,6 @@ class Relatorio extends CRUD_Controller
 
     public function create_new_report()
     {
-        var_dump($this->input->post());
-        die();
         try{
             //Configurando as regras de preenchimento de formulário
             $this->report_model->config_form_validation();
