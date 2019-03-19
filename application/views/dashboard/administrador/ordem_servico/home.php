@@ -7,6 +7,9 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de ordens de serviço</h2>
+                        <button class="au-btn au-btn-icon au-btn--blue btn-exportar" data-toggle="modal" data-target="#ce_export" id="btn-exportar">
+                                    <i class="zmdi zmdi-task"></i>exportar
+                                </button>
                         <!-- <input type="hidden" id="ordem_servico_pk" name="ordem_servico_pk" class="form-control"> -->
                         <button class="au-btn au-btn-icon au-btn--blue reset_multistep" data-toggle="modal" data-target="#ce_ordem_servico" id="btn-nova-ordem">
                             <i class="zmdi zmdi-plus"></i>nova ordem de serviço
@@ -112,7 +115,7 @@
                                         <option value="ativadas">Ativas</option>
                                         <option value="desativadas">Excluídas</option>
                                     </select><br>
-                                </div>
+                                </div>                                
                             </div>
                         </div>
                         <div class="table-responsive table--no-card m-b-40">
@@ -535,6 +538,31 @@
                         <input type="hidden" id="historico_pk" value="" name="historico_pk">
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ce_export">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Exportar Dados</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row pb-5">
+                    <div class="col-md-6">
+
+                        De:<input type="date" class="form-control" id="data_inicial" name="data_inicial" required>
+                    </div> 
+                    <div class="col-md-6">
+
+                        Até:<input type="date" class="form-control" id="data_final" name="data_final" required>
+                    </div>
+                </div>
+                <button type="button" id="export" class="btn au-btn btn-primary form-control"><i class="fa fa-dot-circle-o"></i> Exportar dados
+                </button>
             </div>
         </div>
     </div>
