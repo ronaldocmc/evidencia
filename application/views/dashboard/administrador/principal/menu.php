@@ -218,8 +218,7 @@
                             <div class="header-button">
                                 <div class="account-wrap">
                                     <div class="account-item clearfix js-item-menu">
-                                        <div class="image">
-                                            <img src="<?php echo $this->session->user['image_user_min'] ?>" alt="John Doe" />
+                                        <div class="image" id="avatar">
                                         </div>
                                         <div class="content">
                                             <a class="js-acc-btn" href="#"><?php echo $this->session->user['name_user']; ?></a>
@@ -227,8 +226,7 @@
                                         <div class="account-dropdown js-dropdown">
                                             <div class="info clearfix">
                                                 <div class="image">
-                                                    <a href="#">
-                                                        <img src="<?php echo $this->session->user['image_user_min'] ?>" alt="John Doe" />
+                                                    <a href="#" id="image-a">
                                                     </a>
                                                 </div>
                                                 <div class="content">
@@ -258,3 +256,36 @@
                 </div>
             </header>
             <!-- HEADER DESKTOP-->
+
+            <script>
+                function imageNotFound()
+                {
+                    console.log('image not found');
+                    console.log(this);
+                    this.src = "<?= base_url('assets/img/default.png') ?>";
+                }
+
+                function loadAvatarImage(){
+                    let image = new Image();
+                    image.alt = "<?= $this->session->user['name_user']; ?>";
+                    image.onerror = imageNotFound;
+                    image.src = "<?= $this->session->user['image_user_min'] ?>";
+
+                    return image;
+                }
+
+                function loadImage(src){
+                    let image = new Image();
+                    image.onerror = imageNotFound;
+                    image.src = src;
+
+                    return image;
+                }
+
+                let image = loadAvatarImage();
+                let newImage = loadAvatarImage()
+
+                document.getElementById('avatar').appendChild(image);
+
+                document.getElementById('image-a').appendChild(newImage);
+            </script>

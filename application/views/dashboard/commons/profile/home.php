@@ -68,8 +68,8 @@
                                 <div class="col-12">
                                     <label for="">Imagem</label>
                                 </div>
-                                <div class="col-12 col-md-6">
-                                    <img src="<?= base_url($worker->funcionario_caminho_foto) ?>" alt="<?= $worker->funcionario_nome ?>" class="img-responsive img-thumbnail align-center" style="width: 50%"/>
+                                <div class="col-12 col-md-6" id="img-div">
+
                                     <br>
                                 </div>
                                 <div class="col-12 col-md-6">
