@@ -12,7 +12,6 @@ require_once APPPATH . "models\Ordem_Servico_model.php";
 
 require_once APPPATH . "core\MyException.php";
 
-//TODO mudar para CRUD_Controller
 class Ordem_Servico extends CRUD_Controller
 {
     public $response;
