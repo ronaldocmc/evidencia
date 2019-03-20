@@ -86,7 +86,7 @@ $("#gerar_relatorio").click(function() {
 			$("#p_qtd").text("Esse relatório terá "+ response.data + " ordens de serviço!");
 		}
 		else if (response.code == 400) {
-			alerts('failed','Erro!',response.data.message);
+			alerts('failed','Erro!',response.data.mensagem);
 		}
 
 	}, "json");
