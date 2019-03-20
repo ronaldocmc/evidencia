@@ -217,8 +217,12 @@ class Relatorio extends CRUD_Controller
     //Função que realiza a validação dos itens selecionados no filtro
     private function validate_filter($filtro)
     {
-        $this->check_if_is_not_empty($filtro['setor'], 'Marque pelo menos um setor.');
-        $this->check_if_is_not_empty($filtro['tipo'], 'Marque pelo menos um tipo de serviço.');
+        if(!isset($filtro['setor'])){
+            throw new MyException('Marque pelo menos um setor.', Response::BAD_REQUEST);
+        }
+        if(!isset($filtro['tipo'])){
+            throw new MyException('Marque pelo menos um tipo de serviço.', Response::BAD_REQUEST);
+        }
 
         $this->validate_dates($filtro['data_inicial'], $filtro['data_final']);
     }
