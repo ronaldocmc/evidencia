@@ -86,7 +86,7 @@
 
                                                     <td>
                                                         <div class="btn-group">
-                                                            <?php if ($servico->servico_status ): ?>
+                                                            <?php if ($servico->ativo ): ?>
                                                                 <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$key?>" data-target="#ce_servico">
                                                                     <div class="d-none d-sm-block">
                                                                         Editar
@@ -353,10 +353,9 @@
                                 </div>
                             </div>
 
-                            <script type="text/javascript">
-                                var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
-
-                                var is_superusuario = <?php echo $this->session->user['is_superusuario'] === true ? 1 : 0; ?>;
-                            </script>
+        <script type="text/javascript">
+            var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
+            var is_superusuario = <?php echo $this->session->user['is_superusuario'] === true ? 1 : 0; ?>;
+        </script>
                             <!-- END MAIN CONTENT-->
 <!-- END PAGE CONTAINER-->

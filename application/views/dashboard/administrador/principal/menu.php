@@ -36,6 +36,9 @@
                                     <li>
                                         <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
                                     </li>
+                                    <li>
+                                            <a href="<?php echo base_url('servico'); ?>">Serviços</a>
+                                    </li>
                                         <?php if(SHOW_HIDE_MENU): ?>
                                         <li>
                                             <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
@@ -45,9 +48,6 @@
                                         </li>
                                         <li>
                                             <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo base_url('servico'); ?>">Serviços</a>
                                         </li>
                                     <?php endif; ?>
                                 <?php endif; ?>
@@ -131,6 +131,9 @@
                                     <li>
                                         <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
                                     </li>
+                                    <li>
+                                        <a href="<?php echo base_url('servico'); ?>">Serviços</a>
+                                    </li>
                                     <?php if(SHOW_HIDE_MENU): ?>
                                         <li>
                                             <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
@@ -141,9 +144,7 @@
                                         <li>
                                             <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
                                         </li>
-                                        <li>
-                                            <a href="<?php echo base_url('servico'); ?>">Serviços</a>
-                                        </li>
+
                                     <?php endif; ?>
                                 <?php endif; ?>
                                 <li>
