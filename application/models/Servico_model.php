@@ -42,6 +42,14 @@ class Servico_model extends MY_Model
         }
     }
 
+    /**
+     * Função responsável por validar os dados vindos da requisição de insert_update
+     *
+     * @param Requisição POST com servico_nome, servico_desc, situacao_padrao_pk e
+     *		  tipo_servico_fk, e, se setada, a servico_pk
+     * @return Objeto Response caso falhe, ou então, TRUE, caso esteja correto
+     */
+
     function config_form_validation()
     {
         $this->CI->form_validation->set_rules(
