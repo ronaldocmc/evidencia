@@ -38,8 +38,8 @@ function initMap() {
         let date = new Date();
 
         let filters = {
-            data_inicial: (date.getFullYear()) + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 7),
-            data_final: (date.getFullYear()) + '-' + (date.getMonth() + 1) + '-' + (date.getDate())
+            data_inicial: (date.getFullYear()) + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 7) + ' 00:01:00',
+            data_final: (date.getFullYear()) + '-' + (date.getMonth() + 1) + '-' + (date.getDate()) + ' 23:59:00'
         };
 
         $('#de').val(formatDate(lastWeek()));
@@ -355,8 +355,8 @@ function initMap() {
             prioridade_fk: prioridade.val() != -1 ? prioridade.val() : null,
             setor_fk: setor.val() != -1 ? setor.val() : null,
             situacao_atual_fk: situacao.val() != -1 ? situacao.val() : null,
-            data_inicial: de.val() != -1 ? de.val() : null,
-            data_final: ate.val() != -1 ? ate.val() : null,
+            data_inicial: de.val() != -1 ? de.val() + ' 00:01:00' : null,
+            data_final: ate.val() != -1 ? ate.val() + ' 23:59:00' : null,
         };
 
         return filters;
