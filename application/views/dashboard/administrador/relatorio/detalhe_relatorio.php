@@ -1,4 +1,4 @@
-<!-- MAIN CONTENT-->
+ <!--MAIN CONTENT-->
 <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
@@ -125,14 +125,14 @@
                                 <thead>
                                     <tr>
                                         <th>Código</th>
-                                        <th id="data_brasileira">Data</th>
+                                        <th>Data</th>
                                         <th>Prioridade</th>
                                         <th>Endereço</th>
                                         <th>Serviço</th>
                                         <th>Setor</th>
                                         <th>Situação Atual</th>
-                                        <th>Opções</th>
-
+                                        <th>Avaliação</th>
+                                        <th>Ação</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -145,9 +145,7 @@
                                             <?=$ordem_servico->ordem_servico_cod?>
                                         </td>
                                         <td>
-                                            <span style="display: none">
-                                                <?=$ordem_servico->ordem_servico_atualizacao?></span>
-                                            <?= $ordem_servico->ordem_servico_atualizacao ?>
+                                            <?= $ordem_servico->ordem_servico_criacao ?>
                                         </td>
                                         <td>
                                             <?=$ordem_servico->prioridade_nome?>
@@ -169,7 +167,7 @@
                                         <td>
                                             <?= $ordem_servico->ordem_servico_comentario ?>
                                         </td>
-                                        <td>
+                                        <!-- <td>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk"
                                                     data-toggle="modal" value="<?=$count?>" data-target="#ce_ordem_servico">
@@ -180,10 +178,20 @@
                                                         <i class="fas fa-eye fa-fw"></i>
                                                     </div>
                                                 </button>
-
                                             </div>
+                                        </td> -->
+                                        <td>
+                                            <select class="form-control" id="<?= $ordem_servico->ordem_servico_pk ?>">
+                                                <?php foreach ($situacoes as $situacao): ?>
+                                                    <option value="<?= $situacao->situacao_pk ?>">
+                                                        <?= $situacao->situacao_nome ?>
+                                                    </option>
+                                                <?php endforeach ?>
+                                            </select>
                                         </td>
-
+                                        <td>
+                                            <button class="btn btn-primary save_situacao" id="btn<?=$ordem_servico->ordem_servico_pk?>" value="<?= $ordem_servico->ordem_servico_pk ?>">Salvar</button>
+                                        </td>    
                                     </tr>
                                     <?php $count++; ?>
                                     <?php endforeach?>
@@ -194,7 +202,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="copyright">
@@ -340,15 +347,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row form-group">
-                                        <input type="hidden" id="latitude">
-                                        <input type="hidden" id="longitude">
-                                        <div class="col-12">
-                                            <div id="map"></div>
-                                        </div>
-
-                                    </div>
-
                                 </div>
                             </div>
 
@@ -498,4 +496,4 @@
     var ordens_servico = <?php echo json_encode($ordens_servicos !== false ? $ordens_servicos : []); ?>;
 </script>
 <!-- END MAIN CONTENT-->
-<!-- END PAGE CONTAINER-->
+<!-- END PAGE CONTAINER
