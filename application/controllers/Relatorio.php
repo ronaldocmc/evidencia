@@ -492,6 +492,8 @@ class Relatorio extends CRUD_Controller
 
     private function get_report_detail_data($report)
     {
+        $this->load->model('Situacao_model', 'situacao');
+
         $report_id = $report->relatorio_pk;
 
         $workers = $this->funcionario_model->get(
@@ -500,6 +502,13 @@ class Relatorio extends CRUD_Controller
                 "funcionarios.organizacao_fk" => $this->session->user['id_organizacao'],
                 "funcionarios.funcao_fk" => "6",
             ]
+        );
+
+        $situacoes = $this->situacao->get_all(
+            '*',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
         );
 
         $responsible = $this->funcionario_model->get_one(
@@ -532,6 +541,7 @@ class Relatorio extends CRUD_Controller
             'funcionarios' => $workers,
             'relatorio' => $report,
             'filtros' => $strings_filters,
+            'situacoes' => $situacoes
         ];
 
         return $params;
@@ -544,7 +554,7 @@ class Relatorio extends CRUD_Controller
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
             2 => base_url('assets/css/loading_input.css'),
             3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            4 => base_url('assets/css/modal_map.css'),
+            4 => base_url('assets/css/modal_map.css')
         ]);
     }
 
@@ -561,7 +571,7 @@ class Relatorio extends CRUD_Controller
             7 => base_url('assets/js/constants.js'),
             8 => base_url('assets/js/jquery.noty.packaged.min.js'),
             9 => base_url('assets/vendor/select-input/select-input.js'),
-            10 => base_url('assets/js/dashboard/relatorio/detalhe-relatorio.js'),
+            10 => base_url('assets/js/dashboard/relatorio/detalhe-relatorio.js')
         ]);
     }
 
@@ -589,7 +599,7 @@ class Relatorio extends CRUD_Controller
     public function detalhes($report_id)
     {
         $report = $this->report_model->get_one('*', ['relatorio_pk' => $report_id]);
-
+        
         if($report){
 
             $this->load_css_detail();
