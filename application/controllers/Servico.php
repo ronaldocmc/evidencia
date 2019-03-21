@@ -37,7 +37,7 @@ class Servico extends CRUD_Controller {
 			servicos.ativo,
 			situacoes.situacao_nome,
 			situacoes.situacao_pk,
-			tipos_servicos.tipo_servico_pk,
+			tipos_servicos.tipo_servico_pk as tipo_servico_fk,
 			tipos_servicos.tipo_servico_nome,',
 			['servicos.ativo = 1'],
 			-1,

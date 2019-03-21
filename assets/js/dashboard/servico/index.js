@@ -44,6 +44,7 @@ function send_data(){
         'senha': $('#senha-input').val(),
     }
 
+    
     btn_load($('.submit'));
     btn_load($('#pula-para-confirmacao'));
 
@@ -71,10 +72,10 @@ function send_data(){
                 'servico_nome': data['servico_nome'],
                 'servico_abreviacao': data['servico_abreviacao'],
                 'servico_desc': data['servico_desc'],
-                'situacao_padrao_fk': data['situacao_padrao_pk'],
-                'situacao_nome': $('#situacao_pk :selected').text(),
-                'tipo_servico_nome': $('#tipo_servico_pk :selected').text(),
-                'tipo_servico_fk': data['tipo_servico_pk'],
+                'situacao_padrao_fk': data['situacao_padrao_fk'],
+                'situacao_nome': $('#situacao_fk :selected').text(),
+                'tipo_servico_nome': $('#tipo_servico_fk :selected').text(),
+                'tipo_servico_fk': data['tipo_servico_fk'],
                 'ativo' : 1 
             }
 
@@ -120,7 +121,7 @@ $(document).on('click', '.btn_editar', function (event) {
     $('#abreviacao-input').val(servicos[$(this).val()]["servico_abreviacao"]);
     $('#descricao-input').val(servicos[$(this).val()]["servico_desc"]);
     $('#situacao_padrao_fk').val(servicos[$(this).val()]["situacao_padrao_fk"]);
-    $('#tipo_servico_fk').val(servicos[$(this).val()]["tipo_servico_pk"]);
+    $('#tipo_servico_fk').val(servicos[$(this).val()]["tipo_servico_fk"]);
 });
 
 $(document).on('click', '.btn-desativar', function (event) {
