@@ -88,7 +88,7 @@
                                 <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
                             </div>
                         </div>
-                        <div align="center" class="center" id="nao_encontrada">
+                        <div align="center" id="nao_encontrada">
                             <h3> Desculpe, evidência não encontrada. </h3>
                         </div>
 
@@ -106,11 +106,9 @@
 
 
                         <section id="os">
-
                             <div class="col-md-12 p-5" id="finalizado">
                                 <div class="alert alert-success" role="alert">
-                                    <h4 class="alert-heading">Evidência finalizada!</h4>
-                                    <p>Essa evidência já foi finalizada</p>
+                                    <h4 class="alert-heading" align="center">Evidência finalizada!</h4>
                                 </div>
                             </div>
 
@@ -118,7 +116,6 @@
                                 <div class="col-md-6">
                                     <span class="font-weight-bold">Localização: </span>
                                     <p class="mb-1" id="os_local"></p>
-                                    <!-- <p>Acme Inc</p> -->
                                     <p class="mb-1" id="os_city"></p>
                                     <span class="font-weight-bold">Descrição: </span>
                                     <p class="mb-1" id="os_desc"></p>
@@ -127,7 +124,6 @@
                                 <div class="col-md-6 text-right">
                                     <p class="font-weight-bold mb-4">Detalhes</p>
                                     <p class="mb-1"><span class="text-muted">Prioridade: </span> <span id="os_priority"></span></p>
-                                    <p class="mb-1"><span class="text-muted">Departamento: </span> <span id="os_dept"></span></p>
                                     <p class="mb-1"><span class="text-muted">Serviço: </span> <span id="os_serv"></span></p>
                                     <p class="mb-1"><span class="text-muted">Situação Atual: </span> <span id="os_sit"></span></p>
                                 </div>
@@ -174,19 +170,6 @@
 </html>
 
 <script>
-    function contaFotos(response) {
-        var temFoto = true;
-
-        response.historico.forEach((value) => {
-            if (!value.foto) {
-                temFoto = false;
-                return;
-            }
-        });
-
-        return temFoto;
-    }
-
     $(document).ready(() => {
         $('#loading').hide();
         $('#nao_encontrada').hide();
@@ -205,10 +188,10 @@
 
         table.empty();
         div_fotos.empty();
-        var cod = ($('#os_protocol').val()).split("-");
+        var cod = ($('#os_protocol').val());
 
         $.ajax({
-            url: `${base_url}/Cidadao/getOs?protocol=${cod[1].substr(0,3)}`,
+            url: `${base_url}/Cidadao/getOs?protocol=${cod}`,
             method: 'GET'
         }).done(function (response) {
             $('#loading').hide();
@@ -217,38 +200,35 @@
                 $(os_search).hide();
                 $(os).fadeIn(500);
 
-                $('#os_local').html(`${response.os.logradouro_nome},${response.os.local_num}`);
-                $('#os_city').html(`${response.os.municipio_nome} - ${response.os.estado_fk}`);
-                $('#os_desc').html(`${response.os.ordem_servico_desc}`);
+                $('#os_local').html(`${response.data.os[0].localizacao_rua}, ${response.data.os[0].localizacao_num}`);
+                $('#os_city').html(`${response.data.os[0].municipio_nome} - ${response.data.os[0].estado_fk}`);
+                $('#os_desc').html(`${response.data.os[0].ordem_servico_desc}`);
 
-                $('#os_priority').html(`${response.os.prioridade_nome}`);
-                $('#os_serv').html(`${response.os.servico_nome}`);
-                $('#os_sit').html(`${response.os.situacao_atual_nome}`);
-                $('#os_dept').html(`${response.os.departamento_nome}`);
+                $('#os_priority').html(`${response.data.os[0].prioridade_nome}`);
+                $('#os_serv').html(`${response.data.os[0].servico_nome}`);
+                $('#os_sit').html(`${response.data.os[0].situacao_nome}`);
 
-
-                if (response.os.situacao_atual != 1 && response.os.situacao_atual != 2) {
+                if (response.data.os[0].situacao_atual_fk != 1 && response.data.os[0].situacao_atual_fk != 2) {
                     $('#finalizado').fadeIn(1000);
                 }
 
                 var fotos = "";
 
-                response.historico.forEach((value) => {
+                response.data.historico.forEach((value) => {
                     let html = '';
                     html += `<tr>`;
-                    html += `<td>${value.situacao}</td>`;
-                    html += `<td>${(value.comentario) ? value.comentario : "Nenhum comentário adicionado"}</td>`;
-                    html += `<td>${new Date(value.data).toLocaleDateString("pt-BR")}</td>`;
+                    html += `<td>${value.situacao_nome}</td>`;
+                    html += `<td>${(value.historico_ordem_comentario) ? value.historico_ordem_comentario : "Nenhum comentário adicionado"}</td>`;
+                    html += `<td>${new Date(value.historico_ordem_tempo).toLocaleDateString("pt-BR")}</td>`;
                     html += `</tr>`;
-                    if (value.foto) {
-                        fotos += `<img width="150px" src="${value.foto}"/>`;
-                    }
 
                     table.append(html);
                 });
 
-                if (contaFotos(response)) {
-                    $('#title_fotos').html('Histórico de Fotos');
+                if (response.data.imagens.length !== 0) {
+                    response.data.imagens.forEach((image) => {
+                        fotos += `<img width="150px" src="${base_url + '/' + image.imagem_os}"/>`;
+                    });
                     div_fotos.append(fotos);
                 }
                 else {

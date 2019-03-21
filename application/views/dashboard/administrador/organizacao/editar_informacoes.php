@@ -16,8 +16,7 @@
                         </div>
                         <div class="card-body card-block">
                             <div class="form-group">
-                                <input type="hidden" id="local_pk" name="local_pk" class="form-control" value="<?= $organizacao->local_pk ?>">
-                                <input type="hidden" id="logradouro_fk" name="logradouro_pk" class="form-control" value="<?= $organizacao->logradouro_pk ?>">
+                                <input type="hidden" id="local_pk" name="local_pk" class="form-control" value="<?= $organizacao->localizacao_fk ?>">
 
                                 <label for="dominio-input" class="form-control-label"><strong>Domínio*</strong></label>
                                 <input type="text" id="dominio-input" name="dominio" class="form-control" required="true" disabled="true" maxlength="10" minlength="3" value="<?= $organizacao->organizacao_pk ?>">
@@ -44,47 +43,42 @@
                         </div>
                         <div class="card-body card-block">
                             <div class="row form-group">
-                                <div class="col-12 col-md-3">
+                                <!-- <div class="col-12 col-md-3">
                                     <label for="uf-input" class=" form-control-label"><strong>Estado*</strong></label>
-                                    <select class="form-control loading" id="uf-input" name="estado_pk" required="true" data-value="<?= $organizacao->estado_fk ?>"></select>
-                                </div>
-                                <div class="col-12 col-md-9">
+                                    <select class="form-control loading" id="uf-input" name="estado_pk" required="true" data-value="<?= 'SP' ?>"></select>
+                                </div> -->
+                                <!-- <div class="col-12 col-md-9">
                                     <label for="cidade-input" class=" form-control-label"><strong>Cidade*</strong></label>
-                                    <select class="form-control loading" id="cidade-input" name="municipio_pk" data-value="<?= $organizacao->municipio_pk ?>" required="true"></select>
+                                    <select class="form-control loading" id="cidade-input" name="municipio_pk" data-value="<?= '$organizacao->municipio_pk' ?>" required="true"></select>
+                                </div> -->
+                                <div class="col-12 col-md-9">
+                                    <select class="form-control" name="localizacao_municipio" id="localizacao_municipio" required="true">
+                                        <?php foreach($municipios as $m): ?>
+                                            <?php 
+                                                $checked = ($m->municipio_pk == $organizacao->localizacao_municipio) ? 'checked': '';
+                                            ?>
+                                            <option $checked value="<?= $m->municipio_pk ?>"><?= $m->municipio_nome ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row form-group">
 
                                 <div class="col-12 col-md-9">
                                     <label for="logradouro_pk" class=" form-control-label"><strong>Logradouro*</strong></label>
-                                    <input type="hidden" name="logradouro_nome" id="logradouro_pk">
-                                    <div class="dropdown" id="drop">
-                                        <input type="text" id="logradouro-input" name="logradouro_nome"  class="form-control input-dropdown" autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]' value="<?= $organizacao->logradouro_nome ?>">
-                                        <small class="form-text text-muted"></small>
-                                        <ul class="dropdown-menu" data-return = "#logradouro_pk" data-next="#numero-input">
-                                        </ul>
-                                    </div>
+                                    <input type="text" name="logradouro-input" id="logradouro-input" class="form-control" value="<?= $organizacao->localizacao_rua ?>">
                                 </div>
                                 <div class="col-12 col-md-3">
                                     <label for="numero-input" class=" form-control-label"><strong>N°*</strong></label>
-                                    <input type="number" id="numero-input" name="local_num" class="form-control numero-input" min="0" required="true" value="<?= $organizacao->local_num ?>">
+                                    <input type="number" id="numero-input" name="local_num" class="form-control numero-input" min="0" required="true" value="<?= $organizacao->localizacao_num ?>">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <div class="col-12 col-md-6">
-                                    <label for="complemento-input" class=" form-control-label">Complemento</label>
-                                    <input type="text" id="complemento-input" name="local_complemento" class="form-control" maxlength="30" value="<?= $organizacao->local_complemento ?>">
-                                    <small class="form-text text-muted"></small>
-                                </div>
+            
                                 <div class="col-12 col-md-6">
                                     <label for="bairro-input" class=" form-control-label"><strong>Bairro*</strong></label>
-                                    <input type="hidden" name="bairro_nome" id="bairro_pk">
-                                    <div class="dropdown" id="drop">
-                                        <input type="text" id="bairro-input" name="bairro"  class="form-control input-dropdown" autocomplete="off" data-src = '["<?php echo base_url('localizacao/bairros'); ?>","https://viacep.com.br/ws"]' data-index='["bairro_pk","bairro"]' data-value='["bairro_nome","bairro"]' data-params  = '[[["cidade-input",null,"val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["logradouro-input",null,"val"],["json",null,"param"]]]' data-action='["get","get"]' data-arrayret='["data",null]' value="<?= $organizacao->bairro_nome ?>">
-                                        <small class="form-text text-muted"></small>
-                                        <ul class="dropdown-menu" data-return = "#bairro_pk" data-next="#bairro-input">
-                                        </ul>
-                                    </div>
+                                    <input type="text" name="bairro-input" id="bairro-input" class="form-control" value="<?= $organizacao->localizacao_bairro ?>">
+                                    
                                 </div>
                             </div>
                         </div>

@@ -16,6 +16,7 @@ function btn_ativar(button_submit){
 $("#btn-restaurar").click(function() {
 	btn_load($('#btn-restaurar'));
 	var senha = $("#pass-modal-restaurar").val();
+	console.log(senha);
 
 	if(senha == ""){
 		alerts('failed','Erro!','Senha incorreta');
@@ -28,14 +29,14 @@ $("#btn-restaurar").click(function() {
 		'senha' : senha
 	}
 
-	$.post(base_url+'/Relatorio/restaurar_os',data).done(function (response) {
+	$.post(base_url+'/Relatorio/receive_report/', data).done(function (response) {
 		btn_ativar($('#btn-restaurar'));
 		if (response.code == 200) {
-			alerts('success','Sucesso!','Relatórios entregues com sucesso.');
+			alerts('success','Sucesso!','Relatórios recebidos com sucesso.');
 			$('#restaurar_os').modal('hide');
 		}
 		else if (response.code == 404) {
-			alerts('success','Sucesso!','Não há ordens de serviço para serem finalizadas.');
+			alerts('success','Sucesso!','Não há relatórios para serem recebidos!');
 			$('#restaurar_os').modal('hide');
 		}
 		else if (response.code == 401) {

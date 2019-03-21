@@ -39,8 +39,8 @@ function send_data(){
         'servico_nome': $('#nome-input').val(),
         'servico_abreviacao': $('#abreviacao-input').val(),
         'servico_desc': $('#descricao-input').val(),
-        'situacao_padrao_pk': $('#situacao_fk').val(),
-        'tipo_servico_pk': $('#tipo_servico_fk').val(),
+        'situacao_padrao_fk': $('#situacao_fk').val(),
+        'tipo_servico_fk': $('#tipo_servico_fk').val(),
         'senha': $('#senha-input').val(),
     }
 
@@ -75,7 +75,7 @@ function send_data(){
                 'situacao_nome': $('#situacao_pk :selected').text(),
                 'tipo_servico_nome': $('#tipo_servico_pk :selected').text(),
                 'tipo_servico_fk': data['tipo_servico_pk'],
-                'servico_status' : 1 
+                'ativo' : 1 
             }
 
             if (data['servico_pk'] == '') {
@@ -114,13 +114,13 @@ $(document).on('click', '.btn_novo', function (event) {
 $(document).on('click', '.btn_editar', function (event) {
     acao = ".submit";
     $("#ce_servico").find(".modal-title").text("Editar Serviço");
-
+    console.log(servicos);
     $('#servico_pk').val(servicos[$(this).val()]["servico_pk"]);
     $('#nome-input').val(servicos[$(this).val()]["servico_nome"]);
     $('#abreviacao-input').val(servicos[$(this).val()]["servico_abreviacao"]);
     $('#descricao-input').val(servicos[$(this).val()]["servico_desc"]);
     $('#situacao_padrao_fk').val(servicos[$(this).val()]["situacao_padrao_fk"]);
-    $('#tipo_servico_fk').val(servicos[$(this).val()]["tipo_servico_fk"]);
+    $('#tipo_servico_fk').val(servicos[$(this).val()]["tipo_servico_pk"]);
 });
 
 $(document).on('click', '.btn-desativar', function (event) {
@@ -157,7 +157,7 @@ $(document).on('click', '#btn-desativar', function (event) {
                 if (servicos[i]['servico_pk'] == data['servico_pk'])
                     break;
             }
-            servicos[i]['servico_status'] = 0;
+            servicos[i]['ativo'] = 0;
             $('#pass-modal-desativar').val('');
             $('#filter-ativo').change();
             $('#d_servico').modal('hide');
@@ -196,7 +196,7 @@ $(document).on('click', '#btn-reativar', function (event) {
                 if (servicos[i]['servico_pk'] == data['servico_pk'])
                     break;
             }
-            servicos[i]['servico_status'] = 1;
+            servicos[i]['ativo'] = 1;
             $('#pass-modal-reativar').val('');
             $('#filter-ativo').change();
             $('#r_servico').modal('hide');
@@ -209,7 +209,7 @@ $('#filter-ativo').on('change', function () {
     switch ($(this).val()) {
         case "todos":
         $.each(servicos, function (i, serv) {
-            if (serv.servico_status == 1) {
+            if (serv.ativo == 1) {
                 table.row.add([
                     serv.servico_nome,
                     serv.servico_abreviacao,
@@ -261,7 +261,7 @@ $('#filter-ativo').on('change', function () {
         break;
         case "ativos":
         $.each(servicos, function (i, serv) {
-            if (serv.servico_status == 1) {
+            if (serv.ativo == 1) {
                 table.row.add([
                     serv.servico_nome,
                     serv.servico_abreviacao,
@@ -293,7 +293,7 @@ $('#filter-ativo').on('change', function () {
         case "desativados":
         $.each(servicos, function (i, serv) {
 
-            if (serv.servico_status == 0) {
+            if (serv.ativo == 0) {
                 table.row.add([
                  serv.servico_nome,
                  serv.servico_abreviacao,

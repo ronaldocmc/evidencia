@@ -4,7 +4,8 @@ var botao = null;
 
 $(document).on('click', '.btn_novo', function () {
   botao = ".submit";
-  $('.modal-title').html("Novo Funcionário");
+  $('#ce_funcionario .modal-title').html("Novo Funcionário");
+  $('#show-img-funcionario').attr('src',"");
 });
 
 $(".press_enter").on("keydown", function (event) {
@@ -69,7 +70,7 @@ $(document).on('click', '.btn-reativar', function () {
 $('#btn-deactivate').click(() => {
   var data =
   {
-    'pessoa_pk': $('#pessoa_pk').val(),
+    'funcionario_pk': funcionarios[posicao_selecionada].funcionario_pk,
     'senha': $('#pass-modal-desativar').val()
   }
 
@@ -82,20 +83,21 @@ $('#btn-deactivate').click(() => {
 
     if (response.code == 200) {
       alerts('success', 'Sucesso!', 'Funcionário desativado com sucesso');
-      funcionarios[posicao_selecionada]['funcionario_status'] = 0;
+      funcionarios[posicao_selecionada]['ativo'] = 0;
       $('#d_funcionario').modal('hide');
       pre_loader_hide();
     } else {
       alerts('failed', 'Erro!', 'Houve um erro ao desativar.');
     }
     update_table();
+    document.location.reload(false);
   });
 });
 
 $('#btn-activate').click(() => {
   var data =
   {
-    'pessoa_pk': $('#pessoa_pk').val(),
+    'funcionario_pk': funcionarios[posicao_selecionada].funcionario_pk,
     'senha': $('#pass-modal-ativar').val()
   }
 
@@ -109,12 +111,13 @@ $('#btn-activate').click(() => {
 
     if (response.code == 200) {
       alerts('success', 'Sucesso!', 'Funcinário ativado com sucesso');
-      funcionarios[posicao_selecionada]['funcionario_status'] = 1;
+      funcionarios[posicao_selecionada]['ativo'] = 1;
       $('#a_funcionario').modal('hide');
     } else {
       alerts('failed', 'Erro!', 'Houve um erro ao ativar.');
     }
     update_table();
+    document.location.reload(false);
   });
 });
 
@@ -128,10 +131,10 @@ update_table = () => {
   switch ($('#filter-ativo').val()) {
     case "todos":
       $.each(funcionarios, function (i, func) {
-        if (func.funcionario_status == 1) {
+        if (func.ativo == 1) {
           table.row.add([
-            func.pessoa_nome,
-            func.contato_email,
+            func.funcionario_nome,
+            func.funcionario_login,
             func.funcao_nome,
             '<div class="btn-group">' +
             '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario" title="Editar">' +
@@ -144,12 +147,17 @@ update_table = () => {
             '<i class="fas fa-times fa-fw"></i>' +
             '</div>' +
             '</button>' +
-            '</div>'
+            '</div>' +
+            '<button class="btn btn-sm btn-info btn-attr-pessoa_pk" value="' + (i) + '" data-toggle="modal" data-target="#p_funcionario" title="Alterar senha"> ' +
+            '<div class="d-none d-sm-block">' +
+            '<i class="fas fa-lock"></i>' +
+            '</div>' +
+            '</button>'
           ]).draw(false);
         } else {
           table.row.add([
-            func.pessoa_nome,
-            func.contato_email,
+            func.funcionario_nome,
+            func.funcionario_login,
             func.funcao_nome,
             '<div class="btn-group">' +
             '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="' + (i) + '" data-toggle="modal" data-target="#a_funcionario" title="Reativar">' +
@@ -165,10 +173,10 @@ update_table = () => {
     case "ativos":
       table.clear().draw();
       $.each(funcionarios, function (i, func) {
-        if (func.funcionario_status == 1) {
+        if (func.ativo == 1) {
           table.row.add([
-            func.pessoa_nome,
-            func.contato_email,
+            func.funcionario_nome,
+            func.funcionario_login,
             func.funcao_nome,
             '<div class="btn-group">' +
             '<button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_funcionario" title="Editar">' +
@@ -181,7 +189,12 @@ update_table = () => {
             '<i class="fas fa-times fa-fw"></i>' +
             '</div>' +
             '</button>' +
-            '</div>'
+            '</div>' +
+            '<button class="btn btn-sm btn-info btn-attr-pessoa_pk" value="' + (i) + '" data-toggle="modal" data-target="#p_funcionario" title="Alterar senha"> ' +
+            '<div class="d-none d-sm-block">' +
+            '<i class="fas fa-lock"></i>' +
+            '</div>' +
+            '</button>'
           ]).draw(false);
         }
       });
@@ -189,10 +202,10 @@ update_table = () => {
     case "desativados":
       table.clear().draw();
       $.each(funcionarios, function (i, func) {
-        if (func.funcionario_status == 0) {
+        if (func.ativo == 0) {
           table.row.add([
-            func.pessoa_nome,
-            func.contato_email,
+            func.funcionario_nome,
+            func.funcionario_login,
             func.funcao_nome,
             '<div class="btn-group">' +
             '<button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk" value="' + (i) + '" data-toggle="modal" data-target="#a_funcionario" title="Reativar">' +
@@ -208,11 +221,21 @@ update_table = () => {
   }
 }
 
+//Função que converte um blob em base64, utiliza callback porque precisa ser sincrona
+var blobToBase64 = function (blob, cb) {
+  var reader = new FileReader();
+  reader.onload = function () {
+      var base64 = reader.result;
+      // var base64 = dataUrl.split(',')[1];
+      cb(base64);
+  };
+  reader.readAsDataURL(blob);
+};
 
 function send() {
   try {
     $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => {
-      this.send(blob);
+      blobToBase64(blob, this.send);
     });
   } catch (err) {
     this.send(null);
@@ -222,7 +245,7 @@ function send() {
 function send_data() {
   try {
     $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => {
-      this.send(blob);
+      blobToBase64(blob, this.send);
     });
   } catch (err) {
     this.send(null);
@@ -242,29 +265,24 @@ send = (imagem) => {
   btn_load($('.submit'));
 
   const formData = new FormData();
-  formData.append('pessoa_nome', $('#nome-input').val());
-  formData.append('pessoa_cpf', $('#cpf-input').val());
-  formData.append('contato_email', $('#email-input').val());
-  formData.append('contato_tel', $('#telefone-input').val());
-  formData.append('contato_cel', $('#celular-input').val());
+  formData.append('funcionario_nome', $('#nome-input').val());
+  formData.append('funcionario_cpf', $('#cpf-input').val());
+  formData.append('funcionario_login', $('#email-input').val());
   formData.append('funcao_fk', $('#funcao-input').val());
-  formData.append('logradouro_nome', $('#logradouro-input').val());
-  formData.append('local_num', $('#numero-input').val());
-  formData.append('local_complemento', $('#complemento-input').val());
-  formData.append('estado_pk', $('#uf-input :selected').text());
-  formData.append('bairro', $('#bairro-input').val());
   formData.append('setor_fk', $('#setor-input').val());
-  formData.append('municipio_pk', $('#cidade-input').val());
-  formData.append('municipio_nome', $('#cidade-input :selected').text());
   formData.append('departamento_fk', $('#departamento-input').val());
   formData.append('senha', $('#pass-modal-edit').val());
   formData.append('img', imagem);
 
-  var URL = ($('#pessoa_pk').val() == "") ? base_url + '/funcionario/insert' : base_url + '/funcionario/update';
+  var URL = base_url + '/funcionario/save';
 
   if ($('#pessoa_pk').val() != "") {
-    formData.append('pessoa_pk', $('#pessoa_pk').val());
+    formData.append('funcionario_pk', $('#pessoa_pk').val());
+  } else {
+    formData.append('funcionario_senha', $('#funcionario_senha').val());
   }
+
+  console.log($('#funcionario_senha'));
 
   $.ajax({
     url: URL,
@@ -273,36 +291,28 @@ send = (imagem) => {
     processData: false,
     contentType: false,
     success: function (response) {
+      document.location.reload(false);
       btn_ativar($('#pula-para-confirmacao'));
       btn_ativar($('.submit'));
 
       if (response.code !== 200) {
         show_errors(response);
-        alerts('failed', 'Erro!', 'O formulário apresenta algum(ns) erro(s)');
+        alerts('failed', 'Erro!', 'O formulário apresenta algum(ns) erro(s) de validação');
         //pre_loader_hide();
       }
       else {
         funcionario =
           {
-            'pessoa_fk': ($('#pessoa_pk').val() == "") ? response.data.pessoa_fk : $('#pessoa_pk').val(),
-            'pessoa_nome': $('#nome-input').val(),
-            'pessoa_cpf': $('#cpf-input').val(),
-            'contato_email': $('#email-input').val(),
-            'contato_tel': $('#telefone-input').val(),
-            'contato_cel': $('#celular-input').val(),
-            'logradouro_nome': $('#logradouro-input').val(),
-            'local_num': $('#numero-input').val(),
-            'local_complemento': $('#complemento-input').val(),
-            'estado_pk': $('#uf-input :selected').text(),
-            'municipio_pk': $('#cidade-input').val(),
-            'municipio_nome': $('#cidade-input :selected').text(),
-            'bairro_nome': $('#bairro-input').val(),
+            'funcionario_pk': ($('#pessoa_pk').val() == "") ? response.data.funcionario_pk : $('#pessoa_pk').val(),
+            'funcionario_nome': $('#nome-input').val(),
+            'funcionario_cpf': $('#cpf-input').val(),
+            'funcionario_login': $('#email-input').val(),
             'funcao_fk': $('#funcao-input').val(),
             'funcao_nome': funcoes[$('#funcao-input').val()],
             'departamento_fk': $('#departamento-input').val(),
             'setor_fk': $('#setor-input').val(),
-            'funcionario_status': 1,
-            'pessoa_pk': ($('#pessoa_pk').val() == "") ? response.data.pessoa_fk : $('#pessoa_pk').val()
+            'ativo': 1,
+            'funcionario_caminho_foto': response.data.path
           }
         if ($('#pessoa_pk').val() == "") { //verifica se é um insert
           funcionarios.push(funcionario);
@@ -317,6 +327,7 @@ send = (imagem) => {
       }
       //pre_loader_hide();
       remove_image();
+
       btn_ativar($('#pula-para-confirmacao'));
       btn_ativar($('.submit'));
     },
@@ -336,6 +347,7 @@ send = (imagem) => {
 
 $('.new').on('click', function () {
   $('#titulo').html("Novo Funcionário");
+  $('#div-senha').show();
   $('#pessoa_pk').val("");
   $('#opcao-editar').val('false');
 });
@@ -348,6 +360,7 @@ $('.new').on('click', function () {
 
 $(document).on('click', '.btn-editar', function (event) {
   $('#titulo').html("Editar Funcionário");
+  $('#div-senha').hide();
   botao = ".submit";
   if (funcionarios[posicao_selecionada].setor_fk != null) {
     $('#setor-input option:selected').prop('selected', false);
@@ -358,38 +371,82 @@ $(document).on('click', '.btn-editar', function (event) {
   else {
     $('#setor-input').val([]);
   }
-  $('#pessoa_pk').val(funcionarios[posicao_selecionada]['pessoa_pk']);
-  $('#nome-input').val(funcionarios[posicao_selecionada]['pessoa_nome']);
-  $('#cpf-input').val(funcionarios[posicao_selecionada]['pessoa_cpf']);
-  $('#email-input').val(funcionarios[posicao_selecionada]['contato_email']);
-  $('#telefone-input').val(funcionarios[posicao_selecionada]['contato_tel']);
-  $('#celular-input').val(funcionarios[posicao_selecionada]['contato_cel']);
+
+  $('#show-img-funcionario').attr('src',funcionarios[posicao_selecionada].funcionario_caminho_foto);
+  
+  
+  $('#pessoa_pk').val(funcionarios[posicao_selecionada]['funcionario_pk']);
+  $('#nome-input').val(funcionarios[posicao_selecionada]['funcionario_nome']);
+  $('#cpf-input').val(funcionarios[posicao_selecionada]['funcionario_cpf']);
+  $('#email-input').val(funcionarios[posicao_selecionada]['funcionario_login']);
   $('#funcao-input option[value=' + funcionarios[posicao_selecionada]['funcao_pk'] + ']').prop('selected', true);
   $('#departamento-input option[value=' + funcionarios[posicao_selecionada]['departamento_pk'] + ']').prop('selected', true);
-  if (funcionarios[posicao_selecionada]['logradouro_nome'] != null) {
-    $('#logradouro-input').val(funcionarios[posicao_selecionada]['logradouro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
-  }
-  $('#numero-input').val(funcionarios[posicao_selecionada]['local_num']);
-  $('#complemento-input').val(funcionarios[posicao_selecionada]['local_complemento']);
-  if (funcionarios[posicao_selecionada]['bairro_nome'] != null) {
-    $('#bairro-input').val(funcionarios[posicao_selecionada]['bairro_nome'].toLowerCase().replace(/\b\w/g, l => l.toUpperCase()));
-  }
 
-
-  if ($("#uf-input :selected").text() != funcionarios[$(this).val()]["estado_pk"]) {
-    $("#uf-input option").filter(function () {
-      return this.text == funcionarios['id_org']["estado_pk"];
-    }).attr('selected', true);
-
-    change_uf($("#uf-input").val(), $("#uf-input option:selected").text(), funcionarios[$(this).val()]["municipio_pk"]);
-  }
-  else {
-    $("#cidade-input").val(funcionarios[$(this).val()]["municipio_pk"]);
-  }
   change_funcao();
 });
 
+let senha = $('#p-senha');
+let nova_senha = $('#p-confirmar-senha');
+let msg = $('#p-msg');
 
+senha.keyup(function () {
+  if (nova_senha.val() != undefined) {
+    if (senha.val() != nova_senha.val()) {
+      msg.html("As senhas não conferem");
+    } else {
+      msg.html("");
+    }
+  }
+});
+
+nova_senha.keyup(function () {
+  if (senha.val() != undefined) {
+    if (senha.val() != nova_senha.val()) {
+      msg.html("As senhas não conferem");
+    } else {
+      msg.html("");
+    }
+  }
+});
+
+$('#btn-password').click(function () {
+
+  if (senha.val() == nova_senha.val()) {
+
+    const formData = new FormData();
+    formData.append('funcionario_pk', funcionarios[posicao_selecionada].funcionario_pk);
+    formData.append('funcionario_senha', senha.val());
+
+    $.ajax({
+      url: base_url + '/funcionario/change_password',
+      method: "POST",
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        let type;
+        if (response.code == 200) {
+          type = "success";
+          $('#p_funcionario').modal("hide");
+        } else {
+          type = "failed";
+          senha.focus();
+        }
+
+        senha.val("");
+        nova_senha.val("");
+        alerts(type, response.message, response.data);
+      }
+    });
+
+
+  } else {
+    $('#p-msg').html("Digite novamente a nova senha");
+    senha.val("");
+    nova_senha.val("");
+    senha.focus();
+  }
+});
 
 
 // EXTRA

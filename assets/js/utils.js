@@ -19,39 +19,40 @@ try{
   });
 }catch(err){
   console.log(err);
+  alert(err);
 }
 
 
-// try{
-//   var ostable = $("#ordens_servico").DataTable({
-//       "info" : false,
-//       "serverSide": true,
-//       "paging": true,
-//       "pageLength": 10,
-//       "ajax": {
-//         "type": "POST",
-//         "url": base_url + "/Ordem_Servico/datatable",
-//         "dataType": 'application/json; charset=utf-8'
-//       },
-//       "language":{
-//           "emptyTable": "Nenhum dado encontrado.",
-//           "search":     "Procurar:",
-//           "lengthMenu": "Mostrar Por Página _MENU_",
-//           "processing":     "Aguarde...",
-//           "zeroRecords": "Nenhum registro encontrado",
-//           "info": "Página _PAGE_ de _PAGES_",
-//           "infoEmpty": "Nenhum registro encontrado",
-//           "paginate": {                                        
-//                   "first":      "Primeiro",
-//                   "last":       "Último",
-//                   "next":       "Próximo",
-//                   "previous":   "Anterior"
-//               }
-//       }
-//   });
-// }catch(err){
-//   console.log(err);
-// }
+try{
+  var ostable = $("#ordens_servico").DataTable({
+      "columnDefs" : [
+          {
+            "targets": [0],
+            "visible": false,
+            "searchable": false
+          }
+      ],
+      "order": [[0, 'desc']],
+      "info" : false,
+      "language":{
+          "emptyTable": "Nenhum dado encontrado.",
+          "search":     "Procurar:",
+          "lengthMenu": "Mostrar Por Página _MENU_",
+          "processing":     "Aguarde...",
+          "zeroRecords": "Nenhum registro encontrado",
+          "info": "Página _PAGE_ de _PAGES_",
+          "infoEmpty": "Nenhum registro encontrado",
+          "paginate": {                                        
+                  "first":      "Primeiro",
+                  "last":       "Último",
+                  "next":       "Próximo",
+                  "previous":   "Anterior"
+              }
+      }
+  });
+}catch(err){
+  console.log(err);
+}
 
 
 $(document).ready(function() {
@@ -64,7 +65,7 @@ $(document).ready(function() {
 });
 var noty_id = 0;
 
-alerts = async(status, title = null, msg = null, layout = 'bottomLeft') => {
+alerts = async(status, title = null, msg = "", layout = 'bottomLeft') => {
   var reply;
   switch (status) {
     case 'success': {

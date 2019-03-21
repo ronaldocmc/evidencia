@@ -29,7 +29,7 @@
                 <b>Funcionário</b>
             </div>
             <div class="card-body">
-            <?= $funcionario->pessoa_nome ?>
+            <?= $funcionario->funcionario_nome ?>
             </div>
         </div>
 
@@ -38,7 +38,7 @@
                 <b>Gerado em</b>
             </div>
             <div class="card-body">
-            <?= date("d/m/Y", strtotime($relatorio->data_criacao)) ?>
+            <?= date("d/m/Y", strtotime($relatorio->relatorio_data_criacao)) ?>
             </div>
         </div>
 
@@ -81,7 +81,7 @@
 
 
 
-    <table id="ordens_servico" class="table table-striped table-datatable">
+    <table id="table_os" class="table">
         <thead>
             <tr>
                 <th>Código</th>
@@ -90,42 +90,60 @@
                 <th>Endereço</th>
                 <th>Serviço</th>
                 <th>Setor</th>
-                <th>Situação</th>
+                <th>Foto</th>
+                <th>Avaliação</th>
             </tr>
         </thead>
         <tbody>
             <?php $count = 0; ?>
             <?php if ($ordens_servicos != null): ?>
             <?php foreach ($ordens_servicos as $key => $ordem_servico): ?>
-            <?php if($count % 2 == 0){$color="gray";}else{ $color="white";} ?>
-            <tr style="background-color: <?= $color ?>;-webkit-print-color-adjust: exact; ">
+            <tr>
                 <td>
                     <?=$ordem_servico->ordem_servico_cod?>
                 </td>
                 <td>
                     <span style="display: none">
-                        <?=$ordem_servico->data_criacao?></span>
-                    <?= $ordem_servico->data_criacao ?>
+                        <?=$ordem_servico->ordem_servico_criacao?></span>
+                    <?= $ordem_servico->ordem_servico_criacao ?>
                 </td>
                 <td>
                     <?=$ordem_servico->prioridade_nome?>
                 </td>
                 <td>
                     <span style="text-align: justify;">
-                        <?=$ordem_servico->logradouro_nome . ", " .
-                                                                $ordem_servico->local_num . " - " .
-                                                                $ordem_servico->bairro_nome?>
+                        <?=$ordem_servico->localizacao_rua. ", " .
+                                                                $ordem_servico->localizacao_num . " - " .
+                                                                $ordem_servico->localizacao_bairro?>
                     </span>
                 </td>
                 <td>
                     <?=$ordem_servico->servico_nome?>
                 </td>
 
-                <td>
+                <td width="75">
                     <?=$ordem_servico->setor_nome?>
                 </td>
-                <td>
-                    <?= $ordem_servico->status_os_string ?>
+                <td width="100">
+                    <?php if (isset($ordem_servico->image)): ?>
+                        <img src="<?= base_url($ordem_servico->image) ?>">
+                    <?php else: ?>
+                        Sem Imagem
+                    <?php endif ?>
+                </td>
+                <td width="200">
+                    <input type="checkbox" id="situacao_1">
+                    <label for="situacao_1"> Não resolvido</label>
+                    <br>
+                    <input type="checkbox" id="situacao_2">
+                    <label for="situacao_2"> Recusado(Não procede)</label>
+                    <br>
+                    <input type="checkbox" id="situacao_3">
+                    <label for="situacao_3"> Recusado(Repetido)</label>
+                    <br>
+                    <input type="checkbox" id="situacao_4">
+                    <label for="situacao_4"> Finalizado</label>
+                    <br>
                 </td>
 
             </tr>

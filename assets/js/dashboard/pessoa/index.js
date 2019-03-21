@@ -1,11 +1,21 @@
 const google = "6LfwtV4UAAAAANnXXJhkM87IgNRNQghpwW467CEc"; //REFATORAR PARA CONSTANTES
 
+
+$(document).ready(function () {
+    image = loadAvatarImage();
+    image.style = "width: 50%";
+    image.className = "img-responsive img-thumbnail align-center";
+    document.getElementById('img-div').appendChild(image);
+});
+
+
 function btn_load(button_submit){
   button_submit.attr('disabled', 'disabled');
   button_submit.css('cursor', 'default');
   button_submit.find('i').removeClass();
   button_submit.find('i').addClass('fa fa-refresh fa-spin');
 }
+
 
 
 function btn_ativar(button_submit){
@@ -55,22 +65,13 @@ send = (imagem) => {
     btn_load($('#btn-open-modal-save'));
 
     const formData = new FormData();
-    formData.append('pessoa_pk', $('#pessoa_pk').val());
-    formData.append('pessoa_nome', $('#nome-input').val());
-    formData.append('pessoa_cpf', $('#cpf-input').val());
-    formData.append('contato_email', $('#email-input').val());
-    formData.append('contato_tel', $('#telefone-input').val());
-    formData.append('contato_cel', $('#celular-input').val());
-
-    formData.append('logradouro_nome', $('#logradouro-input').val());
-    formData.append('bairro', $('#bairro-input').val());
-    formData.append('local_num', $('#numero-input').val());
-    formData.append('complemento', $('#complemento-input').val());
-    formData.append('estado_pk', $('#uf-input').val());
-    formData.append('municipio_pk', $('#cidade-input').val());
+    formData.append('funcionario_pk', $('#pessoa_pk').val());
+    formData.append('funcionario_nome', $('#nome-input').val());
+    formData.append('funcionario_cpf', $('#cpf-input').val());
+    formData.append('funcionario_login', $('#email-input').val());
 
     formData.append('img', imagem);
-    var URL = base_url + '/pessoa/update';
+    var URL = base_url + '/funcionario/save';
 
     $.ajax({
         url: URL,
@@ -91,7 +92,7 @@ send = (imagem) => {
             } else {
                 alerts('success', 'Dados alterados com sucesso!', 'Aguarde um momento, pois atualizaremos os dados de sua conta.');
 
-                window.location.replace(base_url+'/pessoa/profile');
+                window.location.replace(base_url+'/funcionario/minha_conta');
             }
 
             pre_loader_hide();
@@ -99,18 +100,17 @@ send = (imagem) => {
     });
 }
 
-$('#btn-change-password').click(function(){
-
+sendForm = () => {
     //Enviando os dados via post (AJAX)
     var data = {
-        'old_password': $('#old_password').val(),
+        'senha': $('#old_password').val(),
         'new_password': $('#new_password').val(),
-        'confirm_new_password': $('#confirm_new_password').val()
+        // 'confirm_new_password': $('#confirm_new_password').val()
     };
 
     btn_load($('#btn-change-password'));
 
-    $.post(base_url + '/pessoa/update_password', data).done(function (response) {
+    $.post(base_url + '/funcionario/update_password', data).done(function (response) {
 
         btn_ativar($('#btn-change-password'));
 
@@ -121,8 +121,22 @@ $('#btn-change-password').click(function(){
             pre_loader_hide();
         }
         else {
-            $('.area-acesso').append(alerts('failed', response.message, response.data));
+            $('.area-acesso').append(alerts('failed', response.message, response.data.mensagem));
             pre_loader_hide();
         }
     }, "json");
+}
+
+
+$('#btn-change-password').click(function(){
+    let new_pass = $('#new_password').val();
+    let confirm_password = $('#confirm_new_password').val();
+
+    if(new_pass != confirm_password)
+    {
+        $('.area-acesso').append(alerts('failed', 'Erro no formulário', 
+        'Nova senha e confirmar senha estão diferentes.'));
+    } else {
+       sendForm();
+    }
 });

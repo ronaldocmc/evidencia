@@ -1,4 +1,4 @@
-<!-- MAIN CONTENT-->
+ <!--MAIN CONTENT-->
 <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
@@ -10,13 +10,30 @@
                         <h2 class="title-1">Painel de Gerenciamento de Relatórios </h2>
                     </div>
 
-                    <?php if($relatorio->pegou_no_celular == 0): ?>
-                    <button class="au-btn au-btn-icon au-btn--blue" data-toggle="modal" data-target="#delegar_para_outra_pessoa">
-                        <i class="zmdi zmdi-refresh"></i>Trocar Funcionário</button>
-
-                    <button class="au-btn au-btn-icon btn au-btn--blue pull-right" data-toggle="modal" data-target="#d-relatorio">
-                        <i class="zmdi zmdi-delete"></i>Destruir Relatório</button>
-                    <?php endif; ?>
+                      <button type="button" class="au-btn au-btn-icon btn au-btn--blue pull-left dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Opções
+                      </button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk) ?>">
+                            Imprimir relatório
+                        </a>
+                        <?php if ($relatorio->relatorio_situacao == 'Criado'): ?>
+                            <a class="dropdown-item" href="#" data-toggle="modal" 
+                               data-target="#delegar_para_outra_pessoa">
+                                Alterar funcionário
+                            </a>
+                        <?php endif ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#d-relatorio">
+                            Destruir relatório
+                        </a>
+                        <?php if ($relatorio->relatorio_situacao == 'Em andamento'): ?>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#restaurar_os">
+                                Receber relatório
+                            </a>  
+                        <?php endif ?>
+                      </div>
+                    
                 </div>
             </div>
 
@@ -27,25 +44,48 @@
             <div class="row py-2">
                 <div class="col-lg-12">
                     <div class="au-card d-flex flex-column">
-                        <h2 class="title-1 m-b-25"> Relatório do
-                            <?= $funcionario->pessoa_nome ?> do dia
-                            <?= date("d/m/Y", strtotime($relatorio->data_criacao)) ?>
+                        <h3 class="title-1 m-b-25"> Relatório do dia <?= date("d/m/Y", strtotime($relatorio->relatorio_data_criacao)) ?>
+                        <h3 class="title-2 m-b-25" style="margin-bottom: 5px; padding-bottom: 5px;"> Revisor responsável: <?= $funcionario->funcionario_nome ?> </h3>
+                            
                             <?php 
 
-                                    if($relatorio->status == 1)
+                                    if($relatorio->relatorio_situacao == 'Entregue incompleto')
                                     {
-                                        $font_size = 12;
-                                        $label = "ENTREGUE";
-                                        $class = "success";
-                                    }else{
-                                        $font_size = 9;
-                                        $label = "EM ANDAMENTO";
+                                        $label = "ENTREGUE INCOMPLETO";
                                         $class = "warning";
                                     }
-                                    ?>
+                                    
+                                    if($relatorio->relatorio_situacao == 'Criado')
+                                    {
+                                        $label = "CRIADO";
+                                        $class = "primary";
+                                    }
 
-                            <span style="font-size:<?= $font_size ?>pt;" class="badge badge-pill badge-<?= $class ?>">
+                                    if($relatorio->relatorio_situacao == 'Entregue')
+                                    {
+                                        $label = "Entregue";
+                                        $class = "success";
+
+                                    }
+
+                                    if($relatorio->relatorio_situacao == 'Inativo')
+                                    {
+                                        $label = "INATIVO";
+                                        $class = "danger";
+
+                                    }
+
+                                    if($relatorio->relatorio_situacao == 'Em andamento')
+                                    {
+                                        $label = "EM ANDAMENTO";
+                                        $class = "primary";
+
+                                    }
+                                    ?>
+                            <div class = "col-12 col-md-12">
+                            <span style="font-size:9pt; margin: 2px;" class="badge badge-pill badge-<?= $class ?> pull-right">
                                 <?= $label ?></span></h2>
+                            </div>
                         <div class="card-group">
 
                             <div class="card">
@@ -78,33 +118,28 @@
                             </div>
 
                         </div>
-                        <div class="py-4">
-                            <?php if($relatorio->pegou_no_celular == 1): ?>
-                            <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo align-middle"
-                                data-toggle="modal" data-target="#restaurar_os">
-                                Receber Relatório
-                            </button>
-                            <?php endif; ?>
-                        </div>
-
-                            <a target="blank" href="<?= base_url('relatorio/imprimir_relatorio/'.$relatorio->relatorio_pk) ?>" class="au-btn au-btn-icon btn au-btn--blue pull-right">
-                                <i class="fas fa-print"></i>Imprimir relatório
-                            </a>
-
+                        
+                        <!-- <button class="au-btn au-btn-icon btn au-btn--blue pull-left btn-primary col-md-4">
+                            Receber relatório
+                        </button> -->
+                        <!-- <a target="blank" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk) ?>" class="au-btn au-btn-icon btn au-btn--blue pull-right col-md-4" style="margin-top: 10px;">
+                            <i class="fas fa-print"></i>Imprimir relatório
+                        </a> -->
+    
 
                         <div class="table-responsive table--no-card m-b-40 mt-5">
-                            <table id="ordens_servico" class="table table-striped table-datatable">
+                            <table id="os_table" class="table table-striped table-datatable">
                                 <thead>
                                     <tr>
                                         <th>Código</th>
-                                        <th id="data_brasileira">Data</th>
+                                        <th>Data</th>
                                         <th>Prioridade</th>
                                         <th>Endereço</th>
                                         <th>Serviço</th>
                                         <th>Setor</th>
                                         <th>Situação Atual</th>
-                                        <th>Opções</th>
-
+                                        <th>Avaliação</th>
+                                        <th>Ação</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -117,18 +152,16 @@
                                             <?=$ordem_servico->ordem_servico_cod?>
                                         </td>
                                         <td>
-                                            <span style="display: none">
-                                                <?=$ordem_servico->data_criacao?></span>
-                                            <?= $ordem_servico->data_criacao ?>
+                                            <?= $ordem_servico->ordem_servico_criacao ?>
                                         </td>
                                         <td>
                                             <?=$ordem_servico->prioridade_nome?>
                                         </td>
                                         <td>
                                             <span style="text-align: justify;">
-                                                <?=$ordem_servico->logradouro_nome . ", " .
-                                                                $ordem_servico->local_num . " - " .
-                                                                $ordem_servico->bairro_nome?>
+                                                <?=$ordem_servico->localizacao_rua . ", " .
+                                                                $ordem_servico->localizacao_num . " - " .
+                                                                $ordem_servico->localizacao_bairro?>
                                             </span>
                                         </td>
                                         <td>
@@ -139,23 +172,20 @@
                                             <?=$ordem_servico->setor_nome?>
                                         </td>
                                         <td>
-                                            <?= $ordem_servico->status_os_string ?>
+                                            <?= $ordem_servico->ordem_servico_comentario ?>
                                         </td>
                                         <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk"
-                                                    data-toggle="modal" value="<?=$count?>" data-target="#ce_ordem_servico">
-                                                    <div class="d-none d-sm-block">
-                                                        Detalhes
-                                                    </div>
-                                                    <div class="d-block d-sm-none">
-                                                        <i class="fas fa-eye fa-fw"></i>
-                                                    </div>
-                                                </button>
-
-                                            </div>
+                                            <select class="form-control" id="<?= $ordem_servico->ordem_servico_pk ?>">
+                                                <?php foreach ($situacoes as $situacao): ?>
+                                                    <option value="<?= $situacao->situacao_pk ?>">
+                                                        <?= $situacao->situacao_nome ?>
+                                                    </option>
+                                                <?php endforeach ?>
+                                            </select>
                                         </td>
-
+                                        <td>
+                                            <button class="btn btn-primary save_situacao" id="btn<?=$ordem_servico->ordem_servico_pk?>" value="<?= $ordem_servico->ordem_servico_pk ?>">Salvar</button>
+                                        </td>    
                                     </tr>
                                     <?php $count++; ?>
                                     <?php endforeach?>
@@ -166,7 +196,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="copyright">
@@ -312,15 +341,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row form-group">
-                                        <input type="hidden" id="latitude">
-                                        <input type="hidden" id="longitude">
-                                        <div class="col-12">
-                                            <div id="map"></div>
-                                        </div>
-
-                                    </div>
-
                                 </div>
                             </div>
 
@@ -374,7 +394,7 @@
                                                     foreach($funcionarios as $func):
                                                         ?>
                                                 <option value="<?= $func->funcionario_pk ?>">
-                                                    <?= $func->pessoa_nome ?>
+                                                    <?= $func->funcionario_nome?>
                                                 </option>
                                                 <?php
                                                     endforeach;
@@ -467,7 +487,7 @@
 </div>
 
 <script type="text/javascript">
-    var ordens_servico = <? php echo json_encode($ordens_servicos !== false ? $ordens_servicos : []); ?>;
+    var ordens_servico = <?php echo json_encode($ordens_servicos !== false ? $ordens_servicos : []); ?>;
 </script>
 <!-- END MAIN CONTENT-->
-<!-- END PAGE CONTAINER-->
+<!-- END PAGE CONTAINER

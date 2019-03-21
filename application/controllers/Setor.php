@@ -12,7 +12,7 @@ class Setor extends CRUD_Controller
 	function __construct() 
 	{
 		parent::__construct();
-		$this->load->model('Setor_model', 'setor_model');
+		$this->load->model('Setor_model', 'setor');
 	}
 
 
@@ -22,12 +22,15 @@ class Setor extends CRUD_Controller
      * @param null
      * @return null 
      */
-    function index() 
+    public function index() 
     {
     	// Leitura dos setores no banco
-    	$setores = $this->setor_model->get([
-    		'organizacao_fk' => $this->session->user['id_organizacao']
-    	]);
+    	$setores = $this->setor->get_all(
+            '*',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
 
         //CSS para crud setores
     	$this->session->set_flashdata('css',[
@@ -62,145 +65,110 @@ class Setor extends CRUD_Controller
     	],'administrador');
     }
 
-
-    /**
-     * Função responsável pelo insert ou update de setor
-     * 
-     * @param setor_pk (para realizar update), setor_nome e senha (caso for superusuário)
-     * @return Response 
-     */
-    public function insert_update()
+    private function update()
     {
-    	$this->load->library('form_validation');
-    	$response = new Response();
-
-        // Regras para o nome do setor
-    	$this->form_validation->set_rules(
-    		'setor_nome', 
-    		'setor_nome',
-    		'trim|required|min_length[3]|max_length[50]'
-    	);
-
-    	if($this->input->post('setor_pk') != '')
-    	{
-    		$this->form_validation->set_rules(
-    			'setor_pk', 
-    			'setor_pk', 
-    			'trim|required|numeric|max_length[11]'
-    		);
-    	}
-
-    	if($this->form_validation->run())
-    	{
-            // Pegando os dados da requisição POST
-    		$dados['setor_nome'] = $this->input->post('setor_nome');
-
-            // Se for passada a pk do setor é feito o update
-    		if($this->input->post('setor_pk'))
-    		{
-    			$query = $this->setor_model->update($dados, 
-    				$this->input->post('setor_pk'));
-
-                // Caso houve um erro no update
-    			if(!$query)
-    			{
-    				$response->set_code(Response::DB_ERROR_UPDATE);
-                    $response->set_message('Erro ao atualizar dados do setor');
-    			}
-    		}
-    		else
-    		{
-                // Caso contrário, é feito o insert
-    			$dados['organizacao_fk'] = $this->session->user['id_organizacao'];
-    			$query = $this->setor_model->insert($dados);
-    			$response->set_data(['id'=> $query]);
-                
-                // Caso houve um erro no insert
-    			if(!$query)
-    			{
-    				$response->set_code(Response::DB_ERROR_INSERT);
-                    $response->set_message('Erro ao inserir dados do setor');
-    			}
-    		}
-
-            // Caso a query tenha tido sucesso
-    		if($query)
-    		{
-    			$response->set_code(Response::SUCCESS);
-                $response->set_message('Operação realizada com sucesso');
-    		}
-
-    	}
-    	else
-    	{
-            // Caso o form_validation->run falhe
-    		$response->set_code(Response::BAD_REQUEST);
-    		$response->set_message(implode('<br>', $this->form_validation->error_array()));
-    	}
-
-    	$response->send();
+        $this->setor->__set('setor_pk', $this->input->post('setor_pk'));
+        $this->setor->update();
     }
 
-    /**
-     * Função responsável por desativar um setor
-     * 
-     * @param setor_pk
-     * @return Response 
-     */
     public function deactivate()
     {
-        $response = new Response();
+        try{
+            $this->load();
+            $this->setor->config_form_validation_primary_key();
+            $this->setor->run_form_validation();
+            $this->setor->fill();
 
-        // Novo status da flag
-        $dados['setor_status'] = 0;
+            $this->begin_transaction();
+            $this->setor->deactivate();
+            $this->end_transaction();
 
-        // Update da tabela, no departamento informado
-        $query = $this->setor_model->update($dados, $this->input->post('setor_pk'));
-
-        if($query)
-        {
-            // Caso a query tenha sucesso
+            $response = new Response();
             $response->set_code(Response::SUCCESS);
-            $response->set_message('Setor desativado com sucesso');
-        }
-        else
-        {
-            // Caso falhe
-            $response->set_code(Response::DB_ERROR_UPDATE);
-            $response->set_message('Não foi possível desativar o setor');
-        }
+            $response->set_message('Setor desativado com sucesso!');
+            $response->send();
 
-        $response->send();
+        } catch(MyException $e) {
+            handle_my_exception($e);
+        } catch(Exception $e) {
+            handle_exception($e);
+        }
     }
-
 
     public function activate()
     {
+        try{
+            $this->load();
+            $this->setor->config_form_validation_primary_key();
+            $this->setor->run_form_validation();
+            $this->setor->fill();
+
+            $this->begin_transaction();
+            $this->setor->activate();
+            $this->end_transaction();
+            
+            $response = new Response();
+            $response->set_code(Response::SUCCESS);
+            $response->set_message('Setor ativado com sucesso!');
+            $response->send();
+
+        } catch(MyException $e) {
+            handle_my_exception($e);
+        } catch(Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    public function save()
+    {
         $response = new Response();
 
-        // Novo status da flag
-        $dados['setor_status'] = 1;
+        try {
+            $this->load();
 
-        // Update da tabela, no departamento informado
-        $query = $this->setor_model->update($dados, 
-            $this->input->post('setor_pk'));
-        
-        if($query)
-        {
-            // Caso a query tenha sucesso
+            if ($this->is_superuser()) 
+            {
+                $this->add_password_to_form_validation();
+            }
+
+            $_POST['organizacao_fk'] = $this->session->user['id_organizacao'];
+            $this->setor->fill();
+
+            if($this->input->post('setor_pk') !== '')
+            {
+                $this->setor->config_form_validation_primary_key();
+            }
+            $this->setor->config_form_validation();
+            $this->setor->run_form_validation();
+
+            $this->begin_transaction();
+
+            if($this->input->post('setor_pk') !== '')
+            {
+                $this->update();
+            } 
+            else 
+            {
+                $response->set_data(['id' => $this->setor->insert()]);
+            }
+
+            $this->end_transaction();
+
             $response->set_code(Response::SUCCESS);
-            $response->set_message('Setor reativado com sucesso');
-        }
-        else
-        {
-            // Caso falhe
-            $response->set_code(Response::DB_ERROR_UPDATE);
-            $response->set_message('Não foi possível reativar o setor');
-        }
+            $response->send();
 
-        $response->send();
+        } catch(MyException $e) {
+            handle_my_exception($e);
+        } catch(Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    public function load()
+    {
+        $this->load->library('form_validation');
+
+        $this->load->helper('exception');        
     }
 }
-
-
 ?>

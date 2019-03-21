@@ -1,3 +1,5 @@
+var form;
+
 function btn_load(button_submit){
     button_submit.attr('disabled', 'disabled');
     button_submit.css('cursor', 'default');
@@ -75,32 +77,32 @@ function enviar(relatorio, filtro) {
 $("#gerar_relatorio").click(function() {
 
 	btn_load($('#gerar_relatorio'));
-	var form = $('form#submit-form').serialize();
+	form = $('#submit-form').serialize();
 
-	$.post(base_url+'/Relatorio/count_os',form).done(function (response) {
+	$.post(base_url+'/Relatorio/select_os_by_filter',form).done(function (response) {
 		btn_ativar($('#gerar_relatorio'));
 		if (response.code == 200) {
 			$("#confirmar_criacao").modal('show');
 			$("#p_qtd").text("Esse relatório terá "+ response.data + " ordens de serviço!");
 		}
 		else if (response.code == 400) {
-			alerts('failed','Erro!',response.data.message);
+			alerts('failed','Erro!',response.data.mensagem);
 		}
 
 	}, "json");
 });
 
+
 $("#confirmar").click(function() {
 
 	btn_load($('#confirmar'));
-	var form = $('form#submit-form').serialize();
 
-	$.post(base_url+'/Relatorio/insert_novo_relatorio',form).done(function (response) {
+	$.post(base_url+'/Relatorio/create_new_report',form).done(function (response) {
 		btn_ativar($('#confirmar'));
-		console.log(response);
+		
 		if (response.code == 200) {
 			alerts('success','Sucesso!', response.data.message);
-			window.location.href = base_url+'/Relatorio/detalhes_relatorio/'+response.data.id;
+			window.location.href = base_url+'/Relatorio/detalhes/'+response.data.id;
 		}
 		else if (response.code == 400) {
 			alerts('failed','Erro!',response.data.message);

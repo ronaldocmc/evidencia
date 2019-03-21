@@ -268,11 +268,6 @@
                         <form>
                          <div class="form-group">
                              <h4 style="text-align: center" class="text-danger"><i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
-                             <!-- <p>Ao desativar um departamento, as seguintes ações também serão feitas:</p>
-                             <ul style="margin-left: 15px">
-                                 <li>Todas os tipos de serviços serão desativados também</li>
-                                 <li>Nenhuma ordem de serviço com estes tipos poderão ser registradas</li>
-                             </ul> -->
                          </div>
 
                         <div id="loading-departamento-deactivate">

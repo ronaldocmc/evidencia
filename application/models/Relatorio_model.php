@@ -4,68 +4,156 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-class Relatorio_model extends CI_Model
+require_once APPPATH . "core\MY_Model.php";
+
+class Relatorio_model extends MY_Model
 {
 
-    /**
-     * @name string TABLE_NAME Holds the name of the table in use by this model
-     */
+    const NAME = 'relatorios';
     const TABLE_NAME = 'relatorios';
-
-    /**
-     * @name string PRI_INDEX Holds the name of the tables' primary index used in this model
-     */
     const PRI_INDEX = 'relatorio_pk';
 
-    /**
-     * Retrieves record(s) from the database
-     *
-     * @param mixed $where Optional. Retrieves only the records matching given criteria, or all records if not given.
-     *                      If associative array is given, it should fit field_name=>value pattern.
-     *                      If string, value will be used to match against PRI_INDEX
-     * @return mixed Single record if ID is given, or array of results
-     */
-    public function get($where = null)
-    {
-        $this->db->select('ordens_servicos.ordem_servico_pk,ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_cod, ordens_servicos.ordem_servico_status, servicos.servico_nome,  prioridades.prioridade_nome, procedencias.procedencia_nome, coordenadas.coordenada_lat, coordenadas.coordenada_long, setores.setor_nome, (SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo DESC LIMIT 1) as situacao_atual,(SELECT situacoes.situacao_nome FROM historicos_ordens JOIN situacoes ON historicos_ordens.situacao_fk = situacoes.situacao_pk WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as situacao_inicial,
-           (SELECT historicos_ordens.historico_ordem_tempo FROM historicos_ordens WHERE historicos_ordens.ordem_servico_fk = ordens_servicos.ordem_servico_pk  ORDER BY historicos_ordens.historico_ordem_tempo ASC LIMIT 1) as data_criacao,
-           tipos_servicos.tipo_servico_nome, 
-           locais.local_complemento, locais.local_num, logradouros.logradouro_nome, bairros.bairro_nome, municipios.municipio_nome, municipios.estado_fk, coordenadas.local_fk, departamento_nome, relatorios_os.os_verificada as status_os
+    const FORM = array(
+        'relatorio_func_responsavel',
+        'relatorio_data_criacao',
+        'ativo',
+        'relatorio_data_entrega',
+        'relatorio_criador',
+        'relatorio_data_inicio_filtro',
+        'relatorio_data_fim_filtro',
+        'relatorio_situacao'
+    );
 
-           ')
-        ;
-        $this->db->from('relatorios_os');
-        $this->db->join('ordens_servicos', 'relatorios_os.os_fk = ordens_servicos.ordem_servico_pk');
-        $this->db->join('servicos','servicos.servico_pk = ordens_servicos.servico_fk');
-        $this->db->join('historicos_ordens','historicos_ordens.ordem_servico_fk =  ordens_servicos.ordem_servico_pk');
-        //$this->db->join('imagens_situacoes', 'historicos_ordens.historico_ordem_pk = imagens_situacoes.historico_ordem_fk', 'LEFT');
-        $this->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
-        $this->db->join('situacoes','situacoes.situacao_pk = historicos_ordens.situacao_fk');
-        $this->db->join('prioridades','prioridades.prioridade_pk = ordens_servicos.prioridade_fk');
-        $this->db->join('procedencias','procedencias.procedencia_pk = ordens_servicos.procedencia_fk');
-        $this->db->join('setores','setores.setor_pk= ordens_servicos.setor_fk');
-        $this->db->join('coordenadas','coordenadas.coordenada_pk = ordens_servicos.coordenada_fk');
-        $this->db->join('locais', 'coordenadas.local_fk = locais.local_pk');
-        $this->db->join('logradouros', 'locais.logradouro_fk = logradouros.logradouro_pk');
-        $this->db->join('bairros', 'locais.bairro_fk = bairros.bairro_pk');
-        $this->db->join('municipios', 'bairros.municipio_fk = municipios.municipio_pk');
-        $this->db->join('departamentos', 'departamentos.departamento_pk = tipos_servicos.departamento_fk');
-        // $this->db->join('ordens_servicos', 'ordens_servicos.ordem_servico_pk = relatorios_os.os_fk');
-        $this->db->group_by('ordens_servicos.ordem_servico_pk');
+    public function config_password_validation(){
+        
+        $this->CI->form_validation->set_rules(
+            'senha',
+            'Senha',
+            'required'
+        );   
+    }
+
+    public function config_form_validation()
+    {
+
+        $this->CI->form_validation->set_rules(
+            'setor[]',
+            'Setor',
+            'required'
+        );
+
+        $this->CI->form_validation->set_rules(
+            'tipo[]>',
+            'Tipo_Servico',
+            'required'
+        );
+
+        $this->CI->form_validation->set_rules(
+            'data_inicial',
+            'Data_Inicial',
+            'required'
+        );
+
+        $this->CI->form_validation->set_rules(
+            'data_final',
+            'Data_Final',
+            'required'
+        );
+
+        $this->CI->form_validation->set_rules(
+            'funcionario_fk',
+            'Funcionario',
+            'required'
+        );
+    }
+
+    public function insert_filter_data($data, $table_name)
+    {
+
+        if($this->CI->db->insert_batch($table_name, $data)){
+            
+            return $this->CI->db->insert_id();
+
+        } else {
+            throw new MyException('Não foi possível inserir na tabela '.$table_name, Response::SERVER_FAIL);
+        }
+    }
+
+    public function insert_report_os(Array $data)
+    {
+        if ($this->CI->db->insert('relatorios_os', $data)) {
+            return true;
+        } else {
+            throw new MyException('Não foi possível inserir na tabela relatorio_os', Response::SERVER_FAIL);
+        }
+    }
+
+    public function get_images($relatorio_pk){
+        return $this->CI->db
+        ->select("imagens_os.*")
+        ->from("relatorios_os")
+        ->where("relatorios_os.relatorio_fk",$relatorio_pk)
+        ->join("imagens_os", "relatorios_os.os_fk = imagens_os.ordem_servico_fk")
+        ->get()->result();
+    }
+
+    public function get_orders_of_report($where = null, $count = FALSE)
+    {
+        $this->CI->db->select(
+                'ordens_servicos.ordem_servico_pk,
+                ordens_servicos.ordem_servico_desc, 
+                ordens_servicos.ordem_servico_cod, 
+                ordens_servicos.situacao_atual_fk,
+                ordens_servicos.ordem_servico_comentario,
+                ordens_servicos.ordem_servico_atualizacao,
+                ordens_servicos.ordem_servico_criacao,
+                servicos.servico_nome,
+                servicos.servico_pk,
+                tipos_servicos.tipo_servico_pk,
+                tipos_servicos.tipo_servico_nome,
+                prioridades.prioridade_pk,  
+                prioridades.prioridade_nome, 
+                procedencias.procedencia_nome, 
+                localizacoes.localizacao_pk,
+                localizacoes.localizacao_lat,
+                localizacoes.localizacao_long,
+                localizacoes.localizacao_rua,
+                localizacoes.localizacao_num,
+                localizacoes.localizacao_bairro,
+                situacoes.situacao_nome,
+                setores.setor_nome,
+                setores.setor_pk,
+                departamentos.departamento_nome,
+                departamentos.departamento_pk
+           ');
+
+        $this->CI->db->from('relatorios_os');
+        $this->CI->db->join('ordens_servicos', 'relatorios_os.os_fk = ordens_servicos.ordem_servico_pk');
+        $this->CI->db->join('servicos','servicos.servico_pk = ordens_servicos.servico_fk');
+        $this->CI->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
+        $this->CI->db->join('situacoes','situacoes.situacao_pk = ordens_servicos.situacao_atual_fk');
+        $this->CI->db->join('prioridades','prioridades.prioridade_pk = ordens_servicos.prioridade_fk');
+        $this->CI->db->join('procedencias','procedencias.procedencia_pk = ordens_servicos.procedencia_fk');
+        $this->CI->db->join('setores','setores.setor_pk = ordens_servicos.setor_fk');
+        $this->CI->db->join('localizacoes', 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk');
+        $this->CI->db->join('departamentos', 'departamentos.departamento_pk = tipos_servicos.departamento_fk');
+        $this->CI->db->group_by('ordens_servicos.ordem_servico_pk');
 
         if ($where !== NULL) {
             if (is_array($where)) {
-                foreach ($where as $field=>$value) {
-                    $this->db->where($field, $value);
+                foreach ($where as $field => $value) {
+                    $this->CI->db->where($field, $value);
                 }
             } else {
-                $this->db->where(self::PRI_INDEX, $where);
+                $this->CI->db->where(self::PRI_INDEX, $where);
             }
         }
 
-        //echo $this->db->get_compiled_select(); die();
+        if($count == TRUE){
+            return $this->CI->db->count_all_results();
+        }
 
-        $result = $this->db->get()->result();
+        $result = $this->CI->db->get()->result();
         if ($result) {
             return ($result);
         } else {
@@ -73,19 +161,35 @@ class Relatorio_model extends CI_Model
         }
     }
 
-    public function get_relatorio($id_relatorio){
-       $this->db->select('*');
-       $this->db->from('relatorios');
-       $this->db->where('relatorio_pk', $id_relatorio);
+    public function not_finished($relatorio_pk){
+        // $where['ordens_servicos.situacao_atual_fk != 3 AND ordens_servicos.situacao_atual_fk != 4 AND ordens_servicos.situacao_atual_fk != '] = 5;
 
-        $result = $this->db->get()->row();
-
-        if ($result) {
-            return ($result);
-        } else {
-            return false;
-        }
+        return $this->CI->db
+        ->select('relatorios_os.os_fk')
+        ->from('relatorios_os')
+        ->join('ordens_servicos','ordens_servicos.ordem_servico_pk = relatorios_os.os_fk')
+        ->where('relatorios_os.relatorio_fk',$relatorio_pk) //todas as ordens do relatório especificado
+        ->where('ordens_servicos.situacao_atual_fk', 2) //que estão em andamento
+        ->get()->result();        
     }
+
+}
+    /*
+    //SUBSTITUIDA PELA GET ONE
+
+    // public function get_relatorio($id_relatorio){
+    //    $this->db->select('*');
+    //    $this->db->from('relatorios');
+    //    $this->db->where('relatorio_pk', $id_relatorio);
+
+    //     $result = $this->db->get()->row();
+
+    //     if ($result) {
+    //         return ($result);
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     public function get_os_nao_verificadas($id_relatorio = NULL)
     {
@@ -111,6 +215,8 @@ class Relatorio_model extends CI_Model
         }
     }
 
+
+    /* /SUBSTITUÍDA PELA GET_ALL 
     public function get_relatorios(){
         $this->db->select('*');
         $this->db->from('relatorios');
@@ -219,7 +325,7 @@ class Relatorio_model extends CI_Model
      *
      * @param Array $data Associative array with field_name=>value pattern to be inserted into database
      * @return mixed Inserted row ID, or false if error occured
-     */
+     
     public function insert(Array $data) {
         if ($this->db->insert(self::TABLE_NAME, $data)) {
             return $this->db->insert_id();
@@ -228,7 +334,7 @@ class Relatorio_model extends CI_Model
         }
     }
 
-    public function insert_relatorios_os(Array $data){
+    public function insert_report_os(Array $data){
         if ($this->db->insert('relatorios_os', $data)) {
             return true;
         } else {
@@ -266,7 +372,7 @@ class Relatorio_model extends CI_Model
      * @param Array $data Associative array field_name=>value to be updated
      * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
      * @return int Number of affected rows by the update query
-     */
+     
 
     // public function update(array $data, $where = array())
     // {
@@ -318,7 +424,7 @@ class Relatorio_model extends CI_Model
      *
      * @param Array $where Optional. Associative array field_name=>value, for where condition. If specified, $id is not used
      * @return int Number of rows affected by the delete query
-     */
+     
     public function delete($where = array())
     {
         if (!is_array($where)) {
@@ -336,4 +442,7 @@ class Relatorio_model extends CI_Model
 
         return $this->db->affected_rows();
     }
-}
+    */
+
+
+?>

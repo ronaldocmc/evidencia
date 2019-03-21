@@ -165,7 +165,7 @@
                             <!-- <small class="form-text text-muted">Dia inicial</small> -->
                         </div>
                         
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="prioridade_pk">Prioridade</label>
                             <select class="form-control" id="prioridade_pk" name="prioridade_pk" required="true">
                                 <option value="-1">Todos</option>
@@ -179,6 +179,20 @@
                             </select>
                             <!-- <small class="form-text text-muted">Filtrar por prioridade</small> -->
                         </div>
+
+                        <div class="col-md-3">
+                            <label for="setor_pk">Setores</label>
+                            <select class="form-control" id="setor_pk" name="setor_pk" required="true">
+                                <option value="-1">Todos</option>
+                                <?php if ($setores != null): ?>
+                                    <?php foreach ($setores as $s): ?>
+                                        <option value="<?=$s->setor_pk?>">
+                                            <?=$s->setor_nome?>
+                                        </option>
+                                    <?php endforeach?>
+                                <?php endif?>
+                            </select>
+                        </div>
                     </div>
                     <button id="filtrar" class="au-btn au-btn-icon au-btn--blue reset_multistep pull-right">
                         <i class="fa fa-dot-circle-o"></i> Filtrar
@@ -186,7 +200,7 @@
                 </div>
             </div>
         </div>
-        <div class="row py-5">
+        <div class="row pt-3">
             <div class="col-lg-12">
                 <div class="au-card d-flex flex-column">
                     <div id="map" style="height: 800px"></div>
