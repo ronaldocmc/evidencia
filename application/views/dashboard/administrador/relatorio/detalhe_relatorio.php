@@ -10,20 +10,30 @@
                         <h2 class="title-1">Painel de Gerenciamento de Relatórios </h2>
                     </div>
 
-                    <?php if($relatorio->relatorio_situacao == 'Criado'): ?>
-                    <button class="au-btn au-btn-icon au-btn--blue" data-toggle="modal" data-target="#delegar_para_outra_pessoa">
-                        <i class="zmdi zmdi-refresh"></i>Trocar Funcionário</button>
-
-                    <button class="au-btn au-btn-icon btn au-btn--blue pull-right" data-toggle="modal" data-target="#d-relatorio">
-                        <i class="zmdi zmdi-delete"></i>Destruir Relatório</button>
-                    <?php endif; ?>
-
-                    <?php if($relatorio->relatorio_situacao == 'Em andamento'): ?>
-                        <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo pull-right"
-                                data-toggle="modal" data-target="#restaurar_os">
-                                Receber Relatório
-                        </button>
-                    <?php endif; ?>
+                      <button type="button" class="au-btn au-btn-icon btn au-btn--blue pull-left dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Opções
+                      </button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk) ?>">
+                            Imprimir relatório
+                        </a>
+                        <?php if ($relatorio->relatorio_situacao == 'Criado'): ?>
+                            <a class="dropdown-item" href="#" data-toggle="modal" 
+                               data-target="#delegar_para_outra_pessoa">
+                                Alterar funcionário
+                            </a>
+                        <?php endif ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#d-relatorio">
+                            Destruir relatório
+                        </a>
+                        <?php if ($relatorio->relatorio_situacao == 'Em andamento'): ?>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#restaurar_os">
+                                Receber relatório
+                            </a>  
+                        <?php endif ?>
+                      </div>
+                    
                 </div>
             </div>
 
@@ -38,25 +48,21 @@
                         <h3 class="title-2 m-b-25" style="margin-bottom: 5px; padding-bottom: 5px;"> Revisor responsável: <?= $funcionario->funcionario_nome ?> </h3>
                             
                             <?php 
-                                // var_dump($relatorio); die();
 
                                     if($relatorio->relatorio_situacao == 'Entregue incompleto')
                                     {
-                                        // $font_size = 9;
                                         $label = "ENTREGUE INCOMPLETO";
                                         $class = "warning";
                                     }
                                     
                                     if($relatorio->relatorio_situacao == 'Criado')
                                     {
-                                        // $font_size = 9;
                                         $label = "CRIADO";
                                         $class = "primary";
                                     }
 
                                     if($relatorio->relatorio_situacao == 'Entregue')
                                     {
-                                        // $font_size = 9;
                                         $label = "Entregue";
                                         $class = "success";
 
@@ -64,7 +70,6 @@
 
                                     if($relatorio->relatorio_situacao == 'Inativo')
                                     {
-                                        // $font_size = 9;
                                         $label = "INATIVO";
                                         $class = "danger";
 
@@ -72,7 +77,6 @@
 
                                     if($relatorio->relatorio_situacao == 'Em andamento')
                                     {
-                                        // $font_size = 9;
                                         $label = "EM ANDAMENTO";
                                         $class = "primary";
 
@@ -115,9 +119,12 @@
 
                         </div>
                         
-                            <a target="blank" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk) ?>" class="au-btn au-btn-icon btn au-btn--blue pull-right" style="margin-top: 10px;">
-                                <i class="fas fa-print"></i>Imprimir relatório
-                            </a>
+                        <!-- <button class="au-btn au-btn-icon btn au-btn--blue pull-left btn-primary col-md-4">
+                            Receber relatório
+                        </button> -->
+                        <!-- <a target="blank" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk) ?>" class="au-btn au-btn-icon btn au-btn--blue pull-right col-md-4" style="margin-top: 10px;">
+                            <i class="fas fa-print"></i>Imprimir relatório
+                        </a> -->
     
 
                         <div class="table-responsive table--no-card m-b-40 mt-5">
@@ -167,19 +174,6 @@
                                         <td>
                                             <?= $ordem_servico->ordem_servico_comentario ?>
                                         </td>
-                                        <!-- <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar btn-attr-ordem_servico_pk"
-                                                    data-toggle="modal" value="<?=$count?>" data-target="#ce_ordem_servico">
-                                                    <div class="d-none d-sm-block">
-                                                        Detalhes
-                                                    </div>
-                                                    <div class="d-block d-sm-none">
-                                                        <i class="fas fa-eye fa-fw"></i>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </td> -->
                                         <td>
                                             <select class="form-control" id="<?= $ordem_servico->ordem_servico_pk ?>">
                                                 <?php foreach ($situacoes as $situacao): ?>
