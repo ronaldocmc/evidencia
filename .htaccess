@@ -1,18 +1,8 @@
 <IfModule mod_rewrite.c>
-  SetEnv CI_ENV 'release'
-  Options +FollowSymlinks
-  RewriteEngine on
-  RewriteBase /
-
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^(.*)$ /index.php?/$1 [L]
+	SetEnv CI_ENV 'development'
+	RewriteEngine on
+	RewriteCond $1 !^(index\.php|images|css|js|robots\.txt)
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^(.*)$ index.php?$1 [L]
 </IfModule>
-
-<IfModule !mod_rewrite.c>
-    # If we don't have mod_rewrite installed, all 404's
-    # can be sent to index.php, and everything works as normal.
-    # Submitted by: ElliotHaughin
-
-    #ErrorDocument 404 /index.php
-</IfModule> 
