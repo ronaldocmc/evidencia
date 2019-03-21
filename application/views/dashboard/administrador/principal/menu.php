@@ -203,6 +203,8 @@
                             <img  class="logo_parceiros" src="<?php echo base_url('assets/images/icon/certified microsoft.png') ?>" alt="Evidência" />
                         </a>
                     </div>
+
+                    <small style="position: absolute; bottom: 10px;">Evidência - v<?= VERSION ?> </small>   
                 </nav>
             </div>
         </aside>
