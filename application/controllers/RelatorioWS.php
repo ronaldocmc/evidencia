@@ -161,6 +161,10 @@ class RelatorioWS extends MY_Controller
                 'ativo' => 1,   
             ]);
 
+            if(count($report) == 0){
+                throw new MyException("Tudo certo. Seu relatório já foi recebido pela central!");
+            }
+
             $not_finished = $this->relatorio->not_finished($report->relatorio_pk);
 
             foreach ($not_finished as $os) {
