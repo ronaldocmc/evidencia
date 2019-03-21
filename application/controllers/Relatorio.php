@@ -881,6 +881,7 @@ class Relatorio extends CRUD_Controller
 
             $this->report_model->__set('relatorio_data_entrega', date('Y-m-d H:i:s'));
             $this->report_model->__set('relatorio_situacao', 'Entregue');
+            $this->report_model->__set('ativo', 0);
             $this->report_model->__set('relatorio_pk', $id);
 
             if(!$all_executed){
