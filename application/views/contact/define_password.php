@@ -43,9 +43,10 @@
 
                         	</div>	
                         	<div class="card-footer mb-0 bg-transparent text-center">
-                        		<button type="button" id="submit" class="btn btn-primary submit btn-sm">
+                        		<!-- <button type="button" id="submit" class="btn btn-primary submit btn-sm">
                                     <i class="fa fa-dot-circle-o"></i> Enviar
-                                </button>
+                                </button> -->
+								<input type="submit" id="submit" value="Enviar" class="btn btn-primary btn-block">
                         	</div>
                     </form>
 

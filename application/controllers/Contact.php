@@ -362,14 +362,11 @@ class Contact extends CI_Controller
         } 
         else 
         {
-            if ($captcha_response !== true) 
-            {
-                $this->response->set_code(Response::UNAUTHORIZED);
-                $this->response->set_message('Acesso negado. ' . $captcha_response);
-            } 
-            else 
-            {
-                $this->response->set_code(Response::FORBIDDEN);
+            $this->response->set_code(Response::FORBIDDEN);
+            
+            if(is_array($attempt_response)){
+                $this->response->set_message(implode('<br>', $attempt_response));
+            } else {
                 $this->response->set_message('Acesso bloqueado. ' . $attempt_response);
             }
         }
