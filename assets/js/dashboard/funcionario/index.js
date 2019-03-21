@@ -86,11 +86,11 @@ $('#btn-deactivate').click(() => {
       funcionarios[posicao_selecionada]['ativo'] = 0;
       $('#d_funcionario').modal('hide');
       pre_loader_hide();
+      document.location.reload(false);
     } else {
       alerts('failed', 'Erro!', 'Houve um erro ao desativar.');
     }
     update_table();
-    document.location.reload(false);
   });
 });
 
@@ -113,11 +113,11 @@ $('#btn-activate').click(() => {
       alerts('success', 'Sucesso!', 'Funcinário ativado com sucesso');
       funcionarios[posicao_selecionada]['ativo'] = 1;
       $('#a_funcionario').modal('hide');
+      document.location.reload(false);
     } else {
       alerts('failed', 'Erro!', 'Houve um erro ao ativar.');
     }
     update_table();
-    document.location.reload(false);
   });
 });
 
@@ -291,7 +291,6 @@ send = (imagem) => {
     processData: false,
     contentType: false,
     success: function (response) {
-      document.location.reload(false);
       btn_ativar($('#pula-para-confirmacao'));
       btn_ativar($('.submit'));
 
@@ -301,6 +300,7 @@ send = (imagem) => {
         //pre_loader_hide();
       }
       else {
+        document.location.reload(false);
         funcionario =
           {
             'funcionario_pk': ($('#pessoa_pk').val() == "") ? response.data.funcionario_pk : $('#pessoa_pk').val(),
