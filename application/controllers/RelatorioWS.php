@@ -100,6 +100,11 @@ class RelatorioWS extends MY_Controller
                 ]
             );
 
+            $this->relatorio->__set('relatorio_situacao', 'Em andamento');
+            $this->relatorio->__set('relatorio_pk', $relatorio->relatorio_pk);
+
+            $this->relatorio->update();
+
             $imagens = null;
             if ($ordens_servicos) {
                 $imagens = $this->relatorio->get_images($relatorio->relatorio_pk);

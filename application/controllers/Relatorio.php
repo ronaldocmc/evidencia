@@ -823,7 +823,6 @@ class Relatorio extends CRUD_Controller
     public function receive_report($report_id = NULL)
     {
         try{
-
             $this->load->helper('password_helper');
 
             $this->add_password_to_form_validation();
