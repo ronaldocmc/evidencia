@@ -1,11 +1,21 @@
 const google = "6LfwtV4UAAAAANnXXJhkM87IgNRNQghpwW467CEc"; //REFATORAR PARA CONSTANTES
 
+
+$(document).ready(function () {
+    image = loadAvatarImage();
+    image.style = "width: 50%";
+    image.className = "img-responsive img-thumbnail align-center";
+    document.getElementById('img-div').appendChild(image);
+});
+
+
 function btn_load(button_submit){
   button_submit.attr('disabled', 'disabled');
   button_submit.css('cursor', 'default');
   button_submit.find('i').removeClass();
   button_submit.find('i').addClass('fa fa-refresh fa-spin');
 }
+
 
 
 function btn_ativar(button_submit){

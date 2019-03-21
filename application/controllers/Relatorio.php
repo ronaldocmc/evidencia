@@ -217,8 +217,12 @@ class Relatorio extends CRUD_Controller
     //Função que realiza a validação dos itens selecionados no filtro
     private function validate_filter($filtro)
     {
-        $this->check_if_is_not_empty($filtro['setor'], 'Marque pelo menos um setor.');
-        $this->check_if_is_not_empty($filtro['tipo'], 'Marque pelo menos um tipo de serviço.');
+        if(!isset($filtro['setor'])){
+            throw new MyException('Marque pelo menos um setor.', Response::BAD_REQUEST);
+        }
+        if(!isset($filtro['tipo'])){
+            throw new MyException('Marque pelo menos um tipo de serviço.', Response::BAD_REQUEST);
+        }
 
         $this->validate_dates($filtro['data_inicial'], $filtro['data_final']);
     }
@@ -492,6 +496,8 @@ class Relatorio extends CRUD_Controller
 
     private function get_report_detail_data($report)
     {
+        $this->load->model('Situacao_model', 'situacao');
+
         $report_id = $report->relatorio_pk;
 
         $workers = $this->funcionario_model->get(
@@ -502,6 +508,13 @@ class Relatorio extends CRUD_Controller
             ]
         );
 
+        $situacoes = $this->situacao->get_all(
+            '*',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+
         $responsible = $this->funcionario_model->get_one(
             'funcionario_pk, funcionario_nome', 
             ['funcionario_pk' => $report->relatorio_func_responsavel]
@@ -509,6 +522,17 @@ class Relatorio extends CRUD_Controller
 
         //Recebendo as ordens de serviço do relatório em questão
         $ordens_servicos = $this->select_orders_of_report($report_id);
+
+        foreach ($ordens_servicos as $os) 
+        {
+            $images = $this->ordem_servico_model->get_images_id($os->ordem_servico_pk);
+            if (!empty($images)) 
+            {
+                // última imagem
+                $os->image = array_pop($images)->imagem_os;
+            }
+            $os->ordem_servico_criacao = date('d/m/Y H:i:s', strtotime($os->ordem_servico_criacao));
+        }
 
         //Recebendo os filtros utilizados no relatório
         $data_filters = $this->get_filters($report_id);
@@ -521,6 +545,7 @@ class Relatorio extends CRUD_Controller
             'funcionarios' => $workers,
             'relatorio' => $report,
             'filtros' => $strings_filters,
+            'situacoes' => $situacoes
         ];
 
         return $params;
@@ -533,7 +558,7 @@ class Relatorio extends CRUD_Controller
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
             2 => base_url('assets/css/loading_input.css'),
             3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            4 => base_url('assets/css/modal_map.css'),
+            4 => base_url('assets/css/modal_map.css')
         ]);
     }
 
@@ -550,7 +575,7 @@ class Relatorio extends CRUD_Controller
             7 => base_url('assets/js/constants.js'),
             8 => base_url('assets/js/jquery.noty.packaged.min.js'),
             9 => base_url('assets/vendor/select-input/select-input.js'),
-            10 => base_url('assets/js/dashboard/relatorio/detalhe-relatorio.js'),
+            10 => base_url('assets/js/dashboard/relatorio/detalhe-relatorio.js')
         ]);
     }
 
@@ -578,7 +603,7 @@ class Relatorio extends CRUD_Controller
     public function detalhes($report_id)
     {
         $report = $this->report_model->get_one('*', ['relatorio_pk' => $report_id]);
-
+        
         if($report){
 
             $this->load_css_detail();

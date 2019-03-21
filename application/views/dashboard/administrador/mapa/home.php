@@ -200,7 +200,7 @@
                 </div>
             </div>
         </div>
-        <div class="row py-5">
+        <div class="row pt-3">
             <div class="col-lg-12">
                 <div class="au-card d-flex flex-column">
                     <div id="map" style="height: 800px"></div>

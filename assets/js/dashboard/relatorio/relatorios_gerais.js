@@ -77,8 +77,7 @@ function enviar(relatorio, filtro) {
 $("#gerar_relatorio").click(function() {
 
 	btn_load($('#gerar_relatorio'));
-	form = $('form#submit-form').serialize();
-	console.log(form);
+	form = $('#submit-form').serialize();
 
 	$.post(base_url+'/Relatorio/select_os_by_filter',form).done(function (response) {
 		btn_ativar($('#gerar_relatorio'));
@@ -87,7 +86,7 @@ $("#gerar_relatorio").click(function() {
 			$("#p_qtd").text("Esse relatório terá "+ response.data + " ordens de serviço!");
 		}
 		else if (response.code == 400) {
-			alerts('failed','Erro!',response.data.message);
+			alerts('failed','Erro!',response.data.mensagem);
 		}
 
 	}, "json");
@@ -100,7 +99,7 @@ $("#confirmar").click(function() {
 
 	$.post(base_url+'/Relatorio/create_new_report',form).done(function (response) {
 		btn_ativar($('#confirmar'));
-		console.log(response);
+		
 		if (response.code == 200) {
 			alerts('success','Sucesso!', response.data.message);
 			window.location.href = base_url+'/Relatorio/detalhes/'+response.data.id;

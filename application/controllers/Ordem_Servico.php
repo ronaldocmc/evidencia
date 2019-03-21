@@ -12,7 +12,6 @@ require_once APPPATH . "models\Ordem_Servico_model.php";
 
 require_once APPPATH . "core\MyException.php";
 
-//TODO mudar para CRUD_Controller
 class Ordem_Servico extends CRUD_Controller
 {
     public $response;
@@ -286,7 +285,7 @@ class Ordem_Servico extends CRUD_Controller
                     'is_os' => true,
                     'situation' => $this->ordem_servico->__get('situacao_atual_fk'),
                 ],
-                [0 => $this->input->post('image_os')]//talvez seja interessante a view já mandar no formato de array mesmo quando é uma.
+                [0 => $this->input->post('image_os')]
             );
 
             $this->begin_transaction();

@@ -1223,6 +1223,16 @@ function initMap() {
         update_table();
     });
 
+    $('#export').click(function() {
+        data = {
+            'data_inicial': $('#data_inicial').val(),
+            'data_final': $('#data_final').val()
+        };
+
+        let string = `/export/execute?data_inicial=${$('#data_inicial').val()}&data_final=${$('#data_final').val()}`;
+        window.open(base_url + string, "target=_blank");
+    });
+
 
     function copyToClipboard(text, el) {
 
@@ -1250,6 +1260,24 @@ function initMap() {
         }
     }
 
+    function lastWeek(){
+        var today = new Date();
+        var lastweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
+        return lastweek;
+    }
+    
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+    
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+    
+        return [year, month, day].join('-');
+    }
+
     $(document).ready(function () {
         $('.js-tooltip').tooltip();
 
@@ -1261,6 +1289,9 @@ function initMap() {
             var el = $(this);
             copyToClipboard(text, el);
         });
+
+        $('#data_inicial').val(formatDate(lastWeek()));
+        $('#data_final').val(formatDate(new Date()));
     });
 
 
