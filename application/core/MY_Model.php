@@ -4,6 +4,7 @@
 
 require_once dirname(__FILE__) . "/Generic_Model.php";
 require_once dirname(__FILE__) . "/MyException.php";
+
 class MY_Model extends Generic_Model
 {
     public $object;

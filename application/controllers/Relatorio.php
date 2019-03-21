@@ -7,7 +7,6 @@ if (!defined('BASEPATH')) {
 require_once dirname(__FILE__) . "/Response.php";
 require_once APPPATH . "core/CRUD_Controller.php";
 require_once dirname(__FILE__) . "/Response.php";
-require_once 'vendor/autoload.php';
 
 class Relatorio extends CRUD_Controller
 {
@@ -92,6 +91,7 @@ class Relatorio extends CRUD_Controller
         $this->load->model('Tipo_Servico_model', 'tipo_servico');
         $this->load->model('Setor_model', 'setor');
         $this->load->helper('form');
+        
         $prioridades = $this->prioridade->get_all(
             '*',
             ['organizacao_fk' => $this->session->user['id_organizacao']],

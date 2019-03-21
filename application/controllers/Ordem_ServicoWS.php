@@ -80,7 +80,7 @@ class Ordem_ServicoWS extends MY_Controller
             $this->ordem_servico->config_form_validation();
             $this->localizacao->config_form_validation();
 
-            $token_decodificado = json_decode(token_decrypt($headers['token']));
+            $token_decodificado = json_decode(token_decrypt($headers['Token']));
 
             $this->begin_transaction();
 
@@ -136,7 +136,7 @@ class Ordem_ServicoWS extends MY_Controller
             $obj = apache_request_headers();
 
             // Decripta o token
-            $empresa = get('id_empresa', $obj['token']);
+            $empresa = get('id_empresa', $obj['Token']);
 
             if ($id != null) {
                 $where['ordens_servicos.ordem_servico_pk'] = $id;
@@ -228,6 +228,7 @@ class Ordem_ServicoWS extends MY_Controller
             $_POST = get_object_vars($obj);
             $_POST['img'] = isset($obj->img) ? $obj->img : null;
             $_POST['ordem_servico_comentario'] = isset($obj->ordem_servico_comentario) ? $obj->ordem_servico_comentario : 'Nenhum comentário adicionado.';
+
             $this->ordem_servico->__set("ordem_servico_comentario", $_POST['ordem_servico_comentario']);
             $this->ordem_servico->__set("situacao_atual_fk", $_POST['situacao_atual_fk']);
             $this->ordem_servico->__set("ordem_servico_pk", $_POST['ordem_servico_pk']);

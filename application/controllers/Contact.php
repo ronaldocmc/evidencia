@@ -303,7 +303,7 @@ class Contact extends CI_Controller
 
         $attempt_response = verify_attempt_restore($this->input->ip_address(),$this->input->post('email'));
 
-        if ($captcha_response === true && $attempt_response === true) 
+        if ($attempt_response === true) 
         {
             $this->form_validation->set_rules('email',
                 'Email',

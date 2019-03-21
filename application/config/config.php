@@ -38,6 +38,8 @@ switch(ENVIRONMENT)
 	case 'development':
 		$config['base_url'] = $localhost;
 		break;
+	case 'release':
+		$config['base_url'] = 'http://evidencia-release.azurewebsites.net';
 }
 
 

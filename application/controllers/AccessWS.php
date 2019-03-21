@@ -196,7 +196,7 @@ class AccessWS extends MY_Controller
             $obj = apache_request_headers();
 
 
-            $new_token = verify_token($obj['token'], $this->response);
+            $new_token = verify_token($obj['Token'], $this->response);
 
             if ($new_token) {
                 $dados['token'] = $new_token;
