@@ -278,7 +278,6 @@ class Relatorio extends CRUD_Controller
         $report_on_working = $this->report_model->get_all(
             '*',
             [
-				'relatorio_situacao' => "Em andamento",
                 'relatorio_func_responsavel' => $worker_id,
                 'ativo' => 1
             ],
@@ -288,7 +287,7 @@ class Relatorio extends CRUD_Controller
         
         if (!empty($report_on_working)) 
         {
-            throw new MyException('Não foi possível executar operação! Funcionário já possui outro relatório em andamento.', Response::BAD_REQUEST);
+            throw new MyException('Não foi possível executar operação! Funcionário já possui outro relatório.', Response::BAD_REQUEST);
         }
 
     }
