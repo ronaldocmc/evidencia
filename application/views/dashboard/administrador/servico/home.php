@@ -7,12 +7,10 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de serviços </h2>
 
-                        <?php if ($tipos_servicos != null) {?>
+                        <?php if ($tipos_servicos != null):?>
                             <button class="au-btn au-btn-icon au-btn--blue reset_multistep btn_novo new" data-toggle="modal" data-target="#ce_servico">
                                 <i class="zmdi zmdi-plus"></i>novo serviço</button>
-                            <?php } else {?>
-                                Indisponível
-                            <?php }?>
+                        <?php endif; ?>
                         </div>
                         <div class="col-md-12 mt-3">
                             <div class="collapse" id="collapseHelp">

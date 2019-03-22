@@ -38,13 +38,18 @@ class Servico extends CRUD_Controller {
 			situacoes.situacao_nome,
 			situacoes.situacao_pk,
 			tipos_servicos.tipo_servico_pk,
-			tipos_servicos.tipo_servico_nome,',
-			['servicos.ativo = 1'],
+			tipos_servicos.tipo_servico_nome,
+			departamentos.organizacao_fk',
+			[
+				'servicos.ativo' => '1',
+				'departamentos.organizacao_fk' => $this->session->user['id_organizacao']
+			],
 			-1,
 			-1,
 			[
 				[ 'table' => 'tipos_servicos', 'on' => 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk' ],
-				[ 'table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk']
+				[ 'table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk'],
+				[ 'table' => 'departamentos', 'on' => 'tipos_servicos.departamento_fk = departamentos.departamento_pk']
 			]
 		);	
 
