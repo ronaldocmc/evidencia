@@ -19,7 +19,7 @@ $("#btn-restaurar").click(function() {
 	console.log(senha);
 
 	if(senha == ""){
-		alerts('failed','Erro!','Senha incorreta');
+		alerts('failed','Erro!','Informe a senha!');
 		btn_ativar($('#btn-restaurar'));
 		return;
 	}
