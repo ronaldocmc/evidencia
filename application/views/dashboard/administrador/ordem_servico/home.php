@@ -115,7 +115,7 @@
                                         <option value="ativadas">Ativas</option>
                                         <option value="desativadas">Excluídas</option>
                                     </select><br>
-                                </div>                                
+                                </div>
                             </div>
                         </div>
                         <div class="table-responsive table--no-card m-b-40">
@@ -128,8 +128,8 @@
                                         <th>Prioridade</th>
                                         <th>Endereço</th>
                                         <th>Serviço</th>
-                                        <th>Situação</th> 
-                                        <th>Setor</th>                                       
+                                        <th>Situação</th>
+                                        <th>Setor</th>
                                         <th>Opções</th>
                                     </tr>
                                 </thead>
@@ -138,7 +138,7 @@
                                         <?php foreach ($ordens_servico as $key => $ordem_servico): ?>
                                             <tr>
                                                 <td>
-                                                    <?= $ordem_servico->ordem_servico_pk ?>
+                                                    <?=$ordem_servico->ordem_servico_pk?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->ordem_servico_cod?>
@@ -151,8 +151,8 @@
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->localizacao_rua . ", " .
-                                                    $ordem_servico->localizacao_num . " - " .
-                                                    $ordem_servico->localizacao_bairro?>
+$ordem_servico->localizacao_num . " - " .
+$ordem_servico->localizacao_bairro?>
                                                 </td>
                                                 <td>
                                                     <?=$ordem_servico->servico_nome?>
@@ -179,6 +179,11 @@
                                                         <button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#ce_historico_servico" title="Histórico">
                                                             <div class="d-none d-sm-block">
                                                                 <i class="far fa-clock fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-danger reset_multistep btn_delete btn-attr-ordem_servico_pk" data-toggle="modal" value="<?=$key?>" data-target="#d_ordem_servico" title="Apagar">
+                                                            <div class="d-none d-sm-block">
+                                                                <i class="fa fa-trash fa-fw"></i>
                                                             </div>
                                                         </button>
                                                     </div>
@@ -237,11 +242,11 @@
                                                 <select class="form-control" id="departamento" name="departamento" required="true">
                                                     <?php if ($departamentos != null): ?>
                                                         <?php foreach ($departamentos as $d): ?>
-                                                            <option value="<?= $d->departamento_pk ?>">
-                                                                <?= $d->departamento_nome ?>
+                                                            <option value="<?=$d->departamento_pk?>">
+                                                                <?=$d->departamento_nome?>
                                                             </option>
-                                                        <?php endforeach ?>
-                                                    <?php endif ?>
+                                                        <?php endforeach?>
+                                                    <?php endif?>
                                                 </select>
                                             </div>
                                             <div class="col-7 col-md-4">
@@ -262,11 +267,11 @@
                                                 <select class="form-control" id="procedencia_pk" name="procedencia_pk" required="true">
                                                     <?php if ($procedencias != null): ?>
                                                         <?php foreach ($procedencias as $pr): ?>
-                                                            <option value="<?= $pr->procedencia_pk ?>">
-                                                                <?= $pr->procedencia_nome ?>
+                                                            <option value="<?=$pr->procedencia_pk?>">
+                                                                <?=$pr->procedencia_nome?>
                                                             </option>
-                                                        <?php endforeach ?>
-                                                    <?php endif ?>
+                                                        <?php endforeach?>
+                                                    <?php endif?>
                                                 </select>
                                                 <small class="form-text text-muted" id="procedencia_small">Por favor, informe a procedência desta ordem</small>
                                             </div>
@@ -275,11 +280,11 @@
                                                 <select class="form-control" id="prioridade_pk" name="prioridade_pk" required="true">
                                                     <?php if ($prioridades != null): ?>
                                                         <?php foreach ($prioridades as $p): ?>
-                                                            <option value="<?= $p->prioridade_pk ?>">
-                                                                <?= $p->prioridade_nome ?>
+                                                            <option value="<?=$p->prioridade_pk?>">
+                                                                <?=$p->prioridade_nome?>
                                                             </option>
-                                                        <?php endforeach ?>
-                                                    <?php endif ?>
+                                                        <?php endforeach?>
+                                                    <?php endif?>
                                                 </select>
                                                 <small class="form-text text-muted">Por favor, informe a Prioridade</small>
                                             </div>
@@ -288,11 +293,11 @@
                                                 <select class="form-control" id="situacao_pk" name="situacao_pk" required="true">
                                                     <?php if ($situacoes != null): ?>
                                                         <?php foreach ($situacoes as $s): ?>
-                                                            <option value="<?= $s->situacao_pk ?>">
-                                                                <?= $s->situacao_nome ?>
+                                                            <option value="<?=$s->situacao_pk?>">
+                                                                <?=$s->situacao_nome?>
                                                             </option>
-                                                        <?php endforeach ?>
-                                                    <?php endif ?>
+                                                        <?php endforeach?>
+                                                    <?php endif?>
                                                 </select>
                                                 <small class="form-text text-muted">Por favor, informe a Situação</small>
                                             </div>
@@ -361,11 +366,11 @@
                                             <select class="form-control endereco" id="cidade-input" name="municipio_pk" required="true">
                                                 <?php if ($municipios != null): ?>
                                                     <?php foreach ($municipios as $m): ?>
-                                                        <option value="<?= $m->municipio_pk ?>">
-                                                            <?= $m->municipio_nome ?>
+                                                        <option value="<?=$m->municipio_pk?>">
+                                                            <?=$m->municipio_nome?>
                                                         </option>
-                                                    <?php endforeach ?>
-                                                <?php endif ?>
+                                                    <?php endforeach?>
+                                                <?php endif?>
                                             </select>
                                         </div>
                                         <div class="col-md-4">
@@ -373,11 +378,11 @@
                                             <select class="form-control" id="setor_pk" name="setor_pk" required="true">
                                                 <?php if ($setores != null): ?>
                                                     <?php foreach ($setores as $se): ?>
-                                                        <option value="<?= $se->setor_pk ?>">
-                                                            <?= $se->setor_nome ?>
+                                                        <option value="<?=$se->setor_pk?>">
+                                                            <?=$se->setor_nome?>
                                                         </option>
-                                                    <?php endforeach ?>
-                                                <?php endif ?>
+                                                    <?php endforeach?>
+                                                <?php endif?>
                                             </select>
                                         </div>
                                     </div>
@@ -436,7 +441,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div><!-- fecha card body --> 
+                        </div><!-- fecha card body -->
                         <!-- fecha card principal -->
                         <?php if ($this->session->user['is_superusuario']): ?>
                             <div class="row form-group">
@@ -445,7 +450,7 @@
                                     <input type="password" name="senha" id="senha" class="form-control" required>
                                 </div>
                             </div>
-                        <?php endif ?>
+                        <?php endif?>
                         <div class="text-center">
                             <button type="button" class="btn btn-primary submit" onclick="send_data()">
                                 <i class="fa fa-dot-circle-o"></i> Finalizar
@@ -464,8 +469,51 @@
 </div>
 <!-- FIM MODAL NOVA ORDEM/ALTERAR ORDEM-->
 
+<!-- MODAL APAGAR -->
+<div class="modal fade" id="d_ordem_servico">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="width: 380px !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Excluir ordem de serviço</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><strong>Detalhes da ordem: </strong></div>
 
-<!-- MODAL PROTOCOLO DE ATENDIMENTO --> 
+                        <div id="show_ordem_excluir">
+
+                            <div class="card" style="width: 18rem;">
+                                <img class="card-img-top" src="..." alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title">Carregando</h5>
+                                    <p class="card-text">Carregando.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class= "modal-footer">
+                    <div class="btn-group">
+                        <button type="button" id="confirm_delete" class="btn btn-sm btn-danger pull-right js-tooltip" data-toggle="tooltip" data-placement="bottom" title="Apagar permanentemente">
+                            <div class="d-none d-sm-block">
+                                <i class="fas fa-trash"></i> Apagar
+                            </div>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary btn-fechar pull-right" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL PROTOCOLO DE ATENDIMENTO -->
 <div class="modal fade" id="protocolo">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="width: 380px !important;">
         <div class="modal-content">
@@ -492,9 +540,7 @@
                 </div>
             </div>
         </div>
-
     </div>
-
 </div>
 
 
@@ -514,14 +560,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Adicionar Situação da Ordem de serviço</h4>
-                <h4 class="modal-title 2"></h4> 
+                <h4 class="modal-title 2"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
 
                     <div align="center" class="center">
-                        <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="ov_loading" alt="Carregando">
+                        <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="ov_loading" alt="Carregando">
                     </div>
 
                     <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
@@ -555,7 +601,7 @@
                     <div class="col-md-6">
 
                         De:<input type="date" class="form-control" id="data_inicial" name="data_inicial" required>
-                    </div> 
+                    </div>
                     <div class="col-md-6">
 
                         Até:<input type="date" class="form-control" id="data_final" name="data_final" required>
@@ -575,7 +621,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Histórico da Ordem de serviço</h4>
-                <h4 class="modal-title 2"></h4> 
+                <h4 class="modal-title 2"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
@@ -664,10 +710,10 @@
                     </div>
 
                     <div align="center" class="center">
-                        <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading" alt="Carregando">
+                        <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading" alt="Carregando">
                     </div>
                     <div class="container-fluid" id="card_slider_historico">
-                    </div>  
+                    </div>
                     <div class="qa-message-list" id="timeline" style="padding-top: 5px;">
                     </div>
                     <div class= "modal-footer">
@@ -690,7 +736,7 @@
                 var prioridades = <?php echo json_encode($prioridades !== false ? $prioridades : []); ?>;
                 var situacoes = <?php echo json_encode($situacoes !== false ? $situacoes : []); ?>;
                 var tipos_servico = <?php echo json_encode($tipos_servico !== false ? $tipos_servico : []); ?>;
-                var is_superusuario = <?php if($superusuario){ echo "true"; }else{ echo "false";} ?>;
+                var is_superusuario = <?php if ($superusuario) {echo "true";} else {echo "false";}?>;
                 var procedencias = <?php echo json_encode($procedencias !== false ? $procedencias : []); ?>;
                 var ordens_servico = <?php echo json_encode($ordens_servico !== false ? $ordens_servico : []); ?>;
                 var municipios = <?php echo json_encode($municipios !== false ? $municipios : []); ?>;

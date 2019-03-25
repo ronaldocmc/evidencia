@@ -917,7 +917,7 @@ function initMap() {
         formData.append('localizacao_ponto_referencia', $('#referencia-input').val());
 
         if ($('#ordem_servico_pk').val() !== '' && $('#ordem_servico_pk').val() !== undefined) {
-          formData.append('localizacao_pk', $('#localizacao_pk').val());
+            formData.append('localizacao_pk', $('#localizacao_pk').val());
         }
 
         if ($('#procedencia_pk').val() == "2") {
@@ -970,8 +970,8 @@ function initMap() {
                     alerts('failed', response.message, 'Erro na edição de dados');
                 }
                 else if (response.code == 200) {
-                  alerts('success', 'Sucesso', 'Operação realizada com sucesso');
-                  document.location.reload(false);
+                    alerts('success', 'Sucesso', 'Operação realizada com sucesso');
+                    document.location.reload(false);
                 }
 
             }, //Fecha success
@@ -1223,7 +1223,7 @@ function initMap() {
         update_table();
     });
 
-    $('#export').click(function() {
+    $('#export').click(function () {
         data = {
             'data_inicial': $('#data_inicial').val(),
             'data_final': $('#data_final').val()
@@ -1260,21 +1260,21 @@ function initMap() {
         }
     }
 
-    function lastWeek(){
+    function lastWeek() {
         var today = new Date();
-        var lastweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
+        var lastweek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
         return lastweek;
     }
-    
+
     function formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
-    
+
         if (month.length < 2) month = '0' + month;
         if (day.length < 2) day = '0' + day;
-    
+
         return [year, month, day].join('-');
     }
 
@@ -1292,6 +1292,75 @@ function initMap() {
 
         $('#data_inicial').val(formatDate(lastWeek()));
         $('#data_final').val(formatDate(new Date()));
+    });
+
+    $(document).on('click', '.btn_delete', function () {
+        let card = $('#show_ordem_excluir .card')[0];
+
+        let image = $(card).children()[0];
+        let title = $('#show_ordem_excluir .card .card-body .card-title')[0];
+        let text = $('#show_ordem_excluir .card .card-body .card-text')[0];
+
+        console.log(ordens_servico[posicao_selecionada]);
+
+        if (ordens_servico[posicao_selecionada].imagens[0] !== undefined) {
+            $(image).attr('src', ordens_servico[posicao_selecionada].imagens[0].imagem_os);
+        } else {
+            $(image).attr('src', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9AAAAMFBMVEXMzMz////Jycn19fXQ0ND8/Pzl5eXf39/U1NT4+Pjt7e3q6ury8vLOzs7n5+fb29vHz2+HAAACFUlEQVR4nO3c246qMABAUSzITZH//9tR8QKIYo+J5qRrvQ1gYnaYUoohywAAAAAAAAAAAAAAAAAAAIDfCJ/49Zf/stDmHyh+/fW/Kuw3n9j++vt/Vdh+FGuT1KklVgSxIgyx2jLeIdVY1T/MGrp0Y8V/shDrfWJFEOu05c1wYoWiL8uqeKdX8rFCO8ye9t36J5OP1URMNhOPFfL7zHz9DjnxWP34PuawNm6lHWu6WrNdiBXq0cbEY01vkevHY8vxHEOsV7FCNdkq1otY4TykbW+TisRj5eNW8zErXIb//Lo98VjVONZuGivU1x3tZUfasbLQjGLN5vD1fU851Eo8Vtbd15hnI1YxXn3uz0enHivLLlOtfH4rPV2pPxcSK9TlblfW8wlpM2k1DP5iDU/z58fkm5nTJVGsxUMWHlofr5ViLR3RPrY6fUKshQN2S62Ol0uPwh73H5Zbbba1WPPd1ZNWx1pizfY+b3WReqzxY7FGrJHHWF3Z3f/qxRqZxzqvLrS3KfzqqZVyrOvFL++HefzqoJVurNDdb2yaMiwsn4p1W8+ajVC7IpweUoh1NV4pfZyr74//ja9/R5lmrFAsjuVN//rUSjLW85HcmXVzjbW4tPCGBGMdVmfqYmV+Bx9FrAhiRRArglgRxIogVgSxIogVQawIYkUQK4JXFcTwEowYXq8CAAAAAAAAAAAAAAAAAAAA/6U/gAcVDMYj22gAAAAASUVORK5CYII=');
+        }
+
+        $(title).html(ordens_servico[posicao_selecionada].ordem_servico_cod);
+        $(text).html(ordens_servico[posicao_selecionada].ordem_servico_desc);
+    });
+
+    $('#confirm_delete').click(function () {
+        var URL = base_url + '/ordem_servico/delete/' + ordens_servico[posicao_selecionada]['ordem_servico_pk'];
+        $.ajax({
+            url: URL,
+            method: "POST",
+            data: {},
+            processData: false,
+            contentType: false,
+            success: function (response) {
+
+                console.log(response);
+
+                if (response.code == 400) {
+                    show_errors(response);
+                    alerts('failed', response.data, 'O formulário apresenta algum(ns) erro(s)');
+                    //pre_loader_hide();
+                } else if (response.code == 401) {
+                    show_errors(response);
+                    alerts('failed', response.data, 'Acesso não autorizado');
+                    //pre_loader_hide();
+                } else if (response.code == 403) {
+                    show_errors(response);
+                    alerts('failed', response.data, 'Acesso proíbido');
+                    //pre_loader_hide();
+                } else if (response.code == 404) {
+                    show_errors(response);
+                    alerts('failed', response.data, 'Dados não encontrado');
+                    //pre_loader_hide();
+                } else if (response.code == 501) {
+                    show_errors(response);
+                    alerts('failed', response.data, 'Erro na exclusão');
+                    //pre_loader_hide();
+                } else if (response.code == 503) {
+                    show_errors(response);
+                    alerts('failed', response.data, 'Erro na exclusão');
+                    //pre_loader_hide();
+                }
+                else if (response.code == 200) {
+                    alerts('success', "Sucesso!", "Apagado com sucesso!");
+
+                    setTimeout( () => document.location.reload(false), 500);
+                }
+
+            }, //Fecha success
+            error: function (response) {
+                alerts('failed', "Erro!", response.data.mensagem);
+            }
+        }); // Fecha AJAX
     });
 
 

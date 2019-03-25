@@ -44,7 +44,10 @@ class Ordem_Servico extends CRUD_Controller
 
     public function index()
     {
-        $ordens_servico = $this->ordem_servico->get_home($this->session->user['id_organizacao']);
+        $ordens_servico = $this->ordem_servico->get_home(
+            $this->session->user['id_organizacao'],
+            ['ordens_servicos.ativo' => 1]    
+        );
 
         $imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao']);
 
@@ -104,7 +107,7 @@ class Ordem_Servico extends CRUD_Controller
             [
                 ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk'],
                 ['table' => 'tipos_servicos', 'on' => 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk'],
-                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
+                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
             ]
         );
 
@@ -187,16 +190,16 @@ class Ordem_Servico extends CRUD_Controller
             $this->load->model('Localizacao_model', 'localizacao');
             $this->load->library('form_validation');
             $this->load->helper('exception');
-          
+
             $this->localizacao->add_lat_long(
                 $this->input->post('localizacao_lat'),
                 $this->input->post('localizacao_long')
             );
             $this->input->post('localizacao_ponto_referencia') !== '' ?
-                $this->localizacao->__set('localizacao_ponto_referencia', $this->input->post('localizacao_ponto_referencia')) :
-                $this->localizacao->__set('localizacao_ponto_referencia', null);
+            $this->localizacao->__set('localizacao_ponto_referencia', $this->input->post('localizacao_ponto_referencia')) :
+            $this->localizacao->__set('localizacao_ponto_referencia', null);
             $this->localizacao->fill();
-           
+
             $this->ordem_servico->fill();
 
             $this->ordem_servico->config_form_validation();
@@ -295,6 +298,31 @@ class Ordem_Servico extends CRUD_Controller
             $this->ordem_servico->update();
 
             $this->ordem_servico->insert_images($paths, $id);
+
+            $this->end_transaction();
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
+
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    public function delete($id)
+    {
+
+        try {
+            $this->load->helper('exception');
+
+            $this->ordem_servico->__set("ordem_servico_pk", $id);
+            $this->ordem_servico->__set("ativo", 0);
+
+            $this->begin_transaction();
+
+            $this->ordem_servico->update();
 
             $this->end_transaction();
 
