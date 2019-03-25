@@ -37,6 +37,9 @@
                                         <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
                                     </li>
                                     <li>
+                                        <a href="<?php echo base_url('funcao'); ?>">Funções</a>
+                                    </li>
+                                    <li>
                                             <a href="<?php echo base_url('servico'); ?>">Serviços</a>
                                     </li>
                                         <?php if(SHOW_HIDE_MENU): ?>
@@ -130,6 +133,9 @@
                                     </li>
                                     <li>
                                         <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('funcao'); ?>">Funções</a>
                                     </li>
                                     <li>
                                         <a href="<?php echo base_url('servico'); ?>">Serviços</a>
