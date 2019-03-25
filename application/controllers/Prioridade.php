@@ -147,14 +147,13 @@ class Prioridade extends CRUD_Controller
                 throw new MyException("Ainda há tipos de serviços com essa prioridade como padrão", Response::BAD_REQUEST);
                 
             }
-            
+
             $this->prioridade->config_form_validation_primary_key();
             $this->prioridade->run_form_validation();
             $this->prioridade->fill();
 
             $this->begin_transaction();
             $this->prioridade->deactivate();
-            $this->tipo_servico->remove_default_priority($this->input->post('prioridade_pk'));
             $this->end_transaction();
 
             $response = new Response();
