@@ -40,8 +40,7 @@
                                     <table  id="prioridades" class="table table-striped table-datatable">
                                         <thead>
                                             <tr>
-                                                <th>Nome</th>
-                                                <th>Prazo</th>
+                                                <th class="col-8">Nome</th>
                                                 <th>Opções</th>
                                             </tr>
                                         </thead>
@@ -55,9 +54,6 @@
                                                             <?=$prioridade->prioridade_nome?>
                                                         </td>
                                                         <td>
-                                                            <?=$prioridade->prazo_duracao?>
-                                                        </td>
-                                                        <td>
                                                             <div class="btn-group">
                                                                 <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$key?>" data-target="#ce_prioridade">
                                                                     <div class="d-none d-sm-block">
@@ -67,14 +63,25 @@
                                                                         <i class="fas fa-edit fa-fw"></i>
                                                                     </div>
                                                                 </button>
-                                                                <button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="<?=$key?>" data-target="#d-prioridade">
-                                                                    <div class="d-none d-sm-block">
-                                                                        Apagar
-                                                                    </div>
-                                                                    <div class="d-block d-sm-none">
-                                                                        <i class="fas fa-times fa-fw"></i>
-                                                                    </div>
-                                                                </button>
+                                                                <?php if ($prioridade->ativo): ?>
+                                                                    <button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="<?=$key?>" data-target="#d-prioridade">
+                                                                        <div class="d-none d-sm-block">
+                                                                            Desativar
+                                                                        </div>
+                                                                        <div class="d-block d-sm-none">
+                                                                            <i class="fas fa-times fa-fw"></i>
+                                                                        </div>
+                                                                    </button>
+                                                                <?php else: ?>
+                                                                    <button type="button" class="btn btn-sm btn-success btn-reativar" data-toggle="modal" value="<?=$key?>" data-target="#r-prioridade">
+                                                                        <div class="d-none d-sm-block">
+                                                                            Ativar
+                                                                        </div>
+                                                                        <div class="d-block d-sm-none">
+                                                                            <i class="fas fa-times fa-fw"></i>
+                                                                        </div>
+                                                                    </button>
+                                                                <?php endif ?>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -99,111 +106,91 @@
         </div>
 
 
-        <!-- MODAL CRIA E ATUALIZA PRIORIDADE -->
         <div class="modal fade modal-multistep" id="ce_prioridade">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                  <!-- Modal Header -->
-                  <div class="modal-header">
-                    <h4 class="modal-title">Nova prioridade</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <form class="msform">
-                                <input type="hidden" id="prioridade_pk" name="prioridade_pk" class="form-control">
-                                <!-- progressbar -->
-                                <ul class="progressbar">
-                                    <li class="active">Identificação do prioridade</li>
-                                    <?php if ($this->session->user['is_superusuario'] === true): ?>
-                                        <li>Identificação</li>
-                                    <?php endif;?>
-                                </ul>
-                                <!-- fieldsets -->
-                                <div class="card card-step col-12 px-0">
-                                    <div class="card-header">
-                                        Identificação do prioridade
-                                    </div>
-                                    <div class="card-body card-block">
-                                        <div class="row form-group">
-                                            <div class="col col-md-2">
-                                                <label for="nome-input" class=" form-control-label"><strong>Nome*</strong></label>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <input type="text" id="nome-input" name="nome" placeholder="Nome do prioridade" class="form-control" required="true" maxlength="50" minlength="3">
-                                                <small class="form-text text-muted">Por favor, informe o nome do prioridade</small>
-                                            </div>
-
-                                            <div class="col col-md-2">
-                                                <label for="prazo-input" class=" form-control-label"><strong>Prazo (dias)*</strong></label>
-                                            </div>
-                                            <div class="col-12 col-md-4">
-                                                <input type="number" id="prazo-input-dias" min="0" name="dias" class="form-control" required="true">
-                                                <small class="form-text text-muted">Por favor, informe o prazo da prioridade em dias</small>
-                                            </div>
-
-                                            <div class="col col-md-2">
-                                                <label for="prazo-input" class=" form-control-label"><strong>Prazo (horas)*</strong></label>
-                                            </div>
-                                            <div class="col-12 col-md-4">
-                                                <input type="number" id="prazo-input-horas" min="0" name="prazo" class="form-control" required="true">
-                                                <small class="form-text text-muted">Por favor, informe o prazo da prioridade em horas</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer text-center">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                      <!-- Modal Header -->
+                      <div class="modal-header">
+                        <h4 class="modal-title">Nova prioridade</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form class="msform">
+                                    <input type="hidden" id="prioridade_pk" name="prioridade_pk" class="form-control">
+                                    <ul class="progressbar">
+                                        <li class="active">Identificação do Setor</li>
                                         <?php if ($this->session->user['is_superusuario'] === true): ?>
-                                            <button type="button" class="btn btn-secondary next btn-sm">
-                                                <i class="fas fa-arrow-circle-right"></i> Próximo
-                                            </button>
-                                            <?php else: ?>
-                                                <button type="button"  class="btn btn-primary submit btn-sm">
-                                                    <i class="fa fa-dot-circle-o"></i> Salvar
-                                                </button>
-                                            <?php endif;?>
+                                            <li>Identificação</li>
+                                        <?php endif;?>
+                                    </ul>
+                                    <!-- fieldsets -->
+                                    <div class="card card-step col-12 px-0">
+                                        <div class="card-header">
+                                            Identificação da Prioridade
                                         </div>
-                                    </div>
-                                    <?php if ($this->session->user['is_superusuario'] === true): ?>
-                                        <div class="card card-step col-12 px-0">
-                                            <div class="card-header">
-                                                Identificação
-                                            </div>
-                                            <div class="card-body card-block">
-                                                <div class="row form-group">
-                                                    <div class="col col-md-2">
-                                                        <label for="senha-input" class=" form-control-label"><strong>Senha*</strong></label>
-                                                    </div>
-                                                    <div class="col-12 col-md-10">
-                                                        <input type="password" id="senha-input" name="senha" placeholder="Senha Pessoal" class="form-control" autocomplete="new-password"   minlength="8" required="true">
-                                                        <small class="form-text text-muted">Por favor, informe sua senha de acesso</small>
-                                                    </div>
+                                        <div class="card-body card-block">
+                                            <div class="row form-group">
+                                                <div class="col col-md-2">
+                                                    <label for="prioridade_nome" class=" form-control-label"><strong>Nome</strong></label>
+                                                </div>
+                                                <div class="col-12 col-md-10">
+                                                    <input type="text" id="prioridade_nome" name="prioridade_nome" placeholder="Nome da Prioridade" class="form-control" required="true" maxlength="50" minlength="3">
+                                                    <small class="form-text text-muted">Por favor, informe o nome da prioridade</small>
                                                 </div>
                                             </div>
-                                            <div class="card-footer text-center">
-                                                <button type="button" class="btn btn-secondary previous btn-sm">
-                                                    <i class="fas fa-arrow-circle-left"></i> Anterior
+                                        </div>
+                                        <div class="card-footer text-center">
+                                            <?php if ($this->session->user['is_superusuario'] === true): ?>
+                                                <button type="button" class="btn btn-secondary next btn-sm">
+                                                    <i class="fas fa-arrow-circle-right"></i> Próximo
                                                 </button>
-                                                <button type="button"  class="btn btn-primary submit btn-sm" id="botao-finalizar">
-                                                    <i class="fa fa-dot-circle-o"></i> Finalizar
-                                                </button>
+                                                <?php else: ?>
+                                                    <button type="button"  class="btn btn-primary submit btn-sm">
+                                                        <i class="fa fa-dot-circle-o"></i> Enviar
+                                                    </button>
+                                                <?php endif;?>
                                             </div>
                                         </div>
-                                    <?php endif;?>
-                                </form>
+                                        <?php if ($this->session->user['is_superusuario'] === true): ?>
+                                            <div class="card card-step col-12 px-0">
+                                                <div class="card-header">
+                                                    Identificação
+                                                </div>
+                                                <div class="card-body card-block">
+                                                    <div class="row form-group">
+                                                        <div class="col col-md-2">
+                                                            <label for="senha-input" class="form-control-label"><strong>Senha</strong></label>
+                                                        </div>
+                                                        <div class="col-12 col-md-10">
+                                                            <input type="password" id="senha-input" name="senha" placeholder="Senha Pessoal" class="form-control" autocomplete="new-password"   minlength="8" required="true">
+                                                            <small class="form-text text-muted">Por favor, informe sua senha de acesso</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer text-center">
+                                                    <button type="button" class="btn btn-secondary previous btn-sm">
+                                                        <i class="fas fa-arrow-circle-left"></i> Anterior
+                                                    </button>
+                                                    <button type="button"  class="btn btn-primary submit btn-sm">
+                                                        <i class="fa fa-dot-circle-o"></i> Enviar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        <?php endif;?>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary btn-sm" id="pula-para-confirmacao"><i class="fa fa-dot-circle-o"></i> Salvar</button>
-                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Fechar</button>
+                        <!-- Modal footer -->
+                        <div class="modal-footer d-md-none">
+                            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Fechar</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
 
         <!-- MODAL DELETA prioridadeS -->
         <div class="modal fade" id="d-prioridade" >
@@ -217,15 +204,8 @@
                     <form>
                      <div class="form-group">
                          <h4 style="text-align: center" class="text-danger"><i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
-                         <p>Ao desativar um prioridade, as seguintes ações também serão feitas:</p>
-                         <ul style="margin-left: 15px">
-                             <li>Todas os tipos de serviços serão desativados também</li>
-                             <li>Nenhuma ordem de serviço com estes tipos poderão ser registradas</li>
-                         </ul>
                      </div>
                      <div class="form-group">
-
-
                         <div id="loading-prioridade-deactivate">
                             <div align="center" class="center">
                                 <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading" alt="Carregando">
@@ -240,7 +220,7 @@
                      </div>
                  <?php endif;?>
                  <div class="form-group">
-                     <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Apagar</button>
+                     <button type="button" class="btn btn-confirmar-senha" id="btn-desativar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Desativar</button>
                  </div>
              </form>
          </div>
@@ -248,38 +228,28 @@
  </div>
 </div>
 
-<?php if ($this->session->user['is_superusuario']): ?>
     <!-- MODAL REATIVA prioridadeS -->
-    <div class="modal fade" id="r-prioridade" >
-     <div class="modal-dialog modal-dialog-centered">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h4 class="modal-title">Reativar prioridade</h4>
-                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-             </div>
-             <div class="modal-body">
+<div class="modal fade" id="r-prioridade" >
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Reativar prioridade</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
                 <form>
-                 <div class="form-group">
-                     <h4 style="text-align: center" class="text-danger"><i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
-                     <p>Ao reativar um prioridade, as seguintes ações também serão feitas:</p>
-                     <ul style="margin-left: 15px">
-                         <li>Todas os tipos de serviços serão reativados também</li>
-                         <li>Toda ordem de serviço com estes tipos poderão ser registradas novamente</li>
-                     </ul>
-                 </div>
-                 <div class="form-group">
-                     <input type="password" class="form-control" autocomplete="false" name="pass-modal-reativar" placeholder="Confirme sua senha" required="required" id="pass-modal-reativar">
-                 </div>
-                 <div class="form-group">
-                     <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Reativar</button>
-                 </div>
-             </form>
-         </div>
-     </div>
- </div>
+                    <div class="form-group">
+                        <p>Deseja confirmar a reativação da prioridade?</p>
+                    </div>
+                    <div class="form-group">
+                         <button type="button" class="btn btn-confirmar-senha" id="btn-reativar" name="post" value=""><i class="fa fa-dot-circle-o"></i> Reativar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
-<?php endif;?>
 <script type="text/javascript">
     var prioridades = <?php echo json_encode($prioridades !== false ? $prioridades : []); ?>;
 
