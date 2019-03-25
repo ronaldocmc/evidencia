@@ -61,6 +61,47 @@ function send_data(){
 	}, "json");
 }
 
+$(document).on('click','.btn-desativar',function(event) {
+	botao = "#btn-desativar";
+	$('.modal-title').html("Desativar Função");
+	$('#btn-desativar').val(funcoes[$(this).val()]["funcao_pk"]);
+
+	$('#loading-funcao-deactivate').show();
+	$('#tipo-servicos-dependentes').hide();
+
+	var data = 
+	{
+		'funcao_pk': funcoes[$(this).val()]["funcao_pk"]
+	}
+
+	$.post(base_url + '/funcao/get_dependents', data, function (response, textStatus, xhr) {
+
+		if (response.code == 200) {
+		  	var title = '';
+		  	var mensagem = '';
+            if(! response.data){ //se não houver nenhum serviço:
+            	$('#btn-desativar').removeAttr('disabled');
+            	title = 'Tudo certo para desativação!'
+            	mensagem = "Não há nenhum funcionário que possui esta função, portanto você pode desativá-la.";
+            }
+            else { //se tiver 1 ou mais tipos de serviço dependentes:
+            	$('#btn-desativar').attr('disabled', 'disabled');
+            	title = 'Impossível desativar a função!'
+            	mensagem = "Há funcionários relacionados à esta função. Os desative antes.";
+
+            } //fecha o 1 ou mais serivços dependentes
+            $('#tipo-servicos-dependentes').html('<br>'+'<b>'+title + '</b> <br>' + mensagem +'</br>');
+            $('#tipo-servicos-dependentes').show();
+            $('#loading-funcao-deactivate').hide();
+        } else {
+        	$('#d-funcao').modal('toggle');
+        	$('#loading-funcao-deactivate').hide();
+        }
+    });
+
+});
+
+
 
 
 /**

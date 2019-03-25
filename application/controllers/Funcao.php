@@ -109,6 +109,48 @@ class Funcao extends CRUD_Controller {
         $this->funcao->update();
     }
 
+    public function get_dependents()
+    {
+        $response = new Response();
+
+        $this->load->model('funcionario_model', 'funcionario');
+
+        $funcionarios = $this->funcionario->get_all(
+            'funcionario_pk',
+            ['funcao_fk' => $this->input->post('funcao_pk')],
+            -1,
+            -1
+        );
+
+        if (count($funcionarios) > 0) 
+        {
+            $response->set_data(true);
+        }
+        else
+        {
+            $response->set_data(false);
+        }
+
+        $response->send();
+    }
+
+    private function check_if_has_dependents()
+    {
+        $this->load->model('funcionario_model', 'funcionario');
+
+        $funcionarios = $this->funcionario->get_all(
+            'funcionario_pk',
+            ['funcao_fk' => $this->input->post('funcao_pk')],
+            -1,
+            -1
+        );
+
+        if(count($funcionarios) > 0)
+        {
+            throw new MyException('Há funcionários com esta função', Response::FORBIDDEN);
+        }
+    }
+
     public function deactivate()
     {
         try{
@@ -116,6 +158,8 @@ class Funcao extends CRUD_Controller {
             $this->funcao->config_form_validation_primary_key();
             $this->funcao->run_form_validation();
             $this->funcao->fill();
+
+            $this->check_if_has_dependents();
 
             $this->begin_transaction();
             $this->funcao->deactivate();
