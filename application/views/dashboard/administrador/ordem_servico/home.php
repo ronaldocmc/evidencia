@@ -109,11 +109,13 @@
                                     <label for="filter-ativo">Mostrar</label>
                                     <select name="filter-ativo" id="filter-ativo" class="form-control">
                                         <option value="semana">Ultima Semana</option>
-                                        <option value="todos">Todas</option>
+                                        <option value="">Todas</option>
                                         <option value="finalizadas">Finalizadas</option>
-                                        <option value="abertas">Não Finalizadas</option>
+                                        <option value="recusadas">Recusadas</option>
+                                        <option value="abertas">Abertas</option>
                                         <option value="ativadas">Ativas</option>
                                         <option value="desativadas">Excluídas</option>
+                                        <option value="andamento">Em andamento</option>
                                     </select><br>
                                 </div>                                
                             </div>

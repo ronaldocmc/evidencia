@@ -24,7 +24,7 @@ class Ordem_Servico_model extends MY_Model
         'ordem_servico_comentario'
     );
 
-    public function get_home($organization, Array $where = null)
+    public function get_home($organization, $where = null)
     {
         $this->CI->db->select('
             ordens_servicos.ordem_servico_pk,
@@ -71,15 +71,24 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->db->join('funcionarios', 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk');
 
         $this->CI->db->where('procedencias.organizacao_fk', $organization);
+
         if ($where !== null) 
         {
-            foreach ($where as $field=>$value) 
+            if(is_array($where))
             {
-                $this->CI->db->where($field, $value);
+                foreach ($where as $field=>$value) 
+                {
+                    $this->CI->db->where($field, $value);
+                }
+            }
+            else
+            {
+                $this->CI->db->where($where);
             }
         }
-        $this->CI->db->order_by('ordens_servicos.ordem_servico_pk', 'DESC');
 
+        $this->CI->db->order_by('ordens_servicos.ordem_servico_pk', 'DESC');
+        // echo $this->CI->db->get_compiled_select(); die();
         $result = $this->CI->db->get()->result();
         return $result;
     }
