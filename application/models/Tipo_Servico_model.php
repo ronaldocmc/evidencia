@@ -88,6 +88,5 @@ class Tipo_Servico_model extends MY_Model
         $this->CI->db->where('departamento_fk', $departamento);
         return $this->CI->db->count_all_results();
     }
-
 }
 
