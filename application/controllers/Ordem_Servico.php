@@ -19,6 +19,7 @@ class Ordem_Servico extends CRUD_Controller
     public function __construct()
     {
         parent::__construct();
+        date_default_timezone_set('America/Sao_Paulo');
         $this->load->model('Ordem_Servico_model', 'ordem_servico');
         $this->load->library('upload');
         $this->load->helper('form');
@@ -40,6 +41,63 @@ class Ordem_Servico extends CRUD_Controller
         $this->load->helper('exception');
 
         $this->response = new Response();
+    }
+    
+    private function choose_filter($option){
+        $where = null; 
+
+        if($option == 'semana'){
+
+            $current_date = date('Y-m-d H:i:s');
+            $lastweek_time= mktime (0, 0, 0, date("m"), date("d")-7,  date("Y"));
+            $lastweek_date = date('Y-m-d H:i:s', $lastweek_time);
+
+            $where = "ordens_servicos.ordem_servico_criacao BETWEEN '".$lastweek_date. "' AND '".$current_date."'";
+        }
+
+        if($option  == 'finalizadas'){
+            $where = 'ordens_servicos.situacao_atual_fk = 5';
+        }
+
+        if($option == 'recusadas'){
+            $where = 'ordens_servicos.situacao_atual_fk =  3 OR ordens_servicos.situacao_atual_fk = 4';
+        }
+
+        if($option  == 'desativadas'){
+            $where = 'ordens_servicos.ativo = 0';
+        }
+
+        if($option  == 'ativadas'){
+            $where = 'ordens_servicos.ativo = 1';
+        }
+
+        if($option  == 'abertas'){
+            $where = 'ordens_servicos.situacao_atual_fk = 1';
+        }
+
+        if($option == 'andamento'){
+            $where = 'ordens_servicos.situacao_atual_fk = 2';
+        }
+        
+        return $where;
+    }
+    public function filtro_tabela(){
+
+        try{
+           
+            $where = $this->choose_filter($this->input->post('filtro')); 
+            // echo $where; die();
+            $ordens_servico = $this->ordem_servico->get_home($this->session->user['id_organizacao'], $where);
+            
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->set_data($ordens_servico);
+            $this->response->send(); 
+
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
     }
 
     public function index()

@@ -24,6 +24,7 @@ var posicao_selecionada = null;
 var primeiro_editar = false;
 var adicionar_imagem_historico = 1;
 var adicionar_mapa_historico = 1;
+var table = $('#ordens_servico').DataTable();
 
 // var adicionar_imagem_situacao= 1; 
 // var adicionar_mapa_situacao = 1; 
@@ -917,7 +918,7 @@ function initMap() {
         formData.append('localizacao_ponto_referencia', $('#referencia-input').val());
 
         if ($('#ordem_servico_pk').val() !== '' && $('#ordem_servico_pk').val() !== undefined) {
-          formData.append('localizacao_pk', $('#localizacao_pk').val());
+            formData.append('localizacao_pk', $('#localizacao_pk').val());
         }
 
         if ($('#procedencia_pk').val() == "2") {
@@ -970,8 +971,8 @@ function initMap() {
                     alerts('failed', response.message, 'Erro na edição de dados');
                 }
                 else if (response.code == 200) {
-                  alerts('success', 'Sucesso', 'Operação realizada com sucesso');
-                  document.location.reload(false);
+                    alerts('success', 'Sucesso', 'Operação realizada com sucesso');
+                    document.location.reload(false);
                 }
 
             }, //Fecha success
@@ -1220,10 +1221,11 @@ function initMap() {
     });
 
     $('#filter-ativo').on('change', function () {
+        console.log($('#filter-ativo').val());
         update_table();
     });
 
-    $('#export').click(function() {
+    $('#export').click(function () {
         data = {
             'data_inicial': $('#data_inicial').val(),
             'data_final': $('#data_final').val()
@@ -1260,21 +1262,21 @@ function initMap() {
         }
     }
 
-    function lastWeek(){
+    function lastWeek() {
         var today = new Date();
-        var lastweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
+        var lastweek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
         return lastweek;
     }
-    
+
     function formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
-    
+
         if (month.length < 2) month = '0' + month;
         if (day.length < 2) day = '0' + day;
-    
+
         return [year, month, day].join('-');
     }
 
@@ -1297,309 +1299,208 @@ function initMap() {
 
     //Função que atualiza a datatable com dados modificados pelo usuário em tempo real
     update_table = () => {
-        table.clear().draw();
-        let url = '';
+        var url = '';
         let filtro = null;
+        url = base_url + '/ordem_servico/filtro_tabela';
+        
+        filtro = { filtro: $('#filter-ativo').val() };
+        pre_loader_show();
+        filter_os(filtro, url);
+        pre_loader_hide();
+        
+    }
 
-        switch ($('#filter-ativo').val()) {
-            case "semana":
-                url = base_url + '/ordem_servico/filtro_tabela';
-                filtro = {
-                    filtro: 'semana'
-                };
-                pre_loader_show();
-                $.post(url, filtro)
-                    .done(function (response) {
-                        if (response.code == 200) {
+        // switch ($('#filter-ativo').val()) {
+        //     case "semana":
+                
+        //         pre_loader_show('semana');
+        //         filter_by_week(filtro, url);
+        //         pre_loader_hide();
+        //         break;
 
-                            table.clear().draw();
+        //     case "todos":
+        //         filtro = { filtro: '' };
+        //         pre_loader_show();
+        //         filter_for_all(filtro, url);
+        //         pre_loader_hide();
+        //         break;
 
-                            ordens_servico = response.data;
+        //     case "ativadas":
+        //         filtro = { filtro: 'ativadas' };
+        //         pre_loader_show();
+        //         filter_by_active(filtro, url);
+        //         pre_loader_hide();
+        //         break;
 
-                            $.each(ordens_servico, function (i, os) {
-                                let endereco = os.logradouro_nome + ", " + os.local_num + " - " + os.bairro_nome;
+        //     case "desativadas":
+        //         filtro = { filtro: 'desativadas' };
+        //         pre_loader_show();
+        //         filter_by_deactive(filtro, url);
+        //         pre_loader_hide();
+        //         break;
 
-                                if (os.ordem_servico_status == 1) {
-                                    table.row.add([
-                                        os.ordem_servico_cod,
-                                        os.data_criacao,
-                                        os.prioridade_nome,
-                                        endereco,
-                                        os.servico_nome,
-                                        os.situacao_nome,
-                                        os.setor_nome,
-                                        '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                                        '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                                        '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="' + (i) + '" data-target="#d_servico" title="Desativar">' +
-                                        '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                                    ]).draw(false);
-                                } else {
-                                    table.row.add([
-                                        os.ordem_servico_cod,
-                                        os.data_criacao,
-                                        os.prioridade_nome,
-                                        endereco,
-                                        os.servico_nome,
-                                        os.situacao_nome,
-                                        os.setor_nome,
-                                        '<div class="btn-group"><button type="button" disabled style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                                        '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled  style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                                        '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="' + (i) + '" data-target="#r_servico" title="Reativar">' +
-                                        '<div class="d-none d-sm-block"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
-                                    ]).draw(false);
-                                }
-                            });
-                            $("#data_brasileira").click();
+        //     case "finalizadas":
+        //         filtro = { filtro: 'finalizadas' };
+        //         pre_loader_show();
+        //         filter_by_finished(filtro, url);
+        //         pre_loader_hide();
+        //         break;
 
-                        } else if (response.code == 404) {
-                            alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada');
-                        }
-                    })
-                    .fail(function (response) {
-                        alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
-                    });
-                pre_loader_hide();
-                break;
+        //     case "abertas":
+        //         filtro = { filtro: 'abertas' };
+        //         pre_loader_show();
+        //         filter_by_finished(filtro, url);
+        //         pre_loader_hide();
+        //         break;
+        // }
 
-            case "todos":
-                url = base_url + '/ordem_servico/filtro_tabela';
-                filtro = {
-                    filtro: 'todos'
-                };
-                pre_loader_show();
-                $.post(url, filtro)
-                    .done(function (response) {
-                        if (response.code == 200) {
-
-                            table.clear().draw();
-
-                            ordens_servico = response.data;
-
-                            $.each(ordens_servico, function (i, os) {
-                                let endereco = os.logradouro_nome + ", " + os.local_num + " - " + os.bairro_nome;
-
-                                if (os.ordem_servico_status == 1) {
-                                    table.row.add([
-                                        os.ordem_servico_cod,
-                                        os.data_criacao,
-                                        os.prioridade_nome,
-                                        endereco,
-                                        os.servico_nome,
-                                        os.situacao_nome,
-                                        os.setor_nome,
-                                        '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                                        '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                                        '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="' + (i) + '" data-target="#d_servico" title="Desativar">' +
-                                        '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                                    ]).draw(false);
-                                } else {
-                                    table.row.add([
-                                        os.ordem_servico_cod,
-                                        os.data_criacao,
-                                        os.prioridade_nome,
-                                        endereco,
-                                        os.servico_nome,
-                                        os.situacao_nome,
-                                        os.setor_nome,
-                                        '<div class="btn-group"><button type="button" disabled style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button disabled style="cursor:auto;" type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                                        '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled  style="cursor:auto;" type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                                        '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="' + (i) + '" data-target="#r_servico" title="Reativar">' +
-                                        '<div class="d-none d-sm-block"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
-                                    ]).draw(false);
-                                }
-                            });
-                            $("#data_brasileira").click();
-
-                        } else if (response.code == 404) {
-                            alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada');
-                        }
-                    })
-                    .fail(function (response) {
-                        alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
-                    });
-                pre_loader_hide();
-                break;
-
-            case "ativadas":
-                url = base_url + '/ordem_servico/filtro_tabela';
-                filtro = {
-                    filtro: 'ativadas'
-                };
-                pre_loader_show();
-                $.post(url, filtro)
-                    .done(function (response) {
-                        if (response.code == 200) {
-
-                            table.clear().draw();
-
-                            ordens_servico = response.data;
-
-                            $.each(ordens_servico, function (i, os) {
-                                let endereco = os.logradouro_nome + ", " + os.local_num + " - " + os.bairro_nome;
-
-                                table.row.add([
-                                    os.ordem_servico_cod,
-                                    os.data_criacao,
-                                    os.prioridade_nome,
-                                    endereco,
-                                    os.servico_nome,
-                                    os.situacao_nome,
-                                    os.setor_nome,
-                                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-excluir" data-toggle="modal" value="' + (i) + '" data-target="#d_servico" title="Desativar">' +
-                                    '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                                ]).draw(false);
-                            });
-                            $("#data_brasileira").click();
-
-                        } else if (response.code == 404) {
-                            alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada');
-                        }
-                    })
-                    .fail(function (response) {
-                        alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
-                    });
-                pre_loader_hide();
-                break;
-
-            case "desativadas":
-                url = base_url + '/ordem_servico/filtro_tabela';
-                filtro = {
-                    filtro: 'desativadas'
-                };
-                pre_loader_show();
-                $.post(url, filtro)
-                    .done(function (response) {
-                        if (response.code == 200) {
-
-                            table.clear().draw();
-                            ordens_servico = response.data;
-
-                            $.each(ordens_servico, function (i, os) {
-
-                                let endereco = os.logradouro_nome + ", " + os.local_num + " - " + os.bairro_nome;
-
-                                table.row.add([
-                                    os.ordem_servico_cod,
-                                    os.data_criacao,
-                                    os.prioridade_nome,
-                                    endereco,
-                                    os.servico_nome,
-                                    os.situacao_nome,
-                                    os.setor_nome,
-                                    '<div class="btn-group"><button type="button" disabled style="cursor:auto;" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button disabled type="button" style="cursor:auto;" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-success btn-ativar" data-toggle="modal" value="' + (i) + '" data-target="#r_servico" title="Reativar">' +
-                                    '<div class="d-none d-sm-block"><i class="fas fa-power-off fa-fw"></i></div></button></div>'
-                                ]).draw(false);
-
-                            });
-
-                            $("#data_brasileira").click();
-
-                        } else if (response.code == 404) {
-                            alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada');
-                        }
-                    })
-                    .fail(function (response) {
-                        alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
-                    });
-                pre_loader_hide();
-                break;
-
-            case "finalizadas":
-                url = base_url + '/ordem_servico/filtro_tabela';
-                filtro = {
-                    filtro: 'finalizadas'
-                };
-
-                pre_loader_show();
-                $.post(url, filtro)
-                    .done(function (response) {
-                        if (response.code == 200) {
-
-                            table.clear().draw();
-                            ordens_servico = response.data;
-
-                            $.each(ordens_servico, function (i, os) {
-
-                                let endereco = os.logradouro_nome + ", " + os.local_num + " - " + os.bairro_nome;
-
-                                table.row.add([
-                                    os.ordem_servico_cod,
-                                    os.data_criacao,
-                                    os.prioridade_nome,
-                                    endereco,
-                                    os.servico_nome,
-                                    os.situacao_nome,
-                                    os.setor_nome,
-                                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="' + (i) + '" data-target="#d_servico" title="Desativar">' +
-                                    '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                                ]).draw(false);
-                            });
-
-                            $("#data_brasileira").click();
-
-                        } else if (response.code == 404) {
-                            alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada');
-                        }
-                    })
-                    .fail(function (response) {
-                        alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
-                    });
-
-                pre_loader_hide();
-
-                break;
-
-            case "abertas":
-                url = base_url + '/ordem_servico/filtro_tabela';
-                filtro = {
-                    filtro: 'abertas'
-                };
-                pre_loader_show();
-                $.post(url, filtro)
-                    .done(function (response) {
-                        if (response.code == 200) {
-
-                            ordens_servico = response.data;
-                            table.clear().draw();
-                            $.each(ordens_servico, function (i, os) {
-
-                                let endereco = os.logradouro_nome + ", " + os.local_num + " - " + os.bairro_nome;
-
-                                table.row.add([
-                                    os.ordem_servico_cod,
-                                    os.data_criacao,
-                                    os.prioridade_nome,
-                                    endereco,
-                                    os.servico_nome,
-                                    os.situacao_nome,
-                                    os.setor_nome,
-                                    '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação"><div class="d-none d-sm-block"><i class="fas fa-plus fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_ordem_servico" title="Editar">' +
-                                    '<div class="d-none d-sm-block"><i class="fas fa-edit fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + (i) + '" data-target="#ce_historico_servico" title="Histórico">' +
-                                    '<div class="d-none d-sm-block"><i class="far fa-clock fa-fw"></i></div></button><button type="button" class="btn btn-sm btn-danger btn-ativar" data-toggle="modal" value="' + (i) + '" data-target="#d_servico" title="Desativar">' +
-                                    '<div class="d-none d-sm-block"><i class="fas fa-times fa-fw"></i></div></button></div>'
-                                ]).draw(false);
-                            });
-
-                            $("#data_brasileira").click();
-
-                        } else if (response.code == 404) {
-                            alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada');
-                        }
-                    })
-                    .fail(function (response) {
-                        alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
-                    });
-                pre_loader_hide();
-
-                break;
-        }
+    
+    
+    function define_buttons_atributtes(ativo, chave){
+        
+        return ativo == 1 ? create_buttons_table(chave, 'danger', 'excluir', 'Desativar') : fill_os(chave, 'success', 'ativar', 'Reativar');
 
     }
 
+    function create_buttons_table(ordem_servico_pk, classButton1 = null, classButton2 = null, title = null){
+        
+        var buttons = '<div class="btn-group">' +
+                            '<button type="button" class="btn btn-sm btn-success btn_atividade" data-toggle="modal" value="<?=$key?>" data-target="#atividade" title="Adicionar Situação">'+ 
+                                '<div class="d-none d-sm-block">' + 
+                                    '<i class="fas fa-plus fa-fw"></i>' + 
+                                '</div>' +
+                            '</button>' +
+                            '<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + ordem_servico_pk + '" data-target="#ce_ordem_servico" title="Editar">' +
+                                '<div class="d-none d-sm-block">' + 
+                                    '<i class="fas fa-edit fa-fw"></i>' + 
+                                '</div>' + 
+                            '</button>' +
+                            '<button type="button" class="btn btn-sm btn-secondary reset_multistep btn_historico btn-attr-ordem_servico_pk" data-toggle="modal" value="' + ordem_servico_pk + '" data-target="#ce_historico_servico" title="Histórico">' +
+                                '<div class="d-none d-sm-block">' +
+                                    '<i class="far fa-clock fa-fw"></i>' +
+                                '</div>' +
+                            '</button>' + 
+                        '</div>';
+                        //  '<button type="button" class="btn btn-sm btn-' + classButton1 + ' btn-' + classButton2 + '" data-toggle="modal" value="' + os.ordem_servico_pk + '" data-target="#d_servico" title="Desativar">'
+
+        return buttons; 
+    }
+
+    function fill_os(os, buttons)
+    {
+
+        let endereco = os.localizacao_rua + ", " + os.localizacao_num + " - " + os.localizacao_bairro;
+        
+        table.row.add([
+            os.ordem_servico_pk,
+            os.ordem_servico_cod,
+            reformatDate(os.ordem_servico_criacao),
+            os.prioridade_nome,
+            endereco,
+            os.servico_nome,
+            os.situacao_atual_nome,
+            os.setor_nome,
+            buttons
+        ]).draw(false);
+    }
+
+    function fill_data_table(data)
+    {
+        $.each(data, function (i, os) {
+
+            fill_os(os, define_buttons_atributtes(os.ativo, os.ordem_servico_pk))
+
+        });
+    }
+
+    // function filter_by_week(filtro, url)
+    // {
+    //     $.post(url, filtro).done(function (response) {
+    //         if (response.code == 200) {
+                
+    //             fill_data_table(response.data);
+                
+    //         }
+    //         else if (response.code == 404) {
+    //             alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada');
+    //         }
+    //     }).fail(function (response) { alerts('failed', 'Erro', 'Algo deu errado, tente novamente'); });
+    // }
+
+    // function filter_for_all(filtro, url)
+    // {
+
+    //     $.post(url, filtro).done(function (response) {
+    //         if (response.code == 200) {
+
+    //             fill_data_table(response.data);
+
+    //         } else if (response.code == 404) { alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada'); }
+
+    //     }).fail(function (response) {
+    //         alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
+    //     });
+    // }
+
+    // function filter_by_active(filtro, url)
+    // {
+    //     $.post(url, filtro).done(function (response) {
+    //         if (response.code == 200) {
+
+    //             fill_data_table(response.data);
+
+
+    //         } else if (response.code == 404) { alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada'); }
+    //     }).fail(function (response) {
+    //         alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
+    //     });
+    // }
+
+    // function filter_by_deactive(filtro, url)
+    // {
+    //     $.post(url, filtro).done(function (response) {
+    //         if (response.code == 200) {
+
+    //             fill_data_table(response.data);
+
+
+    //         } else if (response.code == 404) { alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada'); }
+    //     }).fail(function (response) {
+    //         alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
+    //     });
+    // }
+
+    function filter_os(filtro, url)
+    {
+        $.post(url, filtro).done(function (response) {
+            if (response.code == 200) {
+                console.log(response.data);
+
+                table.clear().draw();
+
+                fill_data_table(response.data);
+
+                table.draw();
+            } else if (response.code == 404) { alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada'); }
+        }).fail(function (response) {
+            alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
+        });
+
+    }
+
+    // function filter_by_opened(filtro, url)
+    // {
+    //     $.post(url, filtro).done(function (response) {
+    //         if (response.code == 200) {
+                
+
+    //             fill_data_table(response.data);
+
+                
+
+    //         } else if (response.code == 404) { alerts('warning', 'Aviso', 'Nenhuma ordem de serviço foi encontrada'); }
+    //     }).fail(function (response) {
+    //         alerts('failed', 'Erro', 'Algo deu errado, tente novamente');
+    //     });
+    // }
 }
