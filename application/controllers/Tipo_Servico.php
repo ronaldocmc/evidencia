@@ -9,65 +9,41 @@ class Tipo_Servico extends CRUD_Controller {
 
 	function __construct() 
 	{
-		date_default_timezone_set('America/Sao_Paulo');
 		parent::__construct();
-		$this->load->model('tipo_servico_model');
+		$this->load->model('Tipo_Servico_model', 'tipo_servico');
 	}
 
-	function index() 
+	public function index() 
 	{
-		//Para testes
-		// $response = new Response();
-		// ---
+		$this->load->model('Prioridade_model', 'prioridade');
+		$this->load->model('Departamento_model', 'departamento');
 
-		$this->load->model('departamento_model');
-		$this->load->model('prioridade_model');
+		$tipos_servicos = $this->tipo_servico->get(
+			'*,tipos_servicos.ativo as ativo',
+			[
+				'departamentos.organizacao_fk' => $this->session->user['id_organizacao']
+			]
+		);
 
-		$tipos_servicos = $this->tipo_servico_model->get([
-			'departamentos.organizacao_fk' => $this->session->user['id_organizacao'],
-			'departamentos.ativo' => '1'
-		]);
+		$departamentos = $this->departamento->get_all(
+			'*',
+			[
+				'organizacao_fk' => $this->session->user['id_organizacao'],
+				'ativo' => 1
+			],
+			-1,
+			-1
+		);
 
-		$depts_aux = $this->departamento_model->get([
-			'organizacao_fk' => $this->session->user['id_organizacao'],
-			'departamentos.ativo' => '1'
-		]);
-
-		$prioridades_aux = $this->prioridade_model->get([
-			'organizacao_fk' => $this->session->user['id_organizacao'],
-			'prioridades.prioridade_desativar_tempo' => null
-		]);
-
-
-		if ($prioridades_aux !== false) 
-		{
-			foreach ($prioridades_aux as $p) 
-			{
-				$prioridades[$p->prioridade_pk] = $p->prioridade_nome;
-			}
-		}
-
-		if ($depts_aux !== false) 
-		{
-			foreach ($depts_aux as $d) 
-			{
-				$departamentos[$d->departamento_pk] = $d->departamento_nome;
-			}
-		}
-		
-
-		// Para testes
-		// if(!$depts_aux)
-		// {
-		// 	$response->set_code(Response::NOT_FOUND);
-		// }
-		// else
-		// {
-		// 	$response->set_code(Response::SUCCESS);
-		// 	$response->set_data($depts_aux);
-		// }
-		// $response->send();
-		// ----
+		$prioridades = $this->prioridade->get_all(
+			'*',
+			[
+				'organizacao_fk' => $this->session->user['id_organizacao'],
+				'ativo' => 1
+			],
+			-1,
+			-1
+		);
 
 		$this->session->set_flashdata('css',[
 			0 => base_url('assets/css/modal_desativar.css'),
@@ -104,350 +80,142 @@ class Tipo_Servico extends CRUD_Controller {
 		],'administrador');
 	}
 
-	/**
-     * Função responsável por validar os dados vindos da requisição de insert_update
-     *
-     * @param Requisição POST com tipo_servico_nome, tipo_servico_desc, prioridade_fk e
-     *		  departamento_fk, e, se setada, a tipo_servico_pk
-     * @return Objeto Response caso falhe, ou então, TRUE, caso esteja correto
-     */
-	private function form_validation_insert_update()
-	{
-		$this->load->library('form_validation');
-
-		$this->form_validation->set_rules(
-			'tipo_servico_nome', 
-			'tipo_servico_nome', 
-			'trim|required|max_length[30]'
-		);
-
-		$this->form_validation->set_rules(
-			'tipo_servico_abreviacao', 
-			'tipo_servico_abreviacao', 
-			'trim|required|max_length[10]'
-		);
-
-		$this->form_validation->set_rules(
-			'tipo_servico_desc', 
-			'tipo_servico_desc', 
-			'trim|required|max_length[200]'
-		);
-
-		$this->form_validation->set_rules(
-			'prioridade_pk', 
-			'prioridade_pk', 
-			'trim|numeric'
-		);
-
-		$this->form_validation->set_rules(
-			'departamento_pk', 
-			'departamento_pk', 
-			'trim|required|numeric'
-		);
-
-		if($this->input->post('tipo_servico_pk') != '')
-		{
-			$this->form_validation->set_rules(
-				'tipo_servico_pk', 
-				'tipo_servico_pk', 
-				'trim|required|numeric'
-			);
-		}
-
-		if($this->form_validation->run())
-		{
-			return true;
-		}
-		else
-		{
-			$response = new Response();
-			$response->set_code(Response::BAD_REQUEST);
-			$response->set_data($this->form_validation->errors_array());
-			return $response;
-		}
-	}
-
-	/**
-     * Função responsável por criar ou editar uma situação
-     *
-     * @param Requisição POST com tipo_servico_nome, tipo_servico_desc, prioridade_pk e
-     *		  departamento_pk, e, se setada, a tipo_servico_pk
-     * @return Objeto Response
-     */
-	public function insert_update()
-	{
-		// Validação dos dados da requisição
-		$result_form_validation = $this->form_validation_insert_update();
-
-		if($result_form_validation === true)
-		{
-			$response = new Response();
-
-			// Leitura dos dados do tipo de serviço
-			$tipo_servico['tipo_servico_nome'] = $this->input->post('tipo_servico_nome');
-			$tipo_servico['tipo_servico_abreviacao'] = $this->input->post('tipo_servico_abreviacao');
-			$tipo_servico['tipo_servico_desc'] = $this->input->post('tipo_servico_desc');
-
-			// Verificando se a prioriedade passada existe no banco
-			$this->load->model('prioridade_model');
-
-			$prioridade = $this->prioridade_model->get($this->input->post('prioridade_pk'));
-
-			if(!$prioridade)
-			{
-				$response->set_code(Response::NOT_FOUND);
-				$response->set_data([
-					'erro' => 'Prioridade passada não encontrada'
-				]);
-				$response->send();
-				return;
-			}
-			else
-			{
-				$tipo_servico['prioridade_padrao_fk'] = $prioridade[0]->prioridade_pk;
-			}
-
-			// Verificando se o departamento passado existe no banco
-			$this->load->model('departamento_model');
-
-			$departamento = $this->departamento_model->get($this->input->post('departamento_pk'));
-
-			if(!$departamento)
-			{
-				$response->set_code(Response::NOT_FOUND);
-				$response->set_data([
-					'erro' => 'Departamento passada não encontrada'
-				]);
-				$response->send();
-				return;
-			}
-			else
-			{
-				$tipo_servico['departamento_fk'] = $departamento[0]->departamento_pk;
-			}
-
-			// Update
-			if($this->input->post('tipo_servico_pk') != '')
-			{
-				$tipo_servico['tipo_servico_pk'] = $this->input->post('tipo_servico_pk');
-
-				// Se houver a tipo_servico_pk, trata-se de um update
-				$resultado = $this->tipo_servico_model->update($tipo_servico, 
-					$this->input->post('tipo_servico_pk'));
-
-				if(!$resultado)
-				{
-    				// Caso o update falhe
-					$response->set_code(Response::DB_ERROR_UPDATE);
-					$response->set_data([
-						'erro' => 'Erro no update do tipo de serviço:' . $resultado
-					]);
-				}
-				else
-				{
-    				// Caso o update obteve sucesso
-					$response->set_code(Response::SUCCESS);
-				}
-			}
-			// Insert
-			else
-			{
-				$resultado = $this->tipo_servico_model->insert($tipo_servico);
-
-				if(!$resultado)
-				{
-					$response->set_code(Response::DB_ERROR_INSERT);
-					$response->set_data([
-						'erro' => 'Erro na inserção do tipo de serviço'
-					]);
-				}
-				else
-				{
-					$response->set_code(Response::SUCCESS);
-					$response->set_data([
-						'tipo_servico_pk' => $resultado
-					]);
-				}
-			}
-
-			$response->send();
-		}
-		else
-		{
-			$result_form_validation->send();
-		}
-	}
-
-	/**
-     * Método responsável por desativar um tipo de serviço
-     *
-     * @param pk do tipo de servico
-     * @return objeto Response contendo sucesso ou erros
-     */
-	public function deactivate()
-	{
-		$this->load->library('form_validation');
-
-		$response = new Response();
-
-		$this->form_validation->set_rules(
-			'tipo_servico_pk',
-			'tipo_servico_pk',
-			'trim|required|numeric'
-		);
-
-		if ($this->form_validation->run()) 
-		{
-			$tipo_servico = $this->tipo_servico_model->get($this->input->post('tipo_servico_pk'));
-
-
-			if($tipo_servico !== false) // se existe tipo serviço:
-			{
-				$this->load->model('servico_model');
-				
-				//BEGIN_TRANSACTION
-				$servicos = $this->servico_model->get(['tipo_servico_fk' => $this->input->post('tipo_servico_pk')]);
-				// $resposta = true;
-				// if($servicos != false){ // ou seja, se existe serviços:
-				// 	foreach($servicos as $servico)
-				// 	{
-				// 		if($resposta){
-				// 			$resposta = $this->servico_model->update(['servico_status' => '0'], array('servico_pk' => $servico->servico_pk));
-				// 		}
-				// 		else{ //se deu erro:
-				// 			$resposta = false;
-				// 		}	
-				// 	}
-				// }
-				if($servicos == false){
-					$existe_servicos_dependentes = false;
-				}else{
-					$existe_servicos_dependentes = true;
-				}
-
-				if($existe_servicos_dependentes)
-				{
-					$response = new Response();
-					$response->set_code(Response::FORBIDDEN);
-					$response->set_data(['erro' => 'Este tipo de serviço possui serviços dependentes.']);
-				}
-				else{ //se não der problema na desativação dos serviços dependentes:
-
-					$resultado = $this->tipo_servico_model->update([ 
-						'tipo_servico_status' => '0'
-					], $this->input->post('tipo_servico_pk'));
-						
-					if($resultado === 0) //se der falha ao desativar o tipo de serviço:
-					{
-						$response = new Response();
-						$response->set_code(Response::DB_ERROR_UPDATE);
-						$response->set_data(['erro' => 'Erro na desativação do tipo de serviço']);
-					}
-					else //se der tudo certo:
-					{
-						$response->set_code(Response::SUCCESS);
-					}
-				}
-
-
-
-
-			}
-			else //se o tipo de serviço não existir
-			{
-				$response = new Response();
-				$response->set_code(Response::NOT_FOUND);
-				$response->set_data(['erro' => 'Tipo de serviço não encontrado']);
-			}
-		}
-		else //se o form valid der erro:
-		{
-			$response = new Response();
-			$response->set_code(Response::BAD_REQUEST);
-			$response->set_data($this->form_validation->errors_array());
-		}
-
-		$response->send();
-	} 
-
-	/**
-     * Função responsável por ativar um tipo de serviço
-     *
-     * @param Requisição POST com a tipo_servico_pk
-     * @return Objeto Response
-     */
-    public function activate()
+	private function load()
     {
-    	$this->load->library('form_validation');
-
-		$response = new Response();
-
-		$this->form_validation->set_rules(
-			'tipo_servico_pk',
-			'tipo_servico_pk',
-			'trim|required|numeric'
-		);
-
-		if ($this->form_validation->run()) 
-		{
-			$tipo_servico = $this->tipo_servico_model->get($this->input->post('tipo_servico_pk'));
-
-			if($tipo_servico !== false)
-			{
-				$resultado = $this->tipo_servico_model->update([
-					'tipo_servico_status' => '1'
-				], $this->input->post('tipo_servico_pk'));
-
-				if($resultado === 0)
-				{
-					$response = new Response();
-					$response->set_code(Response::DB_ERROR_UPDATE);
-					$response->set_data(['erro' => 'Erro na ativação do tipo de serviço']);
-				}
-				else
-				{
-					$response->set_code(Response::SUCCESS);
-				}
-			}
-			else
-			{
-				$response = new Response();
-				$response->set_code(Response::NOT_FOUND);
-				$response->set_data(['erro' => 'Tipo de serviço não encontrado']);
-			}
-		}
-		else
-		{
-			$response = new Response();
-			$response->set_code(Response::BAD_REQUEST);
-			$response->set_data($this->form_validation->errors_array());
-		}
-
-		$response->send();
+        $this->load->library('form_validation');
+        $this->load->helper('exception_helper');
     }
 
+	public function save()
+	{
+		$this->load();
+	    $response = new Response();
 
-    public function get_dependent_services(){
+        try {
+            if ($this->is_superuser()) 
+            {
+                $this->add_password_to_form_validation();
+            }
+
+            $this->tipo_servico->fill();
+
+            if($this->input->post('tipo_servico_pk') !== '')
+            {
+                $this->tipo_servico->config_form_validation_primary_key();
+            }
+            $this->tipo_servico->config_form_validation();
+            $this->tipo_servico->run_form_validation();
+
+            $this->begin_transaction();
+
+            if($this->input->post('tipo_servico_pk') !== '')
+            {
+                $this->tipo_servico->update();
+            } 
+            else 
+            {
+                $response->set_data(['id' => $this->tipo_servico->insert()]);
+            }
+
+            $this->end_transaction();
+
+            $response->set_code(Response::SUCCESS);
+            $response->send();
+
+        } catch(MyException $e) {
+            handle_my_exception($e);
+        } catch(Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    public function get_dependent_services()
+    {
     	$response = new Response();
+    	$this->load->model('Servico_model', 'servico');
 
-    	$this->load->model('servico_model');
-
-    	$tipo_servico_pk = $this->input->post('tipo_servico_pk');
-    	if(!is_numeric($tipo_servico_pk)){ //se por algum motivo não for um número:
-    		$response = new Response();
-			$response->set_code(Response::BAD_REQUEST);
-			$response->set_data(['erro' => 'Erro ao localizar tipo de serviço.']);
-    	}
-    	else{ //se é número:
-	    	$resultado = $this->servico_model->get_objects([
-				'servicos.tipo_servico_fk' => $tipo_servico_pk, 'servicos.servico_status' => '1'
-			]);
+		try {
+			$servicos = $this->servico->get_all(
+				'servicos.servico_nome',
+				['servicos.tipo_servico_fk' => $this->input->post('tipo_servico_pk')],
+				-1,
+				-1
+			);
 
 			$response->set_code(Response::SUCCESS);
-			$response->set_data($resultado);
-    	}
+			$response->set_data($servicos);
+			$response->send();
 
-		$response->send();
+		} catch(MyException $e) {
+            handle_my_exception($e);
+        } catch(Exception $e) {
+            handle_exception($e);
+		}
+    }
+
+    public function deactivate()
+    {
+        try{
+            $this->load();
+            $this->load->model('Servico_model', 'servico');
+
+            $servico = $this->servico->get_all(
+                'servicos.servico_nome',
+                [
+                	'servicos.tipo_servico_fk' => $this->input->post('tipo_servico_pk'),
+                	'servicos.ativo' => 1
+                ],
+                -1,
+                -1
+            );
+
+            if (count($servico) > 0) 
+            {
+                throw new MyException("Ainda há serviços ativos com esse tipo de serviço", Response::BAD_REQUEST); 
+            }
+
+            $this->tipo_servico->config_form_validation_primary_key();
+            $this->tipo_servico->run_form_validation();
+            $this->tipo_servico->fill();
+
+            $this->begin_transaction();
+            $this->tipo_servico->deactivate();
+            $this->end_transaction();
+
+            $response = new Response();
+            $response->set_code(Response::SUCCESS);
+            $response->set_message('Tipo de Serviço desativado com sucesso!');
+            $response->send();
+
+        } catch(MyException $e) {
+            handle_my_exception($e);
+        } catch(Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    public function activate()
+    {
+        try{
+            $this->load();
+            $this->tipo_servico->config_form_validation_primary_key();
+            $this->tipo_servico->run_form_validation();
+            $this->tipo_servico->fill();
+
+            $this->begin_transaction();
+            $this->tipo_servico->activate();
+            $this->end_transaction();
+            
+            $response = new Response();
+            $response->set_code(Response::SUCCESS);
+            $response->set_message('Tipo de Servio ativado com sucesso!');
+            $response->send();
+
+        } catch(MyException $e) {
+            handle_my_exception($e);
+        } catch(Exception $e) {
+            handle_exception($e);
+        }
     }
 }
 
