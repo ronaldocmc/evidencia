@@ -23,7 +23,9 @@ class Funcao extends CRUD_Controller {
     {
         $funcoes = $this->funcao->get_all(
             '*',
-            NULL,
+            [
+                'organizacao_fk' => $this->session->user['id_organizacao']
+            ],
             -1,
             -1
         );
