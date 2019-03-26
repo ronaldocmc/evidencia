@@ -101,11 +101,11 @@ $("#confirmar").click(function() {
 		btn_ativar($('#confirmar'));
 		
 		if (response.code == 200) {
-			alerts('success','Sucesso!', response.data.message);
+			alerts('success','Sucesso!', response.data.mensagem);
 			window.location.href = base_url+'/Relatorio/detalhes/'+response.data.id;
 		}
 		else if (response.code == 400) {
-			alerts('failed','Erro!',response.data.message);
+			alerts('failed','Erro!',response.data.mensagem);
 		}
 		else{
 			alerts('failed', 'Erro!', 'Tem de conexão excedido.<br>Por favor, recarregue a página.');

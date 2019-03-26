@@ -37,27 +37,20 @@ function send_data(){
 	var data =
 	{
 		'prioridade_pk': $('#prioridade_pk').val(),
-		'prioridade_nome': $('#nome-input').val(),
-		'prioridade_duracao': $('#prazo-input-dias').val() * 24 + $('#prazo-input-horas').val() * 1,
-		'senha': $('#senha-input').val()
+		'prioridade_nome': $('#prioridade_nome').val()
 	}
 
 	btn_load($('.submit'));
-	btn_load($('#pula-para-confirmacao'));
 
-	$.post(base_url + '/prioridade/insert_update', data).done(function (response) {
+	$.post(base_url + '/prioridade/save', data).done(function (response) {
 
 		btn_ativar($('.submit'));
-		btn_ativar($('#pula-para-confirmacao'));
-
 
 		if (response.code == 400) {
-			show_errors(response);
 			alerts('failed', 'Erro!', 'O formulário apresenta algum(ns) erro(s) de validação');
 			$('#senha-input').val('');
 		}
 		else if (response.code == 401) {
-			show_errors(response);
 			alerts('failed', 'Erro!', 'Senha informada incorreta');
 			$('#senha-input').val('');
 			$('#senha-input').focus();
@@ -67,37 +60,8 @@ function send_data(){
 			$('#senha-input').val('');
 		}
 		else if (response.code == 200) {
-			var hora;
-			if(data['prioridade_duracao'] == 1){
-				hora = ' hora';
-			}else{
-				hora = ' horas';
-			}
-			prioridade =
-			{
-				'prioridade_nome': data['prioridade_nome'],
-				'prazo_duracao': data['prioridade_duracao'] + hora,
-				'prioridade_desativar_tempo': null,
-			}
-
-			if (data['prioridade_pk'] == '' || data['prioridade_pk'] == undefined) {
-				prioridade['prioridade_pk'] = response.data['prioridade_pk'];
-				prioridade['prioridade_fk'] = response.data['prioridade_pk'];
-				prioridades.push(prioridade);
-				alerts('success', 'Sucesso!', 'Prioridade inserida com sucesso');
-			}
-			else {
-				prioridade['prioridade_pk'] = data['prioridade_pk'];
-				for (var i in prioridades) {
-					if (prioridades[i]['prioridade_pk'] == data['prioridade_pk'])
-						break;
-				}
-				prioridades[i] = (prioridade);
-				alerts('success', 'Sucesso!', 'Prioridade atualizada com sucesso');
-			}
-			draw_table();
-			$('#ce_prioridade').modal('hide');
-
+			alerts('success', 'Sucesso!', 'Operação realizada com sucesso');
+			document.location.reload(false);
 		}
 	}, "json");
 }
@@ -115,14 +79,9 @@ $(".submit").click(function () {
 $(document).on('click', '.btn_editar', function () {
 	acao = ".submit";
 	$("#ce_prioridade").find(".modal-title").text("Editar Prioridade");
-	var duracao_number = prioridades[$(this).val()]["prazo_duracao"].split(' ')[0];
 
-	var duracao_horas = duracao_number % 24;
-	var duracao_dias = Math.floor(duracao_number / 24);
 	$('#prioridade_pk').val(prioridades[$(this).val()]["prioridade_pk"]);
-	$('#nome-input').val(prioridades[$(this).val()]["prioridade_nome"]);
-	$('#prazo-input-horas').val(duracao_horas);
-	$('#prazo-input-dias').val(duracao_dias);
+	$('#prioridade_nome').val(prioridades[$(this).val()]["prioridade_nome"]);
 });
 
 /*
@@ -169,17 +128,17 @@ $(document).on('click', '.btn-desativar', function (event) {
             else { //se tiver 1 ou mais tipos de serviço dependentes:
                 var mensagem = "";
                 if(response.data.length == 1){ 
-                    title = 'Este é o tipo de serviço que será afetado:';
+                    title = 'A prioridade é padrão nesse tipo de serviço:';
                 }
                 else if(response.data.length > 1){
-                     title = 'Estes são os tipos de serviços que serão afetados:';
+                     title = 'A prioridade é padrão nesses tipos de serviços:';
                 }
                 html += "<ul style='margin-left: 15px'>";
                 for( var i in response.data){
                     html += '<li>'+ response.data[i].tipo_servico_nome +'</li>';
                 }
                 html += "</ul>";
-                mensagem = "<br><b>OBS:</b> Você não poderá desativar esta prioridade enquanto houver(em) tipo(s) de serviço(s) dependente(s).<br>";
+                mensagem = "<br> Você não poderá desativar esta prioridade enquanto houver(em) tipo(s) de serviço(s) dependente(s).<br>";
                 html += mensagem;
 
             } //fecha o 1 ou mais serivços dependentes
@@ -189,7 +148,37 @@ $(document).on('click', '.btn-desativar', function (event) {
 		}		
 
 	});
+});
 
+$(document).on('click', '.btn-reativar', function (event) {
+	$('#btn-reativar').val(prioridades[$(this).val()]["prioridade_pk"]);
+});
+
+$(document).on('click', '#btn-reativar', function (event) {
+
+	btn_load($('#btn-reativar'));
+
+	var data = 
+	{
+		'prioridade_pk': $(this).val()
+	}
+
+	$.post(base_url + '/prioridade/activate', data, function (response, textStatus, xhr) {
+
+		btn_ativar($('#btn-reativar'));
+
+		if (response.code == 400) {
+			alerts('failed', 'Erro!', 'O formulário apresenta algum erro de validação');
+		}
+		else if (response.code == 401) {
+			alerts('failed', 'Erro!', 'Senha informada incorreta');
+		}
+		else if (response.code == 200) {
+			alerts('success', 'Sucesso', 'Prioridade reativada com sucesso');
+		  	document.location.reload(false);
+		}		
+
+	});
 });
 
 
@@ -215,7 +204,7 @@ $(document).on('click', '#btn-desativar', function (event) {
 		btn_ativar($('#btn-desativar'));
 
 		if (response.code == 400) {
-			alerts('failed', 'Erro!', response.data.erro);
+			alerts('failed', 'Erro!', response.data.mensagem);
 		}
 		else if (response.code == 401) {
 			alerts('failed', 'Erro!', 'Senha informada incorreta');
@@ -224,15 +213,8 @@ $(document).on('click', '#btn-desativar', function (event) {
 			alerts('failed', 'Erro!', 'Ocorreu alguma falha no banco de dados. Tente novamente mais tarde');
 		}
 		else if (response.code == 200) {
-			alerts('success', 'Sucesso!', 'prioridade apagada com sucesso');
-			for (var i in prioridades) {
-				if (prioridades[i]['prioridade_pk'] == data['prioridade_pk']){
-					prioridades[i]['prioridade_desativar_tempo'] = true;
-					draw_table();
-					break;
-				}
-			}
-			$('#d-prioridade').modal('hide');
+			alerts('success', 'Sucesso!', 'Prioridade desativada com sucesso');
+			document.location.reload(false);
 		}
 	});
 });

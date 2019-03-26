@@ -116,6 +116,44 @@ class Organizacao extends CRUD_Controller {
         }
     }
 
+    private function _organization_is_active($organization)
+    {
+        if(!$organization->ativo)
+        {
+            throw new MyException(
+                'Organização inativa.', 
+                Response::FORBIDDEN
+            );
+        }
+    }
+
+    public function access()
+    {
+        try{
+            $organization = $this->organizacao->get_one_or_404(
+                'organizacao_pk, ativo',
+                ['organizacao_pk' => $this->input->post('organizacao_pk')]
+            );
+
+            $this->_organization_is_active($organization);
+
+            $user = $this->session->user;
+            $this->session->unset_userdata('user');
+            $user['id_organizacao'] = $organization->organizacao_pk;
+            $this->session->set_userdata('user', $user);
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
+           
+            
+        }catch(MyException $e){
+            handle_my_exception($e);
+        } catch(Exception $e){
+            handle_exception($e);
+        }
+    }
+
+
     public function save()
     {
         try

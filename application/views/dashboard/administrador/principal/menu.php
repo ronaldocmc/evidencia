@@ -37,12 +37,15 @@
                                         <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
                                     </li>
                                     <li>
+                                        <a href="<?php echo base_url('funcao'); ?>">Funções</a>
+                                    </li>
+                                    <li>
                                             <a href="<?php echo base_url('servico'); ?>">Serviços</a>
                                     </li>
+                                    <li>
+                                        <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
+                                    </li>
                                         <?php if(SHOW_HIDE_MENU): ?>
-                                        <li>
-                                            <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
-                                        </li>
                                         <li>
                                             <a href="<?php echo base_url('situacao'); ?>">Situações</a>
                                         </li>
@@ -132,12 +135,15 @@
                                         <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
                                     </li>
                                     <li>
+                                        <a href="<?php echo base_url('funcao'); ?>">Funções</a>
+                                    </li>
+                                    <li>
                                         <a href="<?php echo base_url('servico'); ?>">Serviços</a>
                                     </li>
+                                    <li>
+                                        <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
+                                    </li>
                                     <?php if(SHOW_HIDE_MENU): ?>
-                                        <li>
-                                            <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
-                                        </li>
                                         <li>
                                             <a href="<?php echo base_url('situacao'); ?>">Situações</a>
                                         </li>
