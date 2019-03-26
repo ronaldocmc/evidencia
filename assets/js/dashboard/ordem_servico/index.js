@@ -1323,30 +1323,23 @@ function initMap() {
             contentType: false,
             success: function (response) {
 
-                console.log(response);
-
                 if (response.code == 400) {
-                    show_errors(response);
-                    alerts('failed', response.data, 'O formulário apresenta algum(ns) erro(s)');
+                    console.log("AQUI",response.data.mensagem);
+                    alerts('failed', response.data.mensagem, ' ');
                     //pre_loader_hide();
                 } else if (response.code == 401) {
-                    show_errors(response);
                     alerts('failed', response.data, 'Acesso não autorizado');
                     //pre_loader_hide();
                 } else if (response.code == 403) {
-                    show_errors(response);
                     alerts('failed', response.data, 'Acesso proíbido');
                     //pre_loader_hide();
                 } else if (response.code == 404) {
-                    show_errors(response);
                     alerts('failed', response.data, 'Dados não encontrado');
                     //pre_loader_hide();
                 } else if (response.code == 501) {
-                    show_errors(response);
                     alerts('failed', response.data, 'Erro na exclusão');
                     //pre_loader_hide();
                 } else if (response.code == 503) {
-                    show_errors(response);
                     alerts('failed', response.data, 'Erro na exclusão');
                     //pre_loader_hide();
                 }

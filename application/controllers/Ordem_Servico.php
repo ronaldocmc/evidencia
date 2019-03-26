@@ -46,7 +46,7 @@ class Ordem_Servico extends CRUD_Controller
     {
         $ordens_servico = $this->ordem_servico->get_home(
             $this->session->user['id_organizacao'],
-            ['ordens_servicos.ativo' => 1]    
+            ['ordens_servicos.ativo' => 1]
         );
 
         $imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao']);
@@ -316,8 +316,27 @@ class Ordem_Servico extends CRUD_Controller
 
         try {
             $this->load->helper('exception');
+            $this->load->model('relatorio_model', 'relatorio');
 
             $this->ordem_servico->__set("ordem_servico_pk", $id);
+
+            $os = $this->relatorio->get_orders_of_report(
+                [
+                    'relatorios_os.os_fk' => $id
+                ],
+                true
+            );
+            
+            if ($os) {
+                throw new MyException('A ordem não pode ser excluida pois está presente em um relatório', Response::BAD_REQUEST);
+            }
+
+            $os = $this->ordem_servico->get_historico($id);
+
+            if($os){
+                throw new MyException('A ordem não pode ser excluída pois possúi um histórico de modificações', Response::BAD_REQUEST);
+            }
+
             $this->ordem_servico->__set("ativo", 0);
 
             $this->begin_transaction();
