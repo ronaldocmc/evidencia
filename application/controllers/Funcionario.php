@@ -40,7 +40,7 @@ class Funcionario extends CRUD_Controller
             funcionarios.funcao_fk, funcoes.funcao_nome, funcoes.funcao_pk, organizacoes.organizacao_pk ",
             // "*",
             [
-                "organizacao_fk" => $this->session->user['id_organizacao'],
+                "funcionarios.organizacao_fk" => $this->session->user['id_organizacao'],
             ]
         );
 
@@ -68,21 +68,27 @@ class Funcionario extends CRUD_Controller
 
         $funcoes = $this->funcao_model->get_all(
             '*',
-            null,
+            [
+                'organizacao_fk' => $this->session->user['id_organizacao']
+            ],
             -1,
             -1
         );
 
         $departamentos = $this->departamento_model->get_all(
             '*',
-            null,
+            [
+                'organizacao_fk' => $this->session->user['id_organizacao']
+            ],
             -1,
             -1
         );
 
         $setores = $this->setor_model->get_all(
             '*',
-            null,
+            [
+                'organizacao_fk' => $this->session->user['id_organizacao']
+            ],
             -1,
             -1
         );
