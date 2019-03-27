@@ -43,12 +43,7 @@
                                 <h5>Filtrar por</h5><br>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <label for="filter-ativo">Mostrar</label>
-                                        <select name="filter-ativo" id="filter-ativo" class="form-control">
-                                            <option value="todos">Todos</option>
-                                            <option value="ativos">Apenas ativos</option>
-                                            <option value="desativados">Apenas desativados</option>
-                                        </select><br>
+
                                     </div>
                                 </div>
                             </div>
@@ -86,7 +81,7 @@
 
                                                     <td>
                                                         <div class="btn-group">
-                                                            <?php if ($ts->tipo_servico_status): ?>
+                                                            <?php if ($ts->ativo) { ?>
                                                                 <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$key?>" data-target="#ce_tipo_servico">
                                                                     <div class="d-none d-sm-block">
                                                                         Editar
@@ -103,19 +98,19 @@
                                                                         <i class="fas fa-times fa-fw"></i>
                                                                     </div>
                                                                 </button>
-                                                                <?php else: ?>
-                                                                    <button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="<?=$key?>" data-target="#r_tipo_servico">
-                                                                        <div class="d-none d-sm-block">
-                                                                            Reativar
-                                                                        </div>
-                                                                        <div class="d-block d-sm-none">
-                                                                            <i class="fas fa-check-circle fa-fw"></i>
-                                                                        </div>
-                                                                    </button>
-                                                                <?php endif;?>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                            <?php } else { ?>
+                                                                <button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="<?=$key?>" data-target="#r_tipo_servico">
+                                                                    <div class="d-none d-sm-block">
+                                                                        Reativar
+                                                                    </div>
+                                                                    <div class="d-block d-sm-none">
+                                                                        <i class="fas fa-check-circle fa-fw"></i>
+                                                                    </div>
+                                                                </button>
+                                                            <?php } ?>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                                 <?php endforeach?>
                                             <?php endif?>
                                         </tbody>
@@ -144,7 +139,7 @@
                     <div class="modal-content">
                         <!-- Modal Header -->
                         <div class="modal-header">
-                            <h4 class="modal-title">Novo tipo de serviço</h4>
+                            <h4 class="modal-title" id="ce_title">Novo tipo de serviço</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <!-- Modal body -->
@@ -169,7 +164,7 @@
                                             <div class="card-body card-block">
                                                 <div class="row form-group">
                                                     <div class="col col-md-2">
-                                                        <label for="nome-input" class=" form-control-label">
+                                                        <label for="nome-input" class=" form-control-label" style="font-size: 15px;">
                                                             <strong>Nome*</strong>
                                                         </label>
                                                     </div>
@@ -178,9 +173,11 @@
                                                         minlength="3">
                                                         <small class="form-text text-muted">Por favor, informe o nome do tipo de serviço </small>
                                                     </div>
+                                                </div>
 
+                                                <div class="row form-group">
                                                     <div class="col col-md-2">
-                                                        <label for="abreviacao-input" class=" form-control-label">
+                                                        <label for="abreviacao-input" class=" form-control-label" style="font-size: 15px;">
                                                             <strong>Abreviação*</strong>
                                                         </label>
                                                     </div>
@@ -189,33 +186,61 @@
                                                         minlength="3">
                                                         <small class="form-text text-muted">A abreviação será utilizada na codificação de uma Ordem de Serviço</small>
                                                     </div>
+                                                </div>
 
+                                                <div class="row form-group">
                                                     <div class="col col-md-2">
-                                                        <label for="descricao-input" class=" form-control-label">
-                                                            <strong>Descrição*</strong>
+                                                        <label for="descricao-input" class=" form-control-label" style="font-size: 15px;">
+                                                            Descrição
                                                         </label>
                                                     </div>
                                                     <div class="col-12 col-md-10">
-                                                        <textarea id="descricao-input" name="descricao" class="form-control" required="true" resizable="false"></textarea>
+                                                        <textarea id="descricao-input" name="descricao" class="form-control" resizable="false"></textarea>
                                                         <small class="form-text text-muted">Por favor, informe a descrição do tipo de serviço </small>
                                                     </div>
+                                                </div>
 
-
+                                                <div class="row form-group">
                                                     <div class="col-12 col-md-2">
-                                                        <label for="prioridade_fk" class=" form-control-label"><strong>Prioridade Padrão*</strong></label>
+                                                        <label for="prioridade_pk" class=" form-control-label" style="font-size: 15px;">
+                                                            Prioridade Padrão
+                                                        </label>
                                                     </div>
                                                     <div class="col-12 col-md-10">
-                                                        <?php echo form_dropdown('prioridade_pk', $prioridades, null, 'class="form-control" required="true" id="prioridade_fk"'); ?>
+                                                        <select class="form-control" id="prioridade_pk">
+                                                            <option value="">Nenhuma</option>
+                                                            <?php if ($prioridades != null): ?>
+                                                                <?php foreach ($prioridades as $key => $prioridade): ?>
+                                                                    <option value="<?= $prioridade->prioridade_pk ?>">
+                                                                        <?= $prioridade->prioridade_nome ?>
+                                                                    </option>
+                                                                <?php endforeach ?>
+                                                            <?php endif ?>
+                                                        </select>
                                                         <small class="help-block form-text">Por favor, informe a prioridade padrão que será exibida na ordem de serviço desse tipo.</small>
                                                     </div>
+                                                </div>
+
+                                                <div class="row form-group">
                                                     <div class="col-12 col-md-2">
-                                                        <label for="departamento_fk" class=" form-control-label"><strong>Departamento*</strong></label>
+                                                        <label for="departamento_pk" class=" form-control-label" style="font-size: 15px;">
+                                                            <strong>Departamento*</strong>
+                                                        </label>
                                                     </div>
                                                     <div class="col-12 col-md-10">
-                                                        <?php echo form_dropdown('departamento_pk', $departamentos, null, 'class="form-control" required="true" id="departamento_fk"'); ?>
+                                                        <select class="form-control" id="departamento_pk">
+                                                            <?php if ($departamentos != null): ?>
+                                                                <?php foreach ($departamentos as $key => $departamento): ?>
+                                                                    <option value="<?= $departamento->departamento_pk ?>">
+                                                                        <?= $departamento->departamento_nome ?>
+                                                                    </option>
+                                                                <?php endforeach ?>
+                                                            <?php endif ?>
+                                                        </select>
                                                         <small class="help-block form-text">Por favor, informe o departamento responsável por esse tipo de serviço.</small>
                                                     </div>
                                                 </div>
+
                                             </div>
                                             <div class="card-footer text-center">
                                                 <?php if ($this->session->user['is_superusuario'] === true): ?>
@@ -237,7 +262,7 @@
                                                     <div class="card-body card-block">
                                                         <div class="row form-group">
                                                             <div class="col col-md-2">
-                                                                <label for="senha-input" class=" form-control-label">
+                                                                <label for="senha-input" class=" form-control-label" style="font-size: 15px;">
                                                                     <strong>Senha*</strong>
                                                                 </label>
                                                             </div>
@@ -340,11 +365,7 @@
                                             <p>Ao reativar um tipo de serviço, as seguintes ações também serão feitas:</p>
                                             <ul style="margin-left: 15px">
                                                 <li>Novas ordens de serviço poderão utilizar novamente o tipo de serviço ativado.</li>
-
-
                                             </ul>
-                                            <br>
-                                            <p><b>Importante:</b> nenhum serviço inativo vinculado a este tipo de serviço será reativado!</p>
                                         </div>
                                         <?php if ($this->session->user['is_superusuario']): ?>
                                             <div class="form-group">
