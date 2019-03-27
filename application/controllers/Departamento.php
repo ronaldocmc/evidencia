@@ -22,7 +22,7 @@ class Departamento extends CRUD_Controller {
     function index() 
     {
         $departamentos = $this->departamento->get_all(
-            '*',
+            '*, departamentos.ativo as ativo',
             ['organizacao_fk' => $this->session->user['id_organizacao']],
             -1,
             -1
@@ -73,6 +73,8 @@ class Departamento extends CRUD_Controller {
 
             $_POST['organizacao_fk'] = $this->session->user['id_organizacao'];
             $this->departamento->fill();
+
+            
 
             if($this->input->post('departamento_pk') !== '')
             {

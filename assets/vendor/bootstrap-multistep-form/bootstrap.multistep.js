@@ -91,7 +91,7 @@ $('.form-control').keyup(function () {
 	}
 });
 
-$(".next").click(function(){
+$(document).on('click','.next',function(){
 	var editar = $('#opcao-editar').val();
 	
 	current_fs = $(this).closest('.card-step');
@@ -158,7 +158,7 @@ $(".next").click(function(){
 	}
 });
 
-$(".previous").click(function(){
+$(document).on('click','.previous',function(){
 	var editar = $('#opcao-editar').val();
 	
 	if(animating) return false;
