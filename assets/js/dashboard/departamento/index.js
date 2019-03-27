@@ -107,11 +107,10 @@ class Control extends GenericControl {
     // Método responsável por enviar a requisição, seja de salvar ou editar.
     async save() {
         this.myView.handleLoad();
-        const data = this.myView.createJsonWithFields(['departamento_nome', 'senha']);
         
+        const data = this.myView.createJsonWithFields(['departamento_nome', 'senha']);
         data[this.primaryKey] = this.state.selectedId ? departamentos[this.state.selectedId].departamento_pk : '';
         
-
         const response = await this.myActions.send('/save', data);
         this.myView.handleLoad();
 
