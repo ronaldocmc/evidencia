@@ -1371,52 +1371,6 @@ function initMap() {
         pre_loader_hide();
         
     }
-
-        // switch ($('#filter-ativo').val()) {
-        //     case "semana":
-                
-        //         pre_loader_show('semana');
-        //         filter_by_week(filtro, url);
-        //         pre_loader_hide();
-        //         break;
-
-        //     case "todos":
-        //         filtro = { filtro: '' };
-        //         pre_loader_show();
-        //         filter_for_all(filtro, url);
-        //         pre_loader_hide();
-        //         break;
-
-        //     case "ativadas":
-        //         filtro = { filtro: 'ativadas' };
-        //         pre_loader_show();
-        //         filter_by_active(filtro, url);
-        //         pre_loader_hide();
-        //         break;
-
-        //     case "desativadas":
-        //         filtro = { filtro: 'desativadas' };
-        //         pre_loader_show();
-        //         filter_by_deactive(filtro, url);
-        //         pre_loader_hide();
-        //         break;
-
-        //     case "finalizadas":
-        //         filtro = { filtro: 'finalizadas' };
-        //         pre_loader_show();
-        //         filter_by_finished(filtro, url);
-        //         pre_loader_hide();
-        //         break;
-
-        //     case "abertas":
-        //         filtro = { filtro: 'abertas' };
-        //         pre_loader_show();
-        //         filter_by_finished(filtro, url);
-        //         pre_loader_hide();
-        //         break;
-        // }
-
-    
     
     function define_buttons_atributtes(ativo, chave){
         
@@ -1442,8 +1396,8 @@ function initMap() {
                                     '<i class="far fa-clock fa-fw"></i>' +
                                 '</div>' +
                             '</button>' + 
+                             '<button type="button" class="btn btn-sm btn-danger reset_multistep btn_delete btn-attr-ordem_servico_pk" data-toggle="modal" value="' + ordem_servico_pk + '" data-target="#d_ordem_servico" title="Apagar"><div class="d-none d-sm-block"><i class="fa fa-trash fa-fw"></i></div></button>'
                         '</div>';
-                        //  '<button type="button" class="btn btn-sm btn-' + classButton1 + ' btn-' + classButton2 + '" data-toggle="modal" value="' + os.ordem_servico_pk + '" data-target="#d_servico" title="Desativar">'
 
         return buttons; 
     }
