@@ -77,7 +77,7 @@ class MY_Model extends Generic_Model
         }
 
         if ($res == null || $res == false) {
-            throw MyException($this->getName() . ' não encontrado.', Response::NOT_FOUND);
+            throw new MyException($this->getName() . ' não encontrado.', Response::NOT_FOUND);
         } else {
             return $res;
         }
