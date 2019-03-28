@@ -1,6 +1,13 @@
-class GenericAction {
-    constructor() {
+class GenericRequest {
 
+    constructor() {
+        
+    }
+
+    async init() {
+        const response = await this.send('/get', {});
+
+        return response.data;
     }
 
     async send(endPoint, data) {

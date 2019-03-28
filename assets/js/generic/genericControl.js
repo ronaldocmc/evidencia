@@ -5,48 +5,124 @@ class GenericControl {
         this.state = {
             selectedId: null,
         }
+
+        this.myView = new View();
+        this.myRequests = new Request();
     }
 
-    handleResponse(response) {
+    async init() {
+
+        this.data = await this.myRequests.init();
+        this.myView.init(this.data.self, this.tableFields);
+
+
+        // Send request
+        $(document).on('click', '.submit', () => { this.save() });
+        $(document).on('click', '.action_deactivate', () => { this.deactivate(); });
+        $(document).on('click', '.action_activate', () => { this.activate() });
+
+        // Open modal
+        $(document).on('click', '.btn_edit', () => { this.handleFillFields() });
+        $(document).on('click', '.btn_deactivate', () => { this.handleDependences(); });
+        $(document).on('click', '.btn_activate', () => { });
+
+        $(document).on('change', '#filter-ativo', (e) => { this.handleFilter(e.target); });
+    }
+
+    handleResponse(response, data) {
         if (!response) {
             this.myView.showMessage('failed', 'Falha', 'Entre em contato com a central!');
             return;
         }
 
         if (response.code == 200) {
+
+            if (this.state.selectedId) {
+                this.updateObject(data);
+            } else {
+                this.addNewObject(data, response);
+            }
+
+            this.myView.closeModal();
             this.myView.showMessage('success', 'Sucesso', 'Operação realizada!');
-            document.location.reload(false);
+            this.myView.render(this.data.self);
         } else {
             this.myView.showMessage('failed', 'Falha', response.message);
         }
     }
 
-    async deactivate() {
-        this.myView.handleLoad();
+    async save() {
+        this.myView.initLoad();
 
-        const data = is_superusuario ? this.myView.getDeactivatePassword() : {};
-        data[this.primaryKey] = departamentos[this.state.selectedId].departamento_pk;
+        const sendData = this.myView.createJsonWithFields(this.fields);
 
-        const response = await this.myActions.send('/deactivate', data);
+        if (is_superusuario) sendData['senha'] = this.myView.getPassword('save')['senha'];
+        sendData[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
 
-        this.myView.handleLoad();
+        const response = await this.myRequests.send('/save', sendData);
 
-        this.handleResponse(response);
+        this.myView.endLoad();
+
+        delete sendData['senha'];
+        this.handleResponse(response, sendData);
+    }
+
+    async switchState(action) {
+        this.myView.initLoad();
+
+        const sendData = is_superusuario ? this.myView.getPassword(action) : {};
+        sendData[this.primaryKey] = this.data.self[this.state.selectedId][this.primaryKey];
+
+        const response = await this.myRequests.send(`/${action}`, sendData);
+
+        this.myView.endLoad();
+
+        sendData.ativo = this.handleActiveOrDeactive();
+
+        this.handleResponse(response, sendData);
     }
 
     async activate() {
-        this.myView.handleLoad();
+        await this.switchState('activate');
+    }
 
-        const data = is_superusuario ? this.myView.getActivatePassword() : {};
-        data[this.primaryKey] = departamentos[this.state.selectedId].departamento_pk;
 
-        console.log(data);
+    async deactivate() {
+        await this.switchState('deactivate');
+    }
 
-        const response = await this.myActions.send('/activate', data);
+    async handleDependences() {
+        let response = {
+            dependences: [],
+            dependence_type: '',
+        };
 
-        this.myView.handleLoad();
+        if (this.verifyDependences) {
+            const sendData = {};
+            sendData[this.primaryKey] = this.data.self[this.state.selectedId][this.primaryKey];
 
-        this.handleResponse(response);
+            response = await this.myRequests.send('/get_dependents', sendData);
+        }
+
+        this.myView.handleDependences(response.data);
+    }
+
+    handleActiveOrDeactive() {
+        return (this.data.self[this.state.selectedId].ativo == 1) ? 0 : 1;
+    }
+
+    addNewObject(data, response) {
+        data.ativo = 1;
+        data[this.primaryKey] = response.data.id;
+        this.data.self.push(data);
+    }
+
+    updateObject(data) {
+        Object.assign(this.data.self[this.state.selectedId], data);
+    }
+
+    handleFillFields() {
+        this.fillFields(this.data.self[this.state.selectedId], this.fields);
     }
 
     fillFields(object, fields) {
@@ -59,9 +135,11 @@ class GenericControl {
         this.state.selectedId = undefined;
     }
 
-    selectedId(target) {
-        const button = $(target).closest('button');
-        this.state.selectedId = $(button).val();
-        console.log(this.state.selectedId);
+    handleFilter(target) {
+        this.myView.filter(this.data, target);
+    }
+
+    setSelectedId(id) {
+        this.state.selectedId = id;
     }
 }

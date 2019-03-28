@@ -124,49 +124,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if ($departamentos != null): ?>
 
-
-                                    <?php foreach ($departamentos as $key => $departamento): ?>
-                                    <tr>
-                                        <td>
-                                            <?=$departamento->departamento_nome?>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group">
-
-                                                <?php if ($departamento->ativo): ?>
-                                                <button type="button"
-                                                    class="btn btn-sm btn-primary reset_multistep btn_edit"
-                                                    data-toggle="modal" value="<?=$key?>" data-target="#modal"  data-title="Editar departamento" data-contentid="save"
-                                                    title="Editar">
-                                                    <div class="d-none d-sm-block">
-                                                        <i class="fas fa-edit fa-fw"></i>
-                                                    </div>
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-danger btn_deactivate" data-title="Desativar departamento" data-contentid="deactivate"
-                                                    data-toggle="modal" value="<?=$key?>" data-target="#modal"
-                                                    title="Desativar">
-                                                    <div class="d-none d-block">
-                                                        <i class="fas fa-times fa-fw"></i>
-                                                    </div>
-                                                </button>
-
-                                                <?php else: ?>
-
-                                                <button type="button" class="btn btn-sm btn-success btn_activate" data-title="Ativar departamento" data-contentid="activate"
-                                                    data-toggle="modal" value="<?=$key?>" data-target="#modal">
-                                                    <div class="d-none d-sm-block">
-                                                        <i class="fas fa-power-off fa-fw"></i>
-                                                    </div>
-                                                </button>
-
-                                                <?php endif;?>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach?>
-                                    <?php endif?>
                                 </tbody>
                             </table>
                         </div>
@@ -206,15 +164,15 @@
         <div class="row">
             <div class="col-md-12">
                 <form class="msform">
-                    <input type="hidden" id="departamento_pk" name="departamento_pk" class="form-control">
-                    <!-- progressbar -->
+
+
                     <ul class="progressbar">
                         <li class="active">Identificação do Departamento</li>
                         <?php if ($this->session->user['is_superusuario'] === true): ?>
                         <li>Identificação</li>
                         <?php endif;?>
                     </ul>
-                    <!-- fieldsets -->
+
                     <div class="card card-step col-12 px-0">
                         <div class="card-header">
                             Identificação do Departamento
@@ -258,7 +216,7 @@
                                         class=" form-control-label"><strong>Senha*</strong></label>
                                 </div>
                                 <div class="col-12 col-md-10">
-                                    <input type="password" id="senha" name="senha" placeholder="Senha Pessoal"
+                                    <input type="password" id="pass-modal-save" name="senha" placeholder="Senha Pessoal"
                                         class="form-control" autocomplete="new-password" minlength="8"
                                         required="true">
                                     <small class="form-text text-muted">Por favor, informe sua senha de
@@ -296,13 +254,13 @@
                     ATENÇÃO</h4>
             </div>
 
-            <div id="loading-departamento-deactivate">
+            <div id="loading-deactivate">
                 <div align="center" class="center">
                     <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading"
                         alt="Carregando">
                 </div>
             </div>
-            <div id="dependences"></div>
+            <div id="dependences" class="container"></div>
 
             <?php if ($this->session->user['is_superusuario'] === true): ?>
             <div class="form-group">
@@ -349,6 +307,5 @@
 
 
 <script type="text/javascript">
-    const departamentos = <?php echo json_encode($departamentos !== false ? $departamentos : []); ?>;
     const is_superusuario = <?php echo $this->session->user['is_superusuario'] === true ? 1 : 0; ?>;
 </script>

@@ -24,7 +24,7 @@
 <script src="<?php echo base_url('assets/vendor/select2/select2.min.js')?>"></script>
 
 <script src="<?php echo base_url('assets/js/generic/genericView.js')?>"></script>
-<script src="<?php echo base_url('assets/js/generic/genericAction.js')?>"></script>
+<script src="<?php echo base_url('assets/js/generic/genericRequest.js')?>"></script>
 <script src="<?php echo base_url('assets/js/generic/genericControl.js')?>"></script>
 <script src="<?php echo base_url('assets/js/generic/genericModal.js')?>"></script>
 
