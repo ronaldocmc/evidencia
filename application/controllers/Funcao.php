@@ -67,13 +67,14 @@ class Funcao extends CRUD_Controller {
 
         try {
             $this->load();
-
+            
             if ($this->is_superuser()) 
             {
                 $this->add_password_to_form_validation();
             }
-
+            
             $this->funcao->fill();
+            $this->funcao->__set('organizacao_fk', $this->session->user['id_organizacao']);
 
             if($this->input->post('funcao_pk') !== '')
             {
