@@ -45,10 +45,10 @@
                                     <li>
                                         <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
                                     </li>
+                                    <li>
+                                        <a href="<?php echo base_url('situacao'); ?>">Situações</a>
+                                    </li>
                                         <?php if(SHOW_HIDE_MENU): ?>
-                                        <li>
-                                            <a href="<?php echo base_url('situacao'); ?>">Situações</a>
-                                        </li>
                                         <li>
                                             <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
                                         </li>
@@ -143,10 +143,10 @@
                                     <li>
                                         <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
                                     </li>
+                                    <li>
+                                        <a href="<?php echo base_url('situacao'); ?>">Situações</a>
+                                    </li>
                                     <?php if(SHOW_HIDE_MENU): ?>
-                                        <li>
-                                            <a href="<?php echo base_url('situacao'); ?>">Situações</a>
-                                        </li>
                                         <li>
                                             <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
                                         </li>
@@ -199,7 +199,7 @@
 
                         <?php endif;?>
                     </ul>
-                     <div style="margin-top: 50px !important;">
+                     <div style="margin-top: 30px !important;">
                         <a href="#">
                             <img class="logo_parceiros" src="<?php echo base_url('assets/images/icon/maps-logo.png') ?>" alt="Evidência" />
                         </a>
@@ -209,8 +209,9 @@
                             <img  class="logo_parceiros" src="<?php echo base_url('assets/images/icon/certified microsoft.png') ?>" alt="Evidência" />
                         </a>
                     </div>
-
-                    <small style="position: absolute; bottom: 10px;">Evidência - v<?= VERSION ?> </small>   
+                    <div>
+                        <small> Evidência - v<?= VERSION ?> </small>   
+                    </div>
                 </nav>
             </div>
         </aside>

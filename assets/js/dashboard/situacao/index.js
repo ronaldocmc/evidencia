@@ -1,6 +1,7 @@
 
 // Variável que diz ao listener da tecla ENTER qual ação deve ser feita ao ser pressionado
 var acao;
+var index;
 
 /**
 * Listener do modal ao pressionar enter
@@ -34,13 +35,15 @@ function btn_ativar(button_submit){
 }
 
 function send_data(){
-    var data =
-    {
-        'situacao_pk': $('#situacao_pk').val(),
+    var data;
+
+    data = {
         'situacao_nome': $('#nome-input').val(),
-        'situacao_descricao': $('#descricao-input').val(),
-        'situacao_foto_obrigatoria': $('#foto-input:checked').length,
-        'senha': $('#senha-input').val(),
+        'situacao_descricao': $('#descricao-input').val()
+    }
+
+    if($('#situacao_pk').val() != ''){
+        data.situacao_pk = $('#situacao_pk').val();
     }
 
     btn_load($('#pula-para-confirmacao'));
@@ -51,9 +54,9 @@ function send_data(){
         btn_ativar($('#pula-para-confirmacao'));
         btn_ativar($('.submit'));
 
-        if (response.code == 400) {
+        if (response.code == 404) {
             show_errors(response);
-            alerts('failed', 'Erro!', 'O formulário apresenta algum(ns) erro(s) de validação');
+            
         }
         else if (response.code == 401) {
             alerts('failed', 'Erro!', 'Senha informada incorreta');
@@ -67,23 +70,22 @@ function send_data(){
                 'situacao_pk': data['situacao_pk'],
                 'situacao_nome': data['situacao_nome'],
                 'situacao_descricao': data['situacao_descricao'],
-                'situacao_foto_obrigatoria': data['situacao_foto_obrigatoria'],
-                'situacao_ativo': 1
+                'ativo': 1
+            }
+            
+            if ($('#situacao_pk').val() == ''){
+                sit['situacao_pk'] = response.data;
+                situacoes.push(sit);
+            }else {
+                for (var i in situacoes) {
+                    if (situacoes[i]['situacao_pk'] == data['situacao_pk']){
+                        situacoes[i] = sit; 
+                        break;
+                    }     
+                }    
             }
 
-            if (data['situacao_pk'] == '') {
-                sit['situacao_pk'] = response.data.situacao_pk;
-                situacoes.push(sit);
-                alerts('success', 'Sucesso!', 'Situação inserida com sucesso');
-            }
-            else {
-                for (var i in situacoes) {
-                    if (situacoes[i]['situacao_pk'] == data['situacao_pk'])
-                        break;
-                }
-                situacoes[i] = (sit);
-                alerts('success', 'Sucesso!', 'Situação modificada com sucesso');
-            }
+            alerts('success', 'Sucesso!', 'Situação modificada com sucesso');
             $('#filter-ativo').change();
             $('#ce_situacao').modal('hide');
         }
@@ -107,101 +109,95 @@ $(document).on('click', '.btn-novo', function (event) {
 $(document).on('click', '.btn_editar', function (event) {
     acao = ".submit";
     $("#ce_situacao").find(".modal-title").text("Editar Situação");
+    let situacao_pk = $(this).val();
+    $('#situacao_pk').val(situacao_pk);
 
-    $('#situacao_pk').val(situacoes[$(this).val()]["situacao_pk"]);
-    $('#nome-input').val(situacoes[$(this).val()]["situacao_nome"]);
-    $('#descricao-input').val(situacoes[$(this).val()]["situacao_descricao"]);
-    if(situacoes[$(this).val()]["situacao_foto_obrigatoria"] == '1'){
-        $('#foto-input').prop('checked', true); 
-    }else{
-        $('#foto-input').prop('checked', false); 
-    }
+    $.each(situacoes, function (i, sit){
+        if(sit.situacao_pk == situacao_pk){
+            $('#nome-input').val(sit.situacao_nome);
+            $('#descricao-input').val(sit.situacao_descricao);
+            return false;
+        }
+    });
+
 
 });
 
 $(document).on('click', '.btn-desativar', function (event) {
-    acao = "#btn-desativar";
-    $('#btn-desativar').val(situacoes[$(this).val()]["situacao_pk"]);
+    index = $(this).val();
+    $('#btn-desativar').removeAttr("disabled");
+    $('#alerta').show();
+    $('#servicos-dependentes').html("");
+});
 
-    $('#loading-situacao-deactivate').show();
-    $('#servicos-dependentes').hide();
-
-    var data = 
-    {
-        'situacao_pk': situacoes[$(this).val()]["situacao_pk"]
-    }
-
-    $.post(base_url + '/situacao/get_dependents', data, function (response, textStatus, xhr) {
-        if (response.code == 400) {
-            alerts('failed', 'Erro!', 'O formulário apresenta algum erro de validação');
-        }
-        else if (response.code == 401) {
-            alerts('failed', 'Erro!', 'Senha informada incorreta');
-        }
-        else if (response.code == 200) {
-            html = ''; //esta variável vai servir para eu preencher a div tipo-servicos-dependentes
-            title = '';
-            if(response.data.length == 0 || response.data == false){ //se não houver nenhum serviço:
-                title = "Não há nenhum serviço dependente desta situação.";
-            }
-            else { //se tiver 1 ou mais tipos de serviço dependentes:
-                var mensagem = "";
-                if(response.data.length == 1){ 
-                    title = 'Este é o serviço que será afetado:';
-                }
-                else if(response.data.length > 1){
-                     title = 'Estes são os serviços que serão afetados:';
-                }
-                html += "<ul style='margin-left: 15px'>";
-                for( var i in response.data){
-                    html += '<li>'+ response.data[i].servico_nome +'</li>';
-                }
-                html += "</ul>";
-                mensagem = "<br><b>OBS:</b> Você não poderá desativar esta prioridade enquanto houver(em) serviço(s) dependente(s).<br>";
-                html += mensagem;
-
-            } //fecha o 1 ou mais serivços dependentes
-            $('#servicos-dependentes').html('<br>'+'<h5>'+title + '</h5>' + html+'</br>');
-            $('#servicos-dependentes').show();
-            $('#loading-situacao-deactivate').hide();
-        }       
-
-    });
-
+$(document).on('click', '.btn_reativar', function (event) {
+    index = $(this).val();
 });
 
 $(document).on('click', '#btn-desativar', function (event) {
+
     var data =
     {
-        'situacao_pk': $(this).val(),
+        'situacao_pk':  index,
         'senha': $('#pass-modal-desativar').val()
     }
 
-    btn_load($('#btn-desativar'));
+    console.log(data);
 
     $.post(base_url + '/situacao/deactivate', data, function (response, textStatus, xhr) {
 
         btn_ativar($('#btn-desativar'));
+        $('#servicos-dependentes').hide();
 
-        if (response.code == 400) {
-            alerts('failed', 'Erro!', response.data.erro);
+        if (response.code == 401) {
+
+            let alerta = "A situação não pode ser excluída, pois é situação padrão dos serviços abaixo: ";
+            let html = '';
+            let servicos  = response.data.mensagem.split(",");
+
+            html += "<ul style='margin-left: 30px'>";
+            for( i = 0; i < servicos.length-1 ; i++){
+                    html += '<li>'+ servicos[i] +'</li>';
+                }
+
+                html += "</ul>";
+                mensagem = "<br><b>OBS:</b> Você não poderá desativar esta situação enquanto houver(em) serviço(s) dependente(s).<br>";
+                html += mensagem;
+
+            $('#alerta').hide();
+            $('#servicos-dependentes').html(
+                '<h4 style="text-align: center" class="text-danger">' + 
+                    '<i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO' + 
+                '</h4> '+ 
+                '<br>'+'<h5>'+ alerta + '</h5><br>' + html+'</br>'
+            );
+
+            $('#servicos-dependentes').show();
+            $('#btn-desativar').attr("disabled", true);
+
+            alerts('failed', 'Erro!', "Não foi possível efetuar a operação!");
         }
-        else if (response.code == 401) {
+        else if (response.code == 403) {
             alerts('failed', 'Erro!', 'Senha informada incorreta');
         }
         else if (response.code == 500) {
             alerts('failed', 'Erro!', 'Ocorreu alguma falha interna no servidor. Tente novamente mais tarde');
         }
         else {
-            alerts('success', 'Sucesso!', 'Situação desativada com sucesso');
+
             for (var i in situacoes) {
-                if (situacoes[i]['situacao_pk'] == data['situacao_pk'])
+                if (situacoes[i]['situacao_pk'] == data['situacao_pk']){
+                    situacoes[i]['ativo'] = 0;
                     break;
+
+                }       
             }
-            situacoes[i]['situacao_ativo'] = 0;
+
             $('#pass-modal-desativar').val('');
             $('#filter-ativo').change();
             $('#d-situacao').modal('hide');
+
+            alerts('success', 'Sucesso!', 'Situação desativada com sucesso');
         }
     });
 });
@@ -209,11 +205,13 @@ $(document).on('click', '#btn-desativar', function (event) {
 
 
 $(document).on('click', '#btn-reativar', function (event) {
+
     var data =
     {
-        'situacao_pk': $(this).val(),
+        'situacao_pk': index,
         'senha': $('#pass-modal-reativar').val()
     }
+    console.log(data);
 
     btn_load($('#btn-reativar'));
 
@@ -236,7 +234,7 @@ $(document).on('click', '#btn-reativar', function (event) {
                 if (situacoes[i]['situacao_pk'] == data['situacao_pk'])
                     break;
             }
-            situacoes[i]['situacao_ativo'] = 1;
+            situacoes[i]['ativo'] = 1;
             $('#pass-modal-reativar').val('');
             $('#filter-ativo').change();
             $('#r-situacao').modal('hide');
@@ -252,48 +250,38 @@ $('#filter-ativo').on('change', function () {
         case "todos":
         $.each(situacoes, function (i, sit) {
 
-            if (sit.situacao_ativo == 1) {
+            if (sit.ativo == 1) {
                 table.row.add([
                     sit.situacao_nome,
                     sit.situacao_descricao,
-                    sit.situacao_foto_obrigatoria == true ? '<i style="color:green" class="far fa-check-circle"></i>' : '<i style="color:red" class="far fa-times-circle"></i>' ,
                     '<div class="btn-group">' +
-                    '<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_situacao">' +
-                    '<div class="d-none d-sm-block">' +
-                    'Editar' +
-                    '</div>' +
-                    '<div class="d-block d-sm-none">' +
-                    '<i class="fas fa-edit fa-fw"></i>' +
-                    '</div>' +
-                    '</button>' +
-                    '<button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="' + (i) + '" data-target="#d-situacao">' +
-                    '<div class="d-none d-sm-block">' +
-                    'Desativar' +
-                    '</div>' +
-                    '<div class="d-block d-sm-none">' +
-                    '<i class="fas fa-times fa-fw"></i>' +
-                    '</div>' +
-                    '</button>' +
+                        '<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + sit.situacao_pk + '" data-target="#ce_situacao">' +
+                            '<div class="d-none d-sm-block"> Editar </div>' +
+                            '<div class="d-block d-sm-none">' +
+                                '<i class="fas fa-edit fa-fw"></i>' +
+                            '</div>' +
+                        '</button>' +
+                        '<button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="' + sit.situacao_pk + '" data-target="#d-situacao">' +
+                            '<div class="d-none d-sm-block"> Desativar </div>' +
+                            '<div class="d-block d-sm-none">' +
+                                '<i class="fas fa-times fa-fw"></i>' +
+                            '</div>' +
+                        '</button>' +
                     '</div>'
-
                     ]).draw(false);
             }
             else {
                 table.row.add([
                     sit.situacao_nome,
                     sit.situacao_descricao,
-                    sit.situacao_foto_obrigatoria == true ? '<i style="color:green" class="far fa-check-circle"></i>' : '<i style="color:red" class="far fa-times-circle"></i>',
                     '<div class="btn-group">' +
-                    '<button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="' + (i) + '" data-target="#r-situacao">' +
-                    '<div class="d-none d-sm-block">' +
-                    'Reativar' +
-                    '</div>' +
-                    '<div class="d-block d-sm-none">' +
-                    '<i class="fas fa-check-circle fa-fw"></i>' +
-                    '</div>' +
-                    '</button>' +
+                        '<button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="' + sit.situacao_pk  + '" data-target="#r-situacao">' +
+                            '<div class="d-none d-sm-block"> Reativar </div>' +
+                            '<div class="d-block d-sm-none">' +
+                                '<i class="fas fa-check-circle fa-fw"></i>' +
+                            '</div>' +
+                        '</button>' +
                     '</div>'
-
                     ]).draw(false);
             }
         });
@@ -301,30 +289,24 @@ $('#filter-ativo').on('change', function () {
         case "ativos":
         $.each(situacoes, function (i, sit) {
 
-            if (sit.situacao_ativo == 1) {
+            if (sit.ativo == 1) {
                 table.row.add([
                     sit.situacao_nome,
                     sit.situacao_descricao,
-                    sit.situacao_foto_obrigatoria == true ? '<i style="color:green" class="far fa-check-circle"></i>' : '<i style="color:red" class="far fa-times-circle"></i>',
                     '<div class="btn-group">' +
-                    '<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + (i) + '" data-target="#ce_situacao">' +
-                    '<div class="d-none d-sm-block">' +
-                    'Editar' +
-                    '</div>' +
-                    '<div class="d-block d-sm-none">' +
-                    '<i class="fas fa-edit fa-fw"></i>' +
-                    '</div>' +
-                    '</button>' +
-                    '<button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="' + (i) + '" data-target="#d-situacao">' +
-                    '<div class="d-none d-sm-block">' +
-                    'Desativar' +
-                    '</div>' +
-                    '<div class="d-block d-sm-none">' +
-                    '<i class="fas fa-times fa-fw"></i>' +
-                    '</div>' +
-                    '</button>' +
+                        '<button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="' + sit.situacao_pk + '" data-target="#ce_situacao">' +
+                            '<div class="d-none d-sm-block"> Editar </div>' +
+                            '<div class="d-block d-sm-none">' +
+                                '<i class="fas fa-edit fa-fw"></i>' +
+                            '</div>' +
+                        '</button>' +
+                        '<button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="' + sit.situacao_pk + '" data-target="#d-situacao">' +
+                            '<div class="d-none d-sm-block"> Desativar </div>' +
+                            '<div class="d-block d-sm-none">' +  
+                                '<i class="fas fa-times fa-fw"></i>' +
+                            '</div>' +
+                        '</button>' +
                     '</div>'
-
                     ]).draw(false);
             }
         });
@@ -332,22 +314,18 @@ $('#filter-ativo').on('change', function () {
         case "desativados":
         $.each(situacoes, function (i, sit) {
 
-            if (sit.situacao_ativo == 0) {
+            if (sit.ativo == 0) {
                 table.row.add([
                     sit.situacao_nome,
                     sit.situacao_descricao,
-                    sit.situacao_foto_obrigatoria == true ? '<i style="color:green" class="far fa-check-circle"></i>' : '<i style="color:red" class="far fa-times-circle"></i>',
                     '<div class="btn-group">' +
-                    '<button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="' + (i) + '" data-target="#r-situacao">' +
-                    '<div class="d-none d-sm-block">' +
-                    'Reativar' +
-                    '</div>' +
-                    '<div class="d-block d-sm-none">' +
-                    '<i class="fas fa-check-circle fa-fw"></i>' +
-                    '</div>' +
-                    '</button>' +
+                        '<button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="' + sit.situacao_pk + '" data-target="#r-situacao">' +
+                            '<div class="d-none d-sm-block"> Reativar </div>' +
+                            '<div class="d-block d-sm-none">' +
+                                '<i class="fas fa-check-circle fa-fw"></i>' +
+                            '</div>' +
+                        '</button>' +
                     '</div>'
-
                     ]).draw(false);
             }
         });
