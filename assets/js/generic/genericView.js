@@ -7,13 +7,17 @@ class GenericView {
         }
     }
 
-    init(data, tableFields) {
+    init(data, tableFields, primaryKey) {
         this.state.tableFields = tableFields;
+        this.state.self = data.self;
+        this.primaryKey = primaryKey;
 
-        this.render(data);
+        this.conditionalRender();
+        this.render(data.self);
     }
 
     render(data) {
+
         console.log(data);
 
         let fields, buttons;
@@ -21,12 +25,34 @@ class GenericView {
         table.clear().draw();
 
         data.forEach((d, i) => {
+            let id = this.findPositionInOriginalArray(d);
+            console.log(id);
 
             fields = this.generateFields(this.state.tableFields, d);
-            buttons = this.generateButtons(d.ativo, i);
+            buttons = this.generateButtons(d.ativo, id);
 
             table.row.add([...fields, buttons]).draw(false);
         });
+    }
+
+    findPositionInOriginalArray(object) {
+        let id;
+        this.state.self.forEach((selfObject, i) => {
+            if (selfObject[this.primaryKey] == object[this.primaryKey]) {
+                id = i;
+                return;
+            }
+        });
+
+        return id;
+    }
+
+    conditionalRender() {
+        if (localStorage.getItem('is_superusuario') == 1) {
+            $('.superusuario').removeClass('d-none');
+        } else {
+            $('.not_superusuario').removeClass('d-none');
+        }
     }
 
     initLoad() { btn_load($('.load')); }
@@ -127,6 +153,18 @@ class GenericView {
         }
 
         return { title, message, body };
+    }
+
+    generateSelect(data, optionName, optionValue, id) {
+        let render = '';
+        data.forEach(option => {
+            render += `
+                <option 
+                value='${option[optionValue]}'>
+                ${option[optionName]}
+                </option>`;
+        });
+        $(`#${id}`).html(render);
     }
 
 

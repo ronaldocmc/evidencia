@@ -9,9 +9,6 @@
  */
 
 class View extends GenericView {
-    // FUNÇÃO GENÉRICA PARA PREENCHER UM SELECT
-    // PARA PREENCHER UM MULTIPLE SELECT
-
 
     constructor() {
         super();

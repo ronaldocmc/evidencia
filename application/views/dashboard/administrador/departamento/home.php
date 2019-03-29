@@ -168,9 +168,9 @@
 
                     <ul class="progressbar">
                         <li class="active">Identificação do Departamento</li>
-                        <?php if ($this->session->user['is_superusuario'] === true): ?>
-                        <li>Identificação</li>
-                        <?php endif;?>
+
+                        <li class="d-none superusuario">Identificação</li>
+
                     </ul>
 
                     <div class="card card-step col-12 px-0">
@@ -193,19 +193,19 @@
                             </div>
                         </div>
                         <div class="card-footer text-center">
-                            <?php if ($this->session->user['is_superusuario'] === true): ?>
-                            <button type="button" class="btn btn-secondary next btn-sm">
+
+                            <button type="button" class="btn btn-secondary next btn-sm d-none superusuario">
                                 <i class="fas fa-arrow-circle-right"></i> Próximo
                             </button>
-                            <?php else: ?>
-                            <button type="button" class="btn btn-primary submit btn-sm load">
+
+                            <button type="button" class="btn btn-primary submit btn-sm load d-none not_superusuario">
                                 <i class="fa fa-dot-circle-o"></i> Finalizar
                             </button>
-                            <?php endif;?>
+
                         </div>
                     </div>
-                    <?php if ($this->session->user['is_superusuario'] === true): ?>
-                    <div class="card card-step col-12 px-0">
+
+                    <div class="card card-step col-12 px-0 d-none superusuario">
                         <div class="card-header">
                             Identificação
                         </div>
@@ -233,7 +233,6 @@
                             </button>
                         </div>
                     </div>
-                    <?php endif;?>
                 </form>
             </div>
         </div>
@@ -262,13 +261,12 @@
             </div>
             <div id="dependences" class="container"></div>
 
-            <?php if ($this->session->user['is_superusuario'] === true): ?>
-            <div class="form-group">
+            <div class="form-group d-none superusuario">
                 <input type="password" class="form-control press_enter" autocomplete="false"
                     placeholder="Confirme sua senha" required="required"
                     id="pass-modal-deactivate" minlength="8">
             </div>
-            <?php endif;?>
+
             <div class="form-group">
                 <button type="button" class="btn btn-confirmar-senha action_deactivate load" name="post" value=""><i
                         class="fa fa-dot-circle-o" id="icone-do-desativar"></i> Desativar</button>
@@ -290,13 +288,11 @@
                     <li>Toda ordem de serviço com estes tipos poderão ser registradas novamente</li>
                 </ul>
             </div>
-            <?php if ($this->session->user['is_superusuario']): ?>
-            <div class="form-group">
+            <div class="form-group d-none superusuario">
                 <input type="password" class="form-control press_enter" autocomplete="false"
                     placeholder="Confirme sua senha" required="required"
-                    id="pass-modal-activate" pattern="{8,}">
+                    id="pass-modal-activate">
             </div>
-            <?php endif;?>
             <div class="form-group">
                 <button type="button" class="btn btn-confirmar-senha action_activate load" name="post" value=""><i
                         class="fa fa-dot-circle-o"></i> Reativar</button>

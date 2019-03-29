@@ -12,8 +12,8 @@ class GenericControl {
 
     async init() {
 
-        this.data = await this.myRequests.init();
-        this.myView.init(this.data.self, this.tableFields);
+        this.data = await this.myRequests.init()
+        this.myView.init(this.data, this.tableFields, this.primaryKey);
 
 
         // Send request
@@ -73,6 +73,10 @@ class GenericControl {
         const sendData = is_superusuario ? this.myView.getPassword(action) : {};
         sendData[this.primaryKey] = this.data.self[this.state.selectedId][this.primaryKey];
 
+        console.log('sendData:',sendData);
+        console.log('primaryKey:',this.primaryKey);
+        console.log('selectedId:',this.state.selectedId);
+
         const response = await this.myRequests.send(`/${action}`, sendData);
 
         this.myView.endLoad();
@@ -93,8 +97,10 @@ class GenericControl {
 
     async handleDependences() {
         let response = {
-            dependences: [],
-            dependence_type: '',
+            data: {
+                dependences: [],
+                dependence_type: '',
+            }
         };
 
         if (this.verifyDependences) {
@@ -114,6 +120,7 @@ class GenericControl {
     addNewObject(data, response) {
         data.ativo = 1;
         data[this.primaryKey] = response.data.id;
+        console.log('NOVO SERVIÇO',data);
         this.data.self.push(data);
     }
 
@@ -136,7 +143,7 @@ class GenericControl {
     }
 
     handleFilter(target) {
-        this.myView.filter(this.data, target);
+        this.myView.filter(this.data.self, target);
     }
 
     setSelectedId(id) {
