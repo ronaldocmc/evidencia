@@ -26,7 +26,9 @@ class Export extends CRUD_Controller
     public function execute()
     {   
         try{
-            $spreadsheet = new Spreadsheet();
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+            $spreadsheet = $reader->load("assets/documents/modelo.xls");
+
             $spreadsheet->setActiveSheetIndex(0);
     
             $writer = new Xls($spreadsheet);
@@ -45,38 +47,23 @@ class Export extends CRUD_Controller
         }
     }
 
-    private function _setHeading($row, $activeSheet)
-    {
-        $keys = array_keys($row);
-
-        $index = 0;
-        foreach($keys as $k)
-        {
-            $letter = chr(65 + $index);
-            $activeSheet->setCellValue($letter.'1', $k);
-            $index++;
-        }
-    }
-
     private function _fillXls($spreadsheet)
     {
         $activeSheet = $spreadsheet->getActiveSheet();
 
+        $activeSheet->setCellValue('B2',
+         $this->_formatDate($_GET['data_inicial']).' a '.$this->_formatDate($_GET['data_final']) ) ;
+
+        $activeSheet->setCellValue('E2', $this->session->user['name_user']);
+        $activeSheet->setCellValue('K2', $this->session->user['name_organizacao']);
+
         $data = $this->_getData();
         
-        $heading = false;
-
-        $index = 2;
+        $index = 4;
         
         foreach($data as $row)
         {
             $row = (array) $row;
-
-            if(!$heading)
-            {
-                $this->_setHeading($row, $activeSheet);
-                $heading = true;
-            }
 
             $i = 0;
             foreach($row as $v)
@@ -90,6 +77,7 @@ class Export extends CRUD_Controller
         }
 
     }
+ 
 
     private function _getData()
     {
@@ -135,15 +123,19 @@ class Export extends CRUD_Controller
         foreach($ordens_servicos as $os)
         {
             $os->ativo = ($os->ativo == 1) ? 'Sim' : 'Não';
-            $os->data_criacao = $this->_formatDate($os->data_criacao);
-            $os->data_finalizacao = (!empty($os->data_finalizacao))? $this->_formatDate($os->data_finalizacao): '';
+            $os->data_criacao = $this->_formatDateWithHours($os->data_criacao);
+            $os->data_finalizacao = (!empty($os->data_finalizacao))? $this->_formatDateWithHours($os->data_finalizacao): '';
         }
 
         return $ordens_servicos;
     }
 
-    private function _formatDate($date){
+    private function _formatDateWithHours($date){
         return date('d/m/Y H:i:s', strtotime($date));
+    }
+
+    private function _formatDate($date){
+        return date('d/m/Y', strtotime($date));
     }
 
     private function _setHeader()
