@@ -256,6 +256,7 @@ class Ordem_Servico extends CRUD_Controller
 
         $this->ordem_servico->__set('ordem_servico_pk', $this->input->post('ordem_servico_pk'));
         $this->ordem_servico->__set('localizacao_fk', $this->input->post('localizacao_pk'));
+        $this->ordem_servico->__set("ordem_servico_atualizacao", $this->now());
         $this->ordem_servico->update();
     }
 
@@ -268,15 +269,33 @@ class Ordem_Servico extends CRUD_Controller
         $this->response->send();
     }
 
+    private function now()
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        return date('Y-m-d H:i:s');
+    }
+
     public function insert_situacao($id)
     {
         try {
             $this->load->helper('exception');
             $this->load->helper('insert_images');
 
+            $now = $this->now();
+
             $this->ordem_servico->__set("ordem_servico_comentario", $_POST['ordem_servico_comentario']);
             $this->ordem_servico->__set("situacao_atual_fk", $_POST['situacao_atual_fk']);
             $this->ordem_servico->__set("ordem_servico_pk", $id);
+            $this->ordem_servico->__set("ordem_servico_atualizacao", $now);
+
+            if ($_POST['situacao_atual_fk'] === '5') 
+            {
+                $this->ordem_servico->__set("ordem_servico_finalizacao", $now);
+            }
+            else
+            {
+                $this->ordem_servico->remove_finalizacao_date($id);
+            }
 
             $paths = upload_img(
                 [
