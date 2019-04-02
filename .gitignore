@@ -16,3 +16,12 @@ application/logs/*
 !application/logs/.htaccess
 /vendor/
 sendgrid.env
+
+# VScode project settings
+.vscode/
+
+# Sonarlint
+.sonarlint/
+
+# Composer lock file
+composer.lock
