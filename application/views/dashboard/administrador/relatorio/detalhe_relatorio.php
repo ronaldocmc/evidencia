@@ -27,7 +27,7 @@
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#d-relatorio">
                             Destruir relatório
                         </a>
-                        <?php if ($relatorio->relatorio_situacao == 'Em andamento'): ?>
+                        <?php if ($relatorio->relatorio_situacao == 'Em andamento' || $relatorio->relatorio_situacao == 'Criado'): ?>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#restaurar_os">
                                 Receber relatório
                             </a>  
