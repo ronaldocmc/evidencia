@@ -334,4 +334,11 @@ class Ordem_Servico_model extends MY_Model
 
         return $rows;
     }
+
+    public function remove_finalizacao_date($os)
+    {
+        $this->CI->db->set('ordens_servicos.ordem_servico_finalizacao', NULL);
+        $this->CI->db->where('ordens_servicos.ordem_servico_pk', $os);
+        $this->CI->db->update('ordens_servicos');
+    }
 }
