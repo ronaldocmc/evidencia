@@ -797,7 +797,7 @@ class Relatorio extends CRUD_Controller
 
     private function receive_all_reports()
     {
-        $reports = $this->report_model->get_all('*', ['relatorio_situacao' => 'Em andamento', 'ativo' => 1], -1, -1);
+        $reports = $this->report_model->get_em_andamento_or_criado();
 
         if ($reports) {
             foreach ($reports as $r) {
@@ -810,7 +810,7 @@ class Relatorio extends CRUD_Controller
 
     private function receive_single_report($report_id)
     {
-        $report = $this->report_model->get_one('*', ['relatorio_situacao' => 'Em andamento', 'ativo' => 1, 'relatorios.relatorio_pk' => $report_id]);
+        $report = $this->report_model->get_em_andamento_or_criado($report_id);
 
         if($report !== NULL){
             $this->restore_orders_of_report($report_id);
