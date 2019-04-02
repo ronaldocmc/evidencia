@@ -14,7 +14,7 @@ if (!defined('BASEPATH')) {
 }
 
 require_once dirname(__FILE__) . "/../controllers/Response.php";
-require_once APPPATH."core\MyException.php";
+require_once APPPATH."core/MyException.php";
 
 
 class CRUD_Controller extends CI_Controller
