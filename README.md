@@ -39,8 +39,9 @@ Siga os passos abaixo para obter uma versão de desenvolvimento do sistema rodan
 As instruções abaixo supõe que o usuário possui alguma proeficiência em utilizar o prompt de comando do windows ou similares
 
 1. Certifique-se de ir para a pasta `htdocs` do xampp
-
-   > cd C:\xampp\htdocs\
+```
+> cd C:\xampp\htdocs\
+```
 
 2. Realize a clonagem do projeto
 
