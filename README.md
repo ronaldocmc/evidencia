@@ -16,14 +16,28 @@ Estes componentes são necessários para a instalação do ambiente de produçã
 - PHP 7.2+
 - Composer
 
+## Passos iniciais
+Siga os passos abaixo para obter uma versão de desenvolvimento do sistema rodando localmente:
+
+### Windows
+>WIP
+
+### Linux
+
 ## Executando os testes
 
 > WIP
+
+## Instruções para o *deploy*
 
 ## Construído com
 
 - [PHP](https://www.php.net/) - Linguagem de propósito geral especializada para desenvolvimento web.
 - [PHP Composer](https://getcomposer.org/) - Gerenciador de dependências para PHP.
+
+## Contribuição
+
+Nesse projeto foi adotado o [Gitflow](https://nvie.com/posts/a-successful-git-branching-model/), então as *Pull-Requests* e contriduições deverão ser feitas conforme as guidelines desse modelo de desenvolvimento. Convidamos os que desejam contribuir a ler o nosso [Código de Conduta](CODE_OF_CONDUCT.md)
 
 ## Versionamento
 
