@@ -1,9 +1,0 @@
-Welcome_test
- [ ] Method 404
- [x] A p p p a t h
-
-Funcionario_model_test
- [ ] Get login without where param
- [ ] Get login with where param and existent login
- [ ] Get login with where param and inexistent login
-

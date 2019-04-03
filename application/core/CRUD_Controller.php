@@ -13,9 +13,9 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+
 require_once dirname(__FILE__) . "/../controllers/Response.php";
 require_once APPPATH."core/MyException.php";
-
 
 class CRUD_Controller extends CI_Controller
 {
