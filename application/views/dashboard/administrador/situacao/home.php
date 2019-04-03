@@ -53,7 +53,6 @@
                                         <tr>
                                             <th>Nome</th>
                                             <th>Descrição</th>
-                                            <th>Foto Obrigatória</th>
                                             <th>Ação</th>
                                         </tr>
                                     </thead>
@@ -70,18 +69,9 @@
                                                         <?=$situacao->situacao_descricao?>
                                                     </td>
                                                     <td>
-                                                        <?php
-                                                        if ($situacao->situacao_foto_obrigatoria) {
-                                                            echo '<i style="color:green" class="far fa-check-circle"></i>';
-                                                        } else {
-                                                            echo '<i style="color:red" class="far fa-times-circle"></i>';
-                                                        }
-                                                        ?>
-                                                    </td>
-                                                    <td>
                                                         <div class="btn-group">
-                                                            <?php if ($situacao->situacao_ativo): ?>
-                                                                <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$key?>" data-target="#ce_situacao">
+                                                            <?php if ($situacao->ativo): ?>
+                                                                <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$situacao->situacao_pk?>" data-target="#ce_situacao">
                                                                     <div class="d-none d-sm-block">
                                                                         Editar
                                                                     </div>
@@ -89,7 +79,7 @@
                                                                         <i class="fas fa-edit fa-fw"></i>
                                                                     </div>
                                                                 </button>
-                                                                <button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="<?=$key?>" data-target="#d-situacao">
+                                                                <button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="<?=$situacao->situacao_pk?>" data-target="#d-situacao">
                                                                     <div class="d-none d-sm-block">
                                                                         Desativar
                                                                     </div>
@@ -98,7 +88,7 @@
                                                                     </div>
                                                                 </button>
                                                                 <?php else: ?>
-                                                                    <button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="<?=$key?>" data-target="#r-situacao">
+                                                                    <button type="button" class="btn btn-sm btn-success btn_reativar" data-toggle="modal" value="<?=$situacao->situacao_pk?>" data-target="#r-situacao">
                                                                         <div class="d-none d-sm-block">
                                                                             Reativar
                                                                         </div>
@@ -182,20 +172,6 @@
                                                         <textarea id="descricao-input" name="descricao" class="form-control" required="true" resizable="false"></textarea>
                                                         <small class="form-text text-muted">Por favor, informe a descrição da situação </small>
                                                     </div>
-                                                    <div class="col col-md-2 mt-2">
-                                                        <label for="descricao-input" class=" form-control-label">
-                                                            <strong>Foto*</strong>
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-12 col-md-10 mt-2">
-                                                        <div class="form-group form-check">
-                                                            <input type="checkbox" class="form-check-input" id="foto-input">
-                                                            <label class="form-check-label" for="foto-input">Obrigatória</label>
-                                                        </div>
-                                                        <small class="form-text text-muted">Selecione para forçar a inserção de uma foto para a situação</small>
-                                                    </div>
-
-
                                                 </div>
                                             </div>
                                             <div class="card-footer text-center">
@@ -265,7 +241,7 @@
                             </div>
                             <div class="modal-body">
                                 <form>
-                                    <div class="form-group">
+                                    <div class="form-group" id="alerta">
                                         <h4 style="text-align: center" class="text-danger">
                                             <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
                                             <p>Ao desativar uma situação, as seguintes ações também serão feitas:</p>
@@ -273,13 +249,13 @@
                                                 <li>Não será possível utilizar a situação desativa nas novas ordens de serviço.</li>
                                             </ul>
                                         </div>
-
                                         <div class="form-group">
-                                            <div id="loading-situacao-deactivate">
+                                            <!-- <div id="loading-situacao-deactivate">
                                                 <div align="center" class="center">
                                                     <img width="150px" src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading" alt="Carregando">
                                                 </div>
-                                            </div>
+                                            </div> -->
+
                                             <div id="servicos-dependentes"></div>
                                         </div>
 
