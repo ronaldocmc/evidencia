@@ -91,6 +91,7 @@ class Funcionario_model extends MY_Model
         // $this->CI->db->where(self::TABLE_NAME . '.ativo', 1);
 
         // var_dump($this->CI->db->get_compiled_select());die();
+        // echo $this->CI->db->get_compiled_select(); die();
 
         return $this->CI->db->get()->result();
         if ($result) {

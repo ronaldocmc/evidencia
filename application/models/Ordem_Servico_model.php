@@ -167,6 +167,7 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->db->join('situacoes', 'situacoes.situacao_pk = ' . $this->getTableName() . '.situacao_inicial_fk');
         // $this->CI->db->where('funcionario_fk', $where['funcionario_fk']);
         $this->CI->db->where('situacao_atual_fk', '1');
+        $this->CI->db->where('ordens_servicos.ativo', '1');
         $this->CI->db->where('ordem_servico_criacao BETWEEN '."'".$where['data_inicial']." 00:00:01'"." AND "."'".$where['data_final']." 23:59:59'");
         $this->CI->db->where_in('setor_fk', $where['setor']);
         $this->CI->db->where_in('tipo_servico_fk', $where['tipo']);
