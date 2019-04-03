@@ -2,7 +2,7 @@
     exit('No direct script access allowed');
 }
 
-require_once dirname(__FILE__) . "\Response.php";
+require_once APPPATH."core/Response.php";   
 require_once APPPATH . "core\MY_Controller.php";
 
 class ContactWS extends MY_Controller

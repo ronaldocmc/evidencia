@@ -5,7 +5,7 @@
 
 require 'vendor/autoload.php';
 require_once APPPATH . "core\CRUD_Controller.php";
-require_once dirname(__FILE__) . "/Response.php";
+require_once APPPATH."core/Response.php";   
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
