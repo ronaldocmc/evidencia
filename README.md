@@ -1,6 +1,6 @@
 # Sistema Evidência
 
-O projeto da Companhia Prudentina de Desenvolvimento - PRUDENCO em parceria com a FCT Unesp de Presidente Prudente e alunos do curso de Ciência da Computação, aplica um pouco do conceito de Cidades Inteligentes para sistematizar e automatizar o processos de coletas de diversos tipos de lixo na cidade. Por meio da administração, fiscalização e operação sustentada pelo Sistema Evidência a Companhia objetiva melhorar a qualidade do seu serviço oferecido.
+O projeto da Companhia Prudentina de Desenvolvimento - [PRUDENCO](http://www.prudenco.com.br/) em parceria com a FCT Unesp de Presidente Prudente e alunos do curso de Ciência da Computação, aplica um pouco do conceito de Cidades Inteligentes para sistematizar e automatizar o processos de coletas de diversos tipos de lixo na cidade. Por meio da administração, fiscalização e operação sustentada pelo Sistema Evidência a Companhia objetiva melhorar a qualidade do seu serviço oferecido.
 
 Em resumo, o Sistema Evidência deve permitir o gerenciamento dos serviços de coleta, oferecendo funcionalidades como mapeamento de casos, gestão de ordens de serviço, designação de responsabilidades, fiscalização da execução por meio de fotos, visualização de dados departamentais e operacionais, entre outras funcionalidades.
 
@@ -18,7 +18,9 @@ Estes componentes são necessários para a instalação do ambiente de produçã
 
 ### Instalação de pré-requisitos no Windows
 
-> WIP
+Para a instalação do Apache e PHP, utilize o instalador do XAMPP, disponível [aqui](https://www.apachefriends.org/pt_br/index.html). As dúvidas comuns sobre o processo de instalação podem ser encontradas no [FAQ](https://www.apachefriends.org/faq_windows.html)
+
+As instruções de instalação do Composer para windows podem ser econtradas [aqui](https://getcomposer.org/doc/00-intro.md#installation-windows).
 
 ### Instalação de pré-requisitos no Linux
 
@@ -26,7 +28,7 @@ Para o processo de instalação do Apache e PHP consulte esse [tutorial da Digit
 
 Para o processo de instalação do Composer, recomendamos este outro [artigo da DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-18-04).
 
-Lembramos que essas isntruções são para o sistema `Ubuntu 18.04 LTS`, porém instruções similares podem ser encontradas em quaisquer distribuições Linux
+Lembramos que essas instruções são para o sistema `Ubuntu 18.04 LTS`, porém instruções similares podem ser encontradas em quaisquer distribuições Linux
 
 ## Passos iniciais
 
@@ -34,7 +36,38 @@ Siga os passos abaixo para obter uma versão de desenvolvimento do sistema rodan
 
 ### Windows
 
-> WIP
+As instruções abaixo supõe que o usuário possui alguma proeficiência em utilizar o prompt de comando do windows ou similares
+
+1. Certifique-se de ir para a pasta `htdocs` do xampp
+
+   > cd C:\xampp\htdocs\
+
+2. Realize a clonagem do projeto
+
+```
+> git clone https://github.com/GustGimenez/evidencia.git
+```
+
+3. Entre na pasta do projeto
+
+```bash
+> cd evidencia/
+```
+
+4. Instale as dependencias utilizando o Composer:
+
+```bash
+> composer install
+```
+
+5. Após a finalização, renomeie a pasta do `evidencia` para `evidencia_v2`:
+
+```
+> cd ..
+> move evidencia evidencia_v2
+```
+
+6. Utilizando o seu navegador, vá para o endereço http://localhost/evidencia_v2 e realize o login com as credenciais providas.
 
 ### Linux
 
