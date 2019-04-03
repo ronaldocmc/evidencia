@@ -1,6 +1,6 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-require_once(dirname(__FILE__)."/Response.php");	
+require_once APPPATH."core/Response.php";   	
 require_once APPPATH . "core\MyException.php";
 /**
  * Acess Class
@@ -30,7 +30,6 @@ class Access extends CI_Controller {
 		parent::__construct();
 		date_default_timezone_set('America/Sao_Paulo');
 		$this->response = new Response();
-        $this->load->model('Log_model', 'log_model');
         $this->load->helper('exception');
     }
     
