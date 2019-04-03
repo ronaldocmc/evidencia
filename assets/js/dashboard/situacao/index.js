@@ -96,10 +96,10 @@ $(".submit").click(function () {
     send_data();
 });
 
-$(document).on('click', '.btn_reativar', function (event) {
-    acao = "#btn-reativar";
-    $('#btn-reativar').val(situacoes[$(this).val()]["situacao_pk"]);
-});
+// $(document).on('click', '.btn_reativar', function (event) {
+//     acao = "#btn-reativar";
+//     $('#btn-reativar').val(situacoes[$(this).val()]["situacao_pk"]);
+// });
 
 $(document).on('click', '.btn-novo', function (event) {
     acao = ".submit";
