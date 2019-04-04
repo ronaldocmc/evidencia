@@ -1,7 +1,7 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(dirname(__FILE__)."/Response.php");	
+require_once APPPATH . "core/Response.php";	
 require_once APPPATH . "core/MyException.php";
 
 /**
@@ -64,12 +64,7 @@ class Access extends CI_Controller {
 	 */
     public function quit()
     {
-        $this->log_model->insert([
-            'log_pessoa_fk' => $this->session->user['id_user'],
-            'log_descricao' => 'Logut'
-        ]);
-	   session_destroy(); 
-        
+	    session_destroy(); 
     	redirect(base_url());
     }
 
