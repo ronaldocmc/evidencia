@@ -40,6 +40,19 @@ class View extends GenericView {
         return $('#funcionario_senha').val();
     }
 
+    generateButtons(condition, i) {
+        return `<div class='btn-group'>` +
+            (
+                condition == 1 ?
+                    this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
+                    this.createButton('deactivate', 'deactivate', 'danger', 'Desativar', i, 'fa-times') +
+                    this.createButton('change_password', 'password', 'success', 'Alterar senha', i, 'fa-lock')
+                    :
+                    this.createButton('activate', 'activate', 'success', 'Ativar', i, 'fa-power-off')
+            ) +
+            `</div>`;
+    }
+
 }
 
 class Request extends GenericRequest {
@@ -76,6 +89,33 @@ class Control extends GenericControl {
             this.myView.showPasswordInput();
         });
 
+        $(document).on('click', '.btn_new', () => {
+            this.myView.showPasswordInput();
+        });
+
+        $(document).on('click', '.action_change_password', async () => {
+            this.myView.initLoad();
+
+            const sendData = {};
+
+            sendData[this.primaryKey] = this.data.self[this.state.selectedId][this.primaryKey];
+            sendData.funcionario_senha = $('#p-senha').val();
+
+            console.log(sendData);
+
+            const response = await this.myRequests.send('/change_password', sendData);
+
+            if (response.code == 200) {
+                this.myView.closeModal();
+                this.myView.showMessage('success', 'Sucesso', response.message);
+                this.myView.render(this.data.self);
+            } else {
+                this.myView.showMessage('failed', 'Falha', response.message);
+            }
+
+            this.myView.endLoad()
+        });
+
     };
 
     remove_image() {
@@ -102,16 +142,18 @@ class Control extends GenericControl {
             const index = this.state.selectedId;
 
             $('#img-input').cropper('getCroppedCanvas').toBlob(async (blob) => {
-                
+
                 data.img = await this.blobToBase64(blob);
 
                 if (!this.state.selectedId) { data.funcionario_senha = this.myView.getPassword(); }
 
                 const response = await super.save(data);
 
-                if (this.state.selectedId) { this.data.self[index].funcionario_caminho_foto = response.data.path; }
+                document.location.reload(true);
 
-                this.remove_image();
+                // if (this.state.selectedId) { this.data.self[index].funcionario_caminho_foto = response.data.path; }
+
+                // this.remove_image();
 
             });
         } catch (err) {

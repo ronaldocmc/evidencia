@@ -223,7 +223,7 @@ class Funcionario extends CRUD_Controller
 
         $funcionarios = $this->funcionario_model->get(
             "funcionarios.funcionario_pk, funcionarios.organizacao_fk, funcionarios.ativo, funcionarios.funcionario_login, funcionarios.funcionario_nome, funcionarios.funcionario_caminho_foto, funcionarios.funcionario_cpf,
-            funcionarios.funcao_fk, funcoes.funcao_nome, funcoes.funcao_pk, organizacoes.organizacao_pk ",
+            funcionarios.funcao_fk, funcionarios.departamento_fk, funcoes.funcao_nome, funcoes.funcao_pk, organizacoes.organizacao_pk ",
             [
                 "funcionarios.organizacao_fk" => $this->session->user['id_organizacao'],
             ]

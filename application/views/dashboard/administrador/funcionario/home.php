@@ -499,6 +499,36 @@
     </div>
 </div>
 
+<div id="password" class="d-none">
+    <div class="modal-body">
+        <div class="form-group">
+            <h4 style="text-align: center" class="text-danger">
+                <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO
+            </h4>
+            <p style="text-align: center">A senha deve possuir 8 ou mais caracteres!</p>
+
+            <label>Digite a nova senha</label>
+            <input id="p-senha" type="password" class="form-control">
+
+            <label>Confirme a nova senha</label>
+            <input id="p-confirmar-senha" type="password" class="form-control">
+
+            <p id="p-msg" style="color: red; text-align: center"></p>
+        </div>
+
+        <div class="form-group d-none superusuario">
+            <input type="password" class="form-control" autocomplete="false"
+                placeholder="Confirmar senha de superusuario" required="required" id="pass-modal-desativar"
+                pattern="{8,}">
+        </div>
+
+        <div class="form-group">
+            <button type="button" class="btn btn-primary action_change_password load" id="btn_password" name="post"><i
+                    class="fa fa-dot-circle-o"></i> Alterar</button>
+        </div>
+    </div>
+</div>
+
 
 <script type="text/javascript">
     const is_superusuario = <?php echo $this->session->user['is_superusuario'] === true ? 1 : 0; ?>;
