@@ -24,13 +24,7 @@ class Setor extends CRUD_Controller
      */
     public function index() 
     {
-    	// Leitura dos setores no banco
-    	$setores = $this->setor->get_all(
-            '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
+
 
         //CSS para crud setores
     	$this->session->set_flashdata('css',[
@@ -60,9 +54,24 @@ class Setor extends CRUD_Controller
     	load_view([
     		0 => [
     			'src' => 'dashboard/administrador/setor/home',
-    			'params' => ['setores' => $setores],
+    			'params' => null,
     		],
     	],'administrador');
+    }
+
+    public function get(){
+        $response = new Response();
+
+        $setores = $this->setor->get_all(
+            '*, setores.ativo as ativo',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+
+        $response->add_data('self', $setores);
+
+        $response->send();
     }
 
     private function update()
