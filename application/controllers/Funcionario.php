@@ -2,7 +2,7 @@
     exit('No direct script access allowed');
 }
 
-require_once dirname(__FILE__) . "/Response.php";
+require_once APPPATH."core/Response.php";   
 
 date_default_timezone_set('America/Sao_Paulo');
 

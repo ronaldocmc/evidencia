@@ -14,8 +14,10 @@ class Situacao_model extends MY_Model
     const PRI_INDEX = 'situacao_pk';
 
     const FORM = array(
+        'situacao_pk',
         'situacao_nome',
         'situacao_descricao',
+        'organizacao_fk'
     );
 
     function config_form_validation()

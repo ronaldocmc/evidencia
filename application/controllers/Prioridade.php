@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 }
 
 require_once dirname(__FILE__) . "/Historico_Prazo.php";
-require_once dirname(__FILE__) . "/Response.php";
+require_once APPPATH . "core\Response.php";
 require_once APPPATH . "core/CRUD_Controller.php";
 require_once APPPATH . "core/MyException.php";
 

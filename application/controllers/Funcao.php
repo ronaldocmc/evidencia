@@ -1,11 +1,8 @@
 <?php
 
-if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
-
-require_once dirname(__FILE__) . "/Response.php";
-require_once APPPATH . "core/CRUD_Controller.php";
+if (!defined('BASEPATH')) exit('No direct script access allowed');
+require_once APPPATH."core/Response.php";       
+require_once APPPATH."core/CRUD_Controller.php";
 
 class Funcao extends CRUD_Controller
 {
@@ -80,11 +77,12 @@ class Funcao extends CRUD_Controller
 
         try {
             $this->load();
-
-            if ($this->is_superuser()) {
+            
+            if ($this->is_superuser()) 
+            {
                 $this->add_password_to_form_validation();
             }
-
+            
             $this->funcao->fill();
             $this->funcao->__set('organizacao_fk', $this->session->user['id_organizacao']);
 

@@ -1,5 +1,5 @@
 <?php 
-require_once dirname(__FILE__) . "/../controllers/Response.php";
+require_once dirname(__FILE__) . "/../core/Response.php";
 class MyException extends Exception {
 	public $code;
 
