@@ -26,7 +26,12 @@
 	{
 		$CI =& get_instance();
 		$CI->load->model('tentativa_model');
-		$attempts = $CI->tentativa_model->get($ip_address);
+		$attempts = $CI->tentativa_model->get_all(
+			'*',
+			$ip_address,
+			-1,
+			-1
+		);
 
 		//Caso tenha mais tentativas que a esperada
 		if ($attempts && count($attempts)>ACCEPTED_ATTEMPTS)
