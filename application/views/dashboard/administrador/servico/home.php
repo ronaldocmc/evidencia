@@ -68,8 +68,8 @@
                                         <th>Nome</th>
                                         <th>Abreviação</th>
                                         <th>Descrição</th>
-                                        <!-- <th>Situação Padrão</th>
-                                        <th>Tipo de Serviço</th> -->
+                                        <!-- <th>Situação Padrão</th> -->
+                                        <th>Tipo de Serviço</th>
                                         <th>Opções</th>
                                     </tr>
                                 </thead>
@@ -252,7 +252,7 @@
                     <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading" alt="Carregando">
                 </div>
             </div>
-            <div id="dependences" class="container"></div>
+            <div id="dependences" style="margin: 20px 0" class="container"></div>
 
             <div class="form-group d-none superusuario">
                 <input type="password" class="form-control press_enter" autocomplete="false"

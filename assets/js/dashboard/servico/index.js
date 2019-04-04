@@ -42,7 +42,7 @@ class Control extends GenericControl {
 
         this.primaryKey = "servico_pk";
         this.fields = ['servico_nome', 'situacao_nome', 'tipo_servico_nome', 'servico_desc', 'servico_abreviacao', 'situacao_padrao_fk', 'tipo_servico_fk'];
-        this.tableFields = ['servico_nome', 'servico_abreviacao', 'servico_desc', 'situacao_nome'];
+        this.tableFields = ['servico_nome', 'servico_abreviacao', 'servico_desc', 'tipo_servico_nome'];
         this.verifyDependences = false;
     }
 

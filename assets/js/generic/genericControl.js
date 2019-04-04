@@ -27,6 +27,9 @@ class GenericControl {
         $(document).on('click', '.btn_activate', () => { });
 
         $(document).on('change', '#filter-ativo', (e) => { this.handleFilter(e.target); });
+
+        $('#filter-ativo').val(1);
+        $('#filter-ativo').trigger('change');
     }
 
     handleResponse(response, data) {
@@ -47,16 +50,22 @@ class GenericControl {
             this.myView.showMessage('success', 'Sucesso', 'Operação realizada!');
             this.myView.render(this.data.self);
         } else {
-            this.myView.showMessage('failed', 'Falha', response.message);
+            this.myView.showMessage('failed', 'Falha', response.data.mensagem);
         }
     }
 
-    async save() {
+    // @object moreFields
+    async save(moreFields = null) {
         this.myView.initLoad();
 
         const sendData = this.myView.createJsonWithFields(this.fields);
 
+        if(moreFields != null){
+            Object.assign(sendData, moreFields);
+        }
+
         if (is_superusuario) sendData['senha'] = this.myView.getPassword('save')['senha'];
+       
         sendData[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
 
         const response = await this.myRequests.send('/save', sendData);
@@ -64,7 +73,10 @@ class GenericControl {
         this.myView.endLoad();
 
         delete sendData['senha'];
+
         this.handleResponse(response, sendData);
+
+        return response;
     }
 
     async switchState(action) {
@@ -72,10 +84,6 @@ class GenericControl {
 
         const sendData = is_superusuario ? this.myView.getPassword(action) : {};
         sendData[this.primaryKey] = this.data.self[this.state.selectedId][this.primaryKey];
-
-        console.log('sendData:',sendData);
-        console.log('primaryKey:',this.primaryKey);
-        console.log('selectedId:',this.state.selectedId);
 
         const response = await this.myRequests.send(`/${action}`, sendData);
 
@@ -120,8 +128,14 @@ class GenericControl {
     addNewObject(data, response) {
         data.ativo = 1;
         data[this.primaryKey] = response.data.id;
-        console.log('NOVO SERVIÇO',data);
-        this.data.self.push(data);
+
+        if (response.data.new !== undefined) {
+            this.data.self.push(response.data.new);
+        } else {
+            this.data.self.push(data);
+        }
+
+
     }
 
     updateObject(data) {

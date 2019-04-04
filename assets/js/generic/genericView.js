@@ -18,15 +18,12 @@ class GenericView {
 
     render(data) {
 
-        console.log(data);
-
         let fields, buttons;
 
         table.clear().draw();
 
         data.forEach((d, i) => {
             let id = this.findPositionInOriginalArray(d);
-            console.log(id);
 
             fields = this.generateFields(this.state.tableFields, d);
             buttons = this.generateButtons(d.ativo, id);
@@ -141,7 +138,7 @@ class GenericView {
 
         if (data.dependences.length === 0) {
             title = 'Tudo certo!';
-            message = 'Você pode desativar com tranquilidade!';
+            message = 'Este recurso do sistema não possui dependencias e pode ser desativado!';
         } else {
             title = 'Impossível desativar!'
             message = `Você não poderá desativar enquanto houver(em) ${data.dependence_type} dependente(s):`;
@@ -165,6 +162,10 @@ class GenericView {
                 </option>`;
         });
         $(`#${id}`).html(render);
+    }
+
+    generateImage(id, path) {
+        $(`#${id}`).attr('src', path);
     }
 
 
