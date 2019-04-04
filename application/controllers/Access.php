@@ -1,7 +1,7 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(dirname(__FILE__)."/Response.php");	
+require_once APPPATH . "core/Response.php";
 require_once APPPATH . "core/MyException.php";
 
 /**
@@ -17,7 +17,8 @@ class Access extends CI_Controller {
 	 *
 	 * @var Response
 	 */
-	public $response;
+    public $response;
+    public $authorization;
 	
     //-------------------------------------------------------------------------------
 	/**
@@ -64,10 +65,10 @@ class Access extends CI_Controller {
 	 */
     public function quit()
     {
-        $this->log_model->insert([
-            'log_pessoa_fk' => $this->session->user['id_user'],
-            'log_descricao' => 'Logut'
-        ]);
+        // $this->log_model->insert([
+        //     'log_pessoa_fk' => $this->session->user['id_user'],
+        //     'log_descricao' => 'Logut'
+        // ]);
 	   session_destroy(); 
         
     	redirect(base_url());
@@ -146,7 +147,8 @@ class Access extends CI_Controller {
             'is_superusuario'   => FALSE,
             'image_user_min'    => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
             'image_user'        => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
-            'func_funcao'       => $user->funcao_nome
+            'func_funcao'       => $user->funcao_nome,
+            'id_funcao'         => $user->funcao_pk
         ];
 
         $this->session->set_userdata('user', $userdata);
@@ -209,6 +211,10 @@ class Access extends CI_Controller {
             {
                 $this->authenticate_user();
             }
+
+            $this->load->library('Authorization');
+            $this->authorization = new Authorization();
+            $this->authorization->load_all_permissions_in_memory();
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->set_message('Login efetuado com sucesso');
