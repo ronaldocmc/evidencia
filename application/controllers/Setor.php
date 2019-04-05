@@ -13,7 +13,22 @@ class Setor extends CRUD_Controller
 	{
 		parent::__construct();
 		$this->load->model('Setor_model', 'setor');
-	}
+    }
+
+    public function get(){
+        $response = new Response();
+
+        $setores = $this->setor->get_all(
+            '*, setores.ativo as ativo',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+
+        $response->add_data('self', $setores);
+
+        $response->send();
+    }
 
     private function update()
     {
