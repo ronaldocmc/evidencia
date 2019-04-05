@@ -5,36 +5,81 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="overview-wrap">
-                        <h2 class="title-1">gerenciamento de serviços
+                        <h2 class="title-1">gerenciamento de funções
                         </h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal"
-                            data-title="Novo Serviço" data-contentid="save" data-target="#modal">
-                            <i class="zmdi zmdi-plus"></i>novo serviço</button>
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Nova Função" data-contentid="save"
+                            data-target="#modal">
+                            <i class="zmdi zmdi-plus"></i>nova função</button>
                     </div>
                     <input type="hidden" name="opcao-editar" id="opcao-editar" value="false">
                     <div class="col-md-12 mt-3">
-                        <div class="collapse" id="collapseHelp">
-                            <div class="card card-body">
-                                <p>Esta é a área para gerenciamento de serviços.</p>
-                                <p>O serviço representa a qual grupo específico uma determinada ordem de serviço
-                                    pertence.</p>
-                                <p>Se por exemplo, é necessário realizar uma coleta de cão morto, o serviço ao qual esta
-                                    ordem pertence é ao serviço coleta de animal.</p>
-                                <p>Para cadastro de um serviço, é necessário especificar o nome do serviço, uma breve
-                                    descrição de o que representa esse serviço, a situação padrão, que será atribuída
-                                    como padrão às ordens de serviço pertencente a esse serviço, e por fim, a qual tipo
-                                    de serviço este serviço pertence.</p>
-                                <p><b>Características:</b></p>
-                                <div class="col-md-12">
-                                    <ul>
-                                        <li>Facilita a geração de relatórios</li>
-                                        <li>Facilita que funcionários possam identificar grupos específicos de serviços
-                                            e tomar providências semelhantes</li>
-                                    </ul>
+                                <div class="collapse" id="collapseHelp">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                <h3>Guia do Usuário</h3>
+                                            </div>
+                                        </div>
+                                        <div class="card-body card-user-guide">
+                                        <div class="col-md-6">
+                                            <p>Bem-vindo a área de Gerenciamento de Funções!</p><br>
+                                            <p> Aqui você poderá realizar algumas operações para controlar as funções da sua organização.</p><br>
+                                            <p>Organizamos as suas funções de modo que ele possua serviços específicos conforme um tipo de serviço definido. Assim, controlar a prestação de serviços da sua organização torna-se uma tarefa fácil e rápida! </p>
+                                        </div>
+                                        <div class="col-md-6 user-guide">
+                                            <p><b>Operações permitidas:</b></p>
+                                            <div class="col-md-12 functions-page" >
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-plus fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Inserir uma função</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                            <div class="d-none d-block">
+                                                                <i class="fas fa-edit fa-fw"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Editar função existente</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" class="btn btn-sm btn-danger" disabled="true" title="Desativar">
+                                                                <div class="d-none d-block">
+                                                                    <i class="fas fa-times fa-fw"></i>
+                                                                </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Desativar funcao inativo</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 icon-guide">
+                                                        <button type="button" class="btn btn-sm btn-success" disabled="true" title="Reativar">
+                                                                <div class="d-none d-block">
+                                                                    <i class="fas fa-power-off fa-fw"></i>
+                                                                </div>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-10 text-guide">Ativar funcao novamente</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12>">
+                                                        <br><p><strong>Qualquer dúvida entre em contato com o suporte  na sua organização!</p></strong>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="row py-2">
@@ -45,7 +90,7 @@
                             <i style="cursor: pointer; color: gray" class="fas fa-info pull-right"
                                 data-toggle="collapse" href="#collapseHelp" role="button" aria-expanded="false"
                                 aria-controls="collapseHelp"></i>
-                            serviços</h2>
+                            funções</h2>
 
 
                         <div class="">
@@ -62,14 +107,10 @@
                             </div>
                         </div>
                         <div class="table-responsive table--no-card m-b-40">
-                            <table id="servicos" class="table table-striped table-datatable">
+                            <table id="funcoes" class="table table-striped table-datatable">
                                 <thead>
                                     <tr>
-                                        <th>Nome</th>
-                                        <th>Abreviação</th>
-                                        <th>Descrição</th>
-                                        <!-- <th>Situação Padrão</th> -->
-                                        <th>Tipo de Serviço</th>
+                                        <th class="col-8">Nome</th>
                                         <th>Opções</th>
                                     </tr>
                                 </thead>
@@ -97,7 +138,7 @@
 
 <!-- MODAL -->
 <div class="modal fade" id="modal">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">TITLE</h4>
@@ -131,61 +172,15 @@
                         <div class="card-body card-block">
                             <div class="row form-group">
                                 <div class="col col-md-2">
-                                    <label for="servico_nome" class=" form-control-label">
-                                        <strong>Nome*</strong>
-                                    </label>
+                                    <label for="funcao_nome"
+                                        class=" form-control-label"><strong>Nome*</strong></label>
                                 </div>
                                 <div class="col-12 col-md-10">
-                                    <input type="text" id="servico_nome" placeholder="Nome do serviço"
-                                        class="form-control" required="true" maxlength="50" minlength="3">
-                                    <small class="form-text text-muted">Por favor, informe o nome do serviço </small>
+                                    <input type="text" id="funcao_nome" name="nome"
+                                        placeholder="Nome da Função" class="form-control" required="true"
+                                        maxlength="50" minlength="3">
+                                    <small class="form-text text-muted">Por favor, informe o nome da funcao</small>
                                 </div>
-
-                                <div class="col col-md-2">
-                                    <label for="servico_abreviacao" class=" form-control-label">
-                                        <strong>Abreviação*</strong>
-                                    </label>
-                                </div>
-                                <div class="col-12 col-md-10">
-                                    <input type="text" id="servico_abreviacao" placeholder="Abreviação do serviço"
-                                        class="form-control" required="true" maxlength="10" minlength="3">
-                                    <small class="form-text text-muted">A abreviação será utilizada na codificação da
-                                        Ordem de Serviço</small>
-                                </div>
-
-                                <div class="col col-md-2">
-                                    <label for="servico_desc" class=" form-control-label">
-                                        <strong>Descrição*</strong>
-                                    </label>
-                                </div>
-                                <div class="col-12 col-md-10">
-                                    <textarea id="servico_desc" class="form-control" required="true"
-                                        resizable="false"></textarea>
-                                    <small class="form-text text-muted">Por favor, informe a descrição do serviço
-                                    </small>
-                                </div>
-
-
-                                <div class="col-12 col-md-2">
-                                    <label for="tipo_servico_pk" class=" form-control-label"><strong>Tipo de
-                                            Serviço*</strong></label>
-                                </div>
-                                <div class="col-12 col-md-10">
-                                    <select class="form-control" required="true" id="tipo_servico_fk"></select>
-                                    <small class="help-block form-text">Por favor, informe o tipo de serviço ao qual
-                                        esse serviço pertence.</small>
-                                </div>
-
-                                <div class="col-12 col-md-2">
-                                    <label for="prioridade_fk" class=" form-control-label"><strong>Situação
-                                            Padrão*</strong></label>
-                                </div>
-                                <div class="col-12 col-md-10">
-                                    <select class="form-control" required="true" id="situacao_padrao_fk"></select>
-                                    <small class="help-block form-text">Por favor, informe a situação padrão que será
-                                        exibida na ordem de serviço desse serviço.</small>
-                                </div>
-
                             </div>
                         </div>
                         <div class="card-footer text-center">
@@ -208,11 +203,13 @@
                         <div class="card-body card-block">
                             <div class="row form-group">
                                 <div class="col col-md-2">
-                                    <label for="senha" class=" form-control-label"><strong>Senha*</strong></label>
+                                    <label for="senha"
+                                        class=" form-control-label"><strong>Senha*</strong></label>
                                 </div>
                                 <div class="col-12 col-md-10">
                                     <input type="password" id="pass-modal-save" name="senha" placeholder="Senha Pessoal"
-                                        class="form-control" autocomplete="new-password" minlength="8" required="true">
+                                        class="form-control" autocomplete="new-password" minlength="8"
+                                        required="true">
                                     <small class="form-text text-muted">Por favor, informe sua senha de
                                         acesso</small>
                                 </div>
@@ -249,14 +246,16 @@
 
             <div id="loading-deactivate">
                 <div align="center" class="center">
-                    <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading" alt="Carregando">
+                    <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading"
+                        alt="Carregando">
                 </div>
             </div>
-            <div id="dependences" style="margin: 20px 0" class="container"></div>
+            <div id="dependences" class="container"></div>
 
             <div class="form-group d-none superusuario">
                 <input type="password" class="form-control press_enter" autocomplete="false"
-                    placeholder="Confirme sua senha" required="required" id="pass-modal-deactivate" minlength="8">
+                    placeholder="Confirme sua senha" required="required"
+                    id="pass-modal-deactivate" minlength="8">
             </div>
 
             <div class="form-group">
@@ -279,7 +278,8 @@
             </div>
             <div class="form-group d-none superusuario">
                 <input type="password" class="form-control press_enter" autocomplete="false"
-                    placeholder="Confirme sua senha" required="required" id="pass-modal-activate">
+                    placeholder="Confirme sua senha" required="required"
+                    id="pass-modal-activate">
             </div>
             <div class="form-group">
                 <button type="button" class="btn btn-confirmar-senha action_activate load" name="post" value=""><i
