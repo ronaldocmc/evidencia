@@ -15,8 +15,8 @@ if (!defined('BASEPATH')) {
 
 require_once APPPATH."core/Response.php";
 require_once APPPATH."core/MyException.php";
-require_once APPPATH."core/AuthenticationController.php";
-class CRUD_Controller extends AuthenticationController
+require_once APPPATH."core/AuthorizationController.php";
+class CRUD_Controller extends AuthorizationController
 {
     private $ci;
     private $pseudo_session;

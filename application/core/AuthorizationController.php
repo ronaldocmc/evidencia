@@ -16,7 +16,7 @@ if (!defined('BASEPATH')) {
 require_once APPPATH."core/Response.php";
 require_once APPPATH."core/MyException.php";
 
-class AuthenticationController extends CI_Controller
+class AuthorizationController extends CI_Controller
 {
     public function is_authorized()
     {
