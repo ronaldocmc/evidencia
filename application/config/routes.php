@@ -65,6 +65,11 @@ $route['funcao'] = 'viewcontroller/index/funcao';
 $route['servico'] = 'viewcontroller/index/servico';
 $route['prioridade'] = 'viewcontroller/index/prioridade';
 $route['situacao'] = 'viewcontroller/index/situacao';
+
+$route['minha_conta'] = 'viewcontroller/minha_conta';
+
+$route['mapa'] = 'viewcontroller/mapa';
+$route['organizacao/editar'] = 'viewcontroller/editar_informacoes_organizacao';
+
 $route['relatorio'] = 'viewcontroller/listar_relatorios';
-$route['relatorio/novo_relatorio'] = 'viewcontroller/novo_relatorio';
-$route['relatorio/mapa'] = 'viewcontroller/mapa';
+$route['relatorio/novo'] = 'viewcontroller/novo_relatorio';

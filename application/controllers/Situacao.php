@@ -68,6 +68,21 @@ class Situacao extends CRUD_Controller
         }
     }
 
+    public function get(){
+        $response = new Response();
+
+        $data = $this->situacao_model->get_all(
+            '*, situacoes.ativo as ativo',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+
+        $response->add_data('self', $data);
+
+        $response->send();
+    }
+
     public function get_dependents()
     {
         $this->load->model('servico_model');
