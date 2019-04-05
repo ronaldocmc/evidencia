@@ -33,14 +33,10 @@ class Situacao extends CRUD_Controller
      * @return Objeto Response
      */
 
-    public function insert_update()
+    public function save()
     {
         try {
-
-            // if ($this->is_superuser()) {
-            //     $this->add_password_to_form_validation();
-            // }
-
+            
             $this->situacao_model->config_form_validation();
             $this->situacao_model->run_form_validation();
 
