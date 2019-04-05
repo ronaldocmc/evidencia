@@ -51,15 +51,15 @@ class CRUD_Controller extends AuthorizationController
 
     private function check_permissions()
     {   
-        if(!$this->is_authorized()) $this->return_unauthorized_response();
+        if(!$this->is_authorized()) $this->return_forbidden_response();
 
     }
 
-    private function return_unauthorized_response()
+    private function return_forbidden_response()
     {
         $response = new Response();
       
-        $response->set_code(Response::UNAUTHORIZED);
+        $response->set_code(Response::FORBIDDEN);
         $response->set_data(['error' => 'Você não possui permissão para acessar esta área']);
         $response->send();
         die();
