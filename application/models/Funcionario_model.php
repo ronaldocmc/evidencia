@@ -142,6 +142,7 @@ class Funcionario_model extends MY_Model
     function insert_funcionario($data_setores)
     {
 
+        
         $id = $this->insert();
 
         if($data_setores != '')
@@ -149,7 +150,7 @@ class Funcionario_model extends MY_Model
             $insert_setores = $this->explode_setores($data_setores, $id);
             $this->CI->db->insert_batch('funcionarios_setores', $insert_setores);
         }
-        
+        // var_dump($insert_setores);die();
         return $id;
     }
 
@@ -158,10 +159,9 @@ class Funcionario_model extends MY_Model
         $insert_setores = [];       
 
         $this->update();
-
+        
         if($data_setores != "" && $data_setores != NULL){
             $insert_setores = $this->explode_setores($data_setores, $id);
-
         }
         
         $this->CI->db->delete('funcionarios_setores', ["funcionario_fk" => $id]);
@@ -180,7 +180,9 @@ class Funcionario_model extends MY_Model
 
     function explode_setores($data_setores, $id)
     {
-        $data_setores = explode(",", $data_setores);
+        if(!is_array($data_setores)){
+            $data_setores = explode(",", $data_setores);
+        }
 
         foreach ($data_setores as $key => $set):
             $insert_setores[$key] = array(
@@ -188,6 +190,7 @@ class Funcionario_model extends MY_Model
                 'funcionario_fk' => $id,
             );
         endforeach;
+
         return $insert_setores;
     }
 

@@ -41,7 +41,7 @@ class Funcionario extends CRUD_Controller
             2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
             3 => base_url('assets/css/modal_desativar.css'),
             4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            5 => base_url('assets/css/loading_input.css')
+            5 => base_url('assets/css/loading_input.css'),
         ));
     }
 
@@ -60,7 +60,7 @@ class Funcionario extends CRUD_Controller
             9 => base_url('assets/js/constants.js'),
             10 => base_url('assets/js/jquery.noty.packaged.min.js'),
             11 => base_url('assets/js/dashboard/pessoa/index.js'),
-            12 => base_url('assets/vendor/select-input/select-input.js')
+            12 => base_url('assets/vendor/select-input/select-input.js'),
         ));
     }
 
@@ -68,7 +68,6 @@ class Funcionario extends CRUD_Controller
     {
         $this->funcionario_model->__set('funcionario_pk', $this->session->user['id_user']);
         $return['worker'] = $this->funcionario_model->get_or_404();
-
 
         load_view([
             0 => [
@@ -79,7 +78,7 @@ class Funcionario extends CRUD_Controller
                 'src' => 'access/pre_loader',
                 'params' => null,
             ],
-        ], $this->session->user['is_superusuario']?'superusuario':'administrador');
+        ], $this->session->user['is_superusuario'] ? 'superusuario' : 'administrador');
     }
 
     public function minha_conta()
@@ -88,29 +87,28 @@ class Funcionario extends CRUD_Controller
         $this->load_scripts();
         $this->load_view();
     }
-    
+
     private function check_old_password()
     {
         $this->add_password_to_form_validation();
         $this->funcionario_model->run_form_validation();
         $old_password = $this->input->post('senha');
 
-        if (!authenticate_operation($this->input->post('senha'), $this->session->user['password_user'])) 
-        {
+        if (!authenticate_operation($this->input->post('senha'), $this->session->user['password_user'])) {
             throw new MyException('Senha informada incorreta', Response::UNAUTHORIZED);
         }
     }
 
     public function update_password()
     {
-        try{
+        try {
             $this->check_old_password();
 
             $this->begin_transaction();
 
             $this->funcionario_model->__set('funcionario_pk', $this->session->user['id_user']);
-            
-            $this->funcionario_model->__set('funcionario_senha', 
+
+            $this->funcionario_model->__set('funcionario_senha',
                 hash(ALGORITHM_HASH, $this->input->post('new_password') . SALT));
 
             $this->funcionario_model->update_funcionario($this->session->user['id_user']);
@@ -140,13 +138,12 @@ class Funcionario extends CRUD_Controller
             [0 => $this->input->post('img')]
         );
 
-        if($path != null){
+        if ($path != null) {
             $this->funcionario_model->__set("funcionario_caminho_foto", $path[0]);
             $this->response->add_data("path", $path[0]);
         }
 
-        if(isset($_POST['setor_fk']))
-        {
+        if (isset($_POST['setor_fk'])) {
             $this->funcionario_model->update_funcionario($_POST['funcionario_pk'], $_POST['setor_fk']);
         } else {
             $this->funcionario_model->update_funcionario($_POST['funcionario_pk']);
@@ -172,6 +169,76 @@ class Funcionario extends CRUD_Controller
             $this->funcionario_model->update_image($path[0], $id);
             $this->response->add_data("path", $path[0]);
         }
+
+        return $id;
+    }
+
+    public function get()
+    {
+
+        $response = new Response();
+
+        $funcionarios = $this->funcionario_model->get(
+            "funcionarios.funcionario_pk, funcionarios.organizacao_fk, funcionarios.ativo, funcionarios.funcionario_login, funcionarios.funcionario_nome, funcionarios.funcionario_caminho_foto, funcionarios.funcionario_cpf,
+            funcionarios.funcao_fk, funcionarios.departamento_fk, funcoes.funcao_nome, funcoes.funcao_pk, organizacoes.organizacao_pk ",
+            [
+                "funcionarios.organizacao_fk" => $this->session->user['id_organizacao'],
+            ]
+        );
+
+        $func_sets = $this->funcionario_model->get_setores([
+            'funcionarios.organizacao_fk' => $this->session->user['id_organizacao'],
+        ]);
+
+        if ($funcionarios == false) {
+            $funcionarios = [];
+        }
+
+        foreach ($funcionarios as $func) {
+            $setor_aux = [];
+            foreach ($func_sets as $fc) {
+                if ($fc->funcionario_fk == $func->funcionario_pk) {
+                    $setor_aux[] = $fc->setor_fk;
+                }
+            }
+            if (!empty($setor_aux)) {
+                $func->setor_fk = $setor_aux;
+            }
+        }
+
+        $funcoes = $this->funcao_model->get_all(
+            '*',
+            [
+                'organizacao_fk' => $this->session->user['id_organizacao'],
+            ],
+            -1,
+            -1
+        );
+
+        $departamentos = $this->departamento_model->get_all(
+            '*',
+            [
+                'organizacao_fk' => $this->session->user['id_organizacao'],
+            ],
+            -1,
+            -1
+        );
+
+        $setores = $this->setor_model->get_all(
+            '*',
+            [
+                'organizacao_fk' => $this->session->user['id_organizacao'],
+            ],
+            -1,
+            -1
+        );
+
+        $response->add_data('self', $funcionarios);
+        $response->add_data('setores', $setores);
+        $response->add_data('departamentos', $departamentos);
+        $response->add_data('funcoes', $funcoes);
+
+        $response->send();
     }
 
     public function save()
@@ -195,10 +262,36 @@ class Funcionario extends CRUD_Controller
 
             $this->begin_transaction();
 
-            if (isset($_POST['funcionario_pk'])) {
-                $this->update();               
+            if (isset($_POST['funcionario_pk']) && $_POST['funcionario_pk'] != '') {
+                $this->update();
             } else {
-                $this->insert();
+
+                $id = $this->insert();
+
+                $new = $this->funcionario_model->get(
+                    "funcionarios.funcionario_pk, funcionarios.organizacao_fk, funcionarios.ativo, funcionarios.funcionario_login, funcionarios.funcionario_nome, funcionarios.funcionario_caminho_foto, funcionarios.funcionario_cpf,
+                    funcionarios.funcao_fk, funcoes.funcao_nome, funcoes.funcao_pk, organizacoes.organizacao_pk ",
+                    [
+                        "funcionarios.organizacao_fk" => $this->session->user['id_organizacao'],
+                        "funcionarios.funcionario_pk" => $id,
+                    ]
+                );
+
+                $func_sets = $this->funcionario_model->get_setores([
+                    'funcionarios.organizacao_fk' => $this->session->user['id_organizacao'],
+                    "funcionarios.funcionario_pk" => $id,
+                ]);
+
+                $setor_aux = [];
+                foreach ($func_sets as $fc) {
+                    $setor_aux[] = $fc->setor_fk;
+                }
+                if (!empty($setor_aux)) {
+                    $new[0]->setor_fk = $setor_aux;
+                }
+
+                $this->response->add_data('id', $id);
+                $this->response->add_data('new', $new[0]);
             }
 
             $this->end_transaction();
