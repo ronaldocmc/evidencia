@@ -4,7 +4,7 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once dirname(__FILE__) . "\Response.php";
+require_once APPPATH . "core\Response.php";
 
 require_once APPPATH . "core\CRUD_Controller.php";
 
@@ -28,40 +28,6 @@ class Servico extends CRUD_Controller
         $this->load->library('form_validation');
         $this->response = new Response();
 
-    }
-
-    public function index()
-    {
-
-        $this->session->set_flashdata('css', [
-            0 => base_url('assets/css/modal_desativar.css'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/css/loading_input.css'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-        ]);
-
-        $this->session->set_flashdata('scripts', [
-            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            2 => base_url('assets/js/masks.js'),
-            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            4 => base_url('assets/vendor/datatables/datatables.min.js'),
-            5 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            6 => base_url('assets/js/utils.js'),
-            7 => base_url('assets/js/constants.js'),
-            8 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            9 => base_url('assets/js/dashboard/servico/index.js'),
-            10 => base_url('assets/vendor/select-input/select-input.js'),
-        ]);
-
-        $this->load->helper('form');
-
-        load_view([
-            0 => [
-                'src' => 'dashboard/administrador/servico/home',
-                'params' => null,
-            ],
-        ], 'administrador');
     }
 
     private function padroniza_situacoes($situacoes_aux)
