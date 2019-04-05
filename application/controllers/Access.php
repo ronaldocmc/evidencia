@@ -1,5 +1,5 @@
 
-<?php 
+<?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 require_once APPPATH . "core/MyException.php";
 
@@ -10,29 +10,30 @@ require_once APPPATH . "core/MyException.php";
  * @category    Controller
  * @author      Pedro Cerdeirinha & Matheus Palmeira & Darlan
  */
-class Access extends CI_Controller {
-	/**
-	 * Variavel que representa a resposta do servidor ao usuário
-	 *
-	 * @var Response
-	 */
+class Access extends CI_Controller
+{
+    /**
+     * Variavel que representa a resposta do servidor ao usuário
+     *
+     * @var Response
+     */
     public $response;
     public $authorization;
-	
+
     //-------------------------------------------------------------------------------
 
-	/**
-	 * Construtor da Classe
-	 * 
-	 * Chama o construtor da classe pai
-	 *
-	 * @return void
-	 */
-	function __construct() 
-	{
-		parent::__construct();
-		date_default_timezone_set('America/Sao_Paulo');
-		$this->response = new Response();
+    /**
+     * Construtor da Classe
+     * 
+     * Chama o construtor da classe pai
+     *
+     * @return void
+     */
+    function __construct()
+    {
+        parent::__construct();
+        date_default_timezone_set('America/Sao_Paulo');
+        $this->response = new Response();
         $this->load->helper('exception');
     }
 
@@ -59,8 +60,9 @@ class Access extends CI_Controller {
      */
     public function quit()
     {
-	    session_destroy(); 
-    	redirect(base_url());
+        log_message('info', $this->session->user['email_user'] . ' from ' . $this->input->ip_address() . ' logged out');
+        session_destroy();
+        redirect(base_url());
     }
 
     private function load_login()
@@ -81,9 +83,9 @@ class Access extends CI_Controller {
             $response = verify_attempt($this->input->ip_address());
 
             if ($response != true) {
+                log_message('error', 'Número de tentativas excedidas para ' . $this->input->ip_address());
                 throw new MyException('Número de tentativas excedidas. ' . $response, Response::FORBIDDEN);
             }
-
         }
     }
 
@@ -162,6 +164,7 @@ class Access extends CI_Controller {
         $this->funcionario->__set('funcionario_login', $this->input->post('login'));
         $this->funcionario->__set('funcionario_senha', hash(ALGORITHM_HASH, $this->input->post('password') . SALT));
 
+        log_message('info', 'Trying to authenticate user ' . $this->input->post('login'));
         $worker = $this->funcionario->get_or_404();
 
         $this->check_permissions($worker);
@@ -206,7 +209,6 @@ class Access extends CI_Controller {
             $this->response->set_code(Response::SUCCESS);
             $this->response->set_message('Login efetuado com sucesso');
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -216,15 +218,16 @@ class Access extends CI_Controller {
 
     private function set_rules_form_validation()
     {
-        $this->form_validation->set_rules('login',
+        $this->form_validation->set_rules(
+            'login',
             'Login',
             'trim|required|regex_match[/[a-zA-Z0-9_\-.+]+@[a-zA-Z0-9-]+/]|min_length[8]|max_length[128]'
         );
 
-        $this->form_validation->set_rules('password',
+        $this->form_validation->set_rules(
+            'password',
             'Senha',
             'trim|required|min_length[8]|max_length[128]'
         );
     }
-
 }
