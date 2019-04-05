@@ -34,12 +34,14 @@ class Authorization {
         $this->CI->cache->save('permissions', $memory_permissions, 36000); //1 hour
     }
 
-    public function return_permissions()
+    public function return_permissions($function_id = NULL)
     {
         $this->_check_if_has_user();
-        
-        $function_id = $this->CI->session->user['id_funcao'];
 
+        if($function_id == NULL){
+            $function_id = $this->CI->session->user['id_funcao'];
+        }
+        
         return $this->_get_permissions($function_id);
     }
 
