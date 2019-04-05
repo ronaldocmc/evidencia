@@ -60,7 +60,7 @@ class CRUD_Controller extends AuthorizationController
         $response = new Response();
       
         $response->set_code(Response::UNAUTHORIZED);
-        $response->set_data(['password_user' => 'Senha informada incorreta']);
+        $response->set_data(['error' => 'Você não possui permissão para acessar esta área']);
         $response->send();
         die();
     }
@@ -127,6 +127,7 @@ class CRUD_Controller extends AuthorizationController
                 $method == 'update' ||
                 $method == 'activate' ||
                 $method == 'deactivate' ||
+                $method == 'get' ||
                 $method == 'insert_update'||
                 $method == 'save');
     }
