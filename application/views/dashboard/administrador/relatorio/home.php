@@ -5,7 +5,7 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">Gerenciamento de Relatórios</h2>
-                        <a class="au-btn au-btn-icon au-btn--blue reset_multistep new" href="<?= base_url('Relatorio/novo_relatorio') ?>"> Novo Relatório
+                        <a class="au-btn au-btn-icon au-btn--blue reset_multistep new" href="<?= base_url('relatorio/novo') ?>"> Novo Relatório
                         </a>
                         <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo" data-toggle="modal" data-target="#restaurar_os"> 
                             Receber Relatórios
