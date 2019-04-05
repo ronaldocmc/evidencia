@@ -13,15 +13,16 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core/Response.php";
-require_once APPPATH . "core/MyException.php";
+require_once APPPATH."core/Response.php";
+require_once APPPATH."core/MyException.php";
+require_once APPPATH."core/AuthorizationController.php";
+class CRUD_Controller extends AuthorizationController
 
-
-class CRUD_Controller extends CI_Controller
 {
     private $ci;
     private $pseudo_session;
     private $is_web = false;
+    private $authorization;
 
     public function __construct()
     {
@@ -49,10 +50,19 @@ class CRUD_Controller extends CI_Controller
     }
 
     private function check_permissions()
-    {
-        $this->check_if_current_controller_is_allowed();
+    {   
+        if(!$this->is_authorized()) $this->return_unauthorized_response();
 
-        $this->check_if_current_method_is_allowed();
+    }
+
+    private function return_unauthorized_response()
+    {
+        $response = new Response();
+      
+        $response->set_code(Response::UNAUTHORIZED);
+        $response->set_data(['password_user' => 'Senha informada incorreta']);
+        $response->send();
+        die();
     }
 
     private function set_pseudo_session()
@@ -60,155 +70,7 @@ class CRUD_Controller extends CI_Controller
         $this->pseudo_session['id_organizacao'] = $this->session->user['id_organizacao'];
         $this->pseudo_session['id_user'] = $this->session->user['id_user'];
     }
-
-    private function check_if_current_controller_is_allowed()
-    {
-        $function = $this->session->user['func_funcao'];
-
-        $current_controller = $this->get_current_controller();
-
-        $controller_exceptions = $this->load_controller_exceptions($function);
-
-        if (array_key_exists($current_controller, $controller_exceptions)) {
-            $this->load_view_unauthorized();
-            return;
-        }
-    }
-
-    private function get_current_controller()
-    {
-        return strtolower($this->uri->segment(1));
-    }
-
-    private function get_current_method()
-    {
-        return strtolower($this->uri->segment(2));
-    }
-
-    private function check_if_current_method_is_allowed()
-    {
-        $function = $this->session->user['func_funcao'];
-
-        $current_controller = $this->get_current_controller();
-        $current_method = $this->get_current_method();
-
-        $controller_exceptions = $this->load_controller_exceptions($function);
-
-        $method_exceptions = $this->load_method_exceptions($function);
-
-        if (array_key_exists($current_controller, $controller_exceptions)) {
-            if (array_key_exists($current_method, $method_exceptions)) {
-                $this->load_view_unauthorized();
-                return;
-            }
-        }
-
-    }
-
-    private function load_method_exceptions($function)
-    {
-        if ($function == 'Administrador') {
-            return array(
-                0 => [
-                    'controller' => 'organizacao',
-                    'methods' => ['deactivate', 'activate', 'index'],
-                ],
-            );
-        }
-
-        if ($function == 'Atendente') {
-            return array(
-                0 => [
-                    'controller' => 'dashboard',
-                    'methods' => ['superusuario'],
-                ],
-                1 => [
-                    'controller' => 'ordem_servico',
-                    'methods' => 'deactivate',
-                ],
-            );
-        }
-    }
-
-    private function load_controller_exceptions($function)
-    {
-        if ($function == 'Administrador') {
-            return array(
-                0 => 'superusuario',
-                // 0 => 'organizacao',
-            );
-        }
-
-        if ($function == 'Atendente') {
-            return array(
-                0 => 'organizacao',
-                1 => 'superusuario',
-                2 => 'departamento',
-                3 => 'funcionario',
-                4 => 'prioridade',
-                5 => 'servico',
-                6 => 'setor',
-                7 => 'situacao',
-                8 => 'tipo_servico',
-            );
-        }
-    }
-
-    /**
-     * Este método verifica se o usuário tem permissão para acessar aquela view.
-     */
-    private function verify_permission()
-    {
-
-        if ($this->session->permissions) {
-            $this->verify_controller_exceptions($this->session->permissions['controller_exceptions']);
-
-            $this->verify_method_exceptions($this->session->permissions['method_exceptions']);
-        } else {
-            $this->load_view_unauthorized();
-        }
-
-    }
-
-    private function verify_controller_exceptions($controller_exceptions)
-    {
-        $this->load->model('Log_model', 'log_model');
-        //este é o controller que ele está acessando atualmente
-        $current_controller = $this->uri->segment(1);
-        foreach ($controller_exceptions as $exception) {
-            if ($current_controller == $exception) {
-                // Salva no log que o usuário tentou acessar um controlador que não tem permissão
-                $this->log_model->insert([
-                    'log_pessoa_fk' => $this->session->user['id_user'],
-                    'log_descricao' => 'Tentou acessar controlador' . $exception,
-                ]);
-                $this->load_view_unauthorized();
-            }
-        }
-    }
-
-    private function verify_method_exceptions($method_exceptions)
-    {
-        $this->load->model('Log_model', 'log_model');
-        $current_controller = $this->uri->segment(1);
-
-        $current_method = '';
-        if (null !== $this->uri->segment(2)) {
-            $current_method = $this->uri->segment(2);
-        }
-
-        foreach ($method_exceptions as $exception) {
-            if ($current_controller == $exception['controller'] && $current_method == $exception['method']) {
-                // Salva no log que o usuário tentou acessar um método que não tem permissão
-                $this->log_model->insert([
-                    'log_pessoa_fk' => $this->session->user['id_user'],
-                    'log_descricao' => 'Tentou acessar ' . $exception['method'] . ' do controlador ' . $current_controller,
-                ]);
-                $this->load_view_unauthorized();
-            }
-        }
-    }
-
+    
     private function load_view_unauthorized()
     {
         $response = new Response();
@@ -261,12 +123,12 @@ class CRUD_Controller extends CI_Controller
 
     private function method_authorization($method)
     {
-        return ($method == 'insert' ||
-            $method == 'update' ||
-            $method == 'save' ||
-            $method == 'activate' ||
-            $method == 'deactivate' ||
-            $method == 'insert_update');
+       return ($method == 'insert' ||
+                $method == 'update' ||
+                $method == 'activate' ||
+                $method == 'deactivate' ||
+                $method == 'insert_update'||
+                $method == 'save');
     }
 
     private function send_response($response)
@@ -294,11 +156,6 @@ class CRUD_Controller extends CI_Controller
             'senha',
             'trim|required|min_length[8]'
         );
-    }
-
-    public function is_superuser()
-    {
-        return $this->session->user['is_superusuario'];
     }
 
     public function begin_transaction()

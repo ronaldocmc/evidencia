@@ -1,8 +1,6 @@
 
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-
-require_once APPPATH . "core/Response.php";	
 require_once APPPATH . "core/MyException.php";
 
 /**
@@ -12,15 +10,15 @@ require_once APPPATH . "core/MyException.php";
  * @category    Controller
  * @author      Pedro Cerdeirinha & Matheus Palmeira & Darlan
  */
-class Access extends CI_Controller
-{
-    /**
-     * Variavel que representa a resposta do servidor ao usuário
-     *
-     * @var Response
-     */
+class Access extends CI_Controller {
+	/**
+	 * Variavel que representa a resposta do servidor ao usuário
+	 *
+	 * @var Response
+	 */
     public $response;
-
+    public $authorization;
+	
     //-------------------------------------------------------------------------------
 
 	/**
@@ -128,17 +126,18 @@ class Access extends CI_Controller
 
     private function set_session($user)
     {
-        $userdata = [
-            'id_user' => $user->funcionario_pk,
-            'email_user' => $user->funcionario_login,
-            'password_user' => $user->funcionario_senha,
-            'id_organizacao' => $user->organizacao_pk,
-            'name_user' => $user->funcionario_nome,
-            'name_organizacao' => $user->organizacao_nome,
-            'is_superusuario' => false,
-            'image_user_min' => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
-            'image_user' => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
-            'func_funcao' => $user->funcao_nome,
+        $userdata =  [
+            'id_user'           => $user->funcionario_pk,
+            'email_user'        => $user->funcionario_login,
+            'password_user'     => $user->funcionario_senha,
+            'id_organizacao'    => $user->organizacao_pk,
+            'name_user'         => $user->funcionario_nome,
+            'name_organizacao'  => $user->organizacao_nome,
+            'is_superusuario'   => FALSE,
+            'image_user_min'    => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
+            'image_user'        => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
+            'func_funcao'       => $user->funcao_nome,
+            'id_funcao'         => $user->funcao_pk
         ];
 
         $this->session->set_userdata('user', $userdata);
@@ -199,6 +198,10 @@ class Access extends CI_Controller
                 $this->response->add_data('superusuario', 0);
                 $this->authenticate_user();
             }
+
+            $this->load->library('Authorization');
+            $this->authorization = new Authorization();
+            $this->authorization->load_all_permissions_in_memory();
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->set_message('Login efetuado com sucesso');
