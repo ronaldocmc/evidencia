@@ -466,6 +466,12 @@ private function porcentagem($dividendo, $divisor) {
                 $this->session->set_userdata('user',$array_session);
             }
 
+            $this->session->set_flashdata('css',[
+                0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+                1 => base_url('assets/vendor/icon-hover-effects/component.css'),
+                2 => base_url('assets/vendor/icon-hover-effects/default.css'),
+                3 => base_url('assets/css/dashboard.css')
+            ]);
 
             load_view([
                 0 => [
