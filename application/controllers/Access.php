@@ -154,7 +154,7 @@ class Access extends CI_Controller {
 
         $this->set_session_superuser($superuser);
 
-        $this->clear_login_attempts();
+        // $this->clear_login_attempts();
     }
 
     private function authenticate_user()
@@ -168,8 +168,8 @@ class Access extends CI_Controller {
 
         $this->set_session($worker);
 
-        $this->clear_login_attempts();
-    }
+    //     $this->clear_login_attempts();
+     }
 
     //--------------------------------------------------------------------------------
     /**
