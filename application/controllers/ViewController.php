@@ -26,6 +26,41 @@ class ViewController extends AuthorizationController {
         $this->_load_view($name, $name.'s', NULL);
     }
 
+    public function listar_relatorios()
+    {
+        $reports = $this->get_all_reports();
+        $this->session->set_flashdata('css', array(
+            0 => base_url('assets/vendor/cropper/cropper.css'),
+            1 => base_url('assets/vendor/input-image/input-image.css'),
+            2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
+            3 => base_url('assets/css/modal_desativar.css'),
+            4 => base_url('assets/css/user_guide.css'),
+        ));
+        $this->session->set_flashdata('scripts', array(
+            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
+            1 => base_url('assets/vendor/datatables/datatables.min.js'),
+            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
+            4 => base_url('assets/js/utils.js'),
+            5 => base_url('assets/js/constants.js'),
+            6 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            7 => base_url('assets/js/dashboard/relatorio/home.js'),
+        ));
+        $this->load->helper('form');
+        load_view([
+            0 => [
+                'src' => 'dashboard/administrador/relatorio/home',
+                'params' => [
+                    'relatorios' => $reports,
+                ],
+            ],
+            1 => [
+                'src' => 'access/pre_loader',
+                'params' => null,
+            ],
+        ], 'administrador');
+    }
+
 
     public function novo_relatorio()
     {
@@ -235,6 +270,33 @@ class ViewController extends AuthorizationController {
         $data['response'] = $response;
         $this->load->view('errors/padrao/home', $data);
     }
+
+    private function get_all_reports()
+    {
+        $this->load->model('relatorio_model', 'report_model');
+        $reports = $this->report_model->get_all(
+            '*',
+            null, //['relatorios.ativo' => 1],
+            -1,
+            -1,
+            [
+                ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = relatorios.relatorio_func_responsavel'],
+            ]);
+        if ($reports) {
+            //arrumar a data:
+            foreach ($reports as $r) {
+                $r->relatorio_data_criacao = date('d/m/Y H:i:s', strtotime($r->relatorio_data_criacao));
+                $r->quantidade_os = $this->report_model->get_orders_of_report(['relatorio_fk' => $r->relatorio_pk], true);
+                if ($r->relatorio_data_entrega == null) {
+                    $r->relatorio_data_entrega = '-- --';
+                } else {
+                    $r->relatorio_data_entrega = date('d/m/Y H:i:s', strtotime($r->relatorio_data_entrega));
+                }
+            }
+        }
+        return $reports;
+    }
+
 
 }
 
