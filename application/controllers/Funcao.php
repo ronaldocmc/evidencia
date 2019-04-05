@@ -67,6 +67,21 @@ class Funcao extends CRUD_Controller
         $this->funcao->update();
     }
 
+    public function get(){
+        $response = new Response();
+
+        $funcoes = $this->funcao->get_all(
+            '*, funcoes.ativo as ativo',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+
+        $response->add_data('self', $funcoes);
+
+        $response->send();
+    }
+
     public function get_dependents()
     {
         $response = new Response();
