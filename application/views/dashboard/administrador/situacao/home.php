@@ -149,7 +149,7 @@
 
 <!-- MODAL -->
 <div class="modal fade" id="modal">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog  modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">TITLE</h4>
@@ -183,14 +183,28 @@
                         <div class="card-body card-block">
                             <div class="row form-group">
                                 <div class="col col-md-2">
-                                    <label for="situação_nome"
+                                    <label for="situacao_nome"
                                         class=" form-control-label"><strong>Nome*</strong></label>
                                 </div>
                                 <div class="col-12 col-md-10">
-                                    <input type="text" id="situação_nome" name="nome"
+                                    <input type="text" id="situacao_nome" name="nome"
                                         placeholder="Nome da Situação" class="form-control" required="true"
                                         maxlength="50" minlength="3">
                                     <small class="form-text text-muted">Por favor, informe o nome da
+                                        Situação</small>
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col col-md-2">
+                                    <label for="situacao_descricao"
+                                        class=" form-control-label"><strong>Descrição*</strong></label>
+                                </div>
+                                <div class="col-12 col-md-10">
+                                    <input type="text" id="situacao_descricao" name="nome"
+                                        placeholder="Descrição" class="form-control" required="true"
+                                        maxlength="100" minlength="3">
+                                    <small class="form-text text-muted">Por favor, informe a descrição da
                                         Situação</small>
                                 </div>
                             </div>
