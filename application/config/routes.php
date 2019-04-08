@@ -58,13 +58,13 @@ $route['translate_uri_dashes'] = FALSE;
 $route['home'] = 'dashboard/funcionario_administrador';
 
 
-$route['departamento'] = 'viewcontroller/index/departamento';
-$route['setor'] = 'viewcontroller/index/setor';
-$route['funcionario'] = 'viewcontroller/index/funcionario';
-$route['funcao'] = 'viewcontroller/index/funcao';
-$route['servico'] = 'viewcontroller/index/servico';
-$route['prioridade'] = 'viewcontroller/index/prioridade';
-$route['situacao'] = 'viewcontroller/index/situacao';
-$route['relatorio'] = 'viewcontroller/listar_relatorios';
-$route['relatorio/novo_relatorio'] = 'viewcontroller/novo_relatorio';
-$route['relatorio/mapa'] = 'viewcontroller/mapa';
+$route['departamento'] = 'ViewController/index/departamento';
+$route['setor'] = 'ViewController/index/setor';
+$route['funcionario'] = 'ViewController/index/funcionario';
+$route['funcao'] = 'ViewController/index/funcao';
+$route['servico'] = 'ViewController/index/servico';
+$route['prioridade'] = 'ViewController/index/prioridade';
+$route['situacao'] = 'ViewController/index/situacao';
+$route['relatorio'] = 'ViewController/listar_relatorios';
+$route['relatorio/novo_relatorio'] = 'ViewController/novo_relatorio';
+$route['relatorio/mapa'] = 'ViewController/mapa';
