@@ -56,7 +56,7 @@ class CRUD_Controller extends AuthorizationController
 
     private function return_unauthorized_response()
     {
-        log_message('error', 'Attempt to access unauthorized are by [' . $this->session->user['user_email'] . '] from address ' . $this->input->ip_address());
+        log_message('error', 'Attempt to access unauthorized area by [' . $this->session->user['user_email'] . '] from address ' . $this->input->ip_address());
         $response = new Response();
 
         $response->set_code(Response::UNAUTHORIZED);
@@ -69,16 +69,6 @@ class CRUD_Controller extends AuthorizationController
     {
         $this->pseudo_session['id_organizacao'] = $this->session->user['id_organizacao'];
         $this->pseudo_session['id_user'] = $this->session->user['id_user'];
-    }
-
-    private function load_view_unauthorized()
-    {
-        $response = new Response();
-
-        $response->set_code(Response::UNAUTHORIZED);
-        $response->set_data(['error' => 'Você não possui permissão para acessar esta área']);
-        $data['response'] = $response;
-        $this->load->view('errors/padrao/home', $data);
     }
 
     /**
@@ -122,6 +112,7 @@ class CRUD_Controller extends AuthorizationController
 
     private function method_authorization($method)
     {
+        log_message('monitoring', strtoupper($method) . ' request on ' . $this->get_current_controller());
         return ($method == 'insert' ||
             $method == 'update' ||
             $method == 'activate' ||
@@ -131,23 +122,6 @@ class CRUD_Controller extends AuthorizationController
             $method == 'save');
     }
 
-    private function send_response($response)
-    {
-        if ($this->is_web) {
-            $response->send();
-            die();
-        }
-        return $response;
-    }
-
-    private function store_log($method)
-    {
-        if ($this->method_authorization($method)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public function add_password_to_form_validation()
     {

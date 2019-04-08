@@ -50,6 +50,8 @@ class MY_Controller extends CI_Controller
     {
         $method = '';
 
+        log_message('monitoring', strtoupper($this->uri->segment(2)) . ' request on ' . $this->get_current_controller());
+
         //Se for POST e possuir mais um parametro na URL, redirecione para esse parametro
         if (is_post_request() && null !== $this->uri->segment(2) && $this->uri->segment(2) != "post") {
             $method = $this->uri->segment(2);
