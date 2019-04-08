@@ -60,7 +60,7 @@ class Access extends CI_Controller
      */
     public function quit()
     {
-        log_message('info', $this->session->user['email_user'] . ' from ' . $this->input->ip_address() . ' logged out');
+        log_message('monitoring', $this->session->user['email_user'] . ' from ' . $this->input->ip_address() . ' logged out');
         session_destroy();
         redirect(base_url());
     }
@@ -164,7 +164,7 @@ class Access extends CI_Controller
         $this->funcionario->__set('funcionario_login', $this->input->post('login'));
         $this->funcionario->__set('funcionario_senha', hash(ALGORITHM_HASH, $this->input->post('password') . SALT));
 
-        log_message('info', 'Trying to authenticate user ' . $this->input->post('login').' from address '. $this->input->ip_address());
+        
         $worker = $this->funcionario->get_or_404();
 
         $this->check_permissions($worker);
