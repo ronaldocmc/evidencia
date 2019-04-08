@@ -4,8 +4,8 @@
 }
 
 require 'vendor/autoload.php';
-require_once APPPATH . "core\CRUD_Controller.php";
-require_once APPPATH."core/Response.php";   
+require_once APPPATH . "core/CRUD_Controller.php";
+require_once APPPATH . "core/Response.php";
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
@@ -24,22 +24,22 @@ class Export extends CRUD_Controller
     }
 
     public function execute()
-    {   
-        try{
+    {
+        try {
+            log_message('monitoring', 'Attempting to generate XLS report.');
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
             $spreadsheet = $reader->load("assets/documents/modelo.xls");
 
             $spreadsheet->setActiveSheetIndex(0);
-    
+
             $writer = new Xls($spreadsheet);
-    
+
             $this->_fillXls($spreadsheet);
             $this->_setHeader();
-            
-            ob_end_clean();
-            
-            $writer->save('php://output', 'xls');
 
+            ob_end_clean();
+
+            $writer->save('php://output', 'xls');
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -51,41 +51,42 @@ class Export extends CRUD_Controller
     {
         $activeSheet = $spreadsheet->getActiveSheet();
 
-        $activeSheet->setCellValue('B2',
-         $this->_formatDate($_GET['data_inicial']).' a '.$this->_formatDate($_GET['data_final']) ) ;
+        $activeSheet->setCellValue(
+            'B2',
+            $this->_formatDate($_GET['data_inicial']) . ' a ' . $this->_formatDate($_GET['data_final'])
+        );
 
         $activeSheet->setCellValue('E2', $this->session->user['name_user']);
         $activeSheet->setCellValue('K2', $this->session->user['name_organizacao']);
 
         $data = $this->_getData();
-        
+
         $index = 4;
-        
-        foreach($data as $row)
-        {
-            $row = (array) $row;
 
-            $i = 0;
-            foreach($row as $v)
-            {   
-                $letter = chr(65 + $i);
-                $activeSheet->setCellValue(''.$letter.($index), $v);
-                $i++;
+        foreach ($data as $row) {
+                $row = (array)$row;
+
+                $i = 0;
+                foreach ($row as $v) {
+                        $letter = chr(65 + $i);
+                        $activeSheet->setCellValue('' . $letter . ($index), $v);
+                        $i++;
+                    }
+
+                $index++;
             }
-            
-            $index++;
-        }
-
     }
- 
+
 
     private function _getData()
     {
         print_r($_GET);
 
-        if(!isset($_GET['data_inicial']) || !isset($_GET['data_final'])){
-            throw new MyException('Data inicial e data final devem ser preenchidos.', 
-                Response::NOT_FOUND);
+        if (!isset($_GET['data_inicial']) || !isset($_GET['data_final'])) {
+            throw new MyException(
+                'Data inicial e data final devem ser preenchidos.',
+                Response::NOT_FOUND
+            );
         }
 
 
@@ -103,12 +104,12 @@ class Export extends CRUD_Controller
              servicos.servico_nome as servico,
              setores.setor_nome as setor,
              funcionarios.funcionario_nome as funcionario,
-             situacoes.situacao_nome as situacao_atual', 
+             situacoes.situacao_nome as situacao_atual',
             [
-                'ordem_servico_criacao >=' => $_GET['data_inicial'].' 00:00:01',
-                'ordem_servico_criacao <=' => $_GET['data_final'].' 23:59:59'
-            ], 
-            -1, 
+                'ordem_servico_criacao >=' => $_GET['data_inicial'] . ' 00:00:01',
+                'ordem_servico_criacao <=' => $_GET['data_final'] . ' 23:59:59'
+            ],
+            -1,
             -1,
             [
                 ['table' => 'prioridades', 'on' => 'ordens_servicos.prioridade_fk = prioridades.prioridade_pk'],
@@ -116,41 +117,41 @@ class Export extends CRUD_Controller
                 ['table' => 'servicos', 'on' => 'ordens_servicos.servico_fk = servicos.servico_pk'],
                 ['table' => 'setores', 'on' => 'ordens_servicos.setor_fk = setores.setor_pk'],
                 ['table' => 'funcionarios', 'on' => 'ordens_servicos.funcionario_fk = funcionarios.funcionario_pk'],
-                ['table' => 'situacoes', 'on' => 'ordens_servicos.situacao_atual_fk = situacoes.situacao_pk'],                
+                ['table' => 'situacoes', 'on' => 'ordens_servicos.situacao_atual_fk = situacoes.situacao_pk'],
             ]
         );
 
-        foreach($ordens_servicos as $os)
-        {
-            $os->ativo = ($os->ativo == 1) ? 'Sim' : 'Não';
-            $os->data_criacao = $this->_formatDateWithHours($os->data_criacao);
-            $os->data_finalizacao = (!empty($os->data_finalizacao))? $this->_formatDateWithHours($os->data_finalizacao): '';
-        }
+        foreach ($ordens_servicos as $os) {
+                $os->ativo = ($os->ativo == 1) ? 'Sim' : 'Não';
+                $os->data_criacao = $this->_formatDateWithHours($os->data_criacao);
+                $os->data_finalizacao = (!empty($os->data_finalizacao)) ? $this->_formatDateWithHours($os->data_finalizacao) : '';
+            }
 
         return $ordens_servicos;
     }
 
-    private function _formatDateWithHours($date){
+    private function _formatDateWithHours($date)
+    {
         return date('d/m/Y H:i:s', strtotime($date));
     }
 
-    private function _formatDate($date){
+    private function _formatDate($date)
+    {
         return date('d/m/Y', strtotime($date));
     }
 
     private function _setHeader()
     {
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'. $this->_getFile() .'"');
+        header('Content-Disposition: attachment;filename="' . $this->_getFile() . '"');
         header('Cache-Control: max-age=0');
     }
 
     private function _getFile($name = NULL)
     {
-        if($name == NULL)
-        {
-            $name = "relatorio geral - ".date('d-m-Y H-i-s');
-        }
+        if ($name == NULL) {
+                $name = "relatorio geral - " . date('d-m-Y H-i-s');
+            }
 
         return $name . self::EXCEL_FORMAT;
     }

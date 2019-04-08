@@ -13,9 +13,9 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH."core/Response.php";
-require_once APPPATH."core/MyException.php";
-require_once APPPATH."core/AuthorizationController.php";
+require_once APPPATH . "core/Response.php";
+require_once APPPATH . "core/MyException.php";
+require_once APPPATH . "core/AuthorizationController.php";
 class CRUD_Controller extends AuthorizationController
 
 {
@@ -50,15 +50,15 @@ class CRUD_Controller extends AuthorizationController
     }
 
     private function check_permissions()
-    {   
-        if(!$this->is_authorized()) $this->return_unauthorized_response();
-
+    {
+        if (!$this->is_authorized()) $this->return_unauthorized_response();
     }
 
     private function return_unauthorized_response()
     {
+        log_message('error', 'Attempt to access unauthorized are by [' . $this->session->user['user_email'] . '] from address ' . $this->input->ip_address());
         $response = new Response();
-      
+
         $response->set_code(Response::UNAUTHORIZED);
         $response->set_data(['error' => 'Você não possui permissão para acessar esta área']);
         $response->send();
@@ -70,7 +70,7 @@ class CRUD_Controller extends AuthorizationController
         $this->pseudo_session['id_organizacao'] = $this->session->user['id_organizacao'];
         $this->pseudo_session['id_user'] = $this->session->user['id_user'];
     }
-    
+
     private function load_view_unauthorized()
     {
         $response = new Response();
@@ -102,7 +102,6 @@ class CRUD_Controller extends AuthorizationController
                 if ($this->method_authorization($method)) {
                     $this->authenticate_password();
                 }
-
             }
         }
     }
@@ -123,13 +122,13 @@ class CRUD_Controller extends AuthorizationController
 
     private function method_authorization($method)
     {
-       return ($method == 'insert' ||
-                $method == 'update' ||
-                $method == 'activate' ||
-                $method == 'deactivate' ||
-                $method == 'get' ||
-                $method == 'insert_update'||
-                $method == 'save');
+        return ($method == 'insert' ||
+            $method == 'update' ||
+            $method == 'activate' ||
+            $method == 'deactivate' ||
+            $method == 'get' ||
+            $method == 'insert_update' ||
+            $method == 'save');
     }
 
     private function send_response($response)
@@ -168,6 +167,7 @@ class CRUD_Controller extends AuthorizationController
     {
         if ($this->db->trans_status() === false) {
             $this->db->trans_rollback();
+            log_message('error', 'Erro ao realizar operação: [' . $this->db->error() . ']');
             if (is_array($this->db->error())) {
                 throw new MyException('Erro ao realizar operação.<br>' . implode('<br>', $this->db->error()), Response::SERVER_FAIL);
             } else {

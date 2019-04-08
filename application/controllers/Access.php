@@ -83,7 +83,7 @@ class Access extends CI_Controller
             $response = verify_attempt($this->input->ip_address());
 
             if ($response != true) {
-                log_message('error', 'Número de tentativas excedidas para ' . $this->input->ip_address());
+                log_message('monitoring', 'Número de tentativas excedidas para ' . $this->input->ip_address());
                 throw new MyException('Número de tentativas excedidas. ' . $response, Response::FORBIDDEN);
             }
         }
@@ -104,6 +104,7 @@ class Access extends CI_Controller
     private function check_permissions($user)
     {
         if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5')) {
+            log_message('monitoring', 'Tentativa de accesso não autorizada de '. $this->input->ip_address());
             throw new MyException('Você não tem autorização para acessar o sistema', Response::UNAUTHORIZED);
         }
     }
@@ -194,6 +195,7 @@ class Access extends CI_Controller
 
             $this->funcionario->run_form_validation();
 
+            log_message('monitoring', 'Trying to authenticate ['.$this->input->post('login').'] from '.$this->input->ip_address());
             if ($this->is_superuser()) {
                 $this->response->add_data('superusuario', 1);
                 $this->authenticate_superuser();
