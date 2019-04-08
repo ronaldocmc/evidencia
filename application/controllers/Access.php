@@ -99,6 +99,15 @@ class Access extends CI_Controller {
         $this->tentativa_model->delete($this->input->ip_address());
     }
 
+    private function _get_user_permissions($function_id)
+    {
+        $this->load->library('Authorization');
+
+        $this->authorization = new Authorization();
+
+        return $this->authorization->return_permissions($function_id);
+    }
+
     private function check_permissions($user)
     {
         $this->load->library('Authorization');
@@ -148,7 +157,7 @@ class Access extends CI_Controller {
             'image_user_min'    => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
             'image_user'        => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
             'func_funcao'       => $user->funcao_nome,
-            'id_funcao'         => $user->funcao_pk
+            'id_funcao'         => $user->funcao_pk,
         ];
 
         $this->session->set_userdata('user', $userdata);
@@ -176,6 +185,9 @@ class Access extends CI_Controller {
         $worker = $this->funcionario->get_or_404();
 
         $this->check_permissions($worker);
+
+        $this->response->add_data('permissions', 
+         json_encode($this->_get_user_permissions($worker->funcao_pk), JSON_UNESCAPED_UNICODE));
 
         $this->set_session($worker);
 
