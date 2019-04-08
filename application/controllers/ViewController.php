@@ -26,6 +26,37 @@ class ViewController extends AuthorizationController {
         $this->_load_view($name, $name.'s', NULL);
     }
 
+    public function funcionario() 
+    {
+        $organizacao = $this->session->user['id_organizacao'];       
+
+        $dados['primeiro_nome'] = $this->primeiro_nome($this->session->user['name_user']);
+
+        $this->session->set_flashdata('css',[
+            0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            1 => base_url('assets/vendor/icon-hover-effects/component.css'),
+            2 => base_url('assets/vendor/icon-hover-effects/default.css'),
+            3 => base_url('assets/css/dashboard.css')
+        ]);
+
+
+        $this->session->set_flashdata('scripts',[
+            0 => base_url('assets/js/dashboard/dashboard/dashboard.js'),
+            1 => base_url('assets/vendor/masks/jquery.mask.min.js'),
+            2 => base_url('assets/vendor/datatables/datatables.min.js'),
+            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            4 => base_url('assets/js/utils.js'),
+            5 => base_url('assets/js/constants.js'),
+
+        ]);
+        load_view([
+            0 => [
+                'src'=>'dashboard/administrador/principal/dashboard',
+                'params' =>  $dados
+            ]
+        ],'administrador');
+    }
+
     public function listar_relatorios()
     {
         $reports = $this->get_all_reports();
@@ -350,6 +381,11 @@ class ViewController extends AuthorizationController {
     {
         return $this->session->user['id_organizacao'];
     }
+    
+    private function primeiro_nome($nome){
+        $array = explode(' ', $nome);
+        return $array[0];
+    }
 
     private function load_view_forbidden()
     {
@@ -386,8 +422,6 @@ class ViewController extends AuthorizationController {
         }
         return $reports;
     }
-
-
 }
 
 
