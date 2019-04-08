@@ -164,7 +164,7 @@ class Access extends CI_Controller
         $this->funcionario->__set('funcionario_login', $this->input->post('login'));
         $this->funcionario->__set('funcionario_senha', hash(ALGORITHM_HASH, $this->input->post('password') . SALT));
 
-        log_message('info', 'Trying to authenticate user ' . $this->input->post('login'));
+        log_message('info', 'Trying to authenticate user ' . $this->input->post('login').' from address '. $this->input->ip_address());
         $worker = $this->funcionario->get_or_404();
 
         $this->check_permissions($worker);
