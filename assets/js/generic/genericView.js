@@ -44,12 +44,75 @@ class GenericView {
         return id;
     }
 
+    getPermissions() {
+        return JSON.parse(localStorage.getItem('permissions'));
+    }
+
+    renderButtonsBasedOnPermissions() {
+        this.renderMenu();
+        this.renderQuickAccess();
+    }
+
+    containPermission(action, controller) {
+        let permissions = this.getPermissions();
+
+        let response = false;
+
+        permissions.forEach( (p) => {
+            if( p.controller != null &&  
+                p.controller.toLowerCase() == controller.toLowerCase() &&
+                p.action.toLowerCase() == action ){
+
+                response = true;
+                return;
+            }
+        });
+
+        return response;
+    }
+
+    renderMenu() {
+        let menuButtons = [
+            {
+                action: 'ver',
+                buttons: [
+                    'departamento', 'setor', 'funcionario', 
+                    'funcao', 'servico', 'prioridade', 
+                    'situacao', 'ordem_servico', 'mapa',
+                    'relatorio'
+                ]
+            },
+            {
+                action: 'editar',
+                buttons: ['organizacao']
+            },
+            {
+                action: 'novo',
+                buttons: ['relatorio']
+            }     
+        ];
+
+        menuButtons.forEach( (e) => {
+            e.buttons.forEach( (button) => {
+                if(this.containPermission(e.action, button)) {
+                    $(`.${button}-menu`).removeClass('d-none');
+                }
+            });
+        });
+    }
+
+    renderQuickAccess() {
+
+    }
+
     conditionalRender() {
         if (localStorage.getItem('is_superusuario') == 1) {
             $('.superusuario').removeClass('d-none');
         } else {
             $('.not_superusuario').removeClass('d-none');
         }
+
+        this.renderButtonsBasedOnPermissions();
     }
 
     initLoad() { btn_load($('.load')); }
