@@ -36,9 +36,9 @@ class Authorization {
 
     public function return_permissions($function_id = NULL)
     {
-        $this->_check_if_has_user();
-
+        
         if($function_id == NULL){
+            $this->_check_if_has_user();
             $function_id = $this->CI->session->user['id_funcao'];
         }
         
@@ -154,6 +154,9 @@ class Authorization {
         {   
             $data = [];
             $data['name'] = $p->acao .' '.$p->entidade;
+            $data['entity'] = $p->entidade;
+            $data['action'] = $p->acao;
+            $data['controller'] = $p->controller; 
             $data['id'] = $p->permissao_pk;
             array_push($return_permissions, $data);
         }
