@@ -53,6 +53,7 @@ class Ordem_Servico_model extends MY_Model
             localizacoes.localizacao_num,
             localizacoes.localizacao_bairro,
             localizacoes.localizacao_ponto_referencia,
+            municipios.municipio_pk,
             municipios.municipio_nome,
             funcionarios.funcionario_nome,
             funcionarios.funcionario_caminho_foto,

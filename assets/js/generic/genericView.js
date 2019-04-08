@@ -13,6 +13,7 @@ class GenericView {
         this.primaryKey = primaryKey;
 
         this.conditionalRender();
+    
         this.render(data.self);
     }
 
@@ -23,9 +24,11 @@ class GenericView {
         table.clear().draw();
 
         data.forEach((d, i) => {
+
             let id = this.findPositionInOriginalArray(d);
 
             fields = this.generateFields(this.state.tableFields, d);
+            
             buttons = this.generateButtons(d.ativo, id);
 
             table.row.add([...fields, buttons]).draw(false);

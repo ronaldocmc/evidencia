@@ -333,6 +333,7 @@ function initMap() {
                 });
             })
             .fail(function (response) {
+                
             });
 
         btn_ativar($('#filtrar'));

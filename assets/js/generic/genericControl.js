@@ -12,9 +12,9 @@ class GenericControl {
 
     async init() {
 
-        this.data = await this.myRequests.init()
-        this.myView.init(this.data, this.tableFields, this.primaryKey);
+        this.data = await this.myRequests.init();
 
+        this.myView.init(this.data, this.tableFields, this.primaryKey);
 
         // Send request
         $(document).on('click', '.submit', () => { this.save() });
@@ -28,8 +28,8 @@ class GenericControl {
 
         $(document).on('change', '#filter-ativo', (e) => { this.handleFilter(e.target); });
 
-        $('#filter-ativo').val(1);
-        $('#filter-ativo').trigger('change');
+        // $('#filter-ativo').val(1);
+        // $('#filter-ativo').trigger('change');
     }
 
     handleResponse(response, data) {
@@ -60,12 +60,12 @@ class GenericControl {
 
         const sendData = this.myView.createJsonWithFields(this.fields);
 
-        if(moreFields != null){
+        if (moreFields != null) {
             Object.assign(sendData, moreFields);
         }
 
         if (is_superusuario) sendData['senha'] = this.myView.getPassword('save')['senha'];
-       
+
         sendData[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
 
         const response = await this.myRequests.send('/save', sendData);

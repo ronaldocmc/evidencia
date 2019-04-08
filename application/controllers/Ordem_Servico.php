@@ -42,56 +42,58 @@ class Ordem_Servico extends CRUD_Controller
 
         $this->response = new Response();
     }
-    
-    private function choose_filter($option){
-        $where = null; 
 
-        if($option == 'semana'){
+    private function choose_filter($option)
+    {
+        $where = null;
+
+        if ($option == 'semana') {
 
             $current_date = date('Y-m-d H:i:s');
-            $lastweek_time= mktime (0, 0, 0, date("m"), date("d")-7,  date("Y"));
+            $lastweek_time = mktime(0, 0, 0, date("m"), date("d") - 7, date("Y"));
             $lastweek_date = date('Y-m-d H:i:s', $lastweek_time);
 
-            $where = "ordens_servicos.ordem_servico_criacao BETWEEN '".$lastweek_date. "' AND '".$current_date."'";
+            $where = "ordens_servicos.ordem_servico_criacao BETWEEN '" . $lastweek_date . "' AND '" . $current_date . "'";
         }
 
-        if($option  == 'finalizadas'){
+        if ($option == 'finalizadas') {
             $where = 'ordens_servicos.situacao_atual_fk = 5';
         }
 
-        if($option == 'recusadas'){
+        if ($option == 'recusadas') {
             $where = 'ordens_servicos.situacao_atual_fk =  3 OR ordens_servicos.situacao_atual_fk = 4';
         }
 
-        if($option  == 'desativadas'){
+        if ($option == 'desativadas') {
             $where = 'ordens_servicos.ativo = 0';
         }
 
-        if($option  == 'ativadas'){
+        if ($option == 'ativadas') {
             $where = 'ordens_servicos.ativo = 1';
         }
 
-        if($option  == 'abertas'){
+        if ($option == 'abertas') {
             $where = 'ordens_servicos.situacao_atual_fk = 1';
         }
 
-        if($option == 'andamento'){
+        if ($option == 'andamento') {
             $where = 'ordens_servicos.situacao_atual_fk = 2';
         }
-        
+
         return $where;
     }
-    public function filtro_tabela(){
+    public function filtro_tabela()
+    {
 
-        try{
-           
-            $where = $this->choose_filter($this->input->post('filtro')); 
+        try {
+
+            $where = $this->choose_filter($this->input->post('filtro'));
             // echo $where; die();
             $ordens_servico = $this->ordem_servico->get_home($this->session->user['id_organizacao'], $where);
-            
+
             $this->response->set_code(Response::SUCCESS);
             $this->response->set_data($ordens_servico);
-            $this->response->send(); 
+            $this->response->send();
 
         } catch (MyException $e) {
             handle_my_exception($e);
@@ -102,6 +104,57 @@ class Ordem_Servico extends CRUD_Controller
 
     public function index()
     {
+        $this->load();
+        $this->session->set_flashdata('css', [
+            0 => base_url('assets/css/modal_desativar.css'),
+            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
+            2 => base_url('assets/css/loading_input.css'),
+            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            3 => base_url('assets/css/modal_map.css'),
+            4 => base_url('assets/vendor/cropper/cropper.css'),
+            5 => base_url('assets/vendor/input-image/input-image.css'),
+            6 => base_url('assets/css/timeline.css'),
+            7 => base_url('assets/css/style_card.css'),
+            8 => base_url('assets/css/user_guide.css'),
+        ]);
+
+        $this->session->set_flashdata('scripts', [
+            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
+            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
+            2 => base_url('assets/js/masks.js'),
+            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
+            4 => base_url('assets/vendor/datatables/datatables.min.js'),
+            5 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            6 => base_url('assets/js/constants.js'),
+            7 => base_url('assets/js/utils.js'),
+            8 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            9 => base_url('assets/js/dashboard/ordem_servico/index.js'),
+            10 => base_url('assets/vendor/select-input/select-input.js'),
+            11 => base_url('assets/js/localizacao.js'),
+            12 => base_url('assets/vendor/cropper/cropper.js'),
+            13 => base_url('assets/vendor/input-image/input-image.js'),
+            14 => base_url('assets/js/date-eu.js'),
+        ]);
+        $this->session->set_flashdata('mapa', [
+            0 => true,
+        ]);
+        load_view([
+            0 => [
+                'src' => 'access/pre_loader',
+                'params' => null,
+            ],
+            1 => [
+                'src' => 'dashboard/administrador/ordem_servico/home',
+                'params' => null,
+            ],
+        ], 'administrador');
+    }
+
+    public function get()
+    {
+        $response = new Response();
+        $this->load();
+
         $ordens_servico = $this->ordem_servico->get_home(
             $this->session->user['id_organizacao'],
             ['ordens_servicos.ativo' => 1]
@@ -125,7 +178,6 @@ class Ordem_Servico extends CRUD_Controller
             }
         }
 
-        $this->load();
         $departamentos = $this->departamento->get_all(
             '*',
             ['organizacao_fk' => $this->session->user['id_organizacao']],
@@ -133,7 +185,7 @@ class Ordem_Servico extends CRUD_Controller
             -1
         );
 
-        $tipos_servico = $this->tipo_servico->get_all(
+        $tipos_servicos = $this->tipo_servico->get_all(
             '*',
             ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
             -1,
@@ -185,60 +237,18 @@ class Ordem_Servico extends CRUD_Controller
 
         $municipios = $this->localizacao->get_cities();
 
-        $this->session->set_flashdata('css', [
-            0 => base_url('assets/css/modal_desativar.css'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/css/loading_input.css'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            3 => base_url('assets/css/modal_map.css'),
-            4 => base_url('assets/vendor/cropper/cropper.css'),
-            5 => base_url('assets/vendor/input-image/input-image.css'),
-            6 => base_url('assets/css/timeline.css'),
-            7 => base_url('assets/css/style_card.css'),
-            8 => base_url('assets/css/user_guide.css'),
-        ]);
+        $response->add_data('self', $ordens_servico);
+        $response->add_data('departamentos', $departamentos);
+        $response->add_data('tipos_servicos', $tipos_servicos);
+        $response->add_data('prioridades', $prioridades);
+        $response->add_data('situacoes', $situacoes);
+        $response->add_data('servicos', $servicos);
+        $response->add_data('procedencias', $procedencias);
+        $response->add_data('setores', $setores);
+        $response->add_data('municipios', $municipios);
 
-        $this->session->set_flashdata('scripts', [
-            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            2 => base_url('assets/js/masks.js'),
-            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            4 => base_url('assets/vendor/datatables/datatables.min.js'),
-            5 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            6 => base_url('assets/js/constants.js'),
-            7 => base_url('assets/js/utils.js'),
-            8 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            9 => base_url('assets/js/dashboard/ordem_servico/index.js'),
-            10 => base_url('assets/vendor/select-input/select-input.js'),
-            11 => base_url('assets/js/localizacao.js'),
-            12 => base_url('assets/vendor/cropper/cropper.js'),
-            13 => base_url('assets/vendor/input-image/input-image.js'),
-            14 => base_url('assets/js/date-eu.js'),
-        ]);
-        $this->session->set_flashdata('mapa', [
-            0 => true,
-        ]);
-        load_view([
-            0 => [
-                'src' => 'access/pre_loader',
-                'params' => null,
-            ],
-            1 => [
-                'src' => 'dashboard/administrador/ordem_servico/home',
-                'params' => [
-                    'ordens_servico' => $ordens_servico,
-                    'prioridades' => $prioridades,
-                    'situacoes' => $situacoes,
-                    'servicos' => $servicos,
-                    'departamentos' => $departamentos,
-                    'tipos_servico' => $tipos_servico,
-                    'setores' => $setores,
-                    'procedencias' => $procedencias,
-                    'municipios' => $municipios,
-                    'superusuario' => $this->session->user['is_superusuario'],
-                ],
-            ],
-        ], 'administrador');
+        $response->send();
+
     }
 
     public function save()
@@ -380,18 +390,18 @@ class Ordem_Servico extends CRUD_Controller
 
             $os = $this->relatorio->get_orders_of_report(
                 [
-                    'relatorios_os.os_fk' => $id
+                    'relatorios_os.os_fk' => $id,
                 ],
                 true
             );
-            
+
             if ($os) {
                 throw new MyException('A ordem não pode ser excluida pois está presente em um relatório', Response::BAD_REQUEST);
             }
 
             $os = $this->ordem_servico->get_historico($id);
 
-            if($os){
+            if ($os) {
                 throw new MyException('A ordem não pode ser excluída pois possúi um histórico de modificações', Response::BAD_REQUEST);
             }
 
