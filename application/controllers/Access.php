@@ -101,8 +101,19 @@ class Access extends CI_Controller {
 
     private function check_permissions($user)
     {
-        if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5')) {
-            throw new MyException('Você não tem autorização para acessar o sistema', Response::UNAUTHORIZED);
+        $this->load->library('Authorization');
+
+        $this->authorization = new Authorization();
+
+        $authorized = $this->authorization->check_permission( 
+            'Dashboard', 
+            'funcionario_administrador', 
+            $user->funcao_pk
+        );
+
+        if(!$authorized)
+        {
+            throw new MyException('Você não tem autorização para acessar o sistema', Response::FORBIDDEN);
         }
     }
 
