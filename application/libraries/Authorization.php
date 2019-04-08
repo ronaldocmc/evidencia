@@ -45,11 +45,14 @@ class Authorization {
         return $this->_get_permissions($function_id);
     }
 
-    public function check_permission($controller, $method)
+    public function check_permission($controller, $method, $function_id = NULL)
     {
-        $this->_check_if_has_user();
-
-        $function_id = $this->CI->session->user['id_funcao'];
+        if($function_id == NULL)
+        {
+            $this->_check_if_has_user();
+    
+            $function_id = $this->CI->session->user['id_funcao'];
+        }
 
         if(!$this->_is_empty($controller) && !$this->_is_empty($method))
         {
