@@ -5,6 +5,7 @@
 
 require_once APPPATH."core/Response.php";   
 
+
 class Contact extends CI_Controller
 {
     /**
@@ -13,6 +14,8 @@ class Contact extends CI_Controller
      * @var Response
      */
     public $response;
+    public $kind_user;
+    public $select;
 
     //-------------------------------------------------------------------------------
 
@@ -27,8 +30,33 @@ class Contact extends CI_Controller
     {
         parent::__construct();
         date_default_timezone_set('America/Sao_Paulo');
+    
+        if($this->is_superuser()){
+            $this->load->model('recuperacao_super_model', 'recuperacao_model');
+            $this->load->model('super_model', 'worker_model');
+
+            $this->kind_user = 'superusuario';
+            $this->select = 'superusuario_fk as pk, superusuario_login as email';
+        }else{
+            $this->load->model('recuperacao_funcionario_model', 'recuperacao_model');
+            $this->load->model('funcionario_model', 'worker_model');
+
+            $this->kind_user = 'funcionario';
+            $this->select = 'funcionario_fk as pk, funcionario_login as email';
+        }   
+        
+        $this->load->model('tentativa_model');
+        $this->load->model('tentativa_recuperacao_model');
+        $this->load->model('funcionario_model');
+        
+        $this->load->helper('recaptcha');
+        $this->load->helper('attempt');
+        $this->load->helper('exception'); 
+
+        $this->load->library('send_email');
+        $this->load->library('form_validation');
+
         $this->response = new Response();
-        $this->load->model('Log_model', 'log_model');
     }
 
     //--------------------------------------------------------------------------------
@@ -49,57 +77,54 @@ class Contact extends CI_Controller
      *
      * @return void
      */
-    public function reset_password($token = '', $define = NULL)
-    {
+
+
+     private function verify_token($token)
+     {
         if ($token !== '') 
         {
-            $this->load->model('recuperacao_model');
-
+            
             $restore = [
                 'recuperacao_token' => $token,
                 'recuperacao_tempo >' => date('Y-m-d H:i:s', strtotime('- 1 day', strtotime(date('Y-m-d H:i:s')))),
             ];
 
-            $restore_fetch = $this->recuperacao_model->get($restore);
+            $restore_fetch = $this->recuperacao_model->get_all(
+                $this->kind_user.'_fk as pk,
+                recuperacao_token,
+                recuperacao_tempo',
+                $restore,
+                -1,
+                -1
+            );
 
-            if ($restore_fetch !== false)
-            {
-                $data = [
-                    'token' => $token,
-                    'define' => $define
-                ];
-
-                $this->load->view('dashboard/commons/head.php', false);
-
-                $this->load->view('contact/define_password', $data, false);
-
-                $this->load->view('dashboard/commons/footer.php', false);
-            } 
-            else
-            {
-                $this->response->set_code(Response::NOT_FOUND);
-                $this->response->__set('message','Seu pedido expirou. Você já utilizou esse código de alteração de senha.');
-                $this->load->view('errors/padrao/home',['response' => $this->response]);
+            if(!$restore_fetch){
+                throw new MyException('Seu pedido expirou. Você já utilizou esse código de alteração de senha.', Response::NOT_FOUND);
+                // $this->load->view('errors/padrao/home',['response' => $this->response]);
             }
-        } 
-        else if ($token === '' && $this->session->userdata('id_user') !== null) 
-        {
+
+            return $restore_fetch;
+        }
+     }
+
+    public function reset_password($token = '', $define = NULL)
+    {
+        try{
+            $this->verify_token($token);
+
             $data = [
-                'token' => '',
+                'token' => $token,
                 'define' => $define
             ];
-            
+
             $this->load->view('dashboard/commons/head.php', false);
-
             $this->load->view('contact/define_password', $data, false);
-
             $this->load->view('dashboard/commons/footer.php', false);
-        } 
-        else 
-        {
-            $this->response->set_code(Response::NOT_FOUND);
-            $this->response->__set('message','Seu pedido expirou. Você já utilizou esse código de alteração de senha.');
-            $this->load->view('errors/padrao/home',['response' => $this->response]);
+
+        } catch(MyException $e) {
+            handle_my_exception($e);
+        } catch(Exception $e) {
+            handle_exception($e);
         }
     }
 
@@ -182,198 +207,165 @@ class Contact extends CI_Controller
         
     }
 
-    public function new_password($token = '')
+    private function clear_attempts($worker){
+        $this->recuperacao_model->__set($this->kind_user . '_fk', $worker->pk);
+        $this->recuperacao_model->__set('recuperacao_token', $token);
+
+
+        $this->recuperacao_model->delete();
+
+        $this->tentativa_recuperacao_model->__set('tentativa_ip', $this->input->ip_address());
+        $this->tentativa_recuperacao_model->__set('tentativa_email', $worker->email);
+
+        $this->tentativa_recuperacao_model->delete();
+    }
+
+    private function save_new_password($worker){
+
+        $this->worker_model->__set('funcionario_pk', $worker->pk);
+        $this->worker_model->__set('funcionario_senha', hash(ALGORITHM_HASH, $this->input->post('new_password') . SALT));
+         
+        $this->begin_transaction();
+        $this->worker_model->update();
+        $this->clear_attempts($worker);
+        $this->end_transaction();
+
+        $this->response->set_code(Response :: SUCCESS);
+
+    }
+    public function new_password($token)
     {
-        $this->load->library('form_validation');
 
-        $this->form_validation->set_rules('new_password',
-            'Senha Atual',
-            'trim|required|min_length[8]|max_length[128]'
+        $this->recuperacao_model->config_password_form_validation($token);
+        $this->recuperacao_model->run_form_validation();
+        $restore_fetch = $this->verify_token($token);
+        $worker = $this->fetch_contact($restore_fetch[0]->pk);
+        $this->save_new_password($worker[0]);
+        redirect(base_url());
+                
+
+    }
+
+    public function is_superuser()
+    {
+        return $this->session->user['is_superusuario'];
+    }
+
+    private function fetch_contact_by_email(){
+        
+        $contact_fetch = $this->funcionario_model->get(
+            $this->select,
+            [$this->kind_user.'_login' => $this->input->post('email')],
+            -1,
+            -1
         );
 
-        $this->form_validation->set_rules('new_password_repeat',
-            'Repetir Senha',
-            'trim|required|min_length[8]|max_length[128]|matches[new_password]'
-        );
-
-        if ($token === '' && $this->session->userdata('id_user') !== null) 
+        if (empty($contact_fetch)) 
         {
-            $this->form_validation->set_rules('old_password',
-                'Senha Antiga',
-                'required'
-            );
+            throw new MyException('O e-mail inserido não foi encontrado. Por favor, recupere a senha com o e-mail cadastrado no sistema.', Response :: NOT_FOUND);
         }
         
-        if ($this->form_validation->run() === true) 
+        return $contact_fetch;
+    }
+
+    private function fetch_contact($pk){
+        
+        $contact_fetch = $this->funcionario_model->get(
+            $this->select,
+            [$this->kind_user.'_pk' => $pk],
+            -1,
+            -1
+        );
+
+        if (empty($contact_fetch)) 
         {
-            if ($token === '' && $this->session->userdata('id_user') !== null) 
-            {
-                $access = [
-                    'pessoa_fk' => $this->session->userdata('id_user'),
-                    'acesso_senha' => hash(ALGORITHM_HASH, $this->input->post('old_password') . SALT),
-                ];
-                $this->load->model('acesso_model');
-                $access_fetch = $this->acesso_model->get($access);
+            throw new MyException('Usuário não foi encontrado no sistema.', Response :: NOT_FOUND);
+        }
+        
+        return $contact_fetch;
+    }
 
-                if ($access_fetch !== false) 
-                {
-                    $access = [
-                        'acesso_senha' => hash(ALGORITHM_HASH, $this->input->post('new_password') . SALT),
-                    ];
+    private function auth_restore(){
+        
+        $ip = $this->input->ip_address();
+        $email = $this->input->post('email');
 
-                    $where_access = [
-                        'pessoa_fk' => $access_fetch->pessoa_fk,
-                    ];
-
-                    $this->acesso_model->update($access, $where_access);
-
-                    // Cria o log
-                    $this->log_model->insert([
-                        'log_pessoa_fk' => $access_fetch->pessoa_fk,
-                        'log_descricao' => 'Alterou sua senha por dentro do sistema'
-                    ]);
-
-                    redirect(base_url());
-                } 
-                else 
-                {
-                    $error = array('heading' => 'Senha inválida.', 'message' => 'A senha informada está incorreta. Não foi possível altera-la');
-                    $this->load->view('errors/html/error_404', $error);
-                }
-            } 
-            else 
-            {
-                $this->load->model('recuperacao_model');
-
-                $restore = [
-                    'recuperacao_token' => $token,
-                    'recuperacao_tempo >' => date('Y-m-d H:i:s', strtotime('- 1 day', strtotime(date('Y-m-d H:i:s')))),
-                ];
-
-                $restore_fetch = $this->recuperacao_model->get($restore);
-
-                if ($restore_fetch !== false) 
-                {
-                    $this->load->model('acesso_model');
-                    $this->load->model('contato_model');
-                    $this->load->model('tentativa_recuperacao_model','tentativa_model');
-
-                    $contact = $this->contato_model->get($restore_fetch->pessoa_fk);
-
-                    if($contact !== null)
-
-                    $access = [
-                        'acesso_senha' => hash(ALGORITHM_HASH, $this->input->post('new_password') . SALT),
-                    ];
-
-                    $where_access = [
-                        'pessoa_fk' => $restore_fetch->pessoa_fk,
-                    ];
-
-                    $this->recuperacao_model->delete($restore_fetch->pessoa_fk);
-                    $this->acesso_model->update($access, $where_access);
-                    $this->tentativa_model->delete([
-                        'tentativa_ip' => $this->input->ip_address(),
-                        'tentativa_email' => $contact->contato_email
-                    ]);
-
-                    redirect(base_url());
-                } 
-                else 
-                {
-                    $error = array('heading' => 'Seu pedido expirou', 'message' => 'Você já utilizou esse código de alteração de senha.');
-                    $this->load->view('errors/html/error_404', $error);
-                }
-            }
-        } else {
-            $error = array('heading' => 'Dados inválidos', 'message' => 'Senha de confirmação inválida..');
-            $this->load->view('errors/html/error_404', $error);
+        if(!verify_attempt_restore($ip, $email)){
+            
+            throw new MyException('Acesso bloqueado.', Response::FORBIDDEN);
         }
     }
 
+    private function save($worker){
+
+        $this->recuperacao_model->__set($this->kind_user.'_fk', $worker->pk);
+        $this->recuperacao_model->delete();
+
+        $token = hash(ALGORITHM_HASH, date('Y/m/d H:i:s') . SALT . $worker->pk); 
+        
+        $this->recuperacao_model->__set($this->kind_user . '_fk', $worker->pk);
+        $this->recuperacao_model->__set('recuperacao_token', $token);
+        $this->recuperacao_model->__set('recuperacao_tempo', date('Y/m/d H:i:s'));
+
+        $this->recuperacao_model->insert();
+
+        $this->tentativa_recuperacao_model->__set('tentativa_ip', $this->input->ip_address());
+        $this->tentativa_recuperacao_model->__set('tentativa_tempo', date('Y/m/d H:i:s'));
+        $this->tentativa_recuperacao_model->__set('tentativa_email', $worker->email);
+
+        $this->tentativa_recuperacao_model->insert();
+    
+        // $status = $this->send_email->send_email('email/restore_password', 'Recuperação de Senha - Evidencia', base_url() . 'contact/reset_password/' . $token, $worker->email);
+
+        $this->response->set_code(200);
+        // $this->response->set_data('Enviado com sucesso!');
+    }
+
     public function restore_password()
+    {   
+        try{
+
+
+            $this->recuperacao_model->config_form_validation(); 
+            $this->recuperacao_model->run_form_validation(); 
+
+            $this->auth_restore();
+            $worker = $this->fetch_contact_by_email();
+            
+            $this->begin_transaction();
+            $this->save($worker[0]);
+            $this->end_transaction();
+            
+            $this->response->send();
+
+        } catch(MyException $e) {
+            handle_my_exception($e);
+        } catch(Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    public function begin_transaction()
     {
-        $this->load->library('form_validation');
-        $this->load->library('send_email');
-        $this->load->helper('recaptcha');
-        $this->load->helper('attempt');
+        $this->db->trans_start();
+    }
 
-        // $captcha_response = get_captcha($this->input->post('g-recaptcha-response'));
-        $captcha_response = true;
 
-        $attempt_response = verify_attempt_restore($this->input->ip_address(),$this->input->post('email'));
-
-        if ($attempt_response === true) 
+    public function end_transaction()
+    {
+        if ($this->db->trans_status() === FALSE)
         {
-            $this->form_validation->set_rules('email',
-                'Email',
-                'trim|required|valid_email|max_length[128]'
-            );
-            if ($this->form_validation->run() === true) 
-            {
-                $this->load->model('contato_model');
-
-                $contact = [
-                    'contato_email' => $this->input->post('email'),
-                ];
-                $contact_fetch = $this->contato_model->get($contact);
-
-                if ($contact_fetch !== false) 
-                {
-                    $this->load->model('recuperacao_model');
-                    $this->recuperacao_model->delete($contact_fetch->pessoa_fk);
-
-                    $restore = [
-                        'pessoa_fk' => $contact_fetch->pessoa_fk,
-                        'recuperacao_token' => hash(ALGORITHM_HASH, date('Y/m/d H:i:s') . SALT . $contact_fetch->pessoa_fk),
-                        'recuperacao_tempo' => date('Y/m/d H:i:s'),
-                    ];
-                    $this->recuperacao_model->insert($restore);
-
-                    $attempt = [
-                        'tentativa_ip' => $this->input->ip_address(),
-                        'tentativa_tempo' => date('Y/m/d H:i:s'),
-                        'tentativa_email' => $this->input->post('email')
-                    ];
-                    $this->tentativa_model->insert($attempt);
-
-                    $this->send_email->send_email('email/restore_password', 'Recuperação de Senha - Evidencia', base_url() . 'contact/reset_password/' . $restore['recuperacao_token'], $contact_fetch->contato_email);
-
-                    $this->response->set_code(Response::SUCCESS);
-                    $this->response->set_message('Enviado com sucesso');
-
-                    // Insere a ação no log
-                    $this->log_model->insert([
-                        'log_pessoa_fk' => $contact_fetch->pessoa_fk,
-                        'log_descricao' => 'Acessou a opção de Esqueci minha senha'
-                    ]);
-                } 
-                else 
-                {
-                    $this->response->set_code(Response::NOT_FOUND);
-                    $this->response->set_message('O e-mail inserido não foi encontrado. Por favor, recupere a senha com o e-mail cadastrado no sistema.');
-                }
-            } 
-            else 
-            {
-                $this->response->set_code(Response::BAD_REQUEST);
-                $this->response->set_message(implode('<br>', $this->form_validation->errors_array()));
-            }
-        } 
-        else 
-        {
-            if ($captcha_response !== true) 
-            {
-                $this->response->set_code(Response::UNAUTHORIZED);
-                $this->response->set_message('Acesso negado. ' . $captcha_response);
-            } 
-            else 
-            {
-                $this->response->set_code(Response::FORBIDDEN);
-                $this->response->set_message('Acesso bloqueado. ' . $attempt_response);
+            $this->db->trans_rollback();
+            if(is_array($this->db->error())){
+                throw new MyException('Erro ao realizar operação.<br>'.implode('<br>',$this->db->error()), Response::SERVER_FAIL);
+            } else {
+                throw new MyException('Erro ao realizar operação.<br>'.$this->db->error(), Response::SERVER_FAIL);
             }
         }
-        $this->response->send();
+        else
+        {
+            $this->db->trans_commit();
+        }
     }
 
     //Função que cria um acesso para um novo usuário, ou seja, cria um token de primeiro acesso para recuperação de senha
@@ -462,8 +454,8 @@ class Contact extends CI_Controller
     public function first_login($token)
     {
         $this->load->model('recuperacao_model', 'rmodel');
-        $this->load->model('funcionario_model');
-        $this->load->model('super_model');
+
+
 
         //Padronizando os dados para select
         $where = array(

@@ -24,7 +24,8 @@ verify_email = () => {
   //Verificando se o campo email foi preenchido e se é um email válido
 
   if ($.isEmptyObject(e)) {
-    $('.area-acesso').append(alerts_access('no_data'));
+    
+    // $('.area-acesso').append(alerts_access('no_data'));
 } else {
     email_send(e);
 }
@@ -60,7 +61,8 @@ email_send = (email) => {
     // t = token;
 
     //Enviando os dados via post (AJAX)
-    $.post(base_url+'/contact/restore_password', { email, 'g-recaptcha-response': true }).done(function (response) {
+    $.post(base_url+'/contact/restore_password', { email }).done(function (response) {
+      // console.log(response);
       wich_alert(response);
     }, "json");
 
