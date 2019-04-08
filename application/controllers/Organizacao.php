@@ -4,11 +4,11 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core\Response.php";
+require_once APPPATH . "core/Response.php";
 
-require_once APPPATH."core\CRUD_Controller.php";
+require_once APPPATH."core/CRUD_Controller.php";
 
-require_once APPPATH."models\Organizacao_model.php";
+require_once APPPATH."models/Organizacao_model.php";
 
 class Organizacao extends CRUD_Controller {
     public $response;
