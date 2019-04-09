@@ -55,8 +55,9 @@ $route['download/(:any)/(:any)'] = 'Superusuario/download_img';
 $route['test/(:any)/(:any)'] = '_test/$1/$2';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
-$route['home'] = 'dashboard/funcionario_administrador';
+$route['home'] = 'viewcontroller/funcionario';
 
+$route['dashboard/funcionario_administrador'] = 'viewcontroller/funcionario';
 
 $route['departamento'] = 'ViewController/index/departamento';
 $route['setor'] = 'ViewController/index/setor';

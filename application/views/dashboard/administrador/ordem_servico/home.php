@@ -7,7 +7,7 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de ordens de serviço</h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn-exportar" data-toggle="modal" data-target="#ce_export" id="btn-exportar">
+                        <button class="au-btn au-btn-icon au-btn--blue btn_exportar d-none" data-toggle="modal" data-target="#ce_export" id="btn-exportar">
                                     <i class="zmdi zmdi-task"></i>exportar
                                 </button>
                         <!-- <input type="hidden" id="ordem_servico_pk" name="ordem_servico_pk" class="form-control"> -->

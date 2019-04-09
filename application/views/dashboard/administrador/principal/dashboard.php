@@ -54,7 +54,7 @@
 					</div>
 					<div class="col-sm-12 col-md-6 col-lg-3">
 						<div class="statistic__item statistic__item--red acesso-rapido">
-							<div class="geral" onclick="window.location = '<?= base_url('relatorio/mapa') ?>';">
+							<div class="geral" onclick="window.location = '<?= base_url('mapa') ?>';">
 								<div class="bag">
 									<div class="icones color-red">
 										<i class="fa fas fa-map-marker-alt"></i>

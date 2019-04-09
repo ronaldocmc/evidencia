@@ -1,3 +1,7 @@
+const view = new GenericView();
+
+view.conditionalRender();
+
 function btn_load(button_submit){
     button_submit.attr('disabled', 'disabled');
     button_submit.css('cursor', 'default');

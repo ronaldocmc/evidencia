@@ -7,7 +7,7 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de funções
                         </h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Nova Função" data-contentid="save"
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal" data-title="Nova Função" data-contentid="save"
                             data-target="#modal">
                             <i class="zmdi zmdi-plus"></i>nova função</button>
                     </div>
@@ -138,7 +138,7 @@
 
 <!-- MODAL -->
 <div class="modal fade" id="modal">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">TITLE</h4>
@@ -160,11 +160,11 @@
 
                     <ul class="progressbar">
                         <li class="active">Identificação da Função</li>
-
+                        <li>Gerenciamento de Permissões</li>
                         <li class="d-none superusuario">Identificação</li>
-
                     </ul>
 
+                    <!-- STEP 1 -->
                     <div class="card card-step col-12 px-0">
                         <div class="card-header">
                             Identificação da Função
@@ -185,14 +185,45 @@
                         </div>
                         <div class="card-footer text-center">
 
+                            <button type="button" class="btn btn-secondary next btn-sm">
+                                <i class="fas fa-arrow-circle-right"></i> Próximo
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <!-- STEP 2 -->
+
+                    <div class="card card-step col-12 px-0">
+                        <div class="card-header">
+                            Acesso
+                        </div>
+                        <div class="card-body card-block">
+                            <div class="row form-group">
+                                <div class="col-12 col-md-2">
+                                    <label for="setor_input" class=" form-control-label">Permissões</label>
+                                </div>
+                                <div class="col-12 col-md-10">
+                                    <div class="form-control" id="permissions"></div>
+                                    
+                                    <small class="help-block form-text">Por favor, 
+                                        selecione corretamente as permissões da função.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="button" class="btn btn-secondary previous btn-sm">
+                                <i class="fas fa-arrow-circle-left"></i> Anterior
+                            </button>
                             <button type="button" class="btn btn-secondary next btn-sm d-none superusuario">
                                 <i class="fas fa-arrow-circle-right"></i> Próximo
                             </button>
 
-                            <button type="button" class="btn btn-primary submit btn-sm load d-none not_superusuario">
+                            
+                            <button type="button" class="btn btn-primary submit btn-sm not_superusuario">
                                 <i class="fa fa-dot-circle-o"></i> Finalizar
                             </button>
-
                         </div>
                     </div>
 
@@ -218,9 +249,6 @@
                         <div class="card-footer text-center">
                             <button type="button" class="btn btn-secondary previous btn-sm">
                                 <i class="fas fa-arrow-circle-left"></i> Anterior
-                            </button>
-                            <button type="button" class="btn btn-primary submit load btn-sm">
-                                <i class="fa fa-dot-circle-o"></i> Finalizar
                             </button>
                         </div>
                     </div>

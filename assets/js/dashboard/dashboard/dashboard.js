@@ -1,3 +1,25 @@
+/*
+ * == Variáveis globais: == 
+ * 
+ * @Boolean: is_superusuario
+ * 
+ * 
+ * @String: base_url
+ * 
+ */
+
+class View extends GenericView {
+
+    constructor() {
+        super();
+    }
+}
+
+
+const myView = new View();
+
+myView.renderButtonsBasedOnPermissions();
+
 
 $('#tabela-funcionario').click(function(){
 	$('#table-funcionario').show();

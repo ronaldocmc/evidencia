@@ -35,20 +35,25 @@ class Authorization
         $this->CI->cache->save('permissions', $memory_permissions, 36000); //1 hour
     }
 
-    public function return_permissions()
+    public function return_permissions($function_id = NULL)
     {
-        $this->_check_if_has_user();
         
-        $function_id = $this->CI->session->user['id_funcao'];
-
+        if($function_id == NULL){
+            $this->_check_if_has_user();
+            $function_id = $this->CI->session->user['id_funcao'];
+        }
+        
         return $this->_get_permissions($function_id);
     }
 
-    public function check_permission($controller, $method)
+    public function check_permission($controller, $method, $function_id = NULL)
     {
-        $this->_check_if_has_user();
-
-        $function_id = $this->CI->session->user['id_funcao'];
+        if($function_id == NULL)
+        {
+            $this->_check_if_has_user();
+    
+            $function_id = $this->CI->session->user['id_funcao'];
+        }
 
         // log_message('monitoring', 'Action: [' . strtoupper($method ? $method : 'load') . '] in [' . strtoupper($controller) . '] by USER [' . $this->CI->session->user['email_user'] . ']');
         
@@ -149,7 +154,10 @@ class Authorization
         foreach($permissions as $p)
         {   
             $data = [];
-            $data['name'] = $p->acao . ' ' . $p->entidade;
+            $data['name'] = $p->acao .' '.$p->entidade;
+            $data['entity'] = $p->entidade;
+            $data['action'] = $p->acao;
+            $data['controller'] = $p->controller; 
             $data['id'] = $p->permissao_pk;
             array_push($return_permissions, $data);
         }

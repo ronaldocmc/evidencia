@@ -12,7 +12,7 @@ class Permissao_model extends MY_Model {
 
     public function get_permissions($function_id)
     {
-        $this->CI->db->select('acao_nome as acao, entidade, permissao_pk');
+        $this->CI->db->select('acao_nome as acao, entidade, controller, permissao_pk');
 
         $this->CI->db->from(self::TABLE_NAME);
         $this->CI->db->join('permissao_acoes', 

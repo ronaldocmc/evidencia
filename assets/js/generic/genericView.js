@@ -44,12 +44,118 @@ class GenericView {
         return id;
     }
 
+    getPermissions() {
+        return JSON.parse(localStorage.getItem('permissions'));
+    }
+
+    renderButtonsBasedOnPermissions() {
+        this.renderMenu();
+
+        this.renderButton('new', 'criar', this.getEntity());
+
+        this.renderButton('btn_exportar', 'exportar', 'export');
+
+        this.renderButton('new_report', 'novo', 'relatorio');
+        this.renderButton('receive_report', 'receber', 'relatorio');
+        this.renderButton('report_detail', 'detalhes', 'relatorio');
+        this.renderButton('imprimir_relatorio', 'imprimir', 'relatorio');
+        this.renderButton('destruir_relatorio', 'imprimir', 'relatorio');
+    }
+
+    hasPermissions(action, controller) {
+        let permissions = this.getPermissions();
+
+        let response = false;
+
+        permissions.forEach( (p) => {
+            if( p.controller != null &&  
+                p.controller.toLowerCase() == controller.toLowerCase() &&
+                p.action.toLowerCase() == action ){
+
+                response = true;
+                return;
+            }
+        });
+
+        return response;
+    }
+
+    renderMenu() {
+        let menuButtons = [
+            {
+                action: 'ver',
+                buttons: [
+                    'departamento', 'setor', 'funcionario', 
+                    'funcao', 'servico', 'prioridade', 
+                    'situacao', 'ordem_servico', 'mapa',
+                    'relatorio'
+                ]
+            },
+            {
+                action: 'editar',
+                buttons: ['organizacao']
+            },
+            {
+                action: 'novo',
+                buttons: ['relatorio']
+            }     
+        ];
+
+        menuButtons.forEach( (e) => {
+            e.buttons.forEach( (button) => {
+                if(this.hasPermissions(e.action, button)) {
+                    $(`.${button}-menu`).removeClass('d-none');
+                }
+            });
+        });
+    }
+
+
+    renderButton(className, action, entity) {
+        const classWithDot = `.${className}`;
+
+        console.log(className);
+
+        if(this.elementExistsOnDom(classWithDot)) {
+            this.renderButtonBasedOnPermission(classWithDot, action, entity);
+        }
+    }
+
+
+    renderButtonBasedOnPermission(className, permission, entity) {
+
+        if(this.hasPermissions(permission, entity)) {
+            
+            $(className).removeClass('d-none');
+        }
+    }
+
+    elementExistsOnDom(className){
+        return (document.querySelector(className) != null && document.querySelector(className).textContent.length > 0);
+    }
+
+    getEntity() {
+        let pathName = window.location.pathname;
+        let pathArray = pathName.split('/');
+        let length = pathArray.length;
+
+        //retornamos o último elemento do pathname
+        return pathArray[length -1]; 
+    }
+
+    // vai sair daqui e vai pro dashboard.js
+    // renderQuickAccess() {
+         
+    // }
+
     conditionalRender() {
         if (localStorage.getItem('is_superusuario') == 1) {
             $('.superusuario').removeClass('d-none');
         } else {
             $('.not_superusuario').removeClass('d-none');
         }
+
+        this.renderButtonsBasedOnPermissions();
     }
 
     initLoad() { btn_load($('.load')); }
@@ -87,14 +193,39 @@ class GenericView {
         return fields;
     }
 
+    createButtonsWhenIsActive(i) {
+        let entity = this.getEntity();
+        let html = '';
+
+        if(this.hasPermissions('alterar', entity)) {
+            html += this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit');
+        }
+
+        if(this.hasPermissions('desativar', entity)) {
+            html += this.createButton('deactivate', 'deactivate', 'danger', 'Desativar', i, 'fa-times');
+        }
+
+        return html;
+    }
+
+    createButtonsWhenIsInactive(i) {
+        let entity = this.getEntity();
+        let html = '';
+
+        if(this.hasPermissions('ativar', entity)) {
+            html += this.createButton('activate', 'activate', 'success', 'Ativar', i, 'fa-power-off')
+        }
+
+        return html;
+    }
+
     generateButtons(condition, i) {
         return `<div class='btn-group'>` +
             (
                 condition == 1 ?
-                    this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
-                    this.createButton('deactivate', 'deactivate', 'danger', 'Desativar', i, 'fa-times')
+                    this.createButtonsWhenIsActive(i)
                     :
-                    this.createButton('activate', 'activate', 'success', 'Ativar', i, 'fa-power-off')
+                    this.createButtonsWhenIsInactive(i)
             ) +
             `</div>`;
     }
@@ -136,7 +267,7 @@ class GenericView {
     generateMessage(data) {
         let title, message, body;
 
-        if (data.dependences.length === 0) {
+        if (data.dependeces == null || data.dependences.length === 0) {
             title = 'Tudo certo!';
             message = 'Este recurso do sistema não possui dependencias e pode ser desativado!';
         } else {
@@ -147,7 +278,7 @@ class GenericView {
                 body += `<li>${elem.name}</li>`
             });
             body += `</ul>`;
-        }
+        }      
 
         return { title, message, body };
     }

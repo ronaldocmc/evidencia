@@ -7,9 +7,10 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de departamentos
                         </h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Novo departamento" data-contentid="save"
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal" data-title="Novo departamento" data-contentid="save"
                             data-target="#modal">
-                            <i class="zmdi zmdi-plus"></i>novo departamento</button>
+                            <i class="zmdi zmdi-plus"></i>novo departamento
+                        </button>
                     </div>
                     <input type="hidden" name="opcao-editar" id="opcao-editar" value="false">
                     <div class="col-md-12 mt-3">

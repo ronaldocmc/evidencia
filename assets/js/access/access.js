@@ -45,6 +45,7 @@ login_send = (e, s) => {
     wich_alert(response);
     pre_loader_hide();
     if (response.code == 200) {
+      await localStorage.setItem('permissions', response.data.permissions);
       await localStorage.setItem('is_superusuario', response.data.superusuario);
       window.location.reload();
     }
