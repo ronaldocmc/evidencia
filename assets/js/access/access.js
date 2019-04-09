@@ -59,14 +59,12 @@ email_send = (email) => {
   //Solicitando autenticação recaptcha para o usuário (Não sou robo).
   // grecaptcha.execute(google, { action: 'homepage' }).then(function (token) {
   // t = token;
-
+    
   //Enviando os dados via post (AJAX)
-  $.post(base_url + '/contact/restore_password', { email, 'g-recaptcha-response': true }).done(function (response) {
-    wich_alert(response);
-  }, "json");
-
-  // });
-
+   $.post(base_url+'/contact/restore_password', { email }).done(function (response) {
+      // console.log(response);
+      wich_alert(response);
+    }, "json");
 }
 
 var noty_id = 0;

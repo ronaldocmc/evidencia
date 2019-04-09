@@ -18,12 +18,14 @@ class Tentativa_model extends MY_Model {
 
     public function delete($where = array()) {
         if (!is_array($where)) {
-            $where = array(self::PRI_INDEX => $where);
+            $where = array($this->getPriIndex() => $where);
         }
         $this->db->where($where);
         $this->db->or_where('tentativa_tempo < ',date('Y/m/d')." 00:00:00");
+
         // $this->db->get_compiled_delete(); die();
-        $this->db->delete(self::TABLE_NAME);
+
+        $this->db->delete($this->getTableName());
         return $this->db->affected_rows();
     }
 

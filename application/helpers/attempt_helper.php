@@ -8,13 +8,13 @@
 	/**
 	* Quantidade máxima de tentativas anteriores aceitas sem nenhuma restrição
 	*/ 
-	define('ACCEPTED_ATTEMPTS',2);
+	define('ACCEPTED_ATTEMPTS',3);
 
 	/**
 	* Quantidade máxima de tentativas de recuperação para emails diferentes
 	* anteriores aceitas sem nenhuma restrição
 	*/ 
-	define('ACCEPTED_IP_RECOVER_ATTEMPTS',30);
+	define('ACCEPTED_IP_RECOVER_ATTEMPTS',10);
 
 	 /**
 	 * Faz a verificação de quantidade de tentativas de acesso do usuário
@@ -28,7 +28,7 @@
 		$CI->load->model('tentativa_model');
 		$attempts = $CI->tentativa_model->get_all(
 			'*',
-			$ip_address,
+			['tentativa_ip' => $ip_address],
 			-1,
 			-1
 		);
@@ -66,19 +66,26 @@
 	function verify_attempt_restore($ip_address, $email)
 	{
 		$CI =& get_instance();
-		$CI->load->model('tentativa_recuperacao_model','tentativa_model');
-		$attempts = $CI->tentativa_model->get($ip_address);
+		$CI->load->model('tentativa_recuperacao_model');
+		$attempts = $CI->tentativa_recuperacao_model->get_all(
+			'*',
+			['tentativa_ip' => $ip_address],
+			-1,
+			-1
+		);
 
+		// var_dump(count($attempts)); die();
 		//Caso tenha mais tentativas que a esperada
-		if ($attempts && count($attempts)>ACCEPTED_IP_RECOVER_ATTEMPTS)
+		if (count($attempts) > ACCEPTED_IP_RECOVER_ATTEMPTS)
 		{
+
 			//obtem-se o instante da ultima tentativa.	
 			$last_attempt_time = end($attempts)->tentativa_tempo;
-			$next_attempt_time = strtotime("+1 day", strtotime($last_attempt_time));	
-			if (strtotime(date('Y/m/d H:i:s'))<$next_attempt_time)
+			$next_attempt_time = strtotime("+1 day", strtotime($last_attempt_time));
+
+			if (strtotime(date('Y/m/d H:i:s')) < $next_attempt_time)
 			{
-				$err[0] = 'Novas recuperações de senha bloqueada hoje';
-				return $err;
+				return FALSE;
 			}
 			else
 			{
@@ -87,15 +94,21 @@
 		}
 		else
 		{
-			$attempts = $CI->tentativa_model->get(['tentativa_email' => $email]);
-			if ($attempts && count($attempts)>ACCEPTED_ATTEMPTS)
+			$attempts = $CI->tentativa_recuperacao_model->get_all(
+				'*',
+				['tentativa_email' => $email],
+				-1,
+				-1
+			);
+
+			if (count($attempts)>ACCEPTED_ATTEMPTS)
 			{
 				$last_attempt_time = end($attempts)->tentativa_tempo;
-				$next_attempt_time = strtotime("+1 day", strtotime($last_attempt_time));	
-				if (strtotime(date('Y/m/d H:i:s'))<$next_attempt_time)
+				$next_attempt_time = strtotime("+1 day", strtotime($last_attempt_time));
+
+				if (strtotime(date('Y/m/d H:i:s')) < $next_attempt_time)
 				{
-					$err[0] = 'Novas recuperações de senha bloqueada hoje';
-					return $err;
+					return FALSE;
 				}
 				else
 				{

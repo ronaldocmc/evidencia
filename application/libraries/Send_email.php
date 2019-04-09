@@ -45,11 +45,13 @@ class Send_email
 
 
 			$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
+			// var_dump(getenv('SENDGRID_API_KEY')); die();
 			try {
 			    $response = $sendgrid->send($email);
 			    // var_dump($response->statusCode());
 			    // var_dump($response->headers());
-			    // var_dump($response->body());
+				// var_dump($response->body());
+				// die();
 			    return $response->statusCode();
 			} catch (Exception $e) {
 			    echo 'Caught exception: '. $e->getMessage() ."\n";
