@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once APPPATH . "core\Response.php";
+require_once APPPATH . "core/Response.php";
 
 class Localizacao extends CI_Controller 
 {

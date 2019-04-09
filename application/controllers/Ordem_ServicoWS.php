@@ -10,10 +10,10 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once APPPATH . "core\Response.php";
+require_once APPPATH . "core/Response.php";
 require_once dirname(__FILE__) . "/Localizacao.php";
-require_once APPPATH . "core\MY_Controller.php";
-require_once APPPATH . "core\MyException.php";
+require_once APPPATH . "core/MY_Controller.php";
+require_once APPPATH . "core/MyException.php";
 
 class Ordem_ServicoWS extends MY_Controller
 {

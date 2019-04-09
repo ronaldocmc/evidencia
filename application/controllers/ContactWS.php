@@ -3,7 +3,7 @@
 }
 
 require_once APPPATH."core/Response.php";   
-require_once APPPATH . "core\MY_Controller.php";
+require_once APPPATH . "core/MY_Controller.php";
 
 class ContactWS extends MY_Controller
 {

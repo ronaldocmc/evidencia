@@ -24,7 +24,7 @@ class Send_email
 
 		if (ENABLE_EMAIL)
 		{
-			
+			log_message('monitoring', 'Sending mail to ['.$to.']');
 			$data['url'] = $message;
 			$body = $this->ci->load->view($view, $data, TRUE);
 
