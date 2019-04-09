@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 }
 
 require_once APPPATH . "core/CRUD_Controller.php";
-require_once APPPATH . "core\Response.php";
+require_once APPPATH . "core/Response.php";
 
 class Relatorio extends CRUD_Controller
 {
@@ -149,6 +149,7 @@ class Relatorio extends CRUD_Controller
     public function create_new_report()
     {
         try {
+            log_message('monitoring', 'Attempt to generate new report by '.$this->session->user['email_user']);
             //Configurando as regras de preenchimento de formulário
             $this->report_model->config_form_validation();
 
