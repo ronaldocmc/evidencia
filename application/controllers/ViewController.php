@@ -61,13 +61,13 @@ class ViewController extends AuthorizationController {
         ], 'administrador');
     }
 
-
     public function novo_relatorio()
     {
         //Carregando os models para recuperação de dados a serem exibidos na view Novo Relatório
         $this->load->model('Servico_model', 'servico_model');
         $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
         $this->load->model('Setor_model', 'setor_model');
+        $this->load->model('Funcionario_model', 'funcionario_model');
 
         //Selecionando o setores
         $setores = $this->setor_model->get_all(
@@ -122,6 +122,91 @@ class ViewController extends AuthorizationController {
                 ],
             ],
         ], 'administrador');
+    } 
+
+    public function minha_conta()
+    {
+        $this->load->model('funcionario_model');
+
+        $this->session->set_flashdata('css', array(
+            0 => base_url('assets/vendor/cropper/cropper.css'),
+            1 => base_url('assets/vendor/input-image/input-image.css'),
+            2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
+            3 => base_url('assets/css/modal_desativar.css'),
+            4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            5 => base_url('assets/css/loading_input.css'),
+        ));
+
+        $this->session->set_flashdata('scripts', array(
+            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
+            1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
+            2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
+            3 => base_url('assets/vendor/cropper/cropper.js'),
+            4 => base_url('assets/vendor/input-image/input-image.js'),
+            5 => base_url('assets/vendor/datatables/datatables.min.js'),
+            6 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            7 => base_url('assets/js/masks.js'),
+            8 => base_url('assets/js/utils.js'),
+            9 => base_url('assets/js/constants.js'),
+            10 => base_url('assets/js/jquery.noty.packaged.min.js'),
+            11 => base_url('assets/js/dashboard/pessoa/index.js'),
+            12 => base_url('assets/vendor/select-input/select-input.js'),
+        ));
+
+        $this->funcionario_model->__set('funcionario_pk', $this->session->user['id_user']);
+        $return['worker'] = $this->funcionario_model->get_or_404();
+
+        load_view([
+            0 => [
+                'src' => 'dashboard/commons/profile/home',
+                'params' => $return,
+            ],
+            1 => [
+                'src' => 'access/pre_loader',
+                'params' => null,
+            ],
+        ], $this->session->user['is_superusuario'] ? 'superusuario' : 'administrador');
+    }
+
+    public function editar_informacoes_organizacao()
+    {
+        $this->load->model('organizacao_model', 'organizacao');
+        // Pegando a organização salva na session 
+        if ($this->has_organization())
+        {   
+            $this->load->model('municipio_model', 'municipio');
+
+            $data['organizacao'] = $this->organizacao->get_object($this->session->user['id_organizacao']);
+
+            $data['municipios'] = $this->municipio->get(); //get all
+            
+
+            // CSS para a edição
+            $this->session->set_flashdata('css',[
+                0 => base_url('assets/css/modal_desativar.css'),
+                1 => base_url('assets/css/loading_input.css'),
+                2 => base_url('assets/css/media_query_edit_org.css')
+            ]);
+            //Scripts para edição
+            $this->session->set_flashdata('scripts',[
+                0 => base_url('assets/js/localizacao.js'),
+                1 => base_url('assets/vendor/datatables/datatables.min.js'),
+                2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+                3 => base_url('assets/vendor/select-input/select-input.js'),
+                4 => base_url('assets/js/dashboard/organizacao/edit_info.js'),
+                5 => base_url('assets/js/constants.js'),
+                6 => base_url('assets/js/utils.js'),
+                7 => base_url('assets/js/jquery.noty.packaged.min.js'),
+                8 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js')
+            ]);
+            load_view([
+                0 => [
+                    'src' => 'dashboard/administrador/organizacao/editar_informacoes',
+                    'params' => $data
+                ]
+            ],'administrador');
+
+        }
     }
 
     public function mapa()
@@ -258,14 +343,19 @@ class ViewController extends AuthorizationController {
 
     private function check_permissions()
     {   
-        if(!$this->is_authorized()) $this->load_view_unauthorized();
+        if(!$this->is_authorized()) $this->load_view_forbidden();
     }
 
-    private function load_view_unauthorized()
+    private function has_organization()
     {
-        $response = new Response();
+        return $this->session->user['id_organizacao'];
+    }
 
-        $response->set_code(Response::UNAUTHORIZED);
+    private function load_view_forbidden()
+    {
+        $response = new Response(); 
+
+        $response->set_code(Response::FORBIDDEN);
         $response->set_data(['error' => 'Você não possui permissão para acessar esta área']);
         $data['response'] = $response;
         $this->load->view('errors/padrao/home', $data);

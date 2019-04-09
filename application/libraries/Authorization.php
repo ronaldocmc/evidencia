@@ -38,8 +38,8 @@ class Authorization
     public function return_permissions()
     {
         $this->_check_if_has_user();
-
-        $function_id = $this->CI->session->user['funcao_id'];
+        
+        $function_id = $this->CI->session->user['id_funcao'];
 
         return $this->_get_permissions($function_id);
     }
@@ -116,24 +116,24 @@ class Authorization
 
         $permissions = $this->CI->model->get_all_permissions();
 
-        foreach ($permissions as $p) {
-            if (array_key_exists($p->funcao_pk, $memory_permissions)) {
+        foreach($permissions as $p)
+        {
+            $permission = [
+                'action'        => $p->acao_nome,
+                'method'        => $p->acao_metodo,
+                'entity'        => $p->entidade,
+                'controller'    => $p->controller,
+                'id'            => $p->permissao_pk
+            ];
 
-                $permission = [
-                    'action'        => $p->acao_nome,
-                    'method'        => $p->acao_metodo,
-                    'entity'        => $p->entidade,
-                    'controller'    => $p->controller,
-                    'id'            => $p->permissao_pk
-                ];
-
-                // $memory_permissions[$p->funcao_pk]['permissions'][] = $permission;
+            if(array_key_exists($p->funcao_pk, $memory_permissions)){
 
                 array_push($memory_permissions[$p->funcao_pk]['permissions'], $permission);
             } else {
                 $memory_permissions[$p->funcao_pk]['function'] = ['name' => $p->funcao_nome];
 
                 $memory_permissions[$p->funcao_pk]['permissions'] = [];
+                array_push($memory_permissions[$p->funcao_pk]['permissions'], $permission);
             }
         }
 
@@ -146,7 +146,8 @@ class Authorization
 
         $permissions = $this->CI->model->get_permissions($function_id);
 
-        foreach ($permissions as $p) {
+        foreach($permissions as $p)
+        {   
             $data = [];
             $data['name'] = $p->acao . ' ' . $p->entidade;
             $data['id'] = $p->permissao_pk;

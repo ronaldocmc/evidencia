@@ -61,7 +61,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="<?php echo base_url('relatorio/mapa') ?>">
+                            <a href="<?php echo base_url('mapa') ?>">
                             <i class="fas fa-map-marker-alt"></i>Mapa</a>
                         </li>
                         <li>
@@ -69,7 +69,7 @@
                             <i class="fas fa-clipboard-list"></i>Relatórios</a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
                                 <li>
-                                    <a href="<?= base_url('relatorio/novo_relatorio') ?>">Novo Relatório</a>
+                                    <a href="<?= base_url('relatorio/novo') ?>">Novo Relatório</a>
                                 </li>
                                 <li>
                                     <a href="<?= base_url('relatorio') ?>">Listar Relatórios</a>
@@ -89,7 +89,7 @@
                             <i class="fas fa-gear"></i>Opções</a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
                                 <li>
-                                    <a href="<?php echo base_url('organizacao/edit_info'); ?>">Editar Informações</a>
+                                    <a href="<?php echo base_url('organizacao/editar'); ?>">Editar Informações</a>
                                 </li>
                             </ul>
                         </li>
@@ -158,7 +158,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="<?php echo base_url('relatorio/mapa') ?>">
+                            <a href="<?php echo base_url('mapa') ?>">
                             <i class="fas fa-map-marker-alt"></i>Mapa</a>
                         </li>
                         <li>
@@ -166,7 +166,7 @@
                             <i class="fas fa-clipboard-list"></i>Relatórios</a>
                             <ul class="list-unstyled navbar__sub-list js-sub-list">
                                 <li>
-                                    <a href="<?= base_url('relatorio/novo_relatorio') ?>">Novo Relatório</a>
+                                    <a href="<?= base_url('relatorio/novo') ?>">Novo Relatório</a>
                                 </li>
                                  <li>
                                     <a href="<?= base_url('relatorio') ?>">Listar Relatórios</a>
@@ -186,7 +186,7 @@
                             <i class="fas fa-gear"></i>Opções</a>
                             <ul class="list-unstyled navbar__sub-list js-sub-list">
                                 <li>
-                                    <a href="<?php echo base_url('organizacao/edit_info'); ?>">Editar Informações</a>
+                                    <a href="<?php echo base_url('organizacao/editar'); ?>">Editar Informações</a>
                                 </li>
                             </ul>
                         </li>
@@ -248,7 +248,7 @@
                                             </div>
                                             <div class="account-dropdown__body">
                                                 <div class="account-dropdown__item">
-                                                    <a href="<?php echo base_url('funcionario/minha_conta') ?>">
+                                                    <a href="<?php echo base_url('minha_conta') ?>">
                                                         <i class="zmdi zmdi-account"></i>Conta</a>
                                                 </div>
                                             </div>

@@ -50,16 +50,17 @@ class CRUD_Controller extends AuthorizationController
     }
 
     private function check_permissions()
-    {
-        if (!$this->is_authorized()) $this->return_unauthorized_response();
+    {   
+        if(!$this->is_authorized()) $this->return_forbidden_response();
+
     }
 
-    private function return_unauthorized_response()
+    private function return_forbidden_response()
     {
         log_message('error', 'Attempt to access unauthorized area by [' . $this->session->user['user_email'] . '] from address ' . $this->input->ip_address());
         $response = new Response();
-
-        $response->set_code(Response::UNAUTHORIZED);
+      
+        $response->set_code(Response::FORBIDDEN);
         $response->set_data(['error' => 'Você não possui permissão para acessar esta área']);
         $response->send();
         die();

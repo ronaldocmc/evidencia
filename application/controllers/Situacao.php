@@ -33,14 +33,10 @@ class Situacao extends CRUD_Controller
      * @return Objeto Response
      */
 
-    public function insert_update()
+    public function save()
     {
         try {
-
-            // if ($this->is_superuser()) {
-            //     $this->add_password_to_form_validation();
-            // }
-
+            
             $this->situacao_model->config_form_validation();
             $this->situacao_model->run_form_validation();
 
@@ -66,6 +62,21 @@ class Situacao extends CRUD_Controller
         } catch (Exception $e) {
             handle_exception($e);
         }
+    }
+
+    public function get(){
+        $response = new Response();
+
+        $data = $this->situacao_model->get_all(
+            '*, situacoes.ativo as ativo',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+
+        $response->add_data('self', $data);
+
+        $response->send();
     }
 
     public function get_dependents()
