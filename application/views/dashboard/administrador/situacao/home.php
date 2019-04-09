@@ -7,7 +7,7 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de situações
                         </h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Novo Situação" data-contentid="save"
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal" data-title="Novo Situação" data-contentid="save"
                             data-target="#modal">
                             <i class="zmdi zmdi-plus"></i>novo situação</button>
                     </div>
