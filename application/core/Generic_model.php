@@ -109,7 +109,7 @@ class Generic_Model extends CI_Model
         
         $this->CI->db->delete($this->getTableName(), $where);
 
-        var_dump($this->CI->db->error());die();
+        // var_dump($this->CI->db->error());die();
 
         if ($this->CI->db->affected_rows() == -1) {
             throw new MyException('Erro ao deletar ' . $this->getTableName(), Response::NOT_FOUND);

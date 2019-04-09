@@ -27,8 +27,10 @@ class MY_Model extends Generic_Model
     private function check_attributes()
     {
         if (empty(static::FORM)) {
-            throw new MyException('FORM não pode ser vazio!',
-                Response::NOT_FOUND);
+            throw new MyException(
+                'FORM não pode ser vazio!',
+                Response::NOT_FOUND
+            );
         }
     }
 

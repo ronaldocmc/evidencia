@@ -13,8 +13,8 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH."core/Response.php";
-require_once APPPATH."core/MyException.php";
+require_once APPPATH . "core/Response.php";
+require_once APPPATH . "core/MyException.php";
 
 class AuthorizationController extends CI_Controller
 {
@@ -24,8 +24,8 @@ class AuthorizationController extends CI_Controller
 
         $this->authorization = new Authorization();
 
-        return $this->authorization->check_permission( 
-            $this->get_current_controller(), 
+        return $this->authorization->check_permission(
+            $this->get_current_controller(),
             $this->get_current_method()
         );
     }

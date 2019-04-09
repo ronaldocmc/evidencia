@@ -146,6 +146,7 @@ class Funcao extends CRUD_Controller
     public function activate()
     {
         try {
+            log_message('monitoring', 'USER '.$this->get_current_user().' Atempt to activate ' . $this->get_current_controller());
             $this->load();
             $this->funcao->config_form_validation_primary_key();
             $this->funcao->run_form_validation();
@@ -161,6 +162,7 @@ class Funcao extends CRUD_Controller
             $response->send();
 
         } catch (MyException $e) {
+            log_message('monitoring', $this->get_current_controller().' activation failed');
             handle_my_exception($e);
         } catch (Exception $e) {
             handle_exception($e);
