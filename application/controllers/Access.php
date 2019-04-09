@@ -72,6 +72,10 @@ class Access extends CI_Controller {
         $this->load->model('Funcionario_model', 'funcionario');
 
         $this->set_rules_form_validation();
+
+        $this->load->library('Authorization');
+        $this->authorization = new Authorization();
+        $this->authorization->load_all_permissions_in_memory();
     }
 
     private function check_login_attempts()
@@ -221,10 +225,6 @@ class Access extends CI_Controller {
                 $this->response->add_data('superusuario', 0);
                 $this->authenticate_user();
             }
-
-            $this->load->library('Authorization');
-            $this->authorization = new Authorization();
-            $this->authorization->load_all_permissions_in_memory();
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->set_message('Login efetuado com sucesso');
