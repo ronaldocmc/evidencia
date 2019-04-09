@@ -1,3 +1,7 @@
+const view = new GenericView();
+
+view.conditionalRender();
+
 function btn_load(button_submit) {
     button_submit.attr('disabled', 'disabled');
     button_submit.css('cursor', 'default');
@@ -1294,6 +1298,7 @@ function initMap() {
 
         $('#data_inicial').val(formatDate(lastWeek()));
         $('#data_final').val(formatDate(new Date()));
+
     });
 
     $(document).on('click', '.btn_delete', function () {
