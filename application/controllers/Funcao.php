@@ -4,9 +4,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 require_once APPPATH."core/Response.php";       
 require_once APPPATH."core/CRUD_Controller.php";
 
-class Funcao extends CRUD_Controller {
+class Funcao extends CRUD_Controller
+{
 
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
         $this->load->model('funcao_model', 'funcao');
@@ -16,50 +17,8 @@ class Funcao extends CRUD_Controller {
     {
         $this->load->library('form_validation');
 
-        $this->load->helper('exception');        
+        $this->load->helper('exception');
     }
-
-    function index() 
-    {
-        $funcoes = $this->funcao->get_all(
-            '*',
-            [
-                'organizacao_fk' => $this->session->user['id_organizacao']
-            ],
-            -1,
-            -1
-        );
-
-        //CSS para funcaos
-        $this->session->set_flashdata('css',[
-            0 => base_url('assets/css/modal_desativar.css'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            3 => base_url('assets/css/user_guide.css')
-        ]);
-
-        //CSS para funcaos
-        $this->session->set_flashdata('scripts',[
-            0 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            2 => base_url('assets/vendor/datatables/datatables.min.js'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            4 => base_url('assets/js/utils.js'),
-            5 => base_url('assets/js/constants.js'),
-            6 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            7 => base_url('assets/js/dashboard/funcao/index.js'),
-            8 => base_url('assets/js/response_messages.js')
-        ]);
-
-        load_view([
-            0 => [
-                'src' => 'dashboard/administrador/funcoes/home',
-                'params' => ['funcoes' => $funcoes],
-            ],
-        ],'administrador');
-        
-    }
-
 
     public function save()
     {
@@ -76,8 +35,7 @@ class Funcao extends CRUD_Controller {
             $this->funcao->fill();
             $this->funcao->__set('organizacao_fk', $this->session->user['id_organizacao']);
 
-            if($this->input->post('funcao_pk') !== '')
-            {
+            if ($this->input->post('funcao_pk') !== '') {
                 $this->funcao->config_form_validation_primary_key();
             }
             $this->funcao->config_form_validation();
@@ -85,12 +43,9 @@ class Funcao extends CRUD_Controller {
 
             $this->begin_transaction();
 
-            if($this->input->post('funcao_pk') !== '')
-            {
+            if ($this->input->post('funcao_pk') !== '') {
                 $this->update();
-            } 
-            else 
-            {
+            } else {
                 $response->set_data(['id' => $this->funcao->insert()]);
             }
 
@@ -99,9 +54,9 @@ class Funcao extends CRUD_Controller {
             $response->set_code(Response::SUCCESS);
             $response->send();
 
-        } catch(MyException $e) {
+        } catch (MyException $e) {
             handle_my_exception($e);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             handle_exception($e);
         }
     }
@@ -112,6 +67,21 @@ class Funcao extends CRUD_Controller {
         $this->funcao->update();
     }
 
+    public function get(){
+        $response = new Response();
+
+        $funcoes = $this->funcao->get_all(
+            '*, funcoes.ativo as ativo',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+
+        $response->add_data('self', $funcoes);
+
+        $response->send();
+    }
+
     public function get_dependents()
     {
         $response = new Response();
@@ -119,20 +89,14 @@ class Funcao extends CRUD_Controller {
         $this->load->model('funcionario_model', 'funcionario');
 
         $funcionarios = $this->funcionario->get_all(
-            'funcionario_pk',
+            'funcionario_nome as name',
             ['funcao_fk' => $this->input->post('funcao_pk')],
             -1,
             -1
         );
 
-        if (count($funcionarios) > 0) 
-        {
-            $response->set_data(true);
-        }
-        else
-        {
-            $response->set_data(false);
-        }
+        $response->add_data('dependences', $funcionarios);
+        $response->add_data('dependence_type', 'funcionario');
 
         $response->send();
     }
@@ -148,15 +112,14 @@ class Funcao extends CRUD_Controller {
             -1
         );
 
-        if(count($funcionarios) > 0)
-        {
+        if (count($funcionarios) > 0) {
             throw new MyException('Há funcionários com esta função', Response::FORBIDDEN);
         }
     }
 
     public function deactivate()
     {
-        try{
+        try {
             $this->load();
             $this->funcao->config_form_validation_primary_key();
             $this->funcao->run_form_validation();
@@ -173,16 +136,16 @@ class Funcao extends CRUD_Controller {
             $response->set_message('Função desativado com sucesso!');
             $response->send();
 
-        } catch(MyException $e) {
+        } catch (MyException $e) {
             handle_my_exception($e);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             handle_exception($e);
         }
     }
 
     public function activate()
     {
-        try{
+        try {
             $this->load();
             $this->funcao->config_form_validation_primary_key();
             $this->funcao->run_form_validation();
@@ -191,18 +154,16 @@ class Funcao extends CRUD_Controller {
             $this->begin_transaction();
             $this->funcao->activate();
             $this->end_transaction();
-            
+
             $response = new Response();
             $response->set_code(Response::SUCCESS);
             $response->set_message('Função ativado com sucesso!');
             $response->send();
 
-        } catch(MyException $e) {
+        } catch (MyException $e) {
             handle_my_exception($e);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             handle_exception($e);
         }
     }
 }
-
-?>

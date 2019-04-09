@@ -94,10 +94,10 @@ class Tipo_Servico_model extends MY_Model
 
     public function get_dependents($departamento)
     {
-        $this->CI->db->select('tipo_servico_pk');
+        $this->CI->db->select('tipo_servico_nome as name');
         $this->CI->db->from('tipos_servicos');
         $this->CI->db->where('departamento_fk', $departamento);
-        return $this->CI->db->count_all_results();
+        return $this->CI->db->get()->result();
     }
 }
 

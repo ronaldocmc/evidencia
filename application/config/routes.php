@@ -56,3 +56,20 @@ $route['test/(:any)/(:any)'] = '_test/$1/$2';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['home'] = 'dashboard/funcionario_administrador';
+
+
+$route['departamento'] = 'viewcontroller/index/departamento';
+$route['setor'] = 'viewcontroller/index/setor';
+$route['funcionario'] = 'viewcontroller/index/funcionario';
+$route['funcao'] = 'viewcontroller/index/funcao';
+$route['servico'] = 'viewcontroller/index/servico';
+$route['prioridade'] = 'viewcontroller/index/prioridade';
+$route['situacao'] = 'viewcontroller/index/situacao';
+
+$route['minha_conta'] = 'viewcontroller/minha_conta';
+
+$route['mapa'] = 'viewcontroller/mapa';
+$route['organizacao/editar'] = 'viewcontroller/editar_informacoes_organizacao';
+
+$route['relatorio'] = 'viewcontroller/listar_relatorios';
+$route['relatorio/novo'] = 'viewcontroller/novo_relatorio';
