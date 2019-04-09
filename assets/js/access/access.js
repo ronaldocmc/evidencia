@@ -62,8 +62,13 @@ email_send = (email) => {
     
   //Enviando os dados via post (AJAX)
    $.post(base_url+'/contact/restore_password', { email }).done(function (response) {
-      // console.log(response);
-      wich_alert(response);
+      console.log(response);
+      if(response.code == 200 || response.code == 202){
+        alerts_access('success_email');
+      }else{
+        alerts_access('failed_email');
+      }
+      
     }, "json");
 }
 

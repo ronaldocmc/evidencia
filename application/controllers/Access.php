@@ -95,8 +95,11 @@ class Access extends CI_Controller {
     }
 
     private function clear_login_attempts()
-    {
-        $this->tentativa_model->delete($this->input->ip_address());
+    {   
+        $this->tentativa_model->__set('tentativa_tempo', date('Y/m/d')." 00:00:00");
+        $this->tentativa_model->__set('tentativa_ip', $this->input->ip_address());
+        
+        $this->tentativa_model->delete();
     }
 
     private function check_permissions($user)
@@ -154,7 +157,7 @@ class Access extends CI_Controller {
 
         $this->set_session_superuser($superuser);
 
-        // $this->clear_login_attempts();
+        $this->clear_login_attempts();
     }
 
     private function authenticate_user()
@@ -168,7 +171,7 @@ class Access extends CI_Controller {
 
         $this->set_session($worker);
 
-    //     $this->clear_login_attempts();
+        $this->clear_login_attempts();
      }
 
     //--------------------------------------------------------------------------------
