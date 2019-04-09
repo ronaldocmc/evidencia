@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 }
 
 require_once APPPATH . "core/CRUD_Controller.php";
-require_once APPPATH . "core\Response.php";
+require_once APPPATH . "core/Response.php";
 
 class Relatorio extends CRUD_Controller
 {

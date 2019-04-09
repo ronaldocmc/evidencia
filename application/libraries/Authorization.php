@@ -51,8 +51,8 @@ class Authorization {
 
         if(!$this->_is_empty($controller) && !$this->_is_empty($method))
         {
-            $authorized = $this->check_permission_on_memory($function_id, $controller, $method);
-            // $authorized = $this->CI->model->check_permission($function_id, $controller, $method);
+            //$authorized = $this->check_permission_on_memory($function_id, $controller, $method);
+            $authorized = $this->CI->model->check_permission($function_id, $controller, $method);
             
             return $authorized;
         } 
