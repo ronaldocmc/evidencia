@@ -69,6 +69,13 @@ class Authorization
         }
     }
 
+    public function get_all_permissions() 
+    {
+        $return_permissions = $this->CI->model->get_really_all_permissions();
+
+        return $return_permissions;
+    }
+
     private function check_permission_on_memory($function_id, $controller, $method)
     {
         $this->CI->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
@@ -154,6 +161,7 @@ class Authorization
         foreach($permissions as $p)
         {   
             $data = [];
+            $data['entity'] = $p->entidade;
             $data['name'] = $p->acao .' '.$p->entidade;
             $data['entity'] = $p->entidade;
             $data['action'] = $p->acao;

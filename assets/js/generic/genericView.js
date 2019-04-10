@@ -299,5 +299,17 @@ class GenericView {
         $(`#${id}`).attr('src', path);
     }
 
+    generateCheckBox(inputText, inputValue, data, name) {
+        let render = `<input type='checkbox'
+        id='id-${data[inputValue]}'
+        name='${name}'>
+        <label for='id-${data[inputValue]}'> ${data[inputText]}</label>`;
 
+        return render;
+    }
+
+    generateTitle(text, size) {
+        let title = `<h${size}>${text}</h${size}>`;
+        return title;
+    }
 }

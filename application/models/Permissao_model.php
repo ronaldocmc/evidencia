@@ -67,7 +67,18 @@ class Permissao_model extends MY_Model {
         $result = $this->CI->db->count_all_results();
 
         return ($result >= 1) ? true : false;
-    }    
+    }   
+
+    public function get_really_all_permissions()
+    {
+        $this->CI->db->select('acao_pk, entidade_pk, acao_nome, acao_metodo, entidade, controller, permissao_pk');
+        $this->CI->db->from('permissoes');
+        $this->CI->db->join('permissao_acoes', 'permissao_acoes.acao_pk = permissoes.acao_fk');
+        $this->CI->db->join('permissao_entidades', 'permissao_entidades.entidade_pk = permissoes.entidade_fk');
+
+        $result = $this->CI->db->get()->result();
+        return $result;
+    } 
 }
 
 ?>
