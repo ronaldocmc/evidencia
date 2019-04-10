@@ -57,7 +57,7 @@ class CRUD_Controller extends AuthorizationController
 
     private function return_forbidden_response()
     {
-        log_message('error', 'Attempt to access unauthorized area by [' . $this->session->user['user_email'] . '] from address ' . $this->input->ip_address());
+        log_message('error', 'Attempt to access unauthorized area by [' . $this->session->user['email_user'] . '] from address ' . $this->input->ip_address());
         $response = new Response();
       
         $response->set_code(Response::FORBIDDEN);
