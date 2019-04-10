@@ -79,6 +79,17 @@ class Permissao_model extends MY_Model {
         $result = $this->CI->db->get()->result();
         return $result;
     } 
+
+    public function insert_many($batch)
+    {
+        $this->CI->db->insert_batch('funcoes_permissoes', $batch);
+    }
+
+    public function delete_permissions($funcao_fk)
+    {
+        $this->CI->db->where('funcao_fk', $funcao_fk);
+        $this->CI->db->delete('funcoes_permissoes');
+    }
 }
 
 ?>
