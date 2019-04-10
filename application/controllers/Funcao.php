@@ -166,4 +166,28 @@ class Funcao extends CRUD_Controller
             handle_exception($e);
         }
     }
+
+    public function get_all_permissions()
+    {
+        $response = new Response();
+
+        try {
+            if ($this->input->post('funcao') !== null) 
+            {
+                $permissions = $this->authorization->return_permissions($this->input->post('funcao'));
+            }
+            else
+            {
+                $permissions = $this->authorization->get_all_permissions();             
+            }
+
+            $response->add_data('permissions', $permissions);
+            $response->send();
+        
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
 }
