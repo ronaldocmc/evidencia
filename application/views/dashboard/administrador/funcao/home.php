@@ -196,19 +196,12 @@
 
                     <div class="card card-step col-12 px-0">
                         <div class="card-header">
-                            Acesso
+                            Permissões
                         </div>
                         <div class="card-body card-block">
                             <div class="row form-group">
-                                <div class="col-12 col-md-2">
-                                    <label for="setor_input" class=" form-control-label">Permissões</label>
-                                </div>
-                                <div class="col-12 col-md-10">
-                                    <div class="form-control" id="permissions"></div>
+                                <div class="col-12" id="permissions">
                                     
-                                    <small class="help-block form-text">Por favor, 
-                                        selecione corretamente as permissões da função.
-                                    </small>
                                 </div>
                             </div>
                         </div>
