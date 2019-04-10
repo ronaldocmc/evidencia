@@ -114,8 +114,6 @@ class GenericView {
     renderButton(className, action, entity) {
         const classWithDot = `.${className}`;
 
-        console.log(className);
-
         if(this.elementExistsOnDom(classWithDot)) {
             this.renderButtonBasedOnPermission(classWithDot, action, entity);
         }

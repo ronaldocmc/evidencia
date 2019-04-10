@@ -47,6 +47,12 @@ class Funcao extends CRUD_Controller
                 $this->update();
             } else {
                 $response->set_data(['id' => $this->funcao->insert()]);
+
+                if ($this->input->post('permissions') !== null) 
+                {
+                    $this->load->model('Permissao_model', 'permissao');
+                    $this->insert_permissions($response->data['id']);
+                }
             }
 
             $this->end_transaction();
@@ -65,6 +71,14 @@ class Funcao extends CRUD_Controller
     {
         $this->funcao->__set('funcao_pk', $this->input->post('funcao_pk'));
         $this->funcao->update();
+
+        $this->load->model('Permissao_model', 'permissao');
+        $this->permissao->delete_permissions($this->input->post('funcao_pk'));
+
+        if ($this->input->post('permissions') !== null) 
+        {
+            $this->insert_permissions($this->input->post('funcao_pk'));
+        }
     }
 
     public function get(){
@@ -191,5 +205,32 @@ class Funcao extends CRUD_Controller
         } catch (Exception $e) {
             handle_exception($e);
         }
+    }
+
+    private function insert_permissions($funcao_pk)
+    {
+        $permission_data = $this->create_permission_batch($funcao_pk, $this->input->post('permissions'));
+
+        $this->permissao->insert_many($permission_data);
+    }
+
+    private function create_permission_batch($funcao_fk, $permissions)
+    {
+        $batch = [];
+
+        foreach ($permissions as $p) 
+        {
+            $batch[] = [
+                'funcao_fk' => $funcao_fk,
+                'permissao_fk' => $p
+            ];
+        }
+
+        return $batch;
+    }
+
+    public function remove_permissions($funcao_fk)
+    {
+        $this->permissao->delete_permissions($funcao_fk);
     }
 }
