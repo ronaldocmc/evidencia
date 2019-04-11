@@ -19,73 +19,11 @@
 				</div>
 			</div>
 			<hr>
+			
 			<div class="container">
-				<div class="row">
-					<div class="col-sm-12 col-md-6 col-lg-3">
-						<div class="statistic__item statistic__item--blue acesso-rapido">
-							<div class="geral" onclick="window.location = '<?= base_url('ordem_servico') ?>';">
-								<div class="bag">
-									<div class="icones color-blue">
-										<i class="fa fas fa-thumbtack"></i>
-									</div>
-									<div class="text">
-										<h2>nova ordem</h2>
-										
-									</div>
-								</div>
-							</div>
-						</div>
-
-					</div>
-					<div class="col-sm-12 col-md-6 col-lg-3">
-						<div class="statistic__item statistic__item--orange acesso-rapido">
-							<div class="geral" onclick="window.location = '<?= base_url('relatorio/novo_relatorio') ?>';">
-								<div class="bag">
-									<div class="icones color-orange">
-										<i class="fa fas fa-tasks"></i>
-									</div>
-									<div class="text">
-										<h2>novo relatório</h2>
-										
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-12 col-md-6 col-lg-3">
-						<div class="statistic__item statistic__item--red acesso-rapido">
-							<div class="geral" onclick="window.location = '<?= base_url('mapa') ?>';">
-								<div class="bag">
-									<div class="icones color-red">
-										<i class="fa fas fa-map-marker-alt"></i>
-									</div>
-									<div class="text">
-										<h2>mapa</h2>
-										
-									</div>
-								</div>
-							</div>
-						</div>
-						
-					</div>
-					<div class="col-sm-12 col-md-6 col-lg-3">
-						<div class="statistic__item statistic__item--green acesso-rapido">
-							<div class="geral" onclick="window.location.reload();">
-								<div class="bag">
-									<div class="icones color-green">
-										<i class="fa fas fa-refresh"></i>
-									</div>
-									<div class="text">
-										<h2>atualizar</h2>
-										<small id="texto-atualizacao"></small>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+				<div class="row quick-access">
 				</div>
 			</div>
-
 
 			<!-- END ACESSO RÁPIDO -->
 
