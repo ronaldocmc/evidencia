@@ -90,7 +90,7 @@ class Authorization
 
             return false;
         } else {
-            echo 'caiu aqui';
+            // echo 'caiu aqui';
             return false;
         }
     }
