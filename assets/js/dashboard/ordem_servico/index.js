@@ -35,18 +35,16 @@ class View extends GenericView {
     }
 
 
-    // generateButtons(condition, i) {
-    //     return `<div class='btn-group'>` +
-    //         (
-    //             condition == 1 ?
-    //                 this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
-    //                 this.createButton('deactivate', 'deactivate', 'danger', 'Desativar', i, 'fa-times') +
-    //                 this.createButton('change_password', 'password', 'success', 'Alterar senha', i, 'fa-lock')
-    //                 :
-    //                 this.createButton('activate', 'activate', 'success', 'Ativar', i, 'fa-power-off')
-    //         ) +
-    //         `</div>`;
-    // }
+    generateButtons(condition, i) {
+        return `<div class='btn-group'>` +
+            (
+                    this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
+                    // this.createButton('deactivate', 'deactivate', 'danger', 'Desativar', i, 'fa-times') +
+                    this.createButton('create_history', 'create_history', 'success', 'Criar histórico', i, 'fa-calendar-plus') +
+                    this.createButton('info', 'info', 'info', 'Ver informações', i, 'fa-eye')
+            ) +
+            `</div>`;
+    }
 
 }
 
