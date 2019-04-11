@@ -57,7 +57,8 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['home'] = 'viewcontroller/funcionario';
 
-$route['dashboard/funcionario_administrador'] = 'viewcontroller/funcionario';
+$route['dashboard/funcionario_administrador'] = 'ViewController/funcionario';
+$route['minha_conta'] = 'ViewController/minha_conta';
 
 $route['departamento'] = 'ViewController/index/departamento';
 $route['setor'] = 'ViewController/index/setor';
