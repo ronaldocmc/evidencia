@@ -314,7 +314,7 @@ class Relatorio extends CRUD_Controller
         $data_filter = [];
 
         $this->load->model('setor_model');
-        $this->load->model('tipo_servico_model', 'ts_model');
+        $this->load->model('Tipo_Servico_model', 'ts_model');
 
         $sector_filters = $this->setor_model->get_all(
             'setor_pk, setor_nome',
