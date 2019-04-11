@@ -11,10 +11,9 @@
                             <i class="zmdi zmdi-task"></i>exportar
                         </button>
                         <!-- <input type="hidden" id="ordem_servico_pk" name="ordem_servico_pk" class="form-control"> -->
-                        <button class="au-btn au-btn-icon au-btn--blue reset_multistep" data-toggle="modal"
-                            data-target="#ce_ordem_servico" id="btn-nova-ordem">
-                            <i class="zmdi zmdi-plus"></i>nova ordem de serviço
-                        </button>
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Nova Ordem de Serviço" data-contentid="save"
+                            data-target="#modal">
+                            <i class="zmdi zmdi-plus"></i>nova ordem de serviço</button>
                     </div>
                     <div class="col-md-12 mt-3">
                         <div class="collapse" id="collapseHelp">
@@ -397,7 +396,7 @@
                                         <input type="hidden" id="latitude">
                                         <input type="hidden" id="longitude">
                                         <div class="col-12">
-                                            <div id="map"></div>
+                                        <div id="map"></div>
                                             <small class="form-text text-muted">Visualize ou selecione o local no
                                                 mapa</small>
                                         </div>
@@ -410,6 +409,7 @@
                                 </div>
                                 <div class="card-body text-secondary">
                                     <div class="row form-group">
+
                                         <div class="col-12" id="image-upload-div">
                                             <div class="image-upload-wrap">
                                                 <input class="file-upload-input" type='file' onchange="readURL(this);"

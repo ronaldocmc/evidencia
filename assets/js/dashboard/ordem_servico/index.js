@@ -2,8 +2,6 @@
  * == Variáveis globais: == 
  * 
  * @Boolean: is_superusuario
- * 
- * 
  * @String: base_url
  * 
  */
@@ -67,7 +65,7 @@ class Control extends GenericControl {
         super();
 
         this.primaryKey = "ordem_servico_pk";
-        this.fields = ['ordem_servico_desc', 'servico_fk', 'procedencia_fk', 'prioridade_fk', 'situacao_inicial_fk', 'setor_fk', 'localizacao_rua', 'localizacao_num', 'localizacao_bairro', 'localizacao_ponto_referencia' ];
+        this.fields = ['ordem_servico_desc', 'servico_fk', 'procedencia_fk', 'prioridade_fk', 'situacao_inicial_fk', 'setor_fk', 'localizacao_rua', 'localizacao_num', 'localizacao_bairro', 'localizacao_ponto_referencia'];
         this.tableFields = ['ordem_servico_pk', 'ordem_servico_cod', 'ordem_servico_criacao', 'prioridade_nome', 'localizacao_rua', 'servico_nome', 'situacao_atual_nome', 'setor_nome'];
         this.verifyDependences = false;
     }
@@ -92,13 +90,15 @@ class Control extends GenericControl {
 }
 
 const myControl = new Control();
+let map;
 
 myControl.init();
 
-
 initMap = () => {
-    const map = new GenericMap({
+
+    map = new GenericMap({
         mapId: 'map',
+        insideHideDive: true,
         config: {
             center: { lat: -22.121265, lng: -51.383400 },
             zoom: 13
@@ -109,10 +109,10 @@ initMap = () => {
             target: 'v_evidencia'
         },
         input: {
-            sublocality: false,
-            locality: false,
-            street: 'rua',
-            street_number: false,
+            sublocality: 'localizacao_bairro',
+            locality: 'localizacao_municipio',
+            street: 'localizacao_rua',
+            street_number: 'localizacao_num',
             state: false,
         },
 
@@ -147,6 +147,42 @@ initMap = () => {
             const response = await this.translateLocation(location);
             this.fillInputs(response.address_components);
         }
+    }
+
+    map.handleDivOpen = function () {
+
+        $('#modal').on('shown.bs.modal', (event) => {
+
+            if (myControl.getSelectedId()) {
+
+                const { localizacao_lat, localizacao_long } = myControl.data.self[myControl.getSelectedId()];
+                const location = { lat: parseFloat(localizacao_lat), lng: parseFloat(localizacao_long) };
+                // map.setMap(new google.maps.Map(document.getElementById(this.state.mapId), this.state.mapConfig));
+                map.initMap();
+
+                map.createMarker(location);
+                map.getMap().setCenter(location);
+            }else{
+                map.initMap(); 
+            }
+        });
+
+    }
+
+    map.handleCity = function (id, name) {
+        // let exists = false;
+
+        myControl.data.municipios.forEach((municipio) => {
+            if (name == municipio.municipio_nome) {
+                console.log("Encontrou");
+                $(`#${id}`).val(municipio.municipio_pk);
+                exists = true;
+            }
+        });
+
+        // if(!exists){
+        //     alert("Infelizmente a cidade em questão não está sob responsabilidade da empresa");
+        // }
     }
 
     map.initMap();

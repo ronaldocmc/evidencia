@@ -25,6 +25,7 @@ class GenericMap {
             map: undefined,
             mapId: props.mapId || 'map',
             geocoder: null,
+            insideHideDive: props.insideHideDive,
 
             mapConfig: props.config,
             markerConfig: props.markerConfig,
@@ -59,8 +60,11 @@ class GenericMap {
 
         this.state.map = new google.maps.Map(document.getElementById(mapId), mapConfig);
         this.state.geocoder = new google.maps.Geocoder();
-
         this.state.map.addListener('click', (event) => this.handleClick(event));
+
+        if (this.state.insideHideDive) {
+            this.handleDivOpen();
+        }
 
         this.renderMarkers();
     }
@@ -131,7 +135,11 @@ class GenericMap {
                 $(`#${sublocality}`).val(data.long_name);
             }
             if ((this.is(data, 'locality') || this.is(data, 'political')) && locality != false) {
-                $(`#${locality}`).val(data.long_name);
+                if (typeof this.handleCity == 'function') {
+                    this.handleCity(locality, data.long_name);
+                } else {
+                    $(`#${locality}`).val(data.long_name);
+                }
             }
             if (this.is(data, 'route') && route != false) {
                 $(`#${route}`).val(data.long_name);
@@ -186,7 +194,7 @@ class GenericMap {
     }
 
     createFilledMarker(marker) {
-        
+
         let newMarker = new google.maps.Marker({
             position: {
                 lat: parseFloat(marker.localizacao_lat),
@@ -206,5 +214,13 @@ class GenericMap {
 
     is(data, type) {
         return (data.types.indexOf(type) !== -1)
+    }
+
+    getMap() {
+        return this.state.map;
+    }
+
+    setMap(map) {
+        this.state.map = map;
     }
 }

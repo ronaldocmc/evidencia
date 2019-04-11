@@ -163,4 +163,8 @@ class GenericControl {
     setSelectedId(id) {
         this.state.selectedId = id;
     }
+
+    getSelectedId(){
+        return this.state.selectedId;
+    }
 }
