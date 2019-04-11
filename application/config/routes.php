@@ -59,6 +59,7 @@ $route['home'] = 'viewcontroller/funcionario';
 
 $route['dashboard/funcionario_administrador'] = 'ViewController/funcionario';
 $route['minha_conta'] = 'ViewController/minha_conta';
+$route['organizacao/editar'] = 'ViewController/editar_informacoes_organizacao';
 
 $route['departamento'] = 'ViewController/index/departamento';
 $route['setor'] = 'ViewController/index/setor';
