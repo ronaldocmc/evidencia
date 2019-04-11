@@ -38,10 +38,10 @@ class View extends GenericView {
     generateButtons(condition, i) {
         return `<div class='btn-group'>` +
             (
-                    this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
-                    // this.createButton('deactivate', 'deactivate', 'danger', 'Desativar', i, 'fa-times') +
-                    this.createButton('create_history', 'create_history', 'success', 'Criar histórico', i, 'fa-calendar-plus') +
-                    this.createButton('info', 'info', 'info', 'Ver informações', i, 'fa-eye')
+                this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
+                // this.createButton('deactivate', 'deactivate', 'danger', 'Desativar', i, 'fa-times') +
+                this.createButton('create_history', 'create_history', 'success', 'Criar histórico', i, 'fa-calendar-plus') +
+                this.createButton('info', 'info', 'info', 'Ver informações', i, 'fa-eye')
             ) +
             `</div>`;
     }
@@ -68,6 +68,11 @@ class Control extends GenericControl {
         this.verifyDependences = false;
     }
 
+    init() {
+        super.init();
+        $('.action_export').click(function () { this.exportData() });
+    }
+
     remove_image() {
         $('#img-input').attr('src', '');
         removeUpload();
@@ -85,6 +90,16 @@ class Control extends GenericControl {
         });
     };;
 
+    exportData() {
+        data = {
+            'data_inicial': $('#data_inicial').val(),
+            'data_final': $('#data_final').val()
+        };
+
+        let string = `/export/execute?data_inicial=${$('#data_inicial').val()}&data_final=${$('#data_final').val()}`;
+        window.open(base_url + string, "target=_blank");
+    };
+
 }
 
 const myControl = new Control();
@@ -96,7 +111,7 @@ initMap = () => {
 
     map = new GenericMap({
         mapId: 'map',
-        insideHideDive: true,
+        insideHideDiv: true,
         config: {
             center: { lat: -22.121265, lng: -51.383400 },
             zoom: 13
@@ -160,8 +175,8 @@ initMap = () => {
 
                 map.createMarker(location);
                 map.getMap().setCenter(location);
-            }else{
-                map.initMap(); 
+            } else {
+                map.initMap();
             }
         });
 

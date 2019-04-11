@@ -6,8 +6,8 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de ordens de serviço</h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn-exportar" data-toggle="modal"
-                            data-target="#ce_export" id="btn-exportar">
+                        <button class="au-btn au-btn-icon au-btn--blue btn-exportar" data-title="Exportar" data-contentid="export" data-toggle="modal"
+                            data-target="#modal" id="btn-exportar">
                             <i class="zmdi zmdi-task"></i>exportar
                         </button>
                         <!-- <input type="hidden" id="ordem_servico_pk" name="ordem_servico_pk" class="form-control"> -->
@@ -275,7 +275,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card bg-light mb-3" id="info_cidadao">
+                            <!-- <div class="card bg-light mb-3" id="info_cidadao">
                                 <div class="card-header">
                                     <h4 class="card-title"> Informações Cidadão </h4>
                                 </div>
@@ -339,7 +339,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="card bg-light mb-3">
                                 <div class="card-header">
                                     <h4 class="card-title"> Localização </h4>
@@ -403,35 +403,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card bg-light mb-3" id="card_imagem">
-                                <div class="card-header">
-                                    <h4 class="card-title"> Imagem Evidência </h4>
-                                </div>
-                                <div class="card-body text-secondary">
-                                    <div class="row form-group">
-
-                                        <div class="col-12" id="image-upload-div">
-                                            <div class="image-upload-wrap">
-                                                <input class="file-upload-input" type='file' onchange="readURL(this);"
-                                                    accept="image/*" id="input-upload" required="true" />
-                                                <div class="drag-text">
-                                                    <h3>Ou clique/arraste e solte uma imagem aqui</h3>
-                                                </div>
-                                            </div>
-                                            <div class="file-upload-content">
-                                                <img id="img-input" class="file-upload-image" src="#" alt="your image"
-                                                    required="true" />
-                                                <div class="col-12">
-                                                    <button type="button" onclick="remove_image()"
-                                                        class="btn btn-danger">Remover</button>
-                                                </div>
-                                            </div>
-                                            <small class="form-text text-muted">Por favor, se necessário, carregue a
-                                                imagem</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div><!-- fecha card body -->
+                           
                             <!-- fecha card principal -->
                             <?php if ($this->session->user['is_superusuario']): ?>
                             <div class="row form-group">
@@ -496,7 +468,6 @@
         </div>
 
     </div>
-
 </div>
 
 
@@ -583,29 +554,21 @@
     </div>
 </div>
 
-<div class="modal fade" id="ce_export">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Exportar Dados</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<div id="export" class="d-none">
+    <div class="modal-body">
+        <div class="row pb-5">
+            <div class="col-md-6">
+
+                De:<input type="date" class="form-control" id="data_inicial" name="data_inicial" required>
             </div>
-            <div class="modal-body">
-                <div class="row pb-5">
-                    <div class="col-md-6">
+            <div class="col-md-6">
 
-                        De:<input type="date" class="form-control" id="data_inicial" name="data_inicial" required>
-                    </div>
-                    <div class="col-md-6">
-
-                        Até:<input type="date" class="form-control" id="data_final" name="data_final" required>
-                    </div>
-                </div>
-                <button type="button" id="export" class="btn au-btn btn-primary form-control"><i
-                        class="fa fa-dot-circle-o"></i> Exportar dados
-                </button>
+                Até:<input type="date" class="form-control" id="data_final" name="data_final" required>
             </div>
         </div>
+        <button type="button" class="btn au-btn btn-primary form-control action_export"><i
+                class="fa fa-dot-circle-o"></i> Exportar dados
+        </button>
     </div>
 </div>
 
@@ -733,14 +696,8 @@
         </div>
     </div>
 </div>
-<!-- FECHA MODAL HISTÓRICO -->
 
-
-<script type="text/javascript">
-    var is_superusuario = <? php if ($superusuario) { echo "true"; } else { echo "false"; }?>;
-</script>
 
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
 </script>
 
-<!-- END MAIN CONTENT

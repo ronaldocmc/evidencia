@@ -25,7 +25,7 @@ class GenericMap {
             map: undefined,
             mapId: props.mapId || 'map',
             geocoder: null,
-            insideHideDive: props.insideHideDive,
+            insideHideDiv: props.insideHideDiv,
 
             mapConfig: props.config,
             markerConfig: props.markerConfig,
@@ -62,7 +62,7 @@ class GenericMap {
         this.state.geocoder = new google.maps.Geocoder();
         this.state.map.addListener('click', (event) => this.handleClick(event));
 
-        if (this.state.insideHideDive) {
+        if (this.state.insideHideDiv) {
             this.handleDivOpen();
         }
 
