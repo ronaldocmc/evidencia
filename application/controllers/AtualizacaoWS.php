@@ -75,7 +75,7 @@ class AtualizacaoWS extends MY_Controller
 
         if ($attempt_result === true) {
 
-            $token_decodificado = json_decode(token_decrypt($header_obj['Token']));
+            $token_decodificado = json_decode(token_decrypt($header_obj[TOKEN]));
             // $token_decodificado->id_empresa
             // $token_decodificado->id_funcionario
             // $last_update = $token_decodificado->last_update;

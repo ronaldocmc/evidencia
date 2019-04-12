@@ -63,7 +63,7 @@ class RelatorioWS extends MY_Controller
 
             $obj = json_decode(file_get_contents('php://input'));
             $headers = apache_request_headers();
-            $token_decodificado = json_decode(token_decrypt($headers['Token']));
+            $token_decodificado = json_decode(token_decrypt($headers[TOKEN]));
 
             $where['relatorios.relatorio_func_responsavel'] = $token_decodificado->id_funcionario;
             $where['relatorios.ativo'] = 1;
@@ -151,7 +151,7 @@ class RelatorioWS extends MY_Controller
 
             $obj = json_decode(file_get_contents('php://input'));
             $headers = apache_request_headers();
-            $token_decodificado = json_decode(token_decrypt($headers['Token']));
+            $token_decodificado = json_decode(token_decrypt($headers[TOKEN]));
 
             $this->begin_transaction();
 

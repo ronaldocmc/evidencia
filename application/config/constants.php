@@ -111,3 +111,5 @@ define('ID_SITUACAO_FINALIZADO', 2);
 define('SHOW_HIDE_MENU', false); //Prioridades, situações, tipos e serviços
 
 define('VERSION', '2.0.1');
+
+define('TOKEN', 'token');
