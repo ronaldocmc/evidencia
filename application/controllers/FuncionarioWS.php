@@ -61,7 +61,7 @@ class FuncionarioWS extends MY_Controller
 
             $obj = json_decode(file_get_contents('php://input'));
             $headers = apache_request_headers();
-            $token_decodificado = json_decode(token_decrypt($headers['Token']));
+            $token_decodificado = json_decode(token_decrypt($headers[TOKEN]));
 
             $_POST = get_object_vars($obj);
             $_POST['img'] = isset($obj->img) ? $obj->img : null;
