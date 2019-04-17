@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 require_once APPPATH . "core/Response.php";
 require_once dirname(__FILE__) . "/Contact.php";
 require_once APPPATH . "core/CRUD_Controller.php";
+
 class Superusuario extends CRUD_Controller
 {
     public $response;
