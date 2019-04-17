@@ -81,6 +81,7 @@ class Ordem_Servico extends CRUD_Controller
         
         return $where;
     }
+    
     public function filtro_tabela(){
 
         try{
