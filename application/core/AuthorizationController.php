@@ -30,12 +30,12 @@ class AuthorizationController extends CI_Controller
         );
     }
 
-    private function get_current_controller()
+    protected function get_current_controller()
     {
         return strtolower($this->uri->segment(1));
     }
 
-    private function get_current_method()
+    protected function get_current_method()
     {
         return strtolower($this->uri->segment(2));
     }
