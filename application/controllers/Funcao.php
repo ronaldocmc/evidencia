@@ -13,7 +13,7 @@ class Funcao extends CRUD_Controller
         $this->load->model('funcao_model', 'funcao');
     }
 
-    public function load()
+    private function load()
     {
         $this->load->library('form_validation');
 
@@ -185,16 +185,18 @@ class Funcao extends CRUD_Controller
 
     public function get_all_permissions()
     {
+        $this->load->library('Authorization');
+        $authorization = new Authorization();
         $response = new Response();
 
         try {
             if ($this->input->post('funcao') !== null) 
             {
-                $permissions = $this->authorization->return_permissions($this->input->post('funcao'));
+                $permissions = $authorization->return_permissions($this->input->post('funcao'));
             }
             else
             {
-                $permissions = $this->authorization->get_all_permissions();             
+                $permissions = $authorization->get_all_permissions();             
             }
 
             $response->add_data('permissions', $permissions);
@@ -227,10 +229,5 @@ class Funcao extends CRUD_Controller
         }
 
         return $batch;
-    }
-
-    public function remove_permissions($funcao_fk)
-    {
-        $this->permissao->delete_permissions($funcao_fk);
     }
 }
