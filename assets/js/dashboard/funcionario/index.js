@@ -20,8 +20,6 @@ class View extends GenericView {
     init(data, tableFields, primaryKey) {
         super.init(data, tableFields, primaryKey);
 
-        console.log('data', data);
-
         this.generateSelect(data.funcoes, 'funcao_nome', 'funcao_pk', 'funcao_fk');
         this.generateSelect(data.departamentos, 'departamento_nome', 'departamento_pk', 'departamento_fk');
         this.generateSelect(data.setores, 'setor_nome', 'setor_pk', 'setor_fk');
@@ -82,7 +80,6 @@ class Control extends GenericControl {
             this.handleFillFields();
             this.myView.hidePasswordInput();
             this.myView.generateImage('show-img-funcionario', this.data.self[this.state.selectedId].funcionario_caminho_foto);
-            console.log(this.data.self[this.state.selectedId]);
         });
 
         $(document).on('click', '.btn_new', () => {
