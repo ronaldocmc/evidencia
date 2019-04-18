@@ -24,16 +24,6 @@ class CRUD_Controller extends AuthorizationController
     private $is_web = false;
     private $authorization;
 
-    /**
-    * Authorization arrays
-    */
-    private $standart_methods = ['save', 'deactivate', 'activate', 'get'];
-    private $controllers_methods = [
-        'Funcionario' => ['change_password'],
-        'Ordem_Servico' => ['insert_situacao', 'delete', 'get_map'],
-        'Relatorio' => ['create_new_report', 'change_worker', 'receive_report']
-    ];
-
     public function __construct()
     {
         $this->ci = &get_instance();
@@ -69,40 +59,7 @@ class CRUD_Controller extends AuthorizationController
 
     private function check_permissions()
     {   
-        if ($this->verify_standart_methods() || $this->verify_controllers_methods())
-        {
-            if(!$this->is_authorized()) $this->return_forbidden_response();
-        }
-    }
-
-    private function verify_standart_methods()
-    {
-        $method = $this->get_current_method();
-
-        if (in_array($method, $this->standart_methods)) 
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private function verify_controllers_methods()
-    {
-        $controller = $this->get_current_controller();
-        $method = $this->get_current_method();
-
-        if (array_key_exists($controller, $this->controllers_methods)) 
-        {
-            if (in_array($method, $this->controllers_methods[$controller])) 
-            {
-                return true;
-            }
-        }
-
-        return false;
+        if(!$this->is_authorized()) $this->return_forbidden_response();
     }
 
     private function return_forbidden_response()
