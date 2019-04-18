@@ -66,9 +66,6 @@
                             <i class="fas fa-clipboard-list"></i>Relatórios</a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
                                 <li>
-                                    <a href="<?= base_url('relatorio/novo') ?>">Novo Relatório</a>
-                                </li>
-                                <li>
                                     <a href="<?= base_url('relatorio') ?>">Listar Relatórios</a>
                                 </li>
                                 <?php if(SHOW_HIDE_MENU): ?>
@@ -161,9 +158,6 @@
                             <a class="js-arrow" href="#">
                             <i class="fas fa-clipboard-list"></i>Relatórios</a>
                             <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                <li class="novo-relatorio-menu d-none">
-                                    <a href="<?= base_url('relatorio/novo') ?>">Novo Relatório</a>
-                                </li>
                                  <li>
                                     <a href="<?= base_url('relatorio') ?>">Listar Relatórios</a>
                                 </li>

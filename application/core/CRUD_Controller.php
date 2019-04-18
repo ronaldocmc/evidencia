@@ -16,8 +16,8 @@ if (!defined('BASEPATH')) {
 require_once APPPATH . "core/Response.php";
 require_once APPPATH . "core/MyException.php";
 require_once APPPATH . "core/AuthorizationController.php";
-class CRUD_Controller extends AuthorizationController
 
+class CRUD_Controller extends AuthorizationController
 {
     private $ci;
     private $pseudo_session;
@@ -28,7 +28,8 @@ class CRUD_Controller extends AuthorizationController
     {
         $this->ci = &get_instance();
 
-        if ($this->ci === null) {
+        if ($this->ci === null) 
+        {
             $this->is_web = true;
             parent::__construct();
 
@@ -36,15 +37,22 @@ class CRUD_Controller extends AuthorizationController
         }
     }
 
+    /**
+    * Authorization methods
+    */
     private function check_if_has_user()
     {
-        if ($this->session->has_userdata('user')) {
+        if ($this->session->has_userdata('user')) 
+        {
             $this->set_pseudo_session();
             $this->verify_password_superuser();
-            if (!$this->is_superuser()) {
+            if (!$this->is_superuser()) 
+            {
                 $this->check_permissions();
             }
-        } else {
+        } 
+        else 
+        {
             redirect(base_url());
         }
     }
@@ -52,7 +60,6 @@ class CRUD_Controller extends AuthorizationController
     private function check_permissions()
     {   
         if(!$this->is_authorized()) $this->return_forbidden_response();
-
     }
 
     private function return_forbidden_response()
@@ -124,6 +131,9 @@ class CRUD_Controller extends AuthorizationController
     }
 
 
+    /**
+    * Methods used in controller for CRUD operations
+    */
     public function add_password_to_form_validation()
     {
         $this->form_validation->set_rules(

@@ -57,16 +57,14 @@ class Authorization
 
         // log_message('monitoring', 'Action: [' . strtoupper($method ? $method : 'load') . '] in [' . strtoupper($controller) . '] by USER [' . $this->CI->session->user['email_user'] . ']');
         
-        if (!$this->_is_empty($controller) && !$this->_is_empty($method)) {
-            $authorized = $this->check_permission_on_memory($function_id, $controller, $method);
-            // $authorized = $this->CI->model->check_permission($function_id, $controller, $method);
-
-            return $authorized;
-        } else {
-            echo 'OUTRAS REGRAS';
-            die();
-            //TODO - other rules
+        if ($method === '')
+        {
+            $method = 'get';
         }
+        
+        $authorized = $this->check_permission_on_memory($function_id, $controller, $method);
+
+        return $authorized;
     }
 
     public function get_all_permissions() 

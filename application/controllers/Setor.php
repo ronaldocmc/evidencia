@@ -129,7 +129,7 @@ class Setor extends CRUD_Controller
         }
     }
 
-    public function load()
+    private function load()
     {
         $this->load->library('form_validation');
 
