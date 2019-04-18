@@ -24,9 +24,9 @@ class AuthorizationController extends CI_Controller
     */
     private $standart_methods = ['save', 'deactivate', 'activate', 'get'];
     private $controllers_methods = [
-        'Funcionario' => ['change_password'],
-        'Ordem_Servico' => ['insert_situacao', 'delete', 'get_map'],
-        'Relatorio' => ['create_new_report', 'change_worker', 'receive_report']
+        'funcionario' => ['change_password'],
+        'ordem_servico' => ['insert_situacao', 'delete', 'get_map'],
+        'relatorio' => ['create_new_report', 'change_worker', 'receive_report']
     ];
 
     public function is_authorized()
