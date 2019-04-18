@@ -51,15 +51,15 @@ class GenericView {
     renderButtonsBasedOnPermissions() {
         this.renderMenu();
 
-        this.renderButton('new', 'criar', this.getEntity());
+        this.renderButton('new', 'alterar e criar', this.getEntity());
 
-        this.renderButton('btn_exportar', 'exportar', 'export');
+        this.renderButton('btn_exportar', 'ver', 'ordem_servico');
 
-        this.renderButton('new_report', 'novo', 'relatorio');
-        this.renderButton('receive_report', 'receber', 'relatorio');
-        this.renderButton('report_detail', 'detalhes', 'relatorio');
-        this.renderButton('imprimir_relatorio', 'imprimir', 'relatorio');
-        this.renderButton('destruir_relatorio', 'imprimir', 'relatorio');
+        this.renderButton('new_report', 'criar relatório', 'relatorio');
+        this.renderButton('receive_report', 'receber relatorio', 'relatorio');
+        this.renderButton('report_detail', 'ver', 'relatorio');
+        this.renderButton('imprimir_relatorio', 'ver', 'relatorio');
+        this.renderButton('destruir_relatorio', 'ver', 'relatorio');
     }
 
     hasPermissions(action, controller) {
@@ -92,12 +92,12 @@ class GenericView {
                 ]
             },
             {
-                action: 'editar',
+                action: 'alterar e criar',
                 buttons: ['organizacao']
             },
             {
-                action: 'novo',
-                buttons: ['relatorio']
+                action: 'criar relatório',
+                buttons: ['novo-relatorio']
             }     
         ];
 
@@ -121,9 +121,7 @@ class GenericView {
 
 
     renderButtonBasedOnPermission(className, permission, entity) {
-
         if(this.hasPermissions(permission, entity)) {
-            
             $(className).removeClass('d-none');
         }
     }
@@ -195,7 +193,7 @@ class GenericView {
         let entity = this.getEntity();
         let html = '';
 
-        if(this.hasPermissions('alterar', entity)) {
+        if(this.hasPermissions('alterar e criar', entity)) {
             html += this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit');
         }
 
