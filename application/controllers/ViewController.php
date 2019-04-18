@@ -1,7 +1,8 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 require_once APPPATH."core/AuthorizationController.php";
 
-class ViewController extends AuthorizationController {
+class ViewController extends AuthorizationController 
+{
     
     public function __construct()
     {
