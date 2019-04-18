@@ -57,6 +57,10 @@ class Funcao extends CRUD_Controller
 
             $this->end_transaction();
 
+            $this->load->library('Authorization');
+            $library = new Authorization();
+            $library->refresh_permissions_in_memory();
+
             $response->set_code(Response::SUCCESS);
             $response->send();
 
