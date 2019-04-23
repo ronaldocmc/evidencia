@@ -17,7 +17,8 @@ class Situacao_model extends MY_Model
         'situacao_pk',
         'situacao_nome',
         'situacao_descricao',
-        'organizacao_fk'
+        'organizacao_fk',
+        'ativo'
     );
 
     function config_form_validation()
