@@ -82,16 +82,11 @@ class Prioridade extends CRUD_Controller
 
     public function get_dependents()
     {
-        $this->load->model('Tipo_Servico_model', 'tipo_servico');
         $response = new Response();
+        $this->load->model('Tipo_Servico_model', 'tipo_servico');
 
         try {
-            $tipos_servicos = $this->tipo_servico->get_all(
-                'tipos_servicos.tipo_servico_nome as name',
-                ['prioridade_padrao_fk' => $this->input->post('prioridade_pk')],
-                -1,
-                -1
-            );
+            $tipos_servicos = $this->tipo_servico->get_dependents_prioridade($this->input->post('prioridade_pk'));
 
             $response->add_data('dependences', $tipos_servicos);
             $response->add_data('dependence_type', 'tipos de serviço');
@@ -110,24 +105,12 @@ class Prioridade extends CRUD_Controller
             $this->load();
             $this->load->model('Tipo_Servico_model', 'tipo_servico');
 
-            $tipos_servicos = $this->tipo_servico->get_all(
-                'tipos_servicos.tipo_servico_nome',
-                ['prioridade_padrao_fk' => $this->input->post('prioridade_pk')],
-                -1,
-                -1
-            );
-
-            if (count($tipos_servicos) > 0) {
-                throw new MyException("Ainda há tipos de serviços com essa prioridade como padrão", Response::BAD_REQUEST);
-
-            }
-
             $this->prioridade->config_form_validation_primary_key();
             $this->prioridade->run_form_validation();
             $this->prioridade->fill();
 
             $this->begin_transaction();
-            $this->prioridade->deactivate();
+            $this->prioridade->deactivate($this->tipo_servico, 'get_dependents_prioridade');
             $this->end_transaction();
 
             $response = new Response();

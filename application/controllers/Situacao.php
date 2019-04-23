@@ -81,25 +81,14 @@ class Situacao extends CRUD_Controller
 
     public function get_dependents()
     {
-        $this->load->model('servico_model');
+        $response = new Response();
 
-        $servicos = $this->servico_model->get_all(
-            'servicos.servico_nome',
-            ['servicos.situacao_padrao_fk' => $this->input->post('situacao_pk')],
-            - 1,
-            -1
-        );
+        $this->load->model('Servico_model', 'servico');
         
-        if (!empty($servicos)) {
-            
-            $mensagem = "";
+        $response->add_data('dependences', $this->servico->get_dependents($this->input->post('situacao_pk')));
+        $response->add_data('dependence_type', 'serviço');
 
-            foreach($servicos as $s){
-                $mensagem = $mensagem. $s->servico_nome .", ";
-            }
-
-            throw new MyException($mensagem, Response::UNAUTHORIZED);
-        }
+        $response->send();
     }
 
     /**
@@ -110,21 +99,18 @@ class Situacao extends CRUD_Controller
      */
     public function deactivate()
     {
-        
         try{
-
-            
             if ($this->is_superuser()) {
                 $this->add_password_to_form_validation();
             }
 
             $this->situacao_model->run_form_validation(); 
+            $this->situacao_model->fill();
 
-            $this->situacao_model->__set('situacao_pk', $this->input->post('situacao_pk'));
-            $this->get_dependents(); 
-        
-            $this->situacao_model->deactivate(); 
-
+            $this->begin_transaction();
+            $this->load->model('Servico_model', 'servico');
+            $this->situacao_model->deactivate($this->servico, 'get_dependents'); 
+            $this->end_transaction();
             $this->response->set_code(Response :: SUCCESS);
             $this->response->send();
 

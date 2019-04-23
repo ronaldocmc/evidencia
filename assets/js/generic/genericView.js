@@ -252,7 +252,6 @@ class GenericView {
 
         body === undefined ? rest = '' : rest = body;
 
-
         $('#dependences').html(
             `<p style="margin-top: 10px; font-weight: bold">${title}</p>` +
             `<p style="margin-top: 10px; font-weight: 300">${message}</p>` +
@@ -263,7 +262,7 @@ class GenericView {
     generateMessage(data) {
         let title, message, body;
 
-        if (data.dependeces == null || data.dependences.length === 0) {
+        if (data.dependences == null || data.dependences.length === 0) {
             title = 'Tudo certo!';
             message = 'Este recurso do sistema não possui dependencias e pode ser desativado!';
         } else {

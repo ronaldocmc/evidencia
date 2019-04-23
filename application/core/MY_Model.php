@@ -114,21 +114,36 @@ class MY_Model extends Generic_Model
         }
     }
 
-    public function deactivate()
+    public function deactivate($dependent_model = NULL, $model_method)
     {
-
         $this->object = $this->get_one('*', [$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
-        // var_dump($this->object);die();
         $this->check_if_key_exists('ativo', $this->object);
 
-        if ($this->object->ativo == 0) {
+        if ($this->object->ativo == 0)
+        {
             throw new MyException(
                 $this->getName() . ' já está desativado!',
                 Response::BAD_REQUEST
             );
-        } else {
+        }
+        else
+        {
             $field = $this->getPriIndex();
-            return $this->update_object(['ativo' => 0], $this->object->$field);
+            if ($dependent_model !== NULL) 
+            {
+                if ($this->check_dependences($dependent_model, $this->object->$field, $model_method)) 
+                {
+                    return $this->update_object(['ativo' => 0], $this->object->$field);
+                } 
+                else
+                {
+                    throw new MyException($this->getName() . " ainda possui dependentes", 403);
+                }
+            }
+            else
+            {
+                return $this->update_object(['ativo' => 0], $this->object->$field);
+            }
         }
     }
 
@@ -147,5 +162,12 @@ class MY_Model extends Generic_Model
             $field = $this->getPriIndex();
             return $this->update_object(['ativo' => 1], $this->object->$field);
         }
+    }
+
+    private function check_dependences($model, $pk, $method)
+    {
+        $dependents = $model->$method($pk);
+
+        return empty($dependents) ? true : false;
     }
 }
