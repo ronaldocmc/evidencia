@@ -194,4 +194,11 @@ class Funcionario_model extends MY_Model
         return $insert_setores;
     }
 
+    public function get_dependents($funcao)
+    {
+        $this->CI->db->select('funcionario_nome as name');
+        $this->CI->db->from('funcionarios');
+        $this->CI->db->where('funcao_fk', $funcao);
+        return $this->CI->db->get()->result();
+    }
 }
