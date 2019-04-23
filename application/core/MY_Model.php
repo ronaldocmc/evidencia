@@ -114,7 +114,7 @@ class MY_Model extends Generic_Model
         }
     }
 
-    public function deactivate($dependent_model = NULL, $model_method)
+    public function deactivate($dependent_model = NULL, $model_method = NULL)
     {
         $this->object = $this->get_one('*', [$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
         $this->check_if_key_exists('ativo', $this->object);
