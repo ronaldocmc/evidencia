@@ -99,5 +99,13 @@ class Tipo_Servico_model extends MY_Model
         $this->CI->db->where('departamento_fk', $departamento);
         return $this->CI->db->get()->result();
     }
+
+    public function get_dependents_prioridade($prioridade)
+    {
+        $this->CI->db->select('tipo_servico_nome as name');
+        $this->CI->db->from('tipos_servicos');
+        $this->CI->db->where('prioridade_padrao_fk', $prioridade);
+        return $this->CI->db->get()->result();
+    }
 }
 
