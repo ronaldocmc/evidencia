@@ -82,4 +82,12 @@ class Servico_model extends MY_Model
             'trim|required|is_natural'
         );
     }
+
+    public function get_dependents($situacao)
+    {
+        $this->CI->db->select('servico_nome as name');
+        $this->CI->db->from('servicos');
+        $this->CI->db->where('situacao_padrao_fk', $situacao);
+        return $this->CI->db->get()->result();
+    }
 }
