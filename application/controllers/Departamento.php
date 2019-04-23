@@ -81,7 +81,7 @@ class Departamento extends CRUD_Controller
         $response = new Response();
 
         $this->load->model('Tipo_Servico_model', 'tipo_servico');
-
+        
         $response->add_data('dependences', $this->tipo_servico->get_dependents($this->input->post('departamento_pk')));
         $response->add_data('dependence_type', 'tipos de serviço');
 
@@ -103,7 +103,8 @@ class Departamento extends CRUD_Controller
             $this->departamento->fill();
 
             $this->begin_transaction();
-            $this->departamento->deactivate();
+            $this->load->model('Tipo_Servico_model', 'tipo_servico');
+            $this->departamento->deactivate($this->tipo_servico, 'get_dependents');
             $this->end_transaction();
 
             $response = new Response();
