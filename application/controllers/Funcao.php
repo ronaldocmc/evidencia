@@ -106,33 +106,12 @@ class Funcao extends CRUD_Controller
 
         $this->load->model('funcionario_model', 'funcionario');
 
-        $funcionarios = $this->funcionario->get_all(
-            'funcionario_nome as name',
-            ['funcao_fk' => $this->input->post('funcao_pk')],
-            -1,
-            -1
-        );
+        $funcionarios = $this->funcionario->get_dependents($this->input->post('funcao_pk'));
 
         $response->add_data('dependences', $funcionarios);
         $response->add_data('dependence_type', 'funcionario');
 
         $response->send();
-    }
-
-    private function check_if_has_dependents()
-    {
-        $this->load->model('funcionario_model', 'funcionario');
-
-        $funcionarios = $this->funcionario->get_all(
-            'funcionario_pk',
-            ['funcao_fk' => $this->input->post('funcao_pk')],
-            -1,
-            -1
-        );
-
-        if (count($funcionarios) > 0) {
-            throw new MyException('Há funcionários com esta função', Response::FORBIDDEN);
-        }
     }
 
     public function deactivate()
@@ -143,10 +122,9 @@ class Funcao extends CRUD_Controller
             $this->funcao->run_form_validation();
             $this->funcao->fill();
 
-            $this->check_if_has_dependents();
-
             $this->begin_transaction();
-            $this->funcao->deactivate();
+            $this->load->model('Funcionario_model', 'funcionario');
+            $this->funcao->deactivate($this->funcionario, 'get_dependents');
             $this->end_transaction();
 
             $response = new Response();
