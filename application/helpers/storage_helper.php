@@ -32,7 +32,6 @@
  **/
 
 require_once 'vendor/autoload.php';
-require_once "./random_string.php";
 require_once APPPATH . "core/MyException.php";
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
@@ -43,7 +42,26 @@ use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
 
 $connectionString = "DefaultEndpointsProtocol=https;AccountName=" . getenv('ACCOUNT_NAME') . ";AccountKey=" . getenv('ACCOUNT_KEY');
 
-// Create blob client.
+/**
+ * Secure Random String Generator
+ * 
+ * Given a length and a keyspace, using a cryptographically secure 
+ * pseudorandom number generator (`random_int`) generates a random 
+ * string each time.
+ *
+ * @param int $length       Desired string size
+ * @param string $keyspace  All possible characters
+ * @return string
+ */
+function random_str($length, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+{
+    $pieces = [];
+    $max = mb_strlen($keyspace, '8bit') - 1;
+    for ($i = 0; $i < $length; ++$i) {
+        $pieces[] = $keyspace[random_int(0, $max)];
+    }
+    return implode('', $pieces);
+}
 
 function upload_to_storage($fileToUpload)
 {
