@@ -69,7 +69,7 @@ function initMap() {
     });
 
     function seleciona_imagem(prioridade) {
-        let imagem = '../assets/img/icons/Markers/Status/';
+        let imagem = './assets/img/icons/Markers/Status/';
 
         switch (prioridade) {
             case "1": {
