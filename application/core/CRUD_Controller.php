@@ -162,4 +162,9 @@ class CRUD_Controller extends AuthorizationController
             $this->db->trans_commit();
         }
     }
+
+    public function get_current_user()
+    {
+        return $this->session->user['email_user'];
+    }
 }
