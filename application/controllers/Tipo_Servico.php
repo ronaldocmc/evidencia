@@ -163,30 +163,6 @@ class Tipo_Servico extends CRUD_Controller
         $response->send();
     }
 
-    public function get_dependent_services()
-    {
-        $response = new Response();
-        $this->load->model('Servico_model', 'servico');
-
-        try {
-            $servicos = $this->servico->get_all(
-                'servicos.servico_nome',
-                ['servicos.tipo_servico_fk' => $this->input->post('tipo_servico_pk')],
-                -1,
-                -1
-            );
-
-            $response->set_code(Response::SUCCESS);
-            $response->set_data($servicos);
-            $response->send();
-
-        } catch (MyException $e) {
-            handle_my_exception($e);
-        } catch (Exception $e) {
-            handle_exception($e);
-        }
-    }
-
     public function deactivate()
     {
         try {
