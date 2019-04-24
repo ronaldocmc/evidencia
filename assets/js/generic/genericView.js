@@ -3,7 +3,8 @@ class GenericView {
     constructor() {
         this.state = {
             data: [],
-            tableFields: []
+            tableFields: [],
+            permissions: this.getPermissions()
         }
     }
 
@@ -63,7 +64,7 @@ class GenericView {
     }
 
     hasPermissions(action, controller) {
-        let permissions = this.getPermissions();
+        let permissions = this.state.permissions;
 
         let response = false;
 
