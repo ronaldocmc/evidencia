@@ -12,9 +12,11 @@ class GenericView {
         this.state.tableFields = tableFields;
         this.state.self = data.self;
         this.primaryKey = primaryKey;
-
+        
         this.conditionalRender();
         this.render(data.self);
+        $('.table-responsive').show();
+        $('#loading').hide();
     }
 
     render(data) {
