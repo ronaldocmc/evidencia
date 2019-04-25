@@ -369,7 +369,7 @@ class ViewController extends AuthorizationController
             0 => [
                 'src' => 'dashboard/administrador/'.$name.'/home',
                 'params' => [$plural => $data],
-            ],
+            ]
         ],'administrador');
     }
 
