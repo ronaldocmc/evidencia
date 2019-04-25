@@ -106,7 +106,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive table--no-card m-b-40">
+
+                        <div id="loading">
+                            <div align="center" class="center">
+                                <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                            </div>
+                        </div>
+                        <div class="table-responsive table--no-card m-b-40" style="display: none;">
                             <table id="funcoes" class="table table-striped table-datatable">
                                 <thead>
                                     <tr>
