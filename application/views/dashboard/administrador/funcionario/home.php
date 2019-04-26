@@ -28,8 +28,7 @@
                                         <p>Bem-vindo a área de Gerenciamento de Funcionários!</p><br>
                                         <p> Aqui você poderá realizar algumas operações para controlar os funcionários
                                             da sua organização!</p><br>
-                                        <p>Nesta área é possível registrar dados dos funcionários, como dados pessoais e
-                                            dados departamentais! É importante ressaltar que alguns dados são
+                                        <p>Nesta área é possível registrar dados dos funcionários. É importante ressaltar que alguns dados são
                                             obrigatórios e estão indicados com um asterisco <strong>(*)</strong>. <p>
                                                 Aqui, gerenciar os funcionários conforme seu departamento e função
                                                 dentro da organização, torna-se uma tarefa prática e segura!</p>
@@ -72,8 +71,19 @@
                                                         </div>
                                                     </button>
                                                 </div>
-                                                <div class="col-md-10 text-guide">Desativar um funcionário
-                                                    afastado/inativo</div>
+                                                <div class="col-md-10 text-guide">Desativar um funcionário</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" disabled="true"
+                                                        class="btn btn-sm btn-success reset_multistep" title="Editar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-lock fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Alterar a senha do funcionário
+                                                </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-2 icon-guide">
@@ -490,7 +500,7 @@
                 <h4 style="text-align: center" class="text-danger"><i
                         class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
                     ATENÇÃO</h4>
-                <p>Você está prestes a ativar um setor que foi desativado!</p>
+                <p>Você está prestes a ativar um funcionário que foi desativado!</p>
 
             </div>
             <div class="form-group d-none superusuario">
