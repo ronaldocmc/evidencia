@@ -34,24 +34,22 @@ function upload_img($params, array $base64_images)
             //Realizamos um tratamento específico caso as imagens sejam de uma ordem de serviço
             if ($params['is_os']) {
                 $final_path = tratament_for_os($params, $date) . '/' . $image_name;
-                // var_dump($final_path);
             } else {
                 $final_path = constant($params['path']) . $image_name;
             }
 
             //Criando e gravando o arquivo da imagem
             if (!file_put_contents($final_path, $image_file)) {
-                // roll_back($images_uploaded);
-                throw new MyException([
+                throw new MyException(
                     'Erro ao fazer upload da imagem:',
-                    Response::SERVER_FAIL,
-                ]);
+                    Response::SERVER_FAIL
+                );
             } else {
                 //Adicionando o caminho da última imagem armazenada
                 array_push($images_uploaded, $final_path);
             }
         }
-    }else{
+    } else {
         $images_uploaded = null;
     }
 
@@ -71,7 +69,6 @@ function tratament_for_os($params, $date)
         if (!mkdir($os_path, 0755, true)) {
             throw new MyException("Erro ao criar diretório para imagem(ns){$os_path}", 500);
         }
-
     }
 
     return $os_path;
