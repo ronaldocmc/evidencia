@@ -64,7 +64,7 @@
                                                         </div>
                                                     </button>
                                                 </div>
-                                                <div class="col-md-10 text-guide">Desativar departamento inativo</div>
+                                                <div class="col-md-10 text-guide">Desativar departamento</div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-2 icon-guide">
@@ -288,11 +288,7 @@
                 <h4 style="text-align: center" class="text-danger"><i
                         class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
                     ATENÇÃO</h4>
-                <p>Ao reativar um departamento, as seguintes ações também serão feitas:</p>
-                <ul style="margin-left: 15px">
-                    <li>Todas os tipos de serviços serão reativados também</li>
-                    <li>Toda ordem de serviço com estes tipos poderão ser registradas novamente</li>
-                </ul>
+                <p>Tem certeza que deseja reativar esse departamento?</p>
             </div>
             <div class="form-group d-none superusuario">
                 <input type="password" class="form-control press_enter" autocomplete="false"

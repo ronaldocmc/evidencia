@@ -14,23 +14,75 @@
                     <input type="hidden" name="opcao-editar" id="opcao-editar" value="false">
                     <div class="col-md-12 mt-3">
                         <div class="collapse" id="collapseHelp">
-                            <div class="card card-body">
-                                <p>Esta é a área para gerenciamento de serviços.</p>
-                                <p>O serviço representa a qual grupo específico uma determinada ordem de serviço
-                                    pertence.</p>
-                                <p>Se por exemplo, é necessário realizar uma coleta de cão morto, o serviço ao qual esta
-                                    ordem pertence é ao serviço coleta de animal.</p>
-                                <p>Para cadastro de um serviço, é necessário especificar o nome do serviço, uma breve
-                                    descrição de o que representa esse serviço, a situação padrão, que será atribuída
-                                    como padrão às ordens de serviço pertencente a esse serviço, e por fim, a qual tipo
-                                    de serviço este serviço pertence.</p>
-                                <p><b>Características:</b></p>
-                                <div class="col-md-12">
-                                    <ul>
-                                        <li>Facilita a geração de relatórios</li>
-                                        <li>Facilita que funcionários possam identificar grupos específicos de serviços
-                                            e tomar providências semelhantes</li>
-                                    </ul>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <h3>Guia do Usuário</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body card-user-guide">
+                                    <div class="col-md-6">
+                                        <p>Bem-vindo a área de Gerenciamento de Serviços!</p><br>
+                                        <p> Aqui você poderá realizar algumas operações para controlar os serviços
+                                            da sua organização.</p><br>
+                                        <p>Aqui você poderá nomear o serviço, escolhendo sua sigla para o código da Ordem de Serviço, selecionar seu Tipo de Serviço e sua Situação padrão.</p>
+                                    </div>
+                                    <div class="col-md-6 user-guide">
+                                        <p><b>Operações permitidas:</b></p>
+                                        <div class="col-md-12 functions-page">
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" disabled="true"
+                                                        class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-plus fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Inserir um serviço</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" disabled="true"
+                                                        class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-edit fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Editar serviço existente</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" class="btn btn-sm btn-danger" disabled="true"
+                                                        title="Desativar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-times fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Desativar serviço</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" class="btn btn-sm btn-success" disabled="true"
+                                                        title="Reativar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-power-off fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Ativar serviço novamente</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12>">
+                                                    <br>
+                                                    <p><strong>Qualquer dúvida entre em contato com o suporte na sua
+                                                            organização!</p></strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -279,7 +331,7 @@
                 <h4 style="text-align: center" class="text-danger"><i
                         class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
                     ATENÇÃO</h4>
-                <p>Você está prestes a ativar um setor que foi desativado!</p>
+                <p>Você está prestes a ativar um serviço que foi desativado!</p>
 
             </div>
             <div class="form-group d-none superusuario">

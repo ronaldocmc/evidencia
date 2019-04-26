@@ -57,7 +57,7 @@
                                                                 </div>
                                                             </button>
                                                         </div>
-                                                        <div class="col-md-10 text-guide">Desativar um setor inativo</div>
+                                                        <div class="col-md-10 text-guide">Desativar setor</div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-2 icon-guide">

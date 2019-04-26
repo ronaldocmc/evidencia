@@ -24,7 +24,8 @@
                                         <div class="col-md-6">
                                             <p>Bem-vindo a área de Gerenciamento de Funções!</p><br>
                                             <p> Aqui você poderá realizar algumas operações para controlar as funções da sua organização.</p><br>
-                                            <p>Organizamos as suas funções de modo que ele possua serviços específicos conforme um tipo de serviço definido. Assim, controlar a prestação de serviços da sua organização torna-se uma tarefa fácil e rápida! </p>
+                                            <p>Organizamos as suas funções de modo que ele possua serviços específicos conforme um tipo de serviço definido. Assim, controlar a prestação de serviços da sua organização torna-se uma tarefa fácil e rápida! </p><br>
+                                            <p>Além disso, você pode escolher as permissões que a função terá dentro do sistema.</p>
                                         </div>
                                         <div class="col-md-6 user-guide">
                                             <p><b>Operações permitidas:</b></p>
@@ -57,7 +58,7 @@
                                                                 </div>
                                                         </button>
                                                     </div>
-                                                    <div class="col-md-10 text-guide">Desativar funcao inativo</div>
+                                                    <div class="col-md-10 text-guide">Desativar funcao</div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-2 icon-guide">
@@ -299,7 +300,7 @@
                 <h4 style="text-align: center" class="text-danger"><i
                         class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
                     ATENÇÃO</h4>
-                <p>Você está prestes a ativar um setor que foi desativado!</p>
+                <p>Você está prestes a ativar uma função que foi desativada!</p>
 
             </div>
             <div class="form-group d-none superusuario">
