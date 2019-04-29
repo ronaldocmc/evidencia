@@ -35,12 +35,8 @@ require_once APPPATH.'core/MyException.php';
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
-use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
 use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
 use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
-
-// Set the connection string using enviroment variables
-$connectionString = 'DefaultEndpointsProtocol=https;AccountName='.getenv('AZURE_STORAGE_ACCOUNT').';AccountKey='.getenv('AZURE_STORAGE_KEY');
 
 /**
  * Secure Random String Generator.
@@ -64,72 +60,62 @@ function random_str($length, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzAB
 
     return implode('', $pieces);
 }
-
+/**
+ * Utility function to set container options.
+ *
+ * This function creates some container setup valçues, like the name and metadata.
+ * Returns an array with the container name and creation options;
+ *
+ * @return array
+ */
 function config_container_options()
 {
     // Create container options object.
     $createContainerOptions = new CreateContainerOptions();
-
-    // Set public access policy. Possible values are
-    // PublicAccessType::CONTAINER_AND_BLOBS and PublicAccessType::BLOBS_ONLY.
-    // CONTAINER_AND_BLOBS:
-    // Specifies full public read access for container and blob data.
-    // proxys can enumerate blobs within the container via anonymous
-    // request, but cannot enumerate containers within the storage account.
-    //
-    // BLOBS_ONLY:
-    // Specifies public read access for blobs. Blob data within this
-    // container can be read via anonymous request, but container data is not
-    // available. proxys cannot enumerate blobs within the container via
-    // anonymous request.
-    // If this value is not specified in the request, container data is
-    // private to the account owner.
-    $createContainerOptions->setPublicAccess(PublicAccessType::BLOBS_ONLY);
+    $createContainerOptions->setPublicAccess(PublicAccessType::BLOBS_ONLY); // Anonimous Read-Only for Blobs
 
     // Set container metadata.
     $createContainerOptions->addMetaData('key1', 'value1');
     $createContainerOptions->addMetaData('key2', 'value2');
 
-    $containerName = 'blobstorage'.random_str(16);
+    $containerName = 'blobstorage'.random_str(16); // random container name
 
-    return [$containerName, $createContainerOptions];
+    return ['name' => $containerName, 'options' => $createContainerOptions];
 }
 
-function get_current_date()
+/**
+ * Function to upload files to storage.
+ *
+ * This functions uploads a local file to the Azure Blob Storage.
+ * To upload, we must provide a container name and connect to the
+ * Azure Blob Service using the RESTClient, this is done using
+ * the connection string.
+ *
+ * After the upload is complete we must get the public url of that blob
+ *
+ * @param string $content
+ * @param string $blobName
+ *
+ * @return string Public URL for the uploaded blob
+ */
+function upload_to_storage(string $content, string $blobName)
 {
-    date_default_timezone_set('America/Sao_Paulo');
+    // Set the connection string using enviroment variables
+    $connectionString = 'DefaultEndpointsProtocol=https;AccountName='.getenv('AZURE_STORAGE_ACCOUNT').';AccountKey='.getenv('AZURE_STORAGE_KEY');
 
-    return date('Y-m-d');
-}
-
-function upload_to_storage($fileToUpload)
-{
     // Create blob client.
     $blobClient = BlobRestProxy::createBlobService($connectionString);
     $containerName = 'evidenciaimages';
     try {
-        // Getting local file so that we can upload it to Azure
-        $myfile = fopen($fileToUpload, 'w') or die('Unable to open file!');
-        fclose($myfile);
-
-        log_message('MONITORING', 'Uploading file '.$fileToUpload.' to Blob Storage...');
-
-        // Get the file content to upload
-        $content = fopen($fileToUpload, 'r');
-        // Generates the name of the file
-        $blobName = get_current_date().'/'.(hash(ALGORITHM_HASH, $params['id'].uniqid(rand(), true)).'.jpg');
+        log_message('MONITORING', 'Uploading file to Blob Storage...');
 
         //Upload blob
         $blobClient->createBlockBlob($containerName, $blobName, $content);
 
-        // List blobs.
-        $listBlobsOptions = new ListBlobsOptions();
-        $listBlobsOptions->setPrefix($fileToUpload);
+        // public URLS are [http|https]://[account-name].[endpoint-suffix(usually blob.core.windows.net]/[container-name]/[blob-name]
+        $blobUrl = 'https://'.getenv('AZURE_STORAGE_ACCOUNT').'.blob.core.windows.net/'.$containerName.'/'.$blobName;
 
-        $result = $blobClient->listBlobs($containerName, $listBlobsOptions);
-        foreach ($result->getBlobs() as $blob) {
-            $blobUrl = $blob->getUrl();
-        }
+        return $blobUrl;
     } catch (ServiceException $e) {
         $code = $e->getCode();
         $error_message = $e->getMessage();
