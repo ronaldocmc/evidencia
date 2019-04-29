@@ -1,6 +1,6 @@
 <?php
 
-require_once './storage_helper.php';
+require_once 'storage_helper.php';
 
 /**
  * Utility function to format current data.
@@ -41,7 +41,7 @@ function upload_img($params, array $base64_images)
             list($type, $image) = explode(';', $image);
             list(, $image) = explode(',', $image);
             //Decodificando o texto na base64
-            $image_file = base64_decode($image);
+            $image_content = base64_decode($image);
 
             //Realizamos um tratamento específico caso as imagens sejam de uma ordem de serviço
             if ($params['is_os']) {
@@ -51,7 +51,7 @@ function upload_img($params, array $base64_images)
             }
 
             try {
-                $blob_url = upload_to_storage($image_file, $blob_name);
+                $blob_url = upload_to_storage($image_content, $blob_name);
                 //Adicionando o caminho da última imagem armazenada
                 array_push($images_uploaded, $blob_url);
             } catch (Exception $e) {
