@@ -1,5 +1,7 @@
 <IfModule mod_rewrite.c>
 	SetEnv CI_ENV 'development'
+	SetEnv AZURE_STORAGE_ACCOUNT storageevidenciaimages
+	SetEnv AZURE_STORAGE_KEY Ha/FB5iguJmWDxhAziKSKMteohqt435/ODDYFjkeTMaWyAdNdJEL5ja3Hw1xqiWo80ajH6ClTkt/jc+QSa4KKA==
 	RewriteEngine on
 	RewriteCond $1 !^(index\.php|images|css|js|robots\.txt)
 	RewriteCond %{REQUEST_FILENAME} !-f

@@ -93,8 +93,8 @@ function config_container_options()
  *
  * After the upload is complete we must get the public url of that blob
  *
- * @param string $content
- * @param string $blobName
+ * @param string $content  File content in string form
+ * @param string $blobName Name/Path of the blob on Azure Storage
  *
  * @return string Public URL for the uploaded blob
  */
@@ -103,13 +103,13 @@ function upload_to_storage(string $content, string $blobName)
     // Set the connection string using enviroment variables
     $connectionString = 'DefaultEndpointsProtocol=https;AccountName='.getenv('AZURE_STORAGE_ACCOUNT').';AccountKey='.getenv('AZURE_STORAGE_KEY');
 
-    // Create blob client.
-    $blobClient = BlobRestProxy::createBlobService($connectionString);
-    $containerName = 'evidenciaimages';
     try {
-        log_message('MONITORING', 'Uploading file to Blob Storage...');
+        // Create blob client.
+        $blobClient = BlobRestProxy::createBlobService($connectionString);
+        $containerName = 'evidenciaimages';
 
-        //Upload blob
+        log_message('MONITORING', 'Uploading file to Blob Storage...');
+        // Upload blob
         $blobClient->createBlockBlob($containerName, $blobName, $content);
 
         // public URLS are [http|https]://[account-name].[endpoint-suffix(usually blob.core.windows.net]/[container-name]/[blob-name]
