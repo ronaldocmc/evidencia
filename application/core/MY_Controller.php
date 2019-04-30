@@ -50,7 +50,7 @@ class MY_Controller extends CI_Controller
     {
         $method = '';
 
-        log_message('monitoring', strtoupper($this->uri->segment(2)) . ' request on ' . $this->get_current_controller());
+        log_message('monitoring', strtoupper($this->uri->segment(2)) . ' request on ' . $this->uri->segment(1));
 
         //Se for POST e possuir mais um parametro na URL, redirecione para esse parametro
         if (is_post_request() && null !== $this->uri->segment(2) && $this->uri->segment(2) != "post") {
@@ -70,7 +70,7 @@ class MY_Controller extends CI_Controller
                 // var_dump($header_obj);die();
 
                 //Verifica o token e lá dentro cria um novo token
-                $new_token = verify_token($header_obj['Token'], $this->response);
+                $new_token = verify_token($header_obj[TOKEN], $this->response);
 
 
                 if ($new_token == false) {
