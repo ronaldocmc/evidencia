@@ -23,5 +23,5 @@ sendgrid.env
 # Sonarlint
 .sonarlint/
 
-#Composer lock file
+# Composer lock file
 composer.lock

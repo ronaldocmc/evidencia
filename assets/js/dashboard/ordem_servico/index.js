@@ -832,7 +832,7 @@ function initMap() {
         formData.append('situacao_atual_fk', parseInt($('#situacao_pk_historico').val()));
         formData.append('image_os', imagem);
 
-        var URL = base_url + '/ordem_servico/insert_situacao/' + ordens_servico[posicao_selecionada]['ordem_servico_pk'];
+        var URL = base_url + '/Ordem_Servico/insert_situacao/' + ordens_servico[posicao_selecionada]['ordem_servico_pk'];
         $.ajax({
             url: URL,
             method: "POST",
@@ -938,7 +938,7 @@ function initMap() {
         formData.append('img', imagem);
 
         // procedencia
-        var URL = base_url + '/ordem_servico/save';
+        var URL = base_url + '/Ordem_Servico/save';
         var ab, data_criacao;
 
         $.ajax({
@@ -976,7 +976,7 @@ function initMap() {
                 }
                 else if (response.code == 200) {
                     alerts('success', 'Sucesso', 'Operação realizada com sucesso');
-                    document.location.reload(false);
+                    document.location.reload(true);
                 }
 
             }, //Fecha success
@@ -1087,7 +1087,7 @@ function initMap() {
         var local = "";
 
         // $.get(
-        //     base_url + '/ordem_servico/local',
+        //     base_url + '/Ordem_Servico/local',
         //     { local_pk: ordens_servico[posicao_selecionada]['local_fk'] })
         //     .done(function (response) {
         //         if (response.code == 200) {
@@ -1179,7 +1179,7 @@ function initMap() {
                 }
         }
 
-        $.post(base_url + '/ordem_servico/deactivate', data).done(function (response) {
+        $.post(base_url + '/Ordem_Servico/deactivate', data).done(function (response) {
             btn_ativar($('#btn-desativar'));
             if (response.code == 200) {
                 alerts('success', 'Sucesso!', 'Ordem de Serviço desativada com sucesso');
@@ -1211,7 +1211,7 @@ function initMap() {
                 }
         }
 
-        $.post(base_url + '/ordem_servico/activate', data).done(function (response) {
+        $.post(base_url + '/Ordem_Servico/activate', data).done(function (response) {
             btn_ativar($('#btn-reativar'));
             if (response.code == 200) {
                 alerts('success', 'Sucesso!', 'Ordem de Serviço ativada com sucesso');
@@ -1321,7 +1321,7 @@ function initMap() {
     });
 
     $('#confirm_delete').click(function () {
-        var URL = base_url + '/ordem_servico/delete/' + ordens_servico[posicao_selecionada]['ordem_servico_pk'];
+        var URL = base_url + '/Ordem_Servico/delete/' + ordens_servico[posicao_selecionada]['ordem_servico_pk'];
         $.ajax({
             url: URL,
             method: "POST",
@@ -1368,7 +1368,7 @@ function initMap() {
     update_table = () => {
         var url = '';
         let filtro = null;
-        url = base_url + '/ordem_servico/filtro_tabela';
+        url = base_url + '/Ordem_Servico/filtro_tabela';
         
         filtro = { filtro: $('#filter-ativo').val() };
         pre_loader_show();
