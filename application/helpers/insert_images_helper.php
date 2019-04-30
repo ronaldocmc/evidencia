@@ -38,7 +38,7 @@ function upload_img($params, array $base64_images)
             $blob_name = get_current_date().'/'.(hash(ALGORITHM_HASH, $params['id'].uniqid(rand(), true)).'.jpg');
 
             //Recebemos uma imagem em base64, portanto e necessário remover o cabeçalho dela.
-            list($type, $image) = explode(';', $image);
+            list(, $image) = explode(';', $image);
             list(, $image) = explode(',', $image);
             //Decodificando o texto na base64
             $image_content = base64_decode($image);
