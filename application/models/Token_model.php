@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH."core\MY_Model.php";
+require_once APPPATH."core/MY_Model.php";
 
 class Token_model extends MY_Model {
     const NAME = 'token';
