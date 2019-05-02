@@ -25,32 +25,32 @@
                             <a class="js-arrow" href="#">
                             <i class="fas fa-edit"></i>Gerenciamento</a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-                                    <li class="departamento-menu d-none">
-                                        <a href="<?php echo base_url('departamento'); ?>">Departamentos</a>
-                                    </li>
-                                    <li class="setor-menu d-none">
-                                        <a href="<?php echo base_url('setor'); ?>">Setor</a>
-                                    </li>
-                                    <li class="funcionario-menu d-none">
-                                        <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
-                                    </li>
-                                    <li class="funcao-menu d-none">
-                                        <a href="<?php echo base_url('funcao'); ?>">Funções</a>
-                                    </li>
-                                    <li class="servico-menu d-none">
-                                        <a href="<?php echo base_url('servico'); ?>">Serviços</a>
-                                    </li>
+                                <li class="departamento-menu d-none">
+                                    <a href="<?php echo base_url('departamento'); ?>">Departamentos</a>
+                                </li>
+                                <li class="setor-menu d-none">
+                                    <a href="<?php echo base_url('setor'); ?>">Setor</a>
+                                </li>
+                                <li class="funcionario-menu d-none">
+                                    <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
+                                </li>
+                                <li class="funcao-menu d-none">
+                                    <a href="<?php echo base_url('funcao'); ?>">Funções</a>
+                                </li>
+                                <li class="tipo_servico-menu d-none">
+                                    <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
+                                </li>
+                                <li class="servico-menu d-none">
+                                    <a href="<?php echo base_url('servico'); ?>">Serviços</a>
+                                </li>
+                                <?php if(SHOW_HIDE_MENU): ?>
                                     <li class="prioridade-menu d-none">
                                         <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
                                     </li>
                                     <li class="situacoes-menu d-none">
                                         <a href="<?php echo base_url('situacao'); ?>">Situações</a>
                                     </li>
-                                        <?php if(SHOW_HIDE_MENU): ?>
-                                        <li class="tipo-servico-menu d-none">
-                                            <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
-                                        </li>
-                                        <?php endif; ?>
+                                <?php endif; ?>
 
                                 <li class="ordem_servico-menu d-none">
                                     <a href="<?php echo base_url('ordem_servico'); ?>">Ordens de Serviço</a>
@@ -119,32 +119,32 @@
                             <a class="js-arrow" href="#">
                             <i class="fas fa-edit"></i>Gerenciamento</a>
                             <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                    <li class="departamento-menu d-none">
-                                        <a href="<?php echo base_url('departamento'); ?>">Departamentos</a>
-                                    </li>
-                                    <li class="setor-menu d-none">
-                                        <a href="<?php echo base_url('setor'); ?>">Setor</a>
-                                    </li>
-                                    <li class="funcionario-menu d-none">
-                                        <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
-                                    </li>
-                                    <li class="funcao-menu d-none">
-                                        <a href="<?php echo base_url('funcao'); ?>">Funções</a>
-                                    </li>
-                                    <li class="servico-menu d-none">
-                                        <a href="<?php echo base_url('servico'); ?>">Serviços</a>
-                                    </li>
+                                <li class="departamento-menu d-none">
+                                    <a href="<?php echo base_url('departamento'); ?>">Departamentos</a>
+                                </li>
+                                <li class="setor-menu d-none">
+                                    <a href="<?php echo base_url('setor'); ?>">Setor</a>
+                                </li>
+                                <li class="funcionario-menu d-none">
+                                    <a href="<?php echo base_url('funcionario'); ?>">Funcionários</a>
+                                </li>
+                                <li class="funcao-menu d-none">
+                                    <a href="<?php echo base_url('funcao'); ?>">Funções</a>
+                                </li>
+                                <li class="tipo_servico-menu d-none">
+                                    <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
+                                </li>
+                                <li class="servico-menu d-none">
+                                    <a href="<?php echo base_url('servico'); ?>">Serviços</a>
+                                </li>
+                                <?php if(SHOW_HIDE_MENU): ?>
                                     <li class="prioridade-menu d-none">
                                         <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
                                     </li>
                                     <li class="situacao-menu d-none">
                                         <a href="<?php echo base_url('situacao'); ?>">Situações</a>
                                     </li>
-                                    <?php if(SHOW_HIDE_MENU): ?>
-                                        <li class="tipo-servico-menu d-none">
-                                            <a href="<?php echo base_url('tipo_servico'); ?>">Tipos de Serviços</a>
-                                        </li>
-                                    <?php endif; ?>
+                                <?php endif; ?>
                                 <li class="ordem_servico-menu d-none">
                                     <a href="<?php echo base_url('Ordem_Servico'); ?>">Ordens de Serviço</a>
                                 </li>

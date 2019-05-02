@@ -21,9 +21,9 @@ class Servico extends CRUD_Controller
 
         date_default_timezone_set('America/Sao_Paulo');
 
-        $this->load->model('situacao_model');
-        $this->load->model('tipo_servico_model');
-        $this->load->model('servico_model');
+        $this->load->model('Situacao_model', 'situacao_model');
+        $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
+        $this->load->model('Servico_model', 'servico_model');
         $this->load->helper('exception');
         $this->load->library('form_validation');
         $this->response = new Response();
