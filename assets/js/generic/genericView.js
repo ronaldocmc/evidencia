@@ -91,7 +91,7 @@ class GenericView {
                     'departamento', 'setor', 'funcionario', 
                     'funcao', 'servico', 'prioridade', 
                     'situacao', 'ordem_servico', 'mapa',
-                    'relatorio'
+                    'relatorio', 'tipo_servico'
                 ]
             },
             {
@@ -290,6 +290,7 @@ class GenericView {
                 ${option[optionName]}
                 </option>`;
         });
+        
         $(`#${id}`).html(render);
     }
 
