@@ -66,6 +66,7 @@ $route['setor'] = 'ViewController/index/setor';
 $route['funcionario'] = 'ViewController/index/funcionario';
 $route['funcao'] = 'ViewController/index/funcao';
 $route['servico'] = 'ViewController/index/servico';
+$route['tipo_servico'] = 'ViewController/index/tipo_servico';
 $route['prioridade'] = 'ViewController/index/prioridade';
 $route['situacao'] = 'ViewController/index/situacao';
 $route['relatorio'] = 'ViewController/listar_relatorios';
