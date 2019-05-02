@@ -12,9 +12,8 @@ class GenericControl {
 
     async init() {
 
-        this.data = await this.myRequests.init()
+        this.data = await this.myRequests.init();
         this.myView.init(this.data, this.tableFields, this.primaryKey);
-
 
         // Send request
         $(document).on('click', '.submit', () => { this.save() });
