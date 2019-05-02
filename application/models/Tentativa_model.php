@@ -16,4 +16,12 @@ class Tentativa_model extends MY_Model {
         'tentativa_ip',
         'tentativa_tempo',
     );
+
+    public function delete_ip($ip_address)
+    {
+    	$this->CI->db->delete(
+    		'tentativas_login',
+    		['tentativa_ip' => $ip_address]
+    	);
+    }
 }
