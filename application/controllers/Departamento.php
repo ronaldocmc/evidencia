@@ -61,7 +61,8 @@ class Departamento extends CRUD_Controller
         }
     }
 
-    public function get(){
+    public function get()
+    {
         $response = new Response();
 
         $departamentos = $this->departamento->get_all(
