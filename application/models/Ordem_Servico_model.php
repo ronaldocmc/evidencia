@@ -24,7 +24,7 @@ class Ordem_Servico_model extends MY_Model
         'ordem_servico_comentario'
     );
 
-    public function get_home($organization, $where = null)
+    public function get_home($organization, $where = null, $limit = null)
     {
         $this->CI->db->select('
             ordens_servicos.ordem_servico_pk,
@@ -87,8 +87,13 @@ class Ordem_Servico_model extends MY_Model
             }
         }
 
+        if ($limit !== null) 
+        {
+            $this->CI->db->limit($limit);
+        }
+
         $this->CI->db->order_by('ordens_servicos.ordem_servico_pk', 'DESC');
-        // echo $this->CI->db->get_compiled_select(); die();
+
         $result = $this->CI->db->get()->result();
         return $result;
     }
