@@ -6,11 +6,11 @@ if (!defined('BASEPATH')) {
 
 require_once dirname(__FILE__) . "/Response.php";
 
-require_once APPPATH . "core/CRUD_Controller.php";
+require_once APPPATH . "core\CRUD_Controller.php";
 
-require_once APPPATH . "models/Ordem_Servico_model.php";
+require_once APPPATH . "models\Ordem_Servico_model.php";
 
-require_once APPPATH . "core/MyException.php";
+require_once APPPATH . "core\MyException.php";
 
 class Ordem_Servico extends CRUD_Controller
 {
@@ -44,7 +44,7 @@ class Ordem_Servico extends CRUD_Controller
 
     public function index()
     {
-        $ordens_servico = $this->ordem_servico->get_home($this->session->user['id_organizacao'], null, 100);
+        $ordens_servico = $this->ordem_servico->get_home($this->session->user['id_organizacao']);
 
         $imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao']);
 
