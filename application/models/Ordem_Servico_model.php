@@ -87,12 +87,12 @@ class Ordem_Servico_model extends MY_Model
             }
         }
 
+        $this->CI->db->order_by('ordens_servicos.ordem_servico_pk', 'DESC');
+
         if ($limit !== null) 
         {
             $this->CI->db->limit($limit);
         }
-
-        $this->CI->db->order_by('ordens_servicos.ordem_servico_pk', 'DESC');
 
         $result = $this->CI->db->get()->result();
         return $result;
