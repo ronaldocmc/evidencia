@@ -7,9 +7,10 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de departamentos
                         </h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Novo departamento" data-contentid="save"
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal" data-title="Novo departamento" data-contentid="save"
                             data-target="#modal">
-                            <i class="zmdi zmdi-plus"></i>novo departamento</button>
+                            <i class="zmdi zmdi-plus"></i>novo departamento
+                        </button>
                     </div>
                     <input type="hidden" name="opcao-editar" id="opcao-editar" value="false">
                     <div class="col-md-12 mt-3">
@@ -63,7 +64,7 @@
                                                         </div>
                                                     </button>
                                                 </div>
-                                                <div class="col-md-10 text-guide">Desativar departamento inativo</div>
+                                                <div class="col-md-10 text-guide">Desativar departamento</div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-2 icon-guide">
@@ -118,7 +119,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive table--no-card m-b-40">
+                        <div id="loading">
+                            <div align="center" class="center">
+                                <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                            </div>
+                        </div>
+                        <div class="table-responsive table--no-card m-b-40" style="display: none;">
                             <table id="departamentos" class="table table-striped table-datatable">
                                 <thead>
                                     <tr>
@@ -285,11 +291,7 @@
                 <h4 style="text-align: center" class="text-danger"><i
                         class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
                     ATENÇÃO</h4>
-                <p>Ao reativar um departamento, as seguintes ações também serão feitas:</p>
-                <ul style="margin-left: 15px">
-                    <li>Todas os tipos de serviços serão reativados também</li>
-                    <li>Toda ordem de serviço com estes tipos poderão ser registradas novamente</li>
-                </ul>
+                <p>Tem certeza que deseja reativar esse departamento?</p>
             </div>
             <div class="form-group d-none superusuario">
                 <input type="password" class="form-control press_enter" autocomplete="false"

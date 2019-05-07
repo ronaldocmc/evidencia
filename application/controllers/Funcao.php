@@ -13,62 +13,11 @@ class Funcao extends CRUD_Controller
         $this->load->model('funcao_model', 'funcao');
     }
 
-    public function load()
+    private function load()
     {
         $this->load->library('form_validation');
 
         $this->load->helper('exception');
-    }
-
-    public function index()
-    {
-
-        //CSS para funcaos
-        $this->session->set_flashdata('css', [
-            0 => base_url('assets/css/modal_desativar.css'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            3 => base_url('assets/css/user_guide.css'),
-        ]);
-
-        //CSS para funcaos
-        $this->session->set_flashdata('scripts', [
-            0 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            2 => base_url('assets/vendor/datatables/datatables.min.js'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            4 => base_url('assets/js/utils.js'),
-            5 => base_url('assets/js/constants.js'),
-            6 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            7 => base_url('assets/js/dashboard/funcao/index.js'),
-            8 => base_url('assets/js/response_messages.js'),
-        ]);
-
-        load_view([
-            0 => [
-                'src' => 'dashboard/administrador/funcoes/home',
-                'params' => null,
-            ],
-        ], 'administrador');
-
-    }
-
-    public function get()
-    {
-        $response = new Response();
-
-        $funcoes = $this->funcao->get_all(
-            '*',
-            [
-                'organizacao_fk' => $this->session->user['id_organizacao'],
-            ],
-            -1,
-            -1
-        );
-
-        $response->add_data('self', $funcoes);
-
-        $response->send();
     }
 
     public function save()
@@ -98,9 +47,19 @@ class Funcao extends CRUD_Controller
                 $this->update();
             } else {
                 $response->set_data(['id' => $this->funcao->insert()]);
+
+                if ($this->input->post('permissions') !== null) 
+                {
+                    $this->load->model('Permissao_model', 'permissao');
+                    $this->insert_permissions($response->data['id']);
+                }
             }
 
             $this->end_transaction();
+
+            $this->load->library('Authorization');
+            $library = new Authorization();
+            $library->refresh_permissions_in_memory();
 
             $response->set_code(Response::SUCCESS);
             $response->send();
@@ -116,6 +75,29 @@ class Funcao extends CRUD_Controller
     {
         $this->funcao->__set('funcao_pk', $this->input->post('funcao_pk'));
         $this->funcao->update();
+
+        $this->load->model('Permissao_model', 'permissao');
+        $this->permissao->delete_permissions($this->input->post('funcao_pk'));
+
+        if ($this->input->post('permissions') !== null) 
+        {
+            $this->insert_permissions($this->input->post('funcao_pk'));
+        }
+    }
+
+    public function get(){
+        $response = new Response();
+
+        $funcoes = $this->funcao->get_all(
+            '*, funcoes.ativo as ativo',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1
+        );
+
+        $response->add_data('self', $funcoes);
+
+        $response->send();
     }
 
     public function get_dependents()
@@ -124,33 +106,12 @@ class Funcao extends CRUD_Controller
 
         $this->load->model('funcionario_model', 'funcionario');
 
-        $funcionarios = $this->funcionario->get_all(
-            'funcionario_nome as name',
-            ['funcao_fk' => $this->input->post('funcao_pk')],
-            -1,
-            -1
-        );
+        $funcionarios = $this->funcionario->get_dependents($this->input->post('funcao_pk'));
 
         $response->add_data('dependences', $funcionarios);
         $response->add_data('dependence_type', 'funcionario');
 
         $response->send();
-    }
-
-    private function check_if_has_dependents()
-    {
-        $this->load->model('funcionario_model', 'funcionario');
-
-        $funcionarios = $this->funcionario->get_all(
-            'funcionario_pk',
-            ['funcao_fk' => $this->input->post('funcao_pk')],
-            -1,
-            -1
-        );
-
-        if (count($funcionarios) > 0) {
-            throw new MyException('Há funcionários com esta função', Response::FORBIDDEN);
-        }
     }
 
     public function deactivate()
@@ -161,10 +122,9 @@ class Funcao extends CRUD_Controller
             $this->funcao->run_form_validation();
             $this->funcao->fill();
 
-            $this->check_if_has_dependents();
-
             $this->begin_transaction();
-            $this->funcao->deactivate();
+            $this->load->model('Funcionario_model', 'funcionario');
+            $this->funcao->deactivate($this->funcionario, 'get_dependents');
             $this->end_transaction();
 
             $response = new Response();
@@ -182,6 +142,7 @@ class Funcao extends CRUD_Controller
     public function activate()
     {
         try {
+            log_message('monitoring', 'USER '.$this->get_current_user().' Atempt to activate ' . $this->get_current_controller());
             $this->load();
             $this->funcao->config_form_validation_primary_key();
             $this->funcao->run_form_validation();
@@ -197,9 +158,58 @@ class Funcao extends CRUD_Controller
             $response->send();
 
         } catch (MyException $e) {
+            log_message('monitoring', $this->get_current_controller().' activation failed');
             handle_my_exception($e);
         } catch (Exception $e) {
             handle_exception($e);
         }
+    }
+
+    public function get_all_permissions()
+    {
+        $this->load->library('Authorization');
+        $authorization = new Authorization();
+        $response = new Response();
+
+        try {
+            if ($this->input->post('funcao') !== null) 
+            {
+                $permissions = $authorization->return_permissions($this->input->post('funcao'));
+            }
+            else
+            {
+                $permissions = $authorization->get_all_permissions();             
+            }
+
+            $response->add_data('permissions', $permissions);
+            $response->send();
+        
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    private function insert_permissions($funcao_pk)
+    {
+        $permission_data = $this->create_permission_batch($funcao_pk, $this->input->post('permissions'));
+
+        $this->permissao->insert_many($permission_data);
+    }
+
+    private function create_permission_batch($funcao_fk, $permissions)
+    {
+        $batch = [];
+
+        foreach ($permissions as $p) 
+        {
+            $batch[] = [
+                'funcao_fk' => $funcao_fk,
+                'permissao_fk' => $p
+            ];
+        }
+
+        return $batch;
     }
 }

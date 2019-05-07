@@ -7,7 +7,7 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de setores
                         </h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Novo Setor" data-contentid="save"
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal" data-title="Novo Setor" data-contentid="save"
                             data-target="#modal">
                             <i class="zmdi zmdi-plus"></i>novo setor</button>
                     </div>
@@ -57,7 +57,7 @@
                                                                 </div>
                                                             </button>
                                                         </div>
-                                                        <div class="col-md-10 text-guide">Desativar um setor inativo</div>
+                                                        <div class="col-md-10 text-guide">Desativar setor</div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-2 icon-guide">
@@ -106,7 +106,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive table--no-card m-b-40">
+                        <div id="loading">
+                            <div align="center" class="center">
+                                <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                            </div>
+                        </div>
+                        <div class="table-responsive table--no-card m-b-40" style="display: none;">
                             <table id="setores" class="table table-striped table-datatable">
                                 <thead>
                                     <tr>

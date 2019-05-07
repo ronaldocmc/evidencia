@@ -38,7 +38,7 @@ class FeedBackWS extends MY_Controller
 		  $headers = apache_request_headers();
 
   		$retorno = $this->mensagens_model->insert([
-  			'funcionario_fk' => get('id_funcionario', $headers['Token']),
+  			'funcionario_fk' => get('id_funcionario', $headers[TOKEN]),
   			'mensagem_texto' => $obj->mensagem_texto
   		]);
 

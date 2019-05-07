@@ -1,3 +1,15 @@
+class View extends GenericView {
+
+    constructor() {
+        super();
+    }
+
+}
+
+const myView = new View();
+
+myView.renderMenu();
+
 const google = "6LfwtV4UAAAAANnXXJhkM87IgNRNQghpwW467CEc"; //REFATORAR PARA CONSTANTES
 
 

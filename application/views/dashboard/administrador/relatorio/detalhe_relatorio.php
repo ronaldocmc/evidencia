@@ -14,7 +14,7 @@
                         Opções
                       </button>
                       <div class="dropdown-menu">
-                        <a class="dropdown-item" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk) ?>">
+                        <a class="dropdown-item imprimir_relatorio d-none" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk) ?>">
                             Imprimir relatório
                         </a>
                         <?php if ($relatorio->relatorio_situacao == 'Criado'): ?>
@@ -24,11 +24,11 @@
                             </a>
                         <?php endif ?>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#d-relatorio">
+                        <a class="dropdown-item imprimir_relatorio d-none" href="#" data-toggle="modal" data-target="#d-relatorio">
                             Destruir relatório
                         </a>
                         <?php if ($relatorio->relatorio_situacao == 'Em andamento'): ?>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#restaurar_os">
+                            <a class="dropdown-item receive_report d-none" href="#" data-toggle="modal" data-target="#restaurar_os">
                                 Receber relatório
                             </a>  
                         <?php endif ?>

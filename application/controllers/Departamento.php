@@ -21,39 +21,6 @@ class Departamento extends CRUD_Controller
         $this->load->helper('exception');
     }
     
-
-    public function index()
-    {
-        //CSS para departamentos
-        $this->session->set_flashdata('css', [
-            0 => base_url('assets/css/modal_desativar.css'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            3 => base_url('assets/css/user_guide.css'),
-        ]);
-
-        //CSS para departamentos
-        $this->session->set_flashdata('scripts', [
-            0 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            2 => base_url('assets/vendor/datatables/datatables.min.js'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            4 => base_url('assets/js/utils.js'),
-            5 => base_url('assets/js/constants.js'),
-            6 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            7 => base_url('assets/js/dashboard/departamento/index.js'),
-            8 => base_url('assets/js/response_messages.js'),
-        ]);
-
-        load_view([
-            0 => [
-                'src' => 'dashboard/administrador/departamento/home',
-                'params' => null
-            ],
-        ], 'administrador');
-
-    }
-
     public function save()
     {
         $response = new Response();
@@ -94,7 +61,8 @@ class Departamento extends CRUD_Controller
         }
     }
 
-    public function get(){
+    public function get()
+    {
         $response = new Response();
 
         $departamentos = $this->departamento->get_all(
@@ -114,7 +82,7 @@ class Departamento extends CRUD_Controller
         $response = new Response();
 
         $this->load->model('Tipo_Servico_model', 'tipo_servico');
-
+        
         $response->add_data('dependences', $this->tipo_servico->get_dependents($this->input->post('departamento_pk')));
         $response->add_data('dependence_type', 'tipos de serviço');
 
@@ -136,7 +104,8 @@ class Departamento extends CRUD_Controller
             $this->departamento->fill();
 
             $this->begin_transaction();
-            $this->departamento->deactivate();
+            $this->load->model('Tipo_Servico_model', 'tipo_servico');
+            $this->departamento->deactivate($this->tipo_servico, 'get_dependents');
             $this->end_transaction();
 
             $response = new Response();

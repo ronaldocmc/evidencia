@@ -4,13 +4,13 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core\Response.php";
+require_once APPPATH . "core/Response.php";
 
-require_once APPPATH . "core\CRUD_Controller.php";
+require_once APPPATH . "core/CRUD_Controller.php";
 
-require_once APPPATH . "models\Ordem_Servico_model.php";
+require_once APPPATH . "models/Ordem_Servico_model.php";
 
-require_once APPPATH . "core\MyException.php";
+require_once APPPATH . "core/MyException.php";
 
 class Ordem_Servico extends CRUD_Controller
 {
@@ -82,8 +82,8 @@ class Ordem_Servico extends CRUD_Controller
 
         return $where;
     }
-    public function filtro_tabela()
-    {
+    
+    public function filtro_tabela(){
 
         try {
 

@@ -7,29 +7,86 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de prioridades
                         </h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Nova Prioridade" data-contentid="save"
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal" data-title="Nova Prioridade" data-contentid="save"
                             data-target="#modal">
                             <i class="zmdi zmdi-plus"></i>nova prioridade</button>
                     </div>
                     <input type="hidden" name="opcao-editar" id="opcao-editar" value="false">
                     <div class="col-md-12 mt-3">
-                                <div class="collapse" id="collapseHelp">
-                                    <div class="card card-body">
-                                        <p>Esta é a área para o gerenciamento de prioridades.</p>
-                                        <p>As prioridades tem como objetivo atribuir um nome a um prazo a ser cumprido. </p>
-                                        <p>Se por exemplo, em sua empresa quando algo é urgente o prazo é no máximo três horas, você pode estar criando através desta área.</p>
-                                        <p>Através disso, é possível que o sistema possa identificar ordens de serviços que não foram cumpridas dentro do prazo.</p>
-                                        <p><b>Características:</b></p>
-                                        <div class="col-md-12">
-                                            <ul>
-                                                <li>Facilita que o sistema identifique ordens de serviços que não foram cumpridas dentro do prazo</li>
-                                                <li>Possibilita que diferentes prioridades sejam criadas, podendo se ter uma maior personalização</li>
-                                                
-                                            </ul>
+                        <div class="collapse" id="collapseHelp">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <h3>Guia do Usuário</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body card-user-guide">
+                                    <div class="col-md-6">
+                                        <p>Bem-vindo a área de Gerenciamento de Prioridades!</p><br>
+                                        <p> Aqui você poderá realizar algumas operações para controlar as prioridades
+                                            da sua organização.</p><br>
+                                        <p>Prioridades servem para que a urgência atribuída à Ordens de Serviço sejam diferentes. Além disso, são exibidas de cores diferentes no mapa.</p>
+                                    </div>
+                                    <div class="col-md-6 user-guide">
+                                        <p><b>Operações permitidas:</b></p>
+                                        <div class="col-md-12 functions-page">
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" disabled="true"
+                                                        class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-plus fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Inserir uma prioridade</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" disabled="true"
+                                                        class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-edit fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Editar prioridade existente</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" class="btn btn-sm btn-danger" disabled="true"
+                                                        title="Desativar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-times fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Desativar prioridade</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" class="btn btn-sm btn-success" disabled="true"
+                                                        title="Reativar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-power-off fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Ativar prioridade novamente</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12>">
+                                                    <br>
+                                                    <p><strong>Qualquer dúvida entre em contato com o suporte na sua
+                                                            organização!</p></strong>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row py-2">
@@ -56,7 +113,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive table--no-card m-b-40">
+                        <div id="loading">
+                            <div align="center" class="center">
+                                <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                            </div>
+                        </div>
+                        <div class="table-responsive table--no-card m-b-40" style="display: none;">
                             <table id="prioridades" class="table table-striped table-datatable">
                                 <thead>
                                     <tr>
@@ -223,7 +285,7 @@
                 <h4 style="text-align: center" class="text-danger"><i
                         class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
                     ATENÇÃO</h4>
-                <p>Você está prestes a ativar um setor que foi desativado!</p>
+                <p>Você está prestes a ativar uma prioridade que foi desativada!</p>
 
             </div>
             <div class="form-group d-none superusuario">

@@ -5,9 +5,9 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">Gerenciamento de Relatórios</h2>
-                        <a class="au-btn au-btn-icon au-btn--blue reset_multistep new" href="<?= base_url('Relatorio/novo_relatorio') ?>"> Novo Relatório
+                        <a class="au-btn au-btn-icon au-btn--blue reset_multistep new_report d-none" href="<?= base_url('relatorio/novo') ?>"> Novo Relatório
                         </a>
-                        <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo" data-toggle="modal" data-target="#restaurar_os"> 
+                        <button class="au-btn au-btn-icon au-btn--blue reset_multistep receive_report d-none" data-toggle="modal" data-target="#restaurar_os"> 
                             Receber Relatórios
                         </button>
                     </div>
@@ -141,7 +141,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a class="btn btn-sm btn-primary" href="<?= base_url('relatorio/detalhes/'.$r->relatorio_pk) ?>">
+                                                            <a class="btn btn-sm btn-primary report_detail d-none" href="<?= base_url('relatorio/detalhes/'.$r->relatorio_pk) ?>">
                                                                    <div class="d-none d-sm-block">
                                                                        Detalhes
                                                                    </div>
@@ -160,7 +160,7 @@
                                                                    </div>
                                                                </a>
                                                                 <?php else:?>
-                                                               <a class="btn btn-sm btn-success" target="_blank" href="<?= base_url('relatorio/imprimir/'.$r->relatorio_pk) ?>">
+                                                               <a class="btn btn-sm btn-success imprimir_relatorio d-none" target="_blank" href="<?= base_url('relatorio/imprimir/'.$r->relatorio_pk) ?>">
                                                                    <div class="d-none d-sm-block">
                                                                        Imprimir
                                                                    </div>

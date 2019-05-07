@@ -45,6 +45,7 @@ login_send = (e, s) => {
     wich_alert(response);
     pre_loader_hide();
     if (response.code == 200) {
+      await localStorage.setItem('permissions', response.data.permissions);
       await localStorage.setItem('is_superusuario', response.data.superusuario);
       window.location.reload();
     }
@@ -59,14 +60,17 @@ email_send = (email) => {
   //Solicitando autenticação recaptcha para o usuário (Não sou robo).
   // grecaptcha.execute(google, { action: 'homepage' }).then(function (token) {
   // t = token;
-
+    
   //Enviando os dados via post (AJAX)
-  $.post(base_url + '/contact/restore_password', { email, 'g-recaptcha-response': true }).done(function (response) {
-    wich_alert(response);
-  }, "json");
-
-  // });
-
+   $.post(base_url+'/contact/restore_password', { email }).done(function (response) {
+      console.log(response);
+      if(response.code == 200 || response.code == 202){
+        alerts_access('success_email');
+      }else{
+        alerts_access('failed_email');
+      }
+      
+    }, "json");
 }
 
 var noty_id = 0;

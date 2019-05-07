@@ -4,7 +4,7 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core\MY_Model.php";
+require_once APPPATH . "core/MY_Model.php";
 
 class Situacao_model extends MY_Model
 {
@@ -17,7 +17,8 @@ class Situacao_model extends MY_Model
         'situacao_pk',
         'situacao_nome',
         'situacao_descricao',
-        'organizacao_fk'
+        'organizacao_fk',
+        'ativo'
     );
 
     function config_form_validation()

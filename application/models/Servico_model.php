@@ -2,7 +2,7 @@
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core\MY_Model.php";
+require_once APPPATH . "core/MY_Model.php";
 
 class Servico_model extends MY_Model
 {
@@ -81,5 +81,13 @@ class Servico_model extends MY_Model
             'Situação Padrão',
             'trim|required|is_natural'
         );
+    }
+
+    public function get_dependents($situacao)
+    {
+        $this->CI->db->select('servico_nome as name');
+        $this->CI->db->from('servicos');
+        $this->CI->db->where('situacao_padrao_fk', $situacao);
+        return $this->CI->db->get()->result();
     }
 }

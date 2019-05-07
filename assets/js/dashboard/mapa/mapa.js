@@ -1,3 +1,9 @@
+const view = new GenericView();
+
+// view.renderMenu();
+view.conditionalRender();
+
+
 var main_map;
 var main_marker = null;
 var markers = null;
@@ -63,7 +69,7 @@ function initMap() {
     });
 
     function seleciona_imagem(prioridade) {
-        let imagem = '../assets/img/icons/Markers/Status/';
+        let imagem = './assets/img/icons/Markers/Status/';
 
         switch (prioridade) {
             case "1": {

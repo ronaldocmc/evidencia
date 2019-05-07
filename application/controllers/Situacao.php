@@ -5,7 +5,7 @@ if (!defined('BASEPATH')) {
 
 require_once APPPATH . "core/Response.php";
 
-require_once APPPATH . "core\CRUD_Controller.php";
+require_once APPPATH . "core/CRUD_Controller.php";
 
 class Situacao extends CRUD_Controller
 {
@@ -24,45 +24,7 @@ class Situacao extends CRUD_Controller
 
     }
 
-    public function index()
-    {
-
-        $situacoes = $this->situacao_model->get_all(
-            '*',
-            ['situacoes.organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
-
-        $this->session->set_flashdata('css', [
-            0 => base_url('assets/css/modal_desativar.css'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/css/loading_input.css'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-        ]);
-
-        $this->session->set_flashdata('scripts', [
-            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            2 => base_url('assets/js/masks.js'),
-            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            4 => base_url('assets/vendor/datatables/datatables.min.js'),
-            5 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            6 => base_url('assets/js/utils.js'),
-            7 => base_url('assets/js/constants.js'),
-            8 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            9 => base_url('assets/js/dashboard/situacao/index.js'),
-            10 => base_url('assets/vendor/select-input/select-input.js'),
-        ]);
-
-        load_view([
-            0 => [
-                'src' => 'dashboard/administrador/situacao/home',
-                'params' => ['situacoes' => $situacoes],
-            ],
-        ], 'administrador');
-    }
-
+    
     /**
      * Função responsável por criar ou editar uma situação
      *
@@ -71,14 +33,10 @@ class Situacao extends CRUD_Controller
      * @return Objeto Response
      */
 
-    public function insert_update()
+    public function save()
     {
         try {
-
-            // if ($this->is_superuser()) {
-            //     $this->add_password_to_form_validation();
-            // }
-
+            
             $this->situacao_model->config_form_validation();
             $this->situacao_model->run_form_validation();
 
@@ -106,27 +64,31 @@ class Situacao extends CRUD_Controller
         }
     }
 
-    public function get_dependents()
-    {
-        $this->load->model('servico_model');
+    public function get(){
+        $response = new Response();
 
-        $servicos = $this->servico_model->get_all(
-            'servicos.servico_nome',
-            ['servicos.situacao_padrao_fk' => $this->input->post('situacao_pk')],
-            - 1,
+        $data = $this->situacao_model->get_all(
+            '*, situacoes.ativo as ativo',
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
             -1
         );
+
+        $response->add_data('self', $data);
+
+        $response->send();
+    }
+
+    public function get_dependents()
+    {
+        $response = new Response();
+
+        $this->load->model('Servico_model', 'servico');
         
-        if (!empty($servicos)) {
-            
-            $mensagem = "";
+        $response->add_data('dependences', $this->servico->get_dependents($this->input->post('situacao_pk')));
+        $response->add_data('dependence_type', 'serviço');
 
-            foreach($servicos as $s){
-                $mensagem = $mensagem. $s->servico_nome .", ";
-            }
-
-            throw new MyException($mensagem, Response::UNAUTHORIZED);
-        }
+        $response->send();
     }
 
     /**
@@ -137,21 +99,18 @@ class Situacao extends CRUD_Controller
      */
     public function deactivate()
     {
-        
         try{
-
-            
             if ($this->is_superuser()) {
                 $this->add_password_to_form_validation();
             }
 
             $this->situacao_model->run_form_validation(); 
+            $this->situacao_model->fill();
 
-            $this->situacao_model->__set('situacao_pk', $this->input->post('situacao_pk'));
-            $this->get_dependents(); 
-        
-            $this->situacao_model->deactivate(); 
-
+            $this->begin_transaction();
+            $this->load->model('Servico_model', 'servico');
+            $this->situacao_model->deactivate($this->servico, 'get_dependents'); 
+            $this->end_transaction();
             $this->response->set_code(Response :: SUCCESS);
             $this->response->send();
 

@@ -13,45 +13,6 @@ class Dashboard extends CRUD_Controller
         $this->load->library('session');
     }
 
-    public function funcionario_administrador() 
-    {
-        $organizacao = $this->session->user['id_organizacao'];       
-
-        $dados['primeiro_nome'] = $this->primeiro_nome($this->session->user['name_user']);
-
-        // $dados['cards'] = $this->get_cards();
-        // $dados['charts'] = $this->get_charts();
-        // $dados['ordens_em_execucao'] = $this->get_ordens_em_execucao();
-        // $dados['funcionarios'] = $this->get_funcionarios();
-
-        // $dados['heatmap'] = $this->heatmap();
-        // $dados['tipos_servicos'] = $this->get_tipos_servicos();
-
-        $this->session->set_flashdata('css',[
-            0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            1 => base_url('assets/vendor/icon-hover-effects/component.css'),
-            2 => base_url('assets/vendor/icon-hover-effects/default.css'),
-            3 => base_url('assets/css/dashboard.css')
-        ]);
-
-
-        $this->session->set_flashdata('scripts',[
-            0 => base_url('assets/js/dashboard/dashboard/dashboard.js'),
-            1 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            2 => base_url('assets/vendor/datatables/datatables.min.js'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            4 => base_url('assets/js/utils.js'),
-            5 => base_url('assets/js/constants.js'),
-
-        ]);
-        load_view([
-            0 => [
-                'src'=>'dashboard/administrador/principal/dashboard',
-                'params' =>  $dados
-            ]
-        ],'administrador');
-    }
-
     private function get_tipos_servicos(){
         $this->load->model('dashboard_model', 'model');
         
@@ -466,6 +427,12 @@ private function porcentagem($dividendo, $divisor) {
                 $this->session->set_userdata('user',$array_session);
             }
 
+            $this->session->set_flashdata('css',[
+                0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+                1 => base_url('assets/vendor/icon-hover-effects/component.css'),
+                2 => base_url('assets/vendor/icon-hover-effects/default.css'),
+                3 => base_url('assets/css/dashboard.css')
+            ]);
 
             load_view([
                 0 => [

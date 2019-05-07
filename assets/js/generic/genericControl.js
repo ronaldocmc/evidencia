@@ -13,7 +13,6 @@ class GenericControl {
     async init() {
 
         this.data = await this.myRequests.init();
-
         this.myView.init(this.data, this.tableFields, this.primaryKey);
 
         // Send request
@@ -48,7 +47,9 @@ class GenericControl {
 
             this.myView.closeModal();
             this.myView.showMessage('success', 'Sucesso', 'Operação realizada!');
-            this.myView.render(this.data.self);
+            this.handleFilter($('#filter-ativo').val());
+            $('#filter-ativo').trigger('change');
+            // this.myView.render(this.data.self);
         } else {
             this.myView.showMessage('failed', 'Falha', response.data.mensagem);
         }

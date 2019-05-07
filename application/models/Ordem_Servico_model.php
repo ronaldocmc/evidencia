@@ -4,7 +4,7 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core\MY_Model.php";
+require_once APPPATH . "core/MY_Model.php";
 
 class Ordem_Servico_model extends MY_Model
 {
@@ -24,7 +24,7 @@ class Ordem_Servico_model extends MY_Model
         'ordem_servico_comentario'
     );
 
-    public function get_home($organization, $where = null)
+    public function get_home($organization, $where = null, $limit = null)
     {
         $this->CI->db->select('
             ordens_servicos.ordem_servico_pk,
@@ -89,7 +89,12 @@ class Ordem_Servico_model extends MY_Model
         }
 
         $this->CI->db->order_by('ordens_servicos.ordem_servico_pk', 'DESC');
-        // echo $this->CI->db->get_compiled_select(); die();
+
+        if ($limit !== null) 
+        {
+            $this->CI->db->limit($limit);
+        }
+
         $result = $this->CI->db->get()->result();
         return $result;
     }

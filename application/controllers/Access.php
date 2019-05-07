@@ -1,8 +1,6 @@
 
-<?php 
+<?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-
-require_once APPPATH . "core/Response.php";	
 require_once APPPATH . "core/MyException.php";
 
 /**
@@ -20,21 +18,22 @@ class Access extends CI_Controller
      * @var Response
      */
     public $response;
+    public $authorization;
 
     //-------------------------------------------------------------------------------
 
-	/**
-	 * Construtor da Classe
-	 * 
-	 * Chama o construtor da classe pai
-	 *
-	 * @return void
-	 */
-	function __construct() 
-	{
-		parent::__construct();
-		date_default_timezone_set('America/Sao_Paulo');
-		$this->response = new Response();
+    /**
+     * Construtor da Classe
+     * 
+     * Chama o construtor da classe pai
+     *
+     * @return void
+     */
+    function __construct()
+    {
+        parent::__construct();
+        date_default_timezone_set('America/Sao_Paulo');
+        $this->response = new Response();
         $this->load->helper('exception');
     }
 
@@ -61,8 +60,9 @@ class Access extends CI_Controller
      */
     public function quit()
     {
-	    session_destroy(); 
-    	redirect(base_url());
+        log_message('monitoring', $this->session->user['email_user'] . ' from ' . $this->input->ip_address() . ' logged out');
+        session_destroy();
+        redirect(base_url());
     }
 
     private function load_login()
@@ -74,6 +74,10 @@ class Access extends CI_Controller
         $this->load->model('Funcionario_model', 'funcionario');
 
         $this->set_rules_form_validation();
+
+        $this->load->library('Authorization');
+        $this->authorization = new Authorization();
+        $this->authorization->load_all_permissions_in_memory();
     }
 
     private function check_login_attempts()
@@ -83,9 +87,9 @@ class Access extends CI_Controller
             $response = verify_attempt($this->input->ip_address());
 
             if ($response != true) {
+                log_message('monitoring', 'Número de tentativas excedidas para ' . $this->input->ip_address());
                 throw new MyException('Número de tentativas excedidas. ' . $response, Response::FORBIDDEN);
             }
-
         }
     }
 
@@ -97,14 +101,38 @@ class Access extends CI_Controller
     }
 
     private function clear_login_attempts()
+    {   
+        $this->tentativa_model->__set('tentativa_tempo', date('Y/m/d')." 00:00:00");
+        $this->tentativa_model->__set('tentativa_ip', $this->input->ip_address());
+        
+        $this->tentativa_model->delete();
+    }
+
+    private function _get_user_permissions($function_id)
     {
-        $this->tentativa_model->delete($this->input->ip_address());
+        $this->load->library('Authorization');
+
+        $this->authorization = new Authorization();
+
+        return $this->authorization->return_permissions($function_id);
     }
 
     private function check_permissions($user)
     {
-        if (isset($response->funcao_pk) && ($response->funcao_pk != '4' && $response->funcao_pk != '5')) {
-            throw new MyException('Você não tem autorização para acessar o sistema', Response::UNAUTHORIZED);
+        $this->load->library('Authorization');
+
+        $this->authorization = new Authorization();
+
+        $authorized = $this->authorization->check_permission( 
+            'Dashboard', 
+            'funcionario_administrador', 
+            $user->funcao_pk
+        );
+
+        if(!$authorized)
+        {
+            throw new MyException('Você não tem autorização para acessar o sistema', Response::FORBIDDEN);
+
         }
     }
 
@@ -128,17 +156,18 @@ class Access extends CI_Controller
 
     private function set_session($user)
     {
-        $userdata = [
-            'id_user' => $user->funcionario_pk,
-            'email_user' => $user->funcionario_login,
-            'password_user' => $user->funcionario_senha,
-            'id_organizacao' => $user->organizacao_pk,
-            'name_user' => $user->funcionario_nome,
-            'name_organizacao' => $user->organizacao_nome,
-            'is_superusuario' => false,
-            'image_user_min' => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
-            'image_user' => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
-            'func_funcao' => $user->funcao_nome,
+        $userdata =  [
+            'id_user'           => $user->funcionario_pk,
+            'email_user'        => $user->funcionario_login,
+            'password_user'     => $user->funcionario_senha,
+            'id_organizacao'    => $user->organizacao_pk,
+            'name_user'         => $user->funcionario_nome,
+            'name_organizacao'  => $user->organizacao_nome,
+            'is_superusuario'   => FALSE,
+            'image_user_min'    => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
+            'image_user'        => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
+            'func_funcao'       => $user->funcao_nome,
+            'id_funcao'         => $user->funcao_pk,
         ];
 
         $this->session->set_userdata('user', $userdata);
@@ -163,14 +192,18 @@ class Access extends CI_Controller
         $this->funcionario->__set('funcionario_login', $this->input->post('login'));
         $this->funcionario->__set('funcionario_senha', hash(ALGORITHM_HASH, $this->input->post('password') . SALT));
 
+        
         $worker = $this->funcionario->get_or_404();
 
         $this->check_permissions($worker);
 
+        $this->response->add_data('permissions', 
+         json_encode($this->_get_user_permissions($worker->funcao_pk), JSON_UNESCAPED_UNICODE));
+
         $this->set_session($worker);
 
         $this->clear_login_attempts();
-    }
+     }
 
     //--------------------------------------------------------------------------------
     /**
@@ -192,6 +225,7 @@ class Access extends CI_Controller
 
             $this->funcionario->run_form_validation();
 
+            log_message('monitoring', 'Trying to authenticate ['.$this->input->post('login').'] from '.$this->input->ip_address());
             if ($this->is_superuser()) {
                 $this->response->add_data('superusuario', 1);
                 $this->authenticate_superuser();
@@ -203,7 +237,6 @@ class Access extends CI_Controller
             $this->response->set_code(Response::SUCCESS);
             $this->response->set_message('Login efetuado com sucesso');
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -213,15 +246,16 @@ class Access extends CI_Controller
 
     private function set_rules_form_validation()
     {
-        $this->form_validation->set_rules('login',
+        $this->form_validation->set_rules(
+            'login',
             'Login',
             'trim|required|regex_match[/[a-zA-Z0-9_\-.+]+@[a-zA-Z0-9-]+/]|min_length[8]|max_length[128]'
         );
 
-        $this->form_validation->set_rules('password',
+        $this->form_validation->set_rules(
+            'password',
             'Senha',
             'trim|required|min_length[8]|max_length[128]'
         );
     }
-
 }

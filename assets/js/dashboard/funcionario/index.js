@@ -20,8 +20,6 @@ class View extends GenericView {
     init(data, tableFields, primaryKey) {
         super.init(data, tableFields, primaryKey);
 
-        console.log('data', data);
-
         this.generateSelect(data.funcoes, 'funcao_nome', 'funcao_pk', 'funcao_fk');
         this.generateSelect(data.departamentos, 'departamento_nome', 'departamento_pk', 'departamento_fk');
         this.generateSelect(data.setores, 'setor_nome', 'setor_pk', 'setor_fk');
@@ -41,16 +39,27 @@ class View extends GenericView {
     }
 
     generateButtons(condition, i) {
-        return `<div class='btn-group'>` +
-            (
-                condition == 1 ?
-                    this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
-                    this.createButton('deactivate', 'deactivate', 'danger', 'Desativar', i, 'fa-times') +
-                    this.createButton('change_password', 'password', 'success', 'Alterar senha', i, 'fa-lock')
-                    :
-                    this.createButton('activate', 'activate', 'success', 'Ativar', i, 'fa-power-off')
-            ) +
-            `</div>`;
+        let buttons = `<div class='btn-group'>`;
+
+        if (condition == 1) {
+            if (this.hasPermissions('alterar e criar', this.getEntity())) {
+                buttons += this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit')
+            }
+
+            if (this.hasPermissions('desativar', this.getEntity())) {
+                buttons += this.createButton('deactivate', 'deactivate', 'danger', 'Desativar', i, 'fa-times');
+            }
+
+            if (this.hasPermissions('alterar senha', this.getEntity())) {
+                buttons += this.createButton('change_password', 'password', 'success', 'Alterar senha', i, 'fa-lock');
+            }
+        } else {
+            buttons += this.createButton('activate', 'activate', 'success', 'Ativar', i, 'fa-power-off');
+        }
+
+        buttons += `</div>`;
+
+        return buttons;
     }
 
 }
@@ -82,7 +91,6 @@ class Control extends GenericControl {
             this.handleFillFields();
             this.myView.hidePasswordInput();
             this.myView.generateImage('show-img-funcionario', this.data.self[this.state.selectedId].funcionario_caminho_foto);
-            console.log(this.data.self[this.state.selectedId]);
         });
 
         $(document).on('click', '.btn_new', () => {

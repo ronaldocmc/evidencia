@@ -7,7 +7,7 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de funções
                         </h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Nova Função" data-contentid="save"
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal" data-title="Nova Função" data-contentid="save"
                             data-target="#modal">
                             <i class="zmdi zmdi-plus"></i>nova função</button>
                     </div>
@@ -24,7 +24,8 @@
                                         <div class="col-md-6">
                                             <p>Bem-vindo a área de Gerenciamento de Funções!</p><br>
                                             <p> Aqui você poderá realizar algumas operações para controlar as funções da sua organização.</p><br>
-                                            <p>Organizamos as suas funções de modo que ele possua serviços específicos conforme um tipo de serviço definido. Assim, controlar a prestação de serviços da sua organização torna-se uma tarefa fácil e rápida! </p>
+                                            <p>Organizamos as suas funções de modo que ele possua serviços específicos conforme um tipo de serviço definido. Assim, controlar a prestação de serviços da sua organização torna-se uma tarefa fácil e rápida! </p><br>
+                                            <p>Além disso, você pode escolher as permissões que a função terá dentro do sistema.</p>
                                         </div>
                                         <div class="col-md-6 user-guide">
                                             <p><b>Operações permitidas:</b></p>
@@ -57,7 +58,7 @@
                                                                 </div>
                                                         </button>
                                                     </div>
-                                                    <div class="col-md-10 text-guide">Desativar funcao inativo</div>
+                                                    <div class="col-md-10 text-guide">Desativar funcao</div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-2 icon-guide">
@@ -106,7 +107,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div id="loading">
                             <div align="center" class="center">
                                 <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
@@ -144,7 +144,7 @@
 
 <!-- MODAL -->
 <div class="modal fade" id="modal">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">TITLE</h4>
@@ -166,11 +166,11 @@
 
                     <ul class="progressbar">
                         <li class="active">Identificação da Função</li>
-
+                        <li>Gerenciamento de Permissões</li>
                         <li class="d-none superusuario">Identificação</li>
-
                     </ul>
 
+                    <!-- STEP 1 -->
                     <div class="card card-step col-12 px-0">
                         <div class="card-header">
                             Identificação da Função
@@ -191,14 +191,38 @@
                         </div>
                         <div class="card-footer text-center">
 
+                            <button type="button" class="btn btn-secondary next btn-sm">
+                                <i class="fas fa-arrow-circle-right"></i> Próximo
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <!-- STEP 2 -->
+
+                    <div class="card card-step col-12 px-0">
+                        <div class="card-header">
+                            Permissões
+                        </div>
+                        <div class="card-body card-block">
+                            <div class="row form-group">
+                                <div class="col-12" id="permissions">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="button" class="btn btn-secondary previous btn-sm">
+                                <i class="fas fa-arrow-circle-left"></i> Anterior
+                            </button>
                             <button type="button" class="btn btn-secondary next btn-sm d-none superusuario">
                                 <i class="fas fa-arrow-circle-right"></i> Próximo
                             </button>
 
-                            <button type="button" class="btn btn-primary submit btn-sm load d-none not_superusuario">
+                            
+                            <button type="button" class="btn btn-primary submit btn-sm not_superusuario">
                                 <i class="fa fa-dot-circle-o"></i> Finalizar
                             </button>
-
                         </div>
                     </div>
 
@@ -224,9 +248,6 @@
                         <div class="card-footer text-center">
                             <button type="button" class="btn btn-secondary previous btn-sm">
                                 <i class="fas fa-arrow-circle-left"></i> Anterior
-                            </button>
-                            <button type="button" class="btn btn-primary submit load btn-sm">
-                                <i class="fa fa-dot-circle-o"></i> Finalizar
                             </button>
                         </div>
                     </div>
@@ -279,7 +300,7 @@
                 <h4 style="text-align: center" class="text-danger"><i
                         class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
                     ATENÇÃO</h4>
-                <p>Você está prestes a ativar um setor que foi desativado!</p>
+                <p>Você está prestes a ativar uma função que foi desativada!</p>
 
             </div>
             <div class="form-group d-none superusuario">

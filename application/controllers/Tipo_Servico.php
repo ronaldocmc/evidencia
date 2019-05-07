@@ -1,11 +1,9 @@
 <?php
 
-if (!defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
 
-require_once APPPATH . "core\CRUD_Controller.php";
-require_once APPPATH . "core\Response.php";
+if (!defined('BASEPATH')) exit('No direct script access allowed');
+require_once APPPATH . "core/CRUD_Controller.php";
+require_once APPPATH . "core/Response.php";
 
 class Tipo_Servico extends CRUD_Controller
 {
@@ -14,39 +12,6 @@ class Tipo_Servico extends CRUD_Controller
     {
         parent::__construct();
         $this->load->model('Tipo_Servico_model', 'tipo_servico');
-    }
-
-    public function index()
-    {
-        $this->session->set_flashdata('css', [
-            0 => base_url('assets/css/modal_desativar.css'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/css/loading_input.css'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-        ]);
-
-        $this->session->set_flashdata('scripts', [
-            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            2 => base_url('assets/js/masks.js'),
-            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            4 => base_url('assets/vendor/datatables/datatables.min.js'),
-            5 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            6 => base_url('assets/js/utils.js'),
-            7 => base_url('assets/js/constants.js'),
-            8 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            9 => base_url('assets/js/dashboard/tipo-servico/index.js'),
-            10 => base_url('assets/vendor/select-input/select-input.js'),
-        ]);
-
-        $this->load->helper('form');
-
-        load_view([
-            0 => [
-                'src' => 'dashboard/administrador/tipo-servico/home',
-                'params' => null,
-            ],
-        ], 'administrador');
     }
 
     private function load()
@@ -161,30 +126,6 @@ class Tipo_Servico extends CRUD_Controller
         $response->add_data('dependence_type', 'serviço');
 
         $response->send();
-    }
-
-    public function get_dependent_services()
-    {
-        $response = new Response();
-        $this->load->model('Servico_model', 'servico');
-
-        try {
-            $servicos = $this->servico->get_all(
-                'servicos.servico_nome',
-                ['servicos.tipo_servico_fk' => $this->input->post('tipo_servico_pk')],
-                -1,
-                -1
-            );
-
-            $response->set_code(Response::SUCCESS);
-            $response->set_data($servicos);
-            $response->send();
-
-        } catch (MyException $e) {
-            handle_my_exception($e);
-        } catch (Exception $e) {
-            handle_exception($e);
-        }
     }
 
     public function deactivate()

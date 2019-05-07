@@ -210,6 +210,7 @@ class View extends GenericView {
                 '<span class="sr-only">Next</span>' +
                 '</a>' +
                 '</div>';
+                    alerts('success', 'Sucesso', 'Operação realizada com sucesso');
         } else {
             render +=
                 '<div id="card_imagens">' +

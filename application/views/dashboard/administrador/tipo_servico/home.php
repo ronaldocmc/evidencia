@@ -7,24 +7,85 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de tipos de serviços
                         </h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal"
-                            data-title="Novo Serviço" data-contentid="save" data-target="#modal">
-                            <i class="zmdi zmdi-plus"></i>novo tipo de serviço</button>
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal" data-title="Novo tipo de serviço" data-contentid="save"
+                            data-target="#modal">
+                            <i class="zmdi zmdi-plus"></i>novo tipo de serviço
+                        </button>
                     </div>
                     <input type="hidden" name="opcao-editar" id="opcao-editar" value="false">
                     <div class="col-md-12 mt-3">
                         <div class="collapse" id="collapseHelp">
-                            <div class="card card-body">
-                                <p>O tipo de serviço representa a qual grupo, classificação o serviço será classificado.</p>
-                                <p>Se por exemplo, sua empresa realiza o serviço de Coleta de Animal, o tipo de serviço seria Coleta.</p>
-                                <p>Para o cadastro de um novo tipo de serviço, é necessário inserir o nome do tipo de serviço, a descrição de o que é esse tipo de serviço, a prioridade padrão, ou seja, qual a prioridade que geralmente é atribuída aos serviços deste grupo. Por fim, é necessário indicar o departamento que será responsável pelos serviços deste grupo.</p>
-                                <p><b>Características:</b></p>
-                                <div class="col-md-12">
-                                    <ul>
-                                        <li>Facilita a geração de relatórios</li>
-                                        <li>Facilita o agrupamento de serviços, atribuindo um tipo de serviço a um departamento específico</li>
-                                    </ul>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <h3>Guia do Usuário</h3>
+                                    </div>
                                 </div>
+                                <div class="card-body card-user-guide">
+                                    <div class="col-md-6">
+                                        <p>Bem-vindo a área de Gerenciamento de Tipos de Serviços!</p><br>
+                                        <p> Aqui você poderá realizar algumas operações para controlar os tipos de serviços
+                                            da sua organização.</p><br>
+                                        <p>Tipos de Serviços servem como um classificador dos Serviços, possuindo uma prioridade padrão para agilizar na hora de criar uma nova Ordem de Serviço </p>
+                                    </div>
+                                    <div class="col-md-6 user-guide">
+                                        <p><b>Operações permitidas:</b></p>
+                                        <div class="col-md-12 functions-page">
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" disabled="true"
+                                                        class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-plus fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Inserir um tipo de serviço</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" disabled="true"
+                                                        class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-edit fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Editar tipode de serviço existente</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" class="btn btn-sm btn-danger" disabled="true"
+                                                        title="Desativar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-times fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Desativar tipo de serviço</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" class="btn btn-sm btn-success" disabled="true"
+                                                        title="Reativar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-power-off fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Ativar tipo de serviço novamente</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12>">
+                                                    <br>
+                                                    <p><strong>Qualquer dúvida entre em contato com o suporte na sua
+                                                            organização!</p></strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -37,7 +98,7 @@
                             <i style="cursor: pointer; color: gray" class="fas fa-info pull-right"
                                 data-toggle="collapse" href="#collapseHelp" role="button" aria-expanded="false"
                                 aria-controls="collapseHelp"></i>
-                            prioridades</h2>
+                            tipos de serviços</h2>
 
 
                         <div class="">
@@ -53,14 +114,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive table--no-card m-b-40">
-                            <table id="servicos" class="table table-striped table-datatable">
+                        <div id="loading">
+                            <div align="center" class="center">
+                                <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                            </div>
+                        </div>
+                        <div class="table-responsive table--no-card m-b-40" style="display: none;">
+                            <table id="tipos_servico" class="table table-striped table-datatable">
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
-                                        <th>Abreviação</th>
                                         <th>Descrição</th>
-                                        <th>Prioridade Padrão</th>
+                                        <th>Abreviação</th>
+                                        <th>Prioridade</th>
                                         <th>Departamento</th>
                                         <th>Opções</th>
                                     </tr>
@@ -86,10 +152,9 @@
     </div>
 </div>
 
-
 <!-- MODAL -->
 <div class="modal fade" id="modal">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">TITLE</h4>
