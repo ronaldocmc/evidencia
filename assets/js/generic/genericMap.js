@@ -38,6 +38,8 @@ class GenericMap {
                 route: props.input.street,
                 street_number: props.input.street_number,
                 administrative_area_level_1: props.input.state,
+                lat: props.input.lat,
+                long: props.input.long
             },
 
             markers: props.data,
@@ -126,8 +128,8 @@ class GenericMap {
     }
 
 
-    fillInputs(address) {
-        const { sublocality, locality, route, street_number, administrative_area_level_1 } = this.state.fields;
+    fillInputs(address, location) {
+        const { sublocality, locality, route, street_number, administrative_area_level_1, lat, long} = this.state.fields;
 
         address.forEach((data) => {
 
@@ -157,8 +159,16 @@ class GenericMap {
                     estado = endereco[i].short_name;
                 }
             }
+
         });
 
+        if(lat != false && long != false){
+
+            $(`#${lat}`).val(location.lat);
+            $(`#${long}`).val(location.lat);
+
+        }
+        
     }
 
     async translateLocation(location) {
@@ -222,5 +232,9 @@ class GenericMap {
 
     setMap(map) {
         this.state.map = map;
+    }
+
+    setMapId(id){
+        this.state.mapId = id;
     }
 }

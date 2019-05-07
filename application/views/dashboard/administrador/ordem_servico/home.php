@@ -197,13 +197,10 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="content">
-
             </div>
         </div>
     </div>
 </div>
-
-
 
 <div id="save" class="d-none">
 <form class="msform" style="margin-top: 10px !important;">
@@ -351,7 +348,7 @@
                                                 class="form-control-label"><strong>Cidade*</strong></label>
                                             <select class="form-control endereco" id="localizacao_municipio" name="localizacao_municipio"
                                                 required="true">
-                                                
+
                                             </select>
                                         </div>
                                         <div class="col-md-4">
@@ -393,8 +390,8 @@
                                         </div>
                                     </div>
                                     <div class="row form-group" style="margin-top: 30px !important;">
-                                        <input type="hidden" id="latitude">
-                                        <input type="hidden" id="longitude">
+                                        <input type="hidden" id="localizacao_lat"  name="localizacao_lat">
+                                        <input type="hidden" id="localizacao_long"  name="localizacao_long">
                                         <div class="col-12">
                                         <div id="map"></div>
                                             <small class="form-text text-muted">Visualize ou selecione o local no
@@ -403,7 +400,31 @@
                                     </div>
                                 </div>
                             </div>
-                           
+                            <div class="card bg-light mb-3" id="card_imagem">
+                                <div class="card-header"><h4 class="card-title"> Imagem Evidência </h4></div>
+                                <div class="card-body text-secondary">
+                                    <div class="row form-group">
+                                        <div class="col-12" id="image-upload-div">
+                                            <div class="image-upload-wrap" style="">
+                                                <input class="file-upload-input" type="file" onchange="readURL(this);" accept="image/*" id="input-upload">
+                                                <div class="drag-text">
+                                                    <h3>Ou clique/arraste e solte uma imagem aqui</h3>
+                                                </div>
+                                            </div>
+                                            <div class="file-upload-content" style="display: none;">
+                                                <img id="img-input" class="file-upload-image" src="" alt="your image">
+                                                <div class="col-12" id="images_buttons" >
+                                                    <button type="button" class="btn btn-danger remove_images">Remover</button>
+                                                    <button type="button" class="btn btn-success save_images">Salvar</button>
+                                                </div>
+                                            </div>
+                                            <small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>
+                                            <div class="col-12" id="images_saved" style="margin-top: 20px; display:flex;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- fecha card principal -->
                             <?php if ($this->session->user['is_superusuario']): ?>
                             <div class="row form-group">
@@ -414,7 +435,7 @@
                             </div>
                             <?php endif?>
                             <div class="text-center">
-                                <button type="button" class="btn btn-primary submit" onclick="send_data()">
+                                <button type="button" class="btn btn-primary submit">
                                     <i class="fa fa-dot-circle-o"></i> Finalizar
                                 </button>
                             </div>
@@ -466,7 +487,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -515,44 +535,47 @@
     }
 </style>
 
+
+
 <!-- MODAL ADICIONAR SITUAÇÃO ATUAL ORDEM SERVIÇO -->
-<div class="modal fade" id="atividade">
+<div id="create_history" class="d-none">
+    <div class="modal-body">
+        <div class="form-group">
+            <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-success btn_save_activity pull-right" style="margin-right: 10px;" onclick="save_new_situation()">
+                    <i class="fa fa-dot-circle-o"></i>
+                    Salvar
+                </button>
+                <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-atividade" data-dismiss="modal">
+                    Fechar
+                </button>
+                <input type="hidden" id="historico_pk" value="" name="historico_pk">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- <div class="modal fade" id="atividade">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Adicionar Situação da Ordem de serviço</h4>
                 <h4 class="modal-title 2"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-
-                    <div align="center" class="center">
-                        <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="ov_loading"
+            </div> -->
+             <!-- <div align="center" class="center">
+                <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="ov_loading"
                             alt="Carregando">
-                    </div>
-
-                    <div class="qa-message-list py-5" id="otimeline"
-                        style="margin-top: 10px !important; padding-top: 10px !important;">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-success pull-right" style="margin-right: 10px;"
-                            id="btn-salvar-atividade" onclick="send_data_historico()">
-                            <i class="fa fa-dot-circle-o"></i>
-                            Salvar
-                        </button>
-                        <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-atividade"
-                            data-dismiss="modal">
-                            Fechar
-                        </button>
-                        <input type="hidden" id="historico_pk" value="" name="historico_pk">
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </div> -->
+        <!-- </div>
     </div>
-</div>
+</div> -->
 
 <div id="export" class="d-none">
     <div class="modal-body">
@@ -574,125 +597,103 @@
 
 
 <!-- MODAL HISTÓRICO ORDEM SERVIÇO -->
-<div class="modal fade" id="ce_historico_servico">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Histórico da Ordem de serviço</h4>
-                <h4 class="modal-title 2"></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <div class="row pb-2" style="text-align: center;">
-                        <div class="col-12">
-                            <div class="card-group">
-                                <div class="card col-md-4"
-                                    style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <div class="card-header">
-                                        <strong>Código:</strong>
-
-                                    </div>
-                                    <div class="card-body card-block">
-                                        <p id="v_codigo"></p>
-                                    </div>
-                                </div>
-                                <div class="card col-md-4"
-                                    style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <div class="card-header">
-                                        <strong>Descrição:</strong>
-                                    </div>
-                                    <div class="card-body card-block">
-                                        <p id="v_descricao">
-                                            <p>
-                                    </div>
-                                </div>
-                                <div class="card col-md-4"
-                                    style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <div class="card-header">
-                                        <strong>Procedência:</strong>
-                                    </div>
-                                    <div class="card-body card-block">
-                                        <p id="v_procedencia"></p>
-                                    </div>
-                                </div>
-                            </div>
+<div id="info" class="d-none">
+    <div class="modal-body">
+        <div class="row pb-2" style="text-align: center;">
+            <div class="col-12">
+                <div class="card-group">
+                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                        <div class="card-header">
+                            <strong>Código:</strong>
+                        </div>
+                        <div class="card-body card-block">
+                            <p id="ordem_servico_cod_historic"></p>
+                        </div>
+                        </div>
+                        <div class="card col-md-4"style="padding-left: 0px !important; padding-right: 0px !important;">
+                            <div class="card-header">
+                                <strong>Descrição:</strong>
+                        </div>
+                        <div class="card-body card-block">
+                            <p id="ordem_servico_desc_historic"></p>
                         </div>
                     </div>
-                    <div class="row pb-2" style="text-align: center;">
-                        <div class="col-12">
-                            <div class="card-group">
-                                <div class="card col-md-4"
-                                    style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <div class="card-header">
-                                        <strong>Prioridade:</strong>
-
-                                    </div>
-                                    <div class="card-body card-block">
-                                        <p id="v_prioridade"></p>
-                                    </div>
-                                </div>
-                                <div class="card col-md-4"
-                                    style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <div class="card-header">
-                                        <strong>Servico:</strong>
-                                    </div>
-                                    <div class="card-body card-block">
-                                        <p id="v_servico">
-                                            <p>
-                                    </div>
-                                </div>
-                                <div class="card col-md-4"
-                                    style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <div class="card-header">
-                                        <strong>Setor:</strong>
-                                    </div>
-                                    <div class="card-body card-block">
-                                        <p id="v_setor"></p>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                        <div class="card-header">
+                            <strong>Procedência:</strong>
                         </div>
-                    </div>
-                    <div class="row pb-2" style="text-align: center;">
-                        <div class="col-12">
-                            <div class="card-group">
-                                <div class="card" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <div class="card-header">
-                                        <strong>Endereço:</strong>
-                                        <button type="button" class="btn btn-sm btn-primary btn_mapa pull-right"
-                                            id="btn-mapa-historico">
-                                            <i class="fa fa-map-marker"></i>
-                                        </button>
-                                    </div>
-                                    <div class="card-body card-block">
-                                        <p id="v_endereco"></p>
-                                    </div>
-                                    <div class="col-12 col-md-12 pb-1" id="mapa_historico">
-                                        <div id="map2"></div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="card-body card-block">
+                            <p id="procedencia_nome_historic"></p>
                         </div>
-                    </div>
-
-                    <div align="center" class="center">
-                        <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading"
-                            alt="Carregando">
-                    </div>
-                    <div class="container-fluid" id="card_slider_historico">
-                    </div>
-                    <div class="qa-message-list" id="timeline" style="padding-top: 5px;">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-historico"
-                            data-dismiss="modal">
-                            Fechar
-                        </button>
-                        <input type="hidden" id="historico_pk" value="" name="historico_pk">
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row pb-2" style="text-align: center;">
+            <div class="col-12">
+                <div class="card-group">
+                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                        <div class="card-header">
+                            <strong>Prioridade:</strong>
+                        </div>
+                        <div class="card-body card-block">
+                            <p id="prioridade_nome_historic"></p>
+                        </div>
+                    </div>
+                    <div class="card col-md-4"
+                        style="padding-left: 0px !important; padding-right: 0px !important;">
+                        <div class="card-header">
+                            <strong>Servico:</strong>
+                        </div>
+                        <div class="card-body card-block">
+                            <p id="servico_nome_historic"></p>
+                        </div>
+                    </div>
+                    <div class="card col-md-4"
+                        style="padding-left: 0px !important; padding-right: 0px !important;">
+                        <div class="card-header">
+                            <strong>Setor:</strong>
+                        </div>
+                        <div class="card-body card-block">
+                            <p id="setor_nome_historic"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row pb-2" style="text-align: center;">
+            <div class="col-12">
+                <div class="card-group">
+                    <div class="card" style="padding-left: 0px !important; padding-right: 0px !important;">
+                        <div class="card-header">
+                            <strong>Endereço:</strong>
+                            <button type="button" class="btn btn-sm btn-primary pull-right"
+                                id="btn-mapa-historico">
+                                <i class="fa fa-map-marker"></i>
+                            </button>
+                        </div>
+                        <div class="card-body card-block">
+                            <p id="address_historic"></p>
+                        </div>
+                        <div class="col-12 col-md-12 pb-1" id="mapa_historico" hidden="true">
+                            <div id="map"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div align="center" class="center">
+            <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading"
+                alt="Carregando">
+        </div> -->
+        <div class="container-fluid" id="card_slider_historic"></div>
+        <div class="qa-message-list" id="timeline_historic" style="padding-top: 5px;"></div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-historico"
+                data-dismiss="modal">
+                Fechar
+            </button>
+            <input type="hidden" id="historico_pk" value="" name="historico_pk">
         </div>
     </div>
 </div>

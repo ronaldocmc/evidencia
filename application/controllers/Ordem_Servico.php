@@ -255,9 +255,14 @@ class Ordem_Servico extends CRUD_Controller
     {
         try
         {
+
+            
             $this->load->model('Localizacao_model', 'localizacao');
             $this->load->library('form_validation');
             $this->load->helper('exception');
+
+            $this->ordem_servico->config_form_validation();
+            $this->localizacao->config_form_validation();
 
             $this->localizacao->add_lat_long(
                 $this->input->post('localizacao_lat'),
@@ -268,10 +273,8 @@ class Ordem_Servico extends CRUD_Controller
             $this->localizacao->__set('localizacao_ponto_referencia', null);
             $this->localizacao->fill();
 
+            // $this->ordem_servico->__set('situacao_atual_fk', $this->input->post('situacao_inicial_fk'));
             $this->ordem_servico->fill();
-
-            $this->ordem_servico->config_form_validation();
-            $this->localizacao->config_form_validation();
 
             if ($this->input->post('ordem_servico_pk') !== '') {
                 $this->ordem_servico->config_form_validation_primary_key();
