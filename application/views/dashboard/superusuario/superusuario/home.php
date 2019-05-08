@@ -18,9 +18,8 @@
                     <div class="col-12">
                         <div class="au-card">
                             <h2 class="title-1 m-b-25">Superusuários</h2>
-                            <div class="">
-                            <h5>Filtrar por</h5><br>
-                            <div class="row">
+                            <!-- <h5>Filtrar por</h5><br> -->
+                            <!-- <div class="row">
                                 <div class="col-md-3">
                                     <label for="filter-ativo">Mostrar</label>
                                     <select name="filter-ativo" id="filter-ativo" class="form-control" onchange="update_table()">
@@ -30,7 +29,7 @@
                                     </select><br>
                                 </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="table-responsive table--no-card m-b-40">
                                 <table class="table table-striped table-datatable">
                                     <thead>
