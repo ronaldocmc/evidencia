@@ -24,6 +24,22 @@ class View extends GenericView {
         this.generateSelect(data.tipos_servicos, 'tipo_servico_nome', 'tipo_servico_pk', 'tipo_servico_fk');
     }
 
+    createJsonWithFields(data, fields) {
+        const dataContainer = super.createJsonWithFields(fields);
+
+        let situacao = data.situacoes.find(situacao => {
+            return situacao.situacao_pk === dataContainer['situacao_padrao_fk'];
+        });
+        let tipo_servico = data.tipos_servicos.find(tipo_servico => {
+            return tipo_servico.tipo_servico_pk === dataContainer['tipo_servico_fk'];
+        });
+
+        dataContainer['situacao_nome'] = situacao.situacao_nome;
+        dataContainer['tipo_servico_nome'] = tipo_servico.tipo_servico_nome;
+
+        return dataContainer;
+    }
+
 }
 
 class Request extends GenericRequest {
