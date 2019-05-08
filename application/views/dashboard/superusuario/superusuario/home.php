@@ -233,7 +233,8 @@
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-confirmar-senha" id="btn-deactivate" name="post">
-<i class="fa fa-dot-circle-o"></i> Desativar</button>
+                        <i class="fa fa-dot-circle-o"></i> Desativar
+                    </button>
                 </div>
             </div>
         </div>
@@ -260,7 +261,8 @@
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-confirmar-senha" id="btn-activate" name="post">
-<i class="fa fa-dot-circle-o"></i> Ativar</button>
+                        <i class="fa fa-dot-circle-o"></i> Ativar
+                    </button>
                 </div>
             </div>
         </div>
@@ -269,5 +271,4 @@
 
 <script type="text/javascript">
     var superusuarios = <?php echo json_encode($superusuarios !== false ? $superusuarios : [] ) ?>;
-    console.log(superusuarios);
 </script>
