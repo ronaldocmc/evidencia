@@ -99,7 +99,14 @@ class Funcionario extends CRUD_Controller
     {
         $this->funcionario_model->__set("funcionario_senha", hash(ALGORITHM_HASH, $_POST['funcionario_senha'] . SALT));
 
-        $id = $this->funcionario_model->insert_funcionario($_POST['setor_fk']);
+        if (isset($_POST['setor_fk'])) 
+        {
+            $id = $this->funcionario_model->insert_funcionario($_POST['setor_fk']);
+        }
+        else
+        {
+            $id = $this->funcionario_model->insert_funcionario(NULL);   
+        }
 
         $path = upload_img(
             [
@@ -207,15 +214,26 @@ class Funcionario extends CRUD_Controller
 
             $this->begin_transaction();
 
-            if (isset($_POST['funcionario_pk']) && $_POST['funcionario_pk'] != '') {
+            if (isset($_POST['funcionario_pk']) && $_POST['funcionario_pk'] != '') 
+            {
                 $this->update();
-            } else {
-
+            } 
+            else 
+            {
                 $id = $this->insert();
 
-                $new = $this->funcionario_model->get(
-                    "funcionarios.funcionario_pk, funcionarios.organizacao_fk, funcionarios.ativo, funcionarios.funcionario_login, funcionarios.funcionario_nome, funcionarios.funcionario_caminho_foto, funcionarios.funcionario_cpf,
-                    funcionarios.funcao_fk, funcoes.funcao_nome, funcoes.funcao_pk, organizacoes.organizacao_pk ",
+                $new = $this->funcionario_model->get("
+                    funcionarios.funcionario_pk,
+                    funcionarios.organizacao_fk,
+                    funcionarios.ativo,
+                    funcionarios.funcionario_login,
+                    funcionarios.funcionario_nome,
+                    funcionarios.funcionario_caminho_foto,
+                    funcionarios.funcionario_cpf,
+                    funcionarios.funcao_fk,
+                    funcoes.funcao_nome,
+                    funcoes.funcao_pk,
+                    organizacoes.organizacao_pk ",
                     [
                         "funcionarios.organizacao_fk" => $this->session->user['id_organizacao'],
                         "funcionarios.funcionario_pk" => $id,
