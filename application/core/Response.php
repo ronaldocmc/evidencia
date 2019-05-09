@@ -24,11 +24,9 @@ class Response {
 	private $code;	 
 	private $message;
 	private $data;
-	private $use_success;
 
 	public function __construct($code = null)
 	{
-		$this->use_success = true;
 		$this->code = $code != null ? $code : self::SUCCESS;
 		$this->message = "OK";
 		$this->data = null;
@@ -140,7 +138,6 @@ class Response {
 		$json['code'] = $this->code;
 		$json['message'] = $this->message;
 		$json['data'] = $this->data;
-		$json['use_success'] = $this->use_success;
 		
 		header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($json,JSON_UNESCAPED_UNICODE);
