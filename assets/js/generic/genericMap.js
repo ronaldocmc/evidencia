@@ -165,7 +165,7 @@ class GenericMap {
         if(lat != false && long != false){
 
             $(`#${lat}`).val(location.lat);
-            $(`#${long}`).val(location.lat);
+            $(`#${long}`).val(location.lng);
 
         }
         

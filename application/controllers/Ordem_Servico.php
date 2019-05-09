@@ -160,7 +160,7 @@ class Ordem_Servico extends CRUD_Controller
             ['ordens_servicos.ativo' => 1]
         );
 
-        $imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao']);
+        $imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao'], null);
 
         if ($ordens_servico !== null) {
             foreach ($ordens_servico as $os) {
@@ -365,7 +365,7 @@ class Ordem_Servico extends CRUD_Controller
                     'is_os' => true,
                     'situation' => $this->ordem_servico->__get('situacao_atual_fk'),
                 ],
-                [0 => $this->input->post('image_os')]
+                $this->input->post('imagens')
             );
 
             $this->begin_transaction();
@@ -375,6 +375,11 @@ class Ordem_Servico extends CRUD_Controller
             $this->ordem_servico->update();
 
             $this->ordem_servico->insert_images($paths, $id);
+            $new = (object) [];
+            // $new = $this->ordem_servico->get_home($this->session->user['id_organizacao'], ['ordem_servico_pk' => $id]);
+            $new->imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao'], ['ordem_servico_fk' => $id]);
+            $this->response->add_data('id', $id);
+            $this->response->add_data('new', $new);
 
             $this->end_transaction();
 

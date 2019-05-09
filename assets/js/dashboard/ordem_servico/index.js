@@ -33,6 +33,12 @@ class View extends GenericView {
 
     }
 
+    // Aqui vamos iniciar a função que selecionado o departamento, então os selects de tipo de servico e servico são 
+    //preenchidos
+    fillSelectByOption(){
+
+    }
+
 
     generateButtons(condition, i) {
         return `<div class='btn-group'>` +
@@ -53,6 +59,7 @@ class View extends GenericView {
         let render = '';
 
         data.forEach((d, i) => {
+       
             render += this.createTimeLine(
                 d.funcionario_caminho_foto,
                 d.funcionario_nome,
@@ -66,7 +73,7 @@ class View extends GenericView {
 
     renderCurrentSituation(data) {
         let render = '';
-
+        
         render += this.createTimeLine(
             data.funcionario_caminho_foto,
             data.funcionario_nome,
@@ -99,13 +106,13 @@ class View extends GenericView {
             '<div class="col-8 col-md-12">' +
             '<div style="width: 250px; margin-bottom: 10px">' +
             '<label for="situacao_pk">Nova Situação</label>' +
-            '<select class="form-control" id="situacao_pk_historico" name="situacao_fk" required="true">' +
+            '<select class="form-control" id="situacao_atual_fk" name="situacao_fk" required="true">' +
             '</select>' +
             '</div>' +
             '</div>' +
             '<div class="col-md-12">' +
             '<label for="ordem_servico_desc">Novo comentário</label>' +
-            '<textarea class="form-control" id="historico_comentario" name="comentario" ' +
+            '<textarea class="form-control" id="ordem_servico_comentario" name="comentario" ' +
             'class="form-control" required="true" maxlength="200"></textarea>' +
             '<small class="form-text text-muted">Por favor, informe a descrição da Ordem de Serviço</small>' +
             '</div>' +
@@ -120,11 +127,13 @@ class View extends GenericView {
             '</div>' +
             '<div class="file-upload-content">' +
             '<img id="img-input" class="file-upload-image" src="#" alt="your image" required="false"/>' +
-            '<div class="col-12">' +
-            '<button type="button" onclick="cleanInputImage()" class="btn btn-danger">Remover</button>' +
-            '</div>' +
+            '<div class="col-12" id="images_buttons">' +
+            '<button type="button" class="btn btn-danger clean_input_images" style="margin:15px;">Remover</button>' +
+            '<button type="button" class="btn btn-success save_images" style="margin:15px;">Salvar</button>' + 
+            '</div>' + 
             '</div>' +
             '<small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>' +
+            '<div class="col-12" id="images_saved" style="margin-top: 20px; display:flex;"></div>' +
             '</div>' +
             '</div>' +
             '</div>' +
@@ -183,7 +192,7 @@ class View extends GenericView {
 
     createCarouselCards(src, situacao, data, active) {
 
-        return '<div class="carousel-item' + active + ' col-md-4">' +
+        return '<div class="carousel-item ' + active + ' col-md-4">' +
             '<div class="card historico">' +
             '<img class="card-img-top img-fluid" src="' + src + '">' +
             '<div class="card-body">' +
@@ -271,15 +280,15 @@ class Control extends GenericControl {
         super.init();
 
         $(document).on('click', '.submit_os', () => { this.saveNewOrdem()});
+        $(document).on('click', '.btn_save_activity', () => { this.saveNewSituation()});
         $(document).on('click', '.btn_create_history', () => { this.handleNewSituation() });
         $(document).on('click', '.btn_info', () => { this.handleTimelineHistoric() });
         $(document).on('click', '#btn-mapa-historico', () => { this.handleMapHistoric() });
         $(document).on('click', '.clean_input_images', () => { this.cleanInputImage()});
         $(document).on('click', '.save_images', () => { this.readImages() });
         $(document).on('click', '.btn_remove_image', () => { this.deleteImage($('.btn_remove_image').val()) });
-    
-        $('.action_export').click(function () { this.exportData() });
-        
+        $(document).on('click', '.action_export', () => { this.exportData() });
+
     }
 
     deleteImage(index){
@@ -317,10 +326,10 @@ class Control extends GenericControl {
     }
 
     exportData() {
-        data = {
-            'data_inicial': $('#data_inicial').val(),
-            'data_final': $('#data_final').val()
-        };
+        // var data = {
+        //     'data_inicial': $('#data_inicial').val(),
+        //     'data_final': $('#data_final').val()
+        // };
 
         let string = `/export/execute?data_inicial=${$('#data_inicial').val()}&data_final=${$('#data_final').val()}`;
         window.open(base_url + string, "target=_blank");
@@ -337,26 +346,25 @@ class Control extends GenericControl {
         $('#images_saved').html("");
     }
 
-    async save_new_situation(moreFields = null) {
+    async saveNewSituation(moreFields = null) {
         this.myView.initLoad();
+        const data = this.myView.createJsonWithFields(this.fields);
+        data[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
+        
+        const sendData = {
+            imagens: this.saveImages(),
+            situacao_atual_fk: $('#situacao_atual_fk').val(),
+            ordem_servico_comentario: $('#ordem_servico_comentario').val(),
+            situacao_atual_nome: $('#situacao_atual_fk option:selected').text()
+        }
 
-        const sendData = this.myView.createJsonWithFields(this.fields);
-        sendData[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
-
-        // if (moreFields != null) {
-        //     Object.assign(sendData, moreFields);
-        // }
-
-
-        const response = await this.myRequests.send('/send', sendData);
-
-        this.myView.endLoad();
-
-
-
+        const response = await this.myRequests.send('/insert_situacao/'+data[this.primaryKey], sendData);
+        sendData.imagens = response.data.new.imagens;
         this.handleResponse(response, sendData);
+        this.myView.endLoad();
+        this.counter = 0;
+        $('#images_saved').html("");
 
-        return response;
     }
 
     async handleNewSituation() {
@@ -368,12 +376,12 @@ class Control extends GenericControl {
         render += this.myView.renderTimeLineInput();
 
         $('#otimeline').html(render);
-        this.myView.generateSelect(this.data.situacoes, 'situacao_nome', 'situacao_pk', 'situacao_pk_historico');
+        this.myView.generateSelect(this.data.situacoes, 'situacao_nome', 'situacao_pk', 'situacao_atual_fk');
 
     }
 
     async handleTimelineHistoric() {
- 
+        this.myView.initLoad();
         var render = '';
         var cards = ';'
         const sendData = this.myView.createJsonWithFields(this.fields);
@@ -385,7 +393,7 @@ class Control extends GenericControl {
             this.myView.showMessage('failed', 'Falha', 'Entre em contato com a central!');
             return;
         }
-
+        this.myView.endLoad();
         //Handle with historic
         this.fillHistoricFields(this.data.self[this.state.selectedId], this.fields);
         if(response.data.historicos.length > 0){
@@ -440,8 +448,10 @@ class Control extends GenericControl {
 
         fields.forEach(field => {
             if(!field.indexOf('localizacao')){
-                console.log("Local:", object[field]);
-                object[field] !== null ? local += object[field] + " " : local += ""; 
+                object[field] !== null && 
+                object[field] != undefined && 
+                field != 'localizacao_lat' && 
+                field != 'localizacao_long' ? local += object[field] + " " : local += ""; 
             }else{
                 $(`#${field}_historic`).text(object[field]);
             }     

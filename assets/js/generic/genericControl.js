@@ -49,7 +49,7 @@ class GenericControl {
             this.myView.showMessage('success', 'Sucesso', 'Operação realizada!');
             this.handleFilter($('#filter-ativo').val());
             $('#filter-ativo').trigger('change');
-            // this.myView.render(this.data.self);
+            this.myView.render(this.data.self);
         } else {
             this.myView.showMessage('failed', 'Falha', response.data.mensagem);
         }
@@ -140,6 +140,7 @@ class GenericControl {
     }
 
     updateObject(data) {
+
         Object.assign(this.data.self[this.state.selectedId], data);
     }
 

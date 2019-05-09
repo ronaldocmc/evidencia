@@ -26,7 +26,7 @@ function get_current_date()
  * @param array $params
  * @param array $base64_images
  */
-function upload_img($params, array $base64_images)
+function upload_img($params, array $base64_images = null)
 {
     //Crio um array que será setado com os caminhos das imagens que foram salvas (banco)
     $images_uploaded = [];

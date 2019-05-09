@@ -541,15 +541,20 @@
 <div id="create_history" class="d-none">
     <div class="modal-body">
         <div class="form-group">
+            <div id="loading">
+                <div align="center" class="center">
+                    <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                </div>
+            </div>
             <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success btn_save_activity pull-right" style="margin-right: 10px;" onclick="save_new_situation()">
+                <button type="button" class="btn btn-sm btn-success btn_save_activity pull-right" style="margin-right: 10px;">
                     <i class="fa fa-dot-circle-o"></i>
                     Salvar
                 </button>
                 <button type="button" class="btn btn-sm btn-danger btn-fechar pull-right" id="fechar-atividade" data-dismiss="modal">
-                    Fechar
+                    Fecharf
                 </button>
                 <input type="hidden" id="historico_pk" value="" name="historico_pk">
             </div>
