@@ -27,8 +27,8 @@ class GenericControl {
 
         $(document).on('change', '#filter-ativo', (e) => { this.handleFilter(e.target); });
 
-        $('#filter-ativo').val(1);
-        $('#filter-ativo').trigger('change');
+        // $('#filter-ativo').val(1);
+        // $('#filter-ativo').trigger('change');
     }
 
     handleResponse(response, data) {
@@ -49,7 +49,7 @@ class GenericControl {
             this.myView.showMessage('success', 'Sucesso', 'Operação realizada!');
             this.handleFilter($('#filter-ativo').val());
             $('#filter-ativo').trigger('change');
-            // this.myView.render(this.data.self);
+            this.myView.render(this.data.self);
         } else {
             this.myView.showMessage('failed', 'Falha', response.data.mensagem);
         }
@@ -61,12 +61,12 @@ class GenericControl {
 
         const sendData = this.myView.createJsonWithFields(this.fields, this.data);
 
-        if(moreFields != null){
+        if (moreFields != null) {
             Object.assign(sendData, moreFields);
         }
 
         if (is_superusuario) sendData['senha'] = this.myView.getPassword('save')['senha'];
-       
+
         sendData[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
 
         const response = await this.myRequests.send('/save', sendData);
@@ -140,6 +140,7 @@ class GenericControl {
     }
 
     updateObject(data) {
+
         Object.assign(this.data.self[this.state.selectedId], data);
     }
 
@@ -163,5 +164,9 @@ class GenericControl {
 
     setSelectedId(id) {
         this.state.selectedId = id;
+    }
+
+    getSelectedId(){
+        return this.state.selectedId;
     }
 }

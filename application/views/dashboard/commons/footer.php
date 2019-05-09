@@ -27,6 +27,7 @@
 <script src="<?php echo base_url('assets/js/generic/genericRequest.js')?>"></script>
 <script src="<?php echo base_url('assets/js/generic/genericControl.js')?>"></script>
 <script src="<?php echo base_url('assets/js/generic/genericModal.js')?>"></script>
+<script src="<?php echo base_url('assets/js/generic/genericMap.js')?>"></script>
 
 
 <!-- Main JS-->
