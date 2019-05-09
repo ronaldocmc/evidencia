@@ -4,6 +4,7 @@ class GenericView {
         this.state = {
             data: [],
             tableFields: [],
+            is_superusuario: this.isSuperUsuario(),
             permissions: this.getPermissions()
         }
     }
@@ -48,7 +49,15 @@ class GenericView {
     }
 
     getPermissions() {
-        return JSON.parse(localStorage.getItem('permissions'));
+        if (localStorage.getItem('is_superusuario') !== '1') {
+            return JSON.parse(localStorage.getItem('permissions'));
+        } else {
+            return {};
+        }
+    }
+
+    isSuperUsuario() {
+        return localStorage.getItem('is_superusuario');
     }
 
     renderButtonsBasedOnPermissions() {
@@ -66,6 +75,10 @@ class GenericView {
     }
 
     hasPermissions(action, controller) {
+        if (this.state.is_superusuario) {
+            return true;
+        }
+
         let permissions = this.state.permissions;
 
         let response = false;
