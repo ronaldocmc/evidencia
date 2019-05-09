@@ -414,7 +414,7 @@
                                             <div class="file-upload-content" style="display: none;">
                                                 <img id="img-input" class="file-upload-image" src="" alt="your image">
                                                 <div class="col-12" id="images_buttons" >
-                                                    <button type="button" class="btn btn-danger remove_images">Remover</button>
+                                                    <button type="button" class="btn btn-danger clean_input_images">Remover</button>
                                                     <button type="button" class="btn btn-success save_images">Salvar</button>
                                                 </div>
                                             </div>
@@ -435,7 +435,7 @@
                             </div>
                             <?php endif?>
                             <div class="text-center">
-                                <button type="button" class="btn btn-primary submit">
+                                <button type="button" class="btn btn-primary submit_os">
                                     <i class="fa fa-dot-circle-o"></i> Finalizar
                                 </button>
                             </div>

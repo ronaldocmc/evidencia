@@ -251,8 +251,12 @@ class Ordem_Servico_model extends MY_Model
         ->get()->result();       
     }
 
-    function get_images($organizacao)
+    function get_images($organizacao, $where = null)
     {
+        if($where != null){
+            $this->CI->db->where($where);
+        }
+        
         return $this->CI->db
         ->select("*")
         ->from("imagens_os")

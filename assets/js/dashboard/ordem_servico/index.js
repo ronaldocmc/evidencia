@@ -121,7 +121,7 @@ class View extends GenericView {
             '<div class="file-upload-content">' +
             '<img id="img-input" class="file-upload-image" src="#" alt="your image" required="false"/>' +
             '<div class="col-12">' +
-            '<button type="button" onclick="remove_image()" class="btn btn-danger">Remover</button>' +
+            '<button type="button" onclick="cleanInputImage()" class="btn btn-danger">Remover</button>' +
             '</div>' +
             '</div>' +
             '<small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>' +
@@ -223,7 +223,7 @@ class View extends GenericView {
 
     createImageCard(src, val){
         return (
-            '<div class="col-md-3">' + 
+            '<div class="col-md-3" id="card_'+ val.toString() +'">' + 
                 '<img src="'+ src +'" class="img-thumbnail" alt="image_os" width="150px" height="150px" style="position:relative;">' +
                 '<div class="btn-group" style="position:relative; display:block; z-index:1; left:65%;  margin: -40px 10px 0 0;">' + 
                     '<button type="button" class="btn btn-sm btn-danger btn_remove_image" data-title="Remover Imagem" value="' + val.toString() + '">' + 
@@ -233,6 +233,12 @@ class View extends GenericView {
             '<div>'
              
         )
+    }
+
+    removeImageCard(index){
+        
+        $(`#card_${index}`).remove();
+        
     }
 
 
@@ -257,64 +263,58 @@ class Control extends GenericControl {
         this.fields = ['ordem_servico_desc', 'servico_fk', 'procedencia_fk', 'prioridade_fk', 'situacao_inicial_fk', 'setor_fk', 'localizacao_municipio', 'localizacao_rua', 'localizacao_num', 'localizacao_bairro', 'localizacao_ponto_referencia','localizacao_lat', 'localizacao_long', 'setor_nome', 'servico_nome', 'prioridade_nome', 'procedencia_nome', 'ordem_servico_cod'];
         this.tableFields = ['ordem_servico_pk', 'ordem_servico_cod', 'ordem_servico_criacao', 'prioridade_nome', 'localizacao_rua', 'servico_nome', 'situacao_atual_nome', 'setor_nome'];
         this.verifyDependences = false;
-        this.images = [];
+        this.counter = 0; 
         
     }
 
     init() {
         super.init();
-        
+
+        $(document).on('click', '.submit_os', () => { this.saveNewOrdem()});
         $(document).on('click', '.btn_create_history', () => { this.handleNewSituation() });
         $(document).on('click', '.btn_info', () => { this.handleTimelineHistoric() });
         $(document).on('click', '#btn-mapa-historico', () => { this.handleMapHistoric() });
-        $(document).on('click', '.remove_images', () => { this.remove_image()});
+        $(document).on('click', '.clean_input_images', () => { this.cleanInputImage()});
         $(document).on('click', '.save_images', () => { this.readImages() });
-
-        $(document).on('click', '.submit', () => { this.save(
-            {
-                imagens: this.images, 
-                situacao_atual_fk: $('#situacao_inicial_fk').val(),
-
-            })
-        });
-
+        $(document).on('click', '.btn_remove_image', () => { this.deleteImage($('.btn_remove_image').val()) });
+    
         $('.action_export').click(function () { this.exportData() });
-
+        
     }
 
-    remove_image() {
+    deleteImage(index){
+
+        this.myView.removeImageCard(index);
+    }
+
+    cleanInputImage() {
         $('#img-input').attr('src', '');
         removeUpload();
     };
 
+    saveImages(){
+        let images = [];
+
+        $('.img-thumbnail').each(function(){
+            images.push(this.src);
+          }); 
+
+        return images; 
+    }
 
     readImages(){
         let render = '';
-        var images = this.images;
         try {
-                var imageData = $('#img-input').cropper('getCroppedCanvas').toDataURL();
-                images.push(imageData);
-                render = this.myView.createImageCard(imageData, images.length-1);
+                let imageData = $('#img-input').cropper('getCroppedCanvas').toDataURL();
+                render = this.myView.createImageCard(imageData, this.counter);
                 $('#images_saved').append(render);
-                this.remove_image();
+                this.cleanInputImage();
+                this.counter++;
 
         } catch (err) {
             console.log(err);
         }
     }
-
-    // blobToBase64(blob) {
-    //     return new Promise((resolve) => {
-
-    //         const reader = new FileReader();
-
-    //         reader.onload = function () {
-    //             let base64 = reader.result;
-    //             resolve(base64);
-    //         };
-    //         reader.readAsDataURL(blob);
-    //     });
-    // };
 
     exportData() {
         data = {
@@ -324,7 +324,18 @@ class Control extends GenericControl {
 
         let string = `/export/execute?data_inicial=${$('#data_inicial').val()}&data_final=${$('#data_final').val()}`;
         window.open(base_url + string, "target=_blank");
-    };
+    }
+
+    saveNewOrdem(){
+
+        this.save({
+            imagens: this.saveImages(),
+            situacao_atual_fk: $('#situacao_inicial_fk').val()
+        });
+        
+        this.counter = 0;
+        $('#images_saved').html("");
+    }
 
     async save_new_situation(moreFields = null) {
         this.myView.initLoad();
@@ -347,7 +358,6 @@ class Control extends GenericControl {
 
         return response;
     }
-
 
     async handleNewSituation() {
         var render = '';
@@ -430,6 +440,7 @@ class Control extends GenericControl {
 
         fields.forEach(field => {
             if(!field.indexOf('localizacao')){
+                console.log("Local:", object[field]);
                 object[field] !== null ? local += object[field] + " " : local += ""; 
             }else{
                 $(`#${field}_historic`).text(object[field]);
@@ -527,7 +538,7 @@ initMap = () => {
 
         myControl.data.municipios.forEach((municipio) => {
             if (name == municipio.municipio_nome) {
-                console.log("Encontrou");
+  
                 $(`#${id}`).val(municipio.municipio_pk);
                 exists = true;
             }

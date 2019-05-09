@@ -30,13 +30,13 @@ function upload_img($params, array $base64_images)
 {
     //Crio um array que será setado com os caminhos das imagens que foram salvas (banco)
     $images_uploaded = [];
-
-    if ($base64_images[0] != 'null' && $base64_images[0] != null) {
+    
+    if ($base64_images != 'null' && $base64_images != null) {
         //Se uma ou mais imagens foram enviadas, percorreremos:
         foreach ($base64_images as $image) {
             //Gerando o nome da imagem hasheado (segurança)
             $blob_name = get_current_date().'/'.(hash(ALGORITHM_HASH, $params['id'].uniqid(rand(), true)).'.jpg');
-
+            
             //Recebemos uma imagem em base64, portanto e necessário remover o cabeçalho dela.
             list(, $image) = explode(';', $image);
             list(, $image) = explode(',', $image);

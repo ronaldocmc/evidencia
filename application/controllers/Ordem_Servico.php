@@ -290,7 +290,7 @@ class Ordem_Servico extends CRUD_Controller
             }
 
             $this->end_transaction();
-
+            
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
 
@@ -308,7 +308,7 @@ class Ordem_Servico extends CRUD_Controller
         $this->ordem_servico->__set("funcionario_fk", $this->session->user['id_user']);
 
         $id = $this->ordem_servico->insert_os($this->session->user['id_organizacao']);
-
+        
         $paths = upload_img(
             [
                 'id' => $id,
@@ -316,10 +316,16 @@ class Ordem_Servico extends CRUD_Controller
                 'is_os' => true,
                 'situation' => $this->ordem_servico->__get('situacao_atual_fk'),
             ],
-            [0 => $this->input->post('img')]//talvez seja interessante a view já mandar no formato de array mesmo quando é uma.
+            $this->input->post('imagens') //Recebe um array de imagens
         );
 
         $this->ordem_servico->insert_images($paths, $id);
+
+        $new = $this->ordem_servico->get_home($this->session->user['id_organizacao'], ['ordem_servico_pk' => $id]);
+        $new[0]->imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao'], ['ordem_servico_fk' => $id]);
+        $this->response->add_data('id', $id);
+        $this->response->add_data('new', $new[0]);
+
     }
 
     private function update()
