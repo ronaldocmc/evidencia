@@ -31,6 +31,11 @@ class AuthorizationController extends CI_Controller
 
     public function is_authorized()
     {
+        if ($this->session->user['is_superusuario']) 
+        {
+            return true;
+        }
+        
         $this->load->library('Authorization');
 
         $this->authorization = new Authorization();

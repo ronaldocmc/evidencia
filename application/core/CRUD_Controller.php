@@ -44,7 +44,7 @@ class CRUD_Controller extends AuthorizationController
     {
         if ($this->session->has_userdata('user')) 
         {
-            $this->set_pseudo_session();
+            // $this->set_pseudo_session();
             $this->verify_password_superuser();
             if (!$this->is_superuser()) 
             {
@@ -125,7 +125,6 @@ class CRUD_Controller extends AuthorizationController
             $method == 'update' ||
             $method == 'activate' ||
             $method == 'deactivate' ||
-            $method == 'get' ||
             $method == 'insert_update' ||
             $method == 'save');
     }

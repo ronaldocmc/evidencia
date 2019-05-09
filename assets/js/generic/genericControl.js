@@ -59,7 +59,7 @@ class GenericControl {
     async save(moreFields = null) {
         this.myView.initLoad();
 
-        const sendData = this.myView.createJsonWithFields(this.data, this.fields);
+        const sendData = this.myView.createJsonWithFields(this.fields, this.data);
 
         if(moreFields != null){
             Object.assign(sendData, moreFields);
