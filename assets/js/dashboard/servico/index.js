@@ -24,7 +24,7 @@ class View extends GenericView {
         this.generateSelect(data.tipos_servicos, 'tipo_servico_nome', 'tipo_servico_pk', 'tipo_servico_fk');
     }
 
-    createJsonWithFields(data, fields) {
+    createJsonWithFields(fields, data) {
         const dataContainer = super.createJsonWithFields(fields);
 
         let situacao = data.situacoes.find(situacao => {
