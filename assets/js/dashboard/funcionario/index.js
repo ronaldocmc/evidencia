@@ -174,11 +174,7 @@ class Control extends GenericControl {
         let password1 = $('#p-senha').val();
         let password2 = $('#p-confirmar-senha').val();
 
-        if (password1 !== password2) {
-            return false;
-        } else {
-            return true;
-        }
+        return (password1 !== password2);
     }
 }
 
