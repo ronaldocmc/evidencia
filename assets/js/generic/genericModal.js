@@ -5,6 +5,8 @@ $('#modal').on('show.bs.modal', function (event) {
     const modal = $(this);
     const content = $(`#${id}`).html();
 
+    // console.log("Content Modal: ", content);
+
     myControl.setSelectedId($(button[0]).val());
 
     modal.find('.modal-title').text(title);

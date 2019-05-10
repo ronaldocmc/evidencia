@@ -53,6 +53,7 @@ class Ordem_Servico_model extends MY_Model
             localizacoes.localizacao_num,
             localizacoes.localizacao_bairro,
             localizacoes.localizacao_ponto_referencia,
+            municipios.municipio_pk,
             municipios.municipio_nome,
             funcionarios.funcionario_nome,
             funcionarios.funcionario_caminho_foto,
@@ -250,8 +251,12 @@ class Ordem_Servico_model extends MY_Model
         ->get()->result();       
     }
 
-    function get_images($organizacao)
+    function get_images($organizacao, $where = null)
     {
+        if($where != null){
+            $this->CI->db->where($where);
+        }
+        
         return $this->CI->db
         ->select("*")
         ->from("imagens_os")
