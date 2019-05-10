@@ -99,7 +99,7 @@ $(document).on('click','#btn-deletar-relatorio',function(event) {
         }
 		else if(response.code == 200)
 		{
-			window.location.href = base_url+'/Relatorio/novo_relatorio/';
+			window.location.href = base_url+'/relatorio/';
 		}
 	});
 });

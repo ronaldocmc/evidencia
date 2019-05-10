@@ -400,17 +400,15 @@ class ViewController extends AuthorizationController
 
     private function get_all_reports()
     {
-        $this->load->model('relatorio_model', 'report_model');
-        $reports = $this->report_model->get_all(
-            '*',
-            null, //['relatorios.ativo' => 1],
-            -1,
-            -1,
-            [
-                ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = relatorios.relatorio_func_responsavel'],
-            ]);
+        $current_date = date('Y-m-d H:i:s');
+        $lastweek_time= mktime (0, 0, 0, date("m"), date("d")-7,  date("Y"));
+        $lastweek_date = date('Y-m-d H:i:s', $lastweek_time);
+        
+        $this->load->model('Relatorio_model', 'report_model');
+        $reports = $this->report_model->get_all_reports($this->session->user['id_organizacao'], $current_date, $lastweek_date);
+
         if ($reports) {
-            //arrumar a data:
+            //arrumando a data:
             foreach ($reports as $r) {
                 $r->relatorio_data_criacao = date('d/m/Y H:i:s', strtotime($r->relatorio_data_criacao));
                 $r->quantidade_os = $this->report_model->get_orders_of_report(['relatorio_fk' => $r->relatorio_pk], true);
