@@ -34,10 +34,6 @@ class View extends GenericView {
         $('#div-senha').show();
     }
 
-    getPassword() {
-        return $('#funcionario_senha').val();
-    }
-
     generateButtons(condition, i) {
         let buttons = `<div class='btn-group'>`;
 
@@ -109,6 +105,12 @@ class Control extends GenericControl {
             sendData[this.primaryKey] = this.data.self[this.state.selectedId][this.primaryKey];
             sendData.funcionario_senha = $('#p-senha').val();
 
+            if (!this.confirmPasswords()) {
+                this.myView.showMessage('failed', 'Falha', 'As senhas inseridas são diferentes!');
+                this.myView.endLoad();
+                return;
+            }
+
             const response = await this.myRequests.send('/change_password', sendData);
 
             if (response.code == 200) {
@@ -119,7 +121,7 @@ class Control extends GenericControl {
                 this.myView.showMessage('failed', 'Falha', response.message);
             }
 
-            this.myView.endLoad()
+            this.myView.endLoad();
         });
 
     };
@@ -151,7 +153,7 @@ class Control extends GenericControl {
 
                 data.img = await this.blobToBase64(blob);
 
-                if (!this.state.selectedId) { data.funcionario_senha = this.myView.getPassword(); }
+                if (!this.state.selectedId) { data.funcionario_senha = $('#funcionario_senha').val(); }
 
                 const response = await super.save(data);
 
@@ -163,12 +165,21 @@ class Control extends GenericControl {
 
             });
         } catch (err) {
-            if (!this.state.selectedId) { data.funcionario_senha = this.myView.getPassword(); }
+            if (!this.state.selectedId) { data.funcionario_senha = $('#funcionario_senha').val(); }
             super.save(data);
         }
     }
 
+    confirmPasswords() {
+        let password1 = $('#p-senha').val();
+        let password2 = $('#p-confirmar-senha').val();
 
+        if (password1 !== password2) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
 
 const myControl = new Control();
