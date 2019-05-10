@@ -8,6 +8,8 @@
 
 var table = $('#ordens_servico').DataTable();
 var is_superusuario = false; 
+var default_image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9AAAAMFBMVEXMzMz////Jycn19fXQ0ND8/Pzl5eXf39/U1NT4+Pjt7e3q6ury8vLOzs7n5+fb29vHz2+HAAACFUlEQVR4nO3c246qMABAUSzITZH//9tR8QKIYo+J5qRrvQ1gYnaYUoohywAAAAAAAAAAAAAAAAAAAIDfCJ/49Zf/stDmHyh+/fW/Kuw3n9j++vt/Vdh+FGuT1KklVgSxIgyx2jLeIdVY1T/MGrp0Y8V/shDrfWJFEOu05c1wYoWiL8uqeKdX8rFCO8ye9t36J5OP1URMNhOPFfL7zHz9DjnxWP34PuawNm6lHWu6WrNdiBXq0cbEY01vkevHY8vxHEOsV7FCNdkq1otY4TykbW+TisRj5eNW8zErXIb//Lo98VjVONZuGivU1x3tZUfasbLQjGLN5vD1fU851Eo8Vtbd15hnI1YxXn3uz0enHivLLlOtfH4rPV2pPxcSK9TlblfW8wlpM2k1DP5iDU/z58fkm5nTJVGsxUMWHlofr5ViLR3RPrY6fUKshQN2S62Ol0uPwh73H5Zbbba1WPPd1ZNWx1pizfY+b3WReqzxY7FGrJHHWF3Z3f/qxRqZxzqvLrS3KfzqqZVyrOvFL++HefzqoJVurNDdb2yaMiwsn4p1W8+ajVC7IpweUoh1NV4pfZyr74//ja9/R5lmrFAsjuVN//rUSjLW85HcmXVzjbW4tPCGBGMdVmfqYmV+Bx9FrAhiRRArglgRxIogVgSxIogVQawIYkUQK4JXFcTwEowYXq8CAAAAAAAAAAAAAAAAAAAA/6U/gAcVDMYj22gAAAAASUVORK5CYII=';
+
 
 
 class View extends GenericView {
@@ -33,6 +35,12 @@ class View extends GenericView {
 
     }
 
+    filter(data, target) {
+        const type = $(target).val();
+        const renderData = data.filter(d => (d.situacao_atual_fk == type || type == -1 ));
+        this.render(renderData);
+    }
+    
     // Aqui vamos iniciar a função que selecionado o departamento, então os selects de tipo de servico e servico são 
     //preenchidos
     fillSelectByOption(){
@@ -44,7 +52,7 @@ class View extends GenericView {
         return `<div class='btn-group'>` +
             (
                 this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
-                // this.createButton('deactivate', 'deactivate', 'danger', 'Desativar', i, 'fa-times') +
+                this.createButton('delete', 'delete', 'danger', 'Excluir Ordem', i, 'fa-times') +
                 this.createButton('create_history', 'create_history', 'success', 'Criar histórico', i, 'fa-calendar-plus') +
                 this.createButton('info', 'info', 'info', 'Ver informações', i, 'fa-eye')
             ) +
@@ -90,55 +98,54 @@ class View extends GenericView {
         var dataHora = (d.toLocaleString());
         let render = '';
 
-        render += '<div class="message-item">' +
-            '<div class="message-inner">' +
-            '<div class="message-head clearfix">' +
-            '<div class="user-detail">' +
-            '<h5 class="handle">' + "Adicionar Situação" + '</h5>' +
-            '<div class="post-meta">' +
-            '<div class="asker-meta">' +
-            '<span class="qa-message-what">' + "Registrar hoje às " + dataHora + '</span>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '<div class="qa-message-content">' +
-            '<div class="col-8 col-md-12">' +
-            '<div style="width: 250px; margin-bottom: 10px">' +
-            '<label for="situacao_pk">Nova Situação</label>' +
-            '<select class="form-control" id="situacao_atual_fk" name="situacao_fk" required="true">' +
-            '</select>' +
-            '</div>' +
-            '</div>' +
-            '<div class="col-md-12">' +
-            '<label for="ordem_servico_desc">Novo comentário</label>' +
-            '<textarea class="form-control" id="ordem_servico_comentario" name="comentario" ' +
-            'class="form-control" required="true" maxlength="200"></textarea>' +
-            '<small class="form-text text-muted">Por favor, informe a descrição da Ordem de Serviço</small>' +
-            '</div>' +
-            '</div>' +
-            '<div class="row form-group">' +
-            '<div class="col-12" id="image-upload-div" style="margin-left: 2px;">' +
-            '<div class="image-upload-wrap" style="height: 100px;"">' +
-            '<input class="file-upload-input" type="file" onchange="readURL(this);" accept="image/*" id="input-upload" required="false"/>' +
-            '<div class="drag-text">' +
-            '<h3 style="padding: 20px;">Ou clique/arraste e solte uma imagem aqui</h3>' +
-            '</div>' +
-            '</div>' +
-            '<div class="file-upload-content">' +
-            '<img id="img-input" class="file-upload-image" src="#" alt="your image" required="false"/>' +
-            '<div class="col-12" id="images_buttons">' +
-            '<button type="button" class="btn btn-danger clean_input_images" style="margin:15px;">Remover</button>' +
-            '<button type="button" class="btn btn-success save_images" style="margin:15px;">Salvar</button>' + 
-            '</div>' + 
-            '</div>' +
-            '<small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>' +
-            '<div class="col-12" id="images_saved" style="margin-top: 20px; display:flex;"></div>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>';
-
+        render += `<div class="message-item">
+                        <div class="message-inner">
+                            <div class="message-head clearfix">
+                                <div class="user-detail">
+                                    <h5 class="handle"> Adicionar Situação </h5>
+                                    <div class="post-meta">
+                                        <div class="asker-meta">
+                                            <span class="qa-message-what"> Registrar hoje às ${ dataHora } </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="qa-message-content">
+                                <div class="col-8 col-md-12">
+                                    <div style="width: 250px; margin-bottom: 10px">
+                                        <label for="situacao_pk">Nova Situação</label>
+                                        <select class="form-control" id="situacao_atual_fk" name="situacao_fk" required="true">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="ordem_servico_desc">Novo comentário</label>
+                                    <textarea class="form-control" id="ordem_servico_comentario" name="comentario"
+                                    class="form-control" required="true" maxlength="200"></textarea>
+                                    <small class="form-text text-muted">Por favor, informe a descrição da Ordem de Serviço</small>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-12" id="image-upload-div" style="margin-left: 2px;">
+                                    <div class="image-upload-wrap" style="height: 100px;">
+                                        <input class="file-upload-input" type="file" onchange="readURL(this);" accept="image/*" id="input-upload" required="false"/>
+                                        <div class="drag-text">
+                                            <h3 style="padding: 20px;">Ou clique/arraste e solte uma imagem aqui</h3>
+                                        </div>
+                                    </div>
+                                    <div class="file-upload-content">
+                                        <img id="img-input" class="file-upload-image" src="#" alt="your image" required="false"/>
+                                        <div class="col-12" id="images_buttons">
+                                            <button type="button" class="btn btn-danger clean_input_images" style="margin:15px;">Remover</button>
+                                            <button type="button" class="btn btn-success save_images" style="margin:15px;">Salvar</button>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>
+                                    <div class="col-12" id="images_saved" style="margin-top: 20px; display:flex;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`
         return render;
     }
 
@@ -163,44 +170,45 @@ class View extends GenericView {
     }
 
     createTimeLine(photo_path = null, worker_name, date, situation, comment) {
-
-        return '<div class="message-item">' +
-            '<div class="message-inner">' +
-            '<div class="message-head clearfix">' +
-            '<div class="avatar pull-left">' +
-            '<a href="#"><img class="message-foto-perfil" src="' + (photo_path || base_url + '/assets/uploads/perfil_images/default.png') + '"></a>' +
-            '</div>' +
-            '<div class="user-detail">' +
-            '<h5 class="handle">' + worker_name + '</h5>' +
-            '<div class="post-meta">' +
-            '<div class="asker-meta">' +
-            '<span class="qa-message-what"></span>' +
-            '<span class="qa-message-when">' +
-            '<span class="qa-message-when-data">' + reformatDate(date) + '</span>' +
-            '</span>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '<div class="qa-message-content">' +
-            '<b>Situação: </b>' + situation +
-            '<br>' + (comment || "Nenhum comentário adicionado.") +
-            '</div>' +
-            '</div>' +
-            '</div>';
+        return `<div class="message-item">
+                    <div class="message-inner">
+                        <div class="message-head clearfix">
+                            <div class="avatar pull-left">
+                                <a href="#"><img class="message-foto-perfil" src="${(photo_path || base_url + '/assets/uploads/perfil_images/default.png')}"></a>
+                            </div>
+                            <div class="user-detail">
+                                <h5 class="handle"> ${worker_name} </h5>
+                                <div class="post-meta">
+                                    <div class="asker-meta">
+                                        <span class="qa-message-what"></span>
+                                        <span class="qa-message-when">
+                                            <span class="qa-message-when-data">${reformatDate(date)}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="qa-message-content">
+                            <b>Situação: </b> ${situation}
+                            <br> ${(comment || "Nenhum comentário adicionado.")}
+                        </div>
+                    </div> 
+                </div>`
     }
 
     createCarouselCards(src, situacao, data, active) {
 
-        return '<div class="carousel-item ' + active + ' col-md-4">' +
-            '<div class="card historico">' +
-            '<img class="card-img-top img-fluid" src="' + src + '">' +
-            '<div class="card-body">' +
-            '<h4 class="card-title">' + situacao + '</h4>' +
-            '<p class="card-text"><small class="text-muted">' + reformatDate(data) + '</small></p>' +
-            '</div>' +
-            '</div>' +
-            '</div>';
+        return `<div class="carousel-item ${ active } col-md-4">
+                    <div class="card historico">
+                        <img class="card-img-top img-fluid" src="${src}">
+                        <div class="card-body">
+                            <h4 class="card-title"> ${situacao} </h4>
+                            <p class="card-text">
+                                <small class="text-muted"> ${reformatDate(data)} </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>`
     }
 
     createCarousel(data) {
@@ -208,23 +216,23 @@ class View extends GenericView {
 
         if (data.length > 2) {
             render +=
-                '<div id="myCarousel" class="carousel slide"data-ride="carousel">' +
-                '<div class="carousel-inner row w-100 mx-auto"></div>' +
-                '<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">' +
-                '<span class="carousel-control-prev-icon" style="color: black; background-color: black; width: 50px; height: 50px;" aria-hidden="true"></span>' +
-                '<span class="sr-only"">Previous</span>' +
-                '</a>' +
-                '<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">' +
-                '<span class="carousel-control-next-icon" style="color: black; background-color: black; width: 50px; height: 50px;" aria-hidden="true"></span>' +
-                '<span class="sr-only">Next</span>' +
-                '</a>' +
-                '</div>';
-                    alerts('success', 'Sucesso', 'Operação realizada com sucesso');
+                `<div id="myCarousel" class="carousel slide"data-ride="carousel">
+                    <div class="carousel-inner row w-100 mx-auto"></div>
+                        <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" style="color: black; background-color: black; width: 50px; height: 50px;" aria-hidden="true"></span>
+                            <span class="sr-only"">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" style="color: black; background-color: black; width: 50px; height: 50px;" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>`
+                alerts('success', 'Sucesso', 'Operação realizada com sucesso');
         } else {
             render +=
-                '<div id="card_imagens">' +
-                '<div class="carousel-inner row w-100 mx-auto"></div>' +
-                '</div>';
+                `<div id="card_imagens">
+                    <div class="carousel-inner row w-100 mx-auto"></div>
+                </div>`
         }
 
         return render;
@@ -232,15 +240,14 @@ class View extends GenericView {
 
     createImageCard(src, val){
         return (
-            '<div class="col-md-3" id="card_'+ val.toString() +'">' + 
-                '<img src="'+ src +'" class="img-thumbnail" alt="image_os" width="150px" height="150px" style="position:relative;">' +
-                '<div class="btn-group" style="position:relative; display:block; z-index:1; left:65%;  margin: -40px 10px 0 0;">' + 
-                    '<button type="button" class="btn btn-sm btn-danger btn_remove_image" data-title="Remover Imagem" value="' + val.toString() + '">' + 
-                        '<i class="fa fa-trash" aria-hidden="true"></i>' + 
-                    '</button>' + 
-                '</div>' + 
-            '<div>'
-             
+            `<div class="col-md-3" id="card_${val.toString()}"> 
+                <img src="${src}" class="img-thumbnail" alt="image_os" width="150px" height="150px" style="position:relative;">
+                <div class="btn-group" style="position:relative; display:block; z-index:1; left:65%;  margin: -40px 10px 0 0;">
+                    <button type="button" class="btn btn-sm btn-danger btn_remove_image" data-title="Remover Imagem" value="${val.toString()}"> 
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                </div> 
+            <div>`
         )
     }
 
@@ -250,6 +257,34 @@ class View extends GenericView {
         
     }
 
+    renderDetailOrdem(data){
+        console.log(data);
+        let render = '';
+
+        data.imagens.length !== 0 ? 
+        render += this.createDetailOrdem(data.imagens[data.imagens.length-1].imagem_os, data.ordem_servico_cod, data.ordem_servico_desc):
+        render += this.createDetailOrdem(null,data.ordem_servico_cod,data.ordem_servico_desc);
+
+       $('#show_details_ordem').html(render);
+    }
+    
+    createDetailOrdem(src = null, cod, desc){
+        return `<div class="col-3"> 
+                    <img src="${(src || default_image)}" height="150" width="150" style="border-radius: 10px;"> 
+                </div>
+                <div class="col-9" style="padding-top: 20px;">
+                    <p><b>Código:</b> ${cod} </p>
+                    <p><b>Descrição:</b> ${desc}</p>
+                </div>`
+    }
+
+    // `<div class="card col-6" align="center" style="width: 18rem; margin-left:25%">
+    //                 <img class="card-img-top" src="${(src || default_image)}" alt="card-image">
+    //                 <div class="card-body">
+    //                     <h5 class="card-title"> ${cod}</h5>
+    //                     <p class="card-text"> ${desc}</p>
+    //                 </div>
+    //             </div>`
 
 }
 
@@ -288,11 +323,11 @@ class Control extends GenericControl {
         $(document).on('click', '.save_images', () => { this.readImages() });
         $(document).on('click', '.btn_remove_image', () => { this.deleteImage($('.btn_remove_image').val()) });
         $(document).on('click', '.action_export', () => { this.exportData() });
-
+        $(document).on('click', '.btn_delete', () => { this.handleDelete() });
+        $(document).on('click', '#confirm_delete', () => { this.delete() });
     }
 
     deleteImage(index){
-
         this.myView.removeImageCard(index);
     }
 
@@ -303,11 +338,9 @@ class Control extends GenericControl {
 
     saveImages(){
         let images = [];
-
         $('.img-thumbnail').each(function(){
             images.push(this.src);
           }); 
-
         return images; 
     }
 
@@ -326,11 +359,6 @@ class Control extends GenericControl {
     }
 
     exportData() {
-        // var data = {
-        //     'data_inicial': $('#data_inicial').val(),
-        //     'data_final': $('#data_final').val()
-        // };
-
         let string = `/export/execute?data_inicial=${$('#data_inicial').val()}&data_final=${$('#data_final').val()}`;
         window.open(base_url + string, "target=_blank");
     }
@@ -347,7 +375,9 @@ class Control extends GenericControl {
     }
 
     async saveNewSituation(moreFields = null) {
+        //Aprimorar esse load para funcionar
         this.myView.initLoad();
+
         const data = this.myView.createJsonWithFields(this.fields);
         data[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
         
@@ -360,18 +390,18 @@ class Control extends GenericControl {
 
         const response = await this.myRequests.send('/insert_situacao/'+data[this.primaryKey], sendData);
         sendData.imagens = response.data.new.imagens;
-        this.handleResponse(response, sendData);
         this.myView.endLoad();
-        this.counter = 0;
+
+        this.handleResponse(response, sendData);
         $('#images_saved').html("");
+        this.counter = 0;
 
     }
 
     async handleNewSituation() {
-        var render = '';
+        let render = '';
 
         await this.myView.checkElementDom('#otimeline');
-
         render += this.myView.renderCurrentSituation(this.data.self[this.state.selectedId]);
         render += this.myView.renderTimeLineInput();
 
@@ -382,6 +412,7 @@ class Control extends GenericControl {
 
     async handleTimelineHistoric() {
         this.myView.initLoad();
+
         var render = '';
         var cards = ';'
         const sendData = this.myView.createJsonWithFields(this.fields);
@@ -393,7 +424,9 @@ class Control extends GenericControl {
             this.myView.showMessage('failed', 'Falha', 'Entre em contato com a central!');
             return;
         }
+
         this.myView.endLoad();
+
         //Handle with historic
         this.fillHistoricFields(this.data.self[this.state.selectedId], this.fields);
         if(response.data.historicos.length > 0){
@@ -402,14 +435,12 @@ class Control extends GenericControl {
 
         //Handle with images
         this.myView.renderCarousel(this.data.self[this.state.selectedId].imagens);
-
         if(this.data.self[this.state.selectedId].imagens.length > 0){
             cards = this.myView.renderCarouselCards(this.data.self[this.state.selectedId].imagens);
             $('.carousel-inner').html(cards);
         }
         
         render += this.myView.renderCurrentSituation(this.data.self[this.state.selectedId]);
-
         $('#timeline_historic').html(render);
         $('#card_slider_historico').show();
 
@@ -458,6 +489,39 @@ class Control extends GenericControl {
         });
 
         $('#address_historic').text(local);
+    }
+    
+    async delete(){
+        this.myView.initLoad(); 
+        
+        const sendData = is_superusuario ? this.myView.getPassword(action) : {};
+        sendData[this.primaryKey] = this.data.self[this.state.selectedId][this.primaryKey];
+        
+        const response = await this.myRequests.send(`/delete/${sendData[this.primaryKey]}`);
+        if (response.code !== 200) {
+            this.myView.showMessage('failed', 'Falha', response.data.mensagem);
+            return;
+        }
+
+        this.myView.endLoad();
+        this.removeObject();
+
+        this.myView.closeModal();
+        this.myView.showMessage('success', 'Sucesso', 'Operação realizada!');
+        
+        this.handleFilter($('#filter-ativo').val());
+        $('#filter-ativo').trigger('change');
+        this.myView.render(this.data.self);
+    }
+    
+    handleDelete(){
+        this.myView.initLoad();
+        this.myView.renderDetailOrdem(this.data.self[this.state.selectedId]);
+    }
+
+    removeObject(){
+        this.data.self.splice(this.state.selectedId,1);
+        console.log(this.data.self);
     }
 
 }

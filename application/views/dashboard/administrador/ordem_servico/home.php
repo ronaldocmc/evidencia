@@ -140,14 +140,13 @@
                                 <div class="col-md-4">
                                     <label for="filter-ativo">Mostrar</label>
                                     <select name="filter-ativo" id="filter-ativo" class="form-control">
-                                        <option value="semana">Ultima Semana</option>
-                                        <option value="">Todas</option>
-                                        <option value="finalizadas">Finalizadas</option>
-                                        <option value="recusadas">Recusadas</option>
-                                        <option value="abertas">Abertas</option>
-                                        <option value="ativadas">Ativas</option>
-                                        <option value="desativadas">Excluídas</option>
-                                        <option value="andamento">Em andamento</option>
+                                        <!-- <option value="semana">Ultima Semana</option> -->
+                                        <option value="-1">Todas</option>
+                                        <option value="1">Abertas</option>
+                                        <option value="2">Em andamento</option>
+                                        <option value="5">Finalizadas</option>
+                                        <option value="4">Recusadas (Não Procede)</option>
+                                        <option value="3">Recusadas (Repetido)</option>
                                     </select><br>
                                 </div>
                             </div>
@@ -448,43 +447,22 @@
 
 
 <!-- MODAL APAGAR -->
-<div class="modal fade" id="d_ordem_servico">
-    <div class="modal-dialog modal-dialog-centered modal-lg" style="width: 380px !important;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Excluir ordem de serviço</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title"><strong>Detalhes da ordem: </strong></div>
-
-                        <div id="show_ordem_excluir">
-
-                            <div class="card" style="width: 18rem;">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Carregando</h5>
-                                    <p class="card-text">Carregando.</p>
-                                </div>
-                            </div>
-
-                        </div>
+<div id="delete" class="d-none">
+    <div class="modal-body">
+        <div class="card">
+            <div class="card-header"><b>Detalhes da Ordem</b></div>
+            <div class="card-body" id="show_details_ordem" style="display:flex;"></div>
+         </div>
+        <div class="modal-footer">
+            <div class="btn-group">
+                <button type="button" id="confirm_delete" class="btn btn-sm btn-danger pull-right js-tooltip"
+                    data-toggle="tooltip" data-placement="bottom" title="Apagar permanentemente">
+                    <div class="d-none d-sm-block">
+                        <i class="fas fa-trash"></i> Apagar
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="btn-group">
-                        <button type="button" id="confirm_delete" class="btn btn-sm btn-danger pull-right js-tooltip"
-                            data-toggle="tooltip" data-placement="bottom" title="Apagar permanentemente">
-                            <div class="d-none d-sm-block">
-                                <i class="fas fa-trash"></i> Apagar
-                            </div>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-secondary btn-fechar pull-right"
-                            data-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary btn-fechar pull-right"
+                    data-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
