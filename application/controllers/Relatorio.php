@@ -592,46 +592,6 @@ class Relatorio extends CRUD_Controller
         return $reports;
     }
 
-    // Index será responsável pela listagem dos relatórios
-    public function index()
-    {
-
-        $reports = $this->get_all_reports();
-
-        $this->session->set_flashdata('css', array(
-            0 => base_url('assets/vendor/cropper/cropper.css'),
-            1 => base_url('assets/vendor/input-image/input-image.css'),
-            2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            3 => base_url('assets/css/modal_desativar.css'),
-            4 => base_url('assets/css/user_guide.css'),
-        ));
-
-        $this->session->set_flashdata('scripts', array(
-            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            1 => base_url('assets/vendor/datatables/datatables.min.js'),
-            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            4 => base_url('assets/js/utils.js'),
-            5 => base_url('assets/js/constants.js'),
-            6 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            7 => base_url('assets/js/dashboard/relatorio/home.js'),
-        ));
-
-        $this->load->helper('form');
-        load_view([
-            0 => [
-                'src' => 'dashboard/administrador/relatorio/home',
-                'params' => [
-                    'relatorios' => $reports,
-                ],
-            ],
-            1 => [
-                'src' => 'access/pre_loader',
-                'params' => null,
-            ],
-        ], 'administrador');
-    }
-
     private function verify_password()
     {
         if (!authenticate_operation($this->input->post('senha'), $this->session->user['password_user'])) {
