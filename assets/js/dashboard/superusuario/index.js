@@ -79,21 +79,51 @@ $('#btn-activate').click(() => {
 update_table = () => {
     table.clear().draw();
 
-    $.each(superusuarios, function (i, user) {
-        if(user.ativo == 1){
-            table.row.add([
-                user.superusuario_nome,
-                user.superusuario_login,
-                '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
-            ]).draw(false);
-      } else {
-            table.row.add([
-                user.superusuario_nome,
-                user.superusuario_login,
-                '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
-            ]).draw(false);
-      }
-    });
+    switch($('#filter-ativo').val()) {
+        case 'todos':
+            $.each(superusuarios, function (i, user) {
+                if(user.ativo == 1){
+                    table.row.add([
+                        user.superusuario_nome,
+                        user.superusuario_login,
+                        '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
+                    ]).draw(false);
+                } else {
+                    table.row.add([
+                        user.superusuario_nome,
+                        user.superusuario_login,
+                        '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
+                    ]).draw(false);
+                }
+            });
+            break;
+
+        case 'ativos':
+            $.each(superusuarios, function (i, user) {
+                if(user.ativo == 1){
+                    table.row.add([
+                        user.superusuario_nome,
+                        user.superusuario_login,
+                        '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
+                    ]).draw(false);
+                }
+            });
+            break;
+
+        case 'desativados':
+            $.each(superusuarios, function (i, user) {
+                if(user.ativo == 0){
+                    table.row.add([
+                        user.superusuario_nome,
+                        user.superusuario_login,
+                        '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
+                    ]).draw(false);
+                }
+            });
+            break;
+
+
+    }
 }
 
 
