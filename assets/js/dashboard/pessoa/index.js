@@ -104,7 +104,7 @@ send = (imagem) => {
             } else {
                 alerts('success', 'Dados alterados com sucesso!', 'Aguarde um momento, pois atualizaremos os dados de sua conta.');
 
-                window.location.replace(base_url+'/funcionario/minha_conta');
+                window.location.replace(base_url+'/minha_conta');
             }
 
             pre_loader_hide();
