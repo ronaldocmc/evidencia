@@ -199,4 +199,18 @@ class Funcionario_model extends MY_Model
         $this->CI->db->where('funcao_fk', $funcao);
         return $this->CI->db->get()->result();
     }
+
+    public function get_revisores($select, $organizacao)
+    {
+        $this->CI->db->select($select);
+        $this->CI->db->from('funcionarios');
+
+        $this->CI->db->join('funcoes_permissoes', 'funcoes_permissoes.funcao_fk = funcionarios.funcao_fk');
+        $this->CI->db->join('permissoes', 'permissoes.permissao_pk = funcoes_permissoes.permissao_fk');
+
+        $this->CI->db->where('funcionarios.organizacao_fk', $organizacao);
+        $this->CI->db->where('permissoes.acao_fk', 27);
+        
+        return $this->CI->db->get()->result();
+    }
 }

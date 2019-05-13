@@ -33,9 +33,7 @@
                                             dela <strong>(Aberta, Em Andamento, Fechada)</strong>, além de controlar
                                             operações de inserção, edição, remoção ou ativação de uma ordem de serviço!
                                             Cada ordem de serviço possui um código único que é exibido após a sua
-                                            criação! Caso a OS esteja sendo solicitada por um cidadão via telefone, não
-                                            se esqueça de alterar o tipo de procedência <strong>(Externa)</strong> e
-                                            registrar os dados do cidadão na ordem, além de informá-lo o código da OS.
+                                            criação!
                                         </p><br>
 
                                         <p> <strong> Importante: </strong> toda ordem de serviço gera um histórico! Ele
@@ -247,13 +245,6 @@
                                     </div>
 
                                     <div class="row form-group">
-                                        <div class="col-7 col-md-4" id="procedencias_options">
-                                            <label for="procedencia_pk"><strong>Procedência*</strong></label>
-                                            <select class="form-control" id="procedencia_fk" name="procedencia_fk"
-                                                required="true">
-                                            </select>
-                                            <small class="form-text text-muted">Por favor, informe a procedência desta ordem</small>
-                                        </div>
                                         <div class="col-7 col-md-4">
                                             <label for="prioridade_pk"><strong>Prioridade*</strong></label>
                                             <select class="form-control" id="prioridade_fk" name="prioridade_fk"
@@ -599,14 +590,6 @@
                         </div>
                         <div class="card-body card-block">
                             <p id="ordem_servico_desc_historic"></p>
-                        </div>
-                    </div>
-                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                        <div class="card-header">
-                            <strong>Procedência:</strong>
-                        </div>
-                        <div class="card-body card-block">
-                            <p id="procedencia_nome_historic"></p>
                         </div>
                     </div>
                 </div>

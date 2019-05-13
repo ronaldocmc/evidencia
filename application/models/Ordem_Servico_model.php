@@ -15,7 +15,6 @@ class Ordem_Servico_model extends MY_Model
 
     const FORM = array(
         'prioridade_fk',
-        'procedencia_fk',
         'servico_fk',
         'setor_fk',
         'situacao_inicial_fk',
@@ -71,7 +70,7 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->db->join('municipios', 'municipios.municipio_pk = localizacoes.localizacao_municipio');
         $this->CI->db->join('funcionarios', 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk');
 
-        $this->CI->db->where('procedencias.organizacao_fk', $organization);
+        $this->CI->db->where('setores.organizacao_fk', $organization);
 
         if ($where !== null) 
         {
@@ -200,12 +199,6 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->form_validation->set_rules(
             'prioridade_fk',
             'Prioridade',
-            'trim|required|is_natural'
-        );
-
-        $this->CI->form_validation->set_rules(
-            'procedencia_fk',
-            'Procedência',
             'trim|required|is_natural'
         );
 

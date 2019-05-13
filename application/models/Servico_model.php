@@ -25,6 +25,7 @@ class Servico_model extends MY_Model
         $this->CI->db->from(self::TABLE_NAME);
         $this->CI->db->join('situacoes', 'situacoes.situacao_pk = ' . self::TABLE_NAME . '.situacao_padrao_fk', 'left');
         $this->CI->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = ' . self::TABLE_NAME . '.tipo_servico_fk');
+        $this->CI->db->join('departamentos', 'departamentos.departamento_pk = tipos_servicos.departamento_fk');
         if ($where !== null) {
             if (is_array($where)) {
                 foreach ($where as $field => $value) {
@@ -35,11 +36,8 @@ class Servico_model extends MY_Model
             }
         }
         $result = $this->CI->db->get()->result();
-        if ($result) {
-            return $result;
-        } else {
-            return false;
-        }
+
+        return $result;
     }
 
     /**

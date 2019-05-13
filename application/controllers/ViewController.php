@@ -116,15 +116,12 @@ class ViewController extends AuthorizationController
         //Selecionando os serviços
         $servicos = $this->servico_model->get(
             '*',
-            ["situacoes.organizacao_fk" => $this->session->user['id_organizacao']]
+            ["departamentos.organizacao_fk" => $this->session->user['id_organizacao']]
         );
         //Selecionando os funcionários com a função de revisor
-        $funcionarios = $this->funcionario_model->get(
+        $funcionarios = $this->funcionario_model->get_revisores(
             "*",
-            [
-                "funcionarios.organizacao_fk" => $this->session->user['id_organizacao'],
-                "funcionarios.funcao_fk" => "6",
-            ]
+            $this->session->user['id_organizacao']
         );
         //Carregando CSS utilizados na view
         $this->session->flashdata('css', [

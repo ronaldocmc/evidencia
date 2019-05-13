@@ -359,7 +359,7 @@ class Relatorio extends CRUD_Controller
 
         $situacoes = $this->situacao->get_all(
             '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            null,
             -1,
             -1
         );
