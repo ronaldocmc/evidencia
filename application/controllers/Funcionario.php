@@ -54,8 +54,10 @@ class Funcionario extends CRUD_Controller
 
             $this->funcionario_model->__set('funcionario_pk', $this->session->user['id_user']);
 
-            $this->funcionario_model->__set('funcionario_senha',
-                hash(ALGORITHM_HASH, $this->input->post('new_password').SALT));
+            $this->funcionario_model->__set(
+                'funcionario_senha',
+                hash(ALGORITHM_HASH, $this->input->post('new_password').SALT)
+            );
 
             $this->funcionario_model->update_funcionario($this->session->user['id_user']);
 
@@ -85,7 +87,10 @@ class Funcionario extends CRUD_Controller
 
         if ($path != null) {
             $this->funcionario_model->__set('funcionario_caminho_foto', $path[0]);
-            $this->response->add_data('path', $path[0]);
+            $user_data = $this->session->user;
+            $user_data['image_user_min'] = $path[0];
+            $user_data['image_user'] = $path[0];
+            $this->session->set_userdata('user', $user_data);
         }
 
         if (isset($_POST['setor_fk'])) {
@@ -213,7 +218,8 @@ class Funcionario extends CRUD_Controller
             } else {
                 $id = $this->insert();
 
-                $new = $this->funcionario_model->get('
+                $new = $this->funcionario_model->get(
+                    '
                     funcionarios.funcionario_pk,
                     funcionarios.organizacao_fk,
                     funcionarios.ativo,

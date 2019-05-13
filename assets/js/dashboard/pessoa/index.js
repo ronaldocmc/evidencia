@@ -14,7 +14,7 @@ const google = "6LfwtV4UAAAAANnXXJhkM87IgNRNQghpwW467CEc"; //REFATORAR PARA CONS
 
 
 $(document).ready(function () {
-    image = loadAvatarImage();
+    let image = loadAvatarImage();
     image.style = "width: 50%";
     image.className = "img-responsive img-thumbnail align-center";
     document.getElementById('img-div').appendChild(image);
@@ -99,7 +99,7 @@ send = (imagem) => {
                 }
             } else {
                 alerts('success', 'Dados alterados com sucesso!', 'Aguarde um momento, pois atualizaremos os dados de sua conta.');
-
+                updateAvatar();
                 window.location.replace(base_url + '/minha_conta');
             }
 
