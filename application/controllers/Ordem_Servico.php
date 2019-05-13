@@ -197,21 +197,21 @@ class Ordem_Servico extends CRUD_Controller
 
         $prioridades = $this->prioridade->get_all(
             '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            ['ativo' => 1],
             -1,
             -1
         );
 
         $situacoes = $this->situacao->get_all(
             '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            ['ativo' => 1],
             -1,
             -1
         );
 
         $servicos = $this->servico->get_all(
             '*',
-            ['situacoes.organizacao_fk' => $this->session->user['id_organizacao']],
+            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
             -1,
             -1,
             [
@@ -319,7 +319,7 @@ class Ordem_Servico extends CRUD_Controller
             $this->input->post('imagens') //Recebe um array de imagens
         );
 
-        $this->ordem_servico->insert_images($paths, $id);
+        $this->ordem_servico->insert_images($paths, $id, $this->session->user['id_organizacao']);
 
         $new = $this->ordem_servico->get_home($this->session->user['id_organizacao'], ['ordem_servico_pk' => $id]);
         $new[0]->imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao'], ['ordem_servico_fk' => $id]);
@@ -374,7 +374,7 @@ class Ordem_Servico extends CRUD_Controller
 
             $this->ordem_servico->update();
 
-            $this->ordem_servico->insert_images($paths, $id);
+            $this->ordem_servico->insert_images($paths, $id, $this->session->user['id_organizacao']);
             $new = (object) [];
             // $new = $this->ordem_servico->get_home($this->session->user['id_organizacao'], ['ordem_servico_pk' => $id]);
             $new->imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao'], ['ordem_servico_fk' => $id]);

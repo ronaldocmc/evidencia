@@ -292,7 +292,7 @@ class Request extends GenericRequest {
 
     constructor() {
         super();
-        this.route = '/ordem_servico';
+        this.route = '/Ordem_Servico';
     }
 
 }
@@ -527,9 +527,9 @@ class Control extends GenericControl {
 }
 
 const myControl = new Control();
-let map;
-
 myControl.init();
+
+let map;
 
 initMap = () => {
 

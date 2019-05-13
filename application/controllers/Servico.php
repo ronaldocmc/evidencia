@@ -121,10 +121,7 @@ class Servico extends CRUD_Controller
 
         $situacoes = $this->situacao_model->get_all(
             'situacao_pk, situacao_nome',
-            [
-                'organizacao_fk' => $this->session->user['id_organizacao'],
-                'ativo' => '1',
-            ],
+            ['ativo' => '1'],
             -1,
             -1
         );

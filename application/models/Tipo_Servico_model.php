@@ -42,11 +42,7 @@ class Tipo_Servico_model extends MY_Model
         // echo($this->CI->db->get_compiled_select());die();
         $result = $this->CI->db->get()->result();
 
-        if ($result) {
-            return $result;
-        } else {
-            return false;
-        }
+        return $result;
     }
 
 

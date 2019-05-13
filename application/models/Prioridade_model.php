@@ -15,8 +15,7 @@ class Prioridade_model extends MY_Model
 
     const FORM = array(
         'prioridade_pk',
-        'prioridade_nome',
-        'organizacao_fk'
+        'prioridade_nome'
     );
 
     public function config_form_validation_primary_key()

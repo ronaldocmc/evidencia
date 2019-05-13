@@ -45,10 +45,7 @@ class Tipo_Servico extends CRUD_Controller
 
         $prioridades = $this->prioridade->get_all(
             '*',
-            [
-                'organizacao_fk' => $this->session->user['id_organizacao'],
-                'ativo' => 1,
-            ],
+            ['ativo' => 1],
             -1,
             -1
         );

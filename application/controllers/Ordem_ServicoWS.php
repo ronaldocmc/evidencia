@@ -108,7 +108,7 @@ class Ordem_ServicoWS extends MY_Controller
                 [0 => $this->input->post('img')]//talvez seja interessante a view já mandar no formato de array mesmo quando é uma.
             );
 
-            $this->ordem_servico->insert_images($paths, $id);
+            $this->ordem_servico->insert_images($paths, $id, $token_decodificado->id_empresa);
 
             $this->end_transaction();
 
@@ -203,7 +203,7 @@ class Ordem_ServicoWS extends MY_Controller
 
             $this->ordem_servico->update();
 
-            $this->ordem_servico->insert_images($paths, $_POST['ordem_servico_pk']);
+            $this->ordem_servico->insert_images($paths, $_POST['ordem_servico_pk'], $token_decodificado->id_empresa);
 
             $this->end_transaction();
 

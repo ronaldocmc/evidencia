@@ -260,7 +260,7 @@ class Ordem_Servico_model extends MY_Model
         return $this->CI->db
         ->select("*")
         ->from("imagens_os")
-        ->where("situacoes.organizacao_fk", $organizacao)
+        ->where("imagens_os.organizacao_fk", $organizacao)
         ->join("situacoes","imagens_os.situacao_fk = situacoes.situacao_pk")
         ->get()->result();  
     }
@@ -331,12 +331,12 @@ class Ordem_Servico_model extends MY_Model
         return $shortenings[0]->tipo_servico_abreviacao . $shortenings[0]->servico_abreviacao;
     }
 
-    function insert_images($paths, $os)
+    function insert_images($paths, $os, $organizacao)
     {
-        $this->CI->db->insert_batch('imagens_os', $this->build_images_rows($paths, $os));
+        $this->CI->db->insert_batch('imagens_os', $this->build_images_rows($paths, $os, $organizacao));
     }
 
-    function build_images_rows($paths, $os)
+    function build_images_rows($paths, $os, $organizacao)
     {
         $rows = [];
 
@@ -348,6 +348,7 @@ class Ordem_Servico_model extends MY_Model
                     'ordem_servico_fk' => $os,
                     'situacao_fk' => $this->__get('situacao_atual_fk'),
                     'imagem_os' => $p,
+                    'organizacao_fk' => $organizacao
                 );
             }
         }
