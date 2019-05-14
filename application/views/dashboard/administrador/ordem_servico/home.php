@@ -10,7 +10,6 @@
                             data-target="#modal" id="btn-exportar">
                             <i class="zmdi zmdi-task"></i>exportar
                         </button>
-                        <!-- <input type="hidden" id="ordem_servico_pk" name="ordem_servico_pk" class="form-control"> -->
                         <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Nova Ordem de Serviço" data-contentid="save"
                             data-target="#modal">
                             <i class="zmdi zmdi-plus"></i>nova ordem de serviço</button>
@@ -150,7 +149,7 @@
                             </div>
                         </div>
                         <div id="loading">
-                            <div align="center" class="center">
+                            <div class="center" style="text-align: center">
                                 <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
                             </div>
                         </div>
