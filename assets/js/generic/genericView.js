@@ -19,6 +19,8 @@ class GenericView {
         this.render(data.self);
         $('.table-responsive').show();
         $('#loading').hide();
+        // Para remover o style fantasma na tabela
+        $('.table-striped').removeAttr('style');
     }
 
     render(data) {

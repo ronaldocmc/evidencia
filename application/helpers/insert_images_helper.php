@@ -56,7 +56,7 @@ function upload_img($params, array $base64_images = null)
                     //Adicionando o caminho da última imagem armazenada
                     array_push($images_uploaded, $blob_url);
                 } catch (Exception $e) {
-                    throw new MyException('ERROR: Falha no upload da imagem: ['.$e->getMessage().']', Response::SERVER_FAIL);
+                    throw new MyException('ERROR: Falha ao salvar a imagem: ['.$e->getMessage().']', Response::SERVER_FAIL);
                 }
             }
         }

@@ -177,7 +177,6 @@ class Ordem_ServicoWS extends MY_Controller
 
             $obj = json_decode(file_get_contents('php://input'));
             $headers = apache_request_headers();
-
             
             $_POST = get_object_vars($obj);
             $_POST['img'] = isset($obj->img) ? $obj->img : null;
@@ -194,7 +193,7 @@ class Ordem_ServicoWS extends MY_Controller
                     'is_os' => true,
                     'situation' => $this->ordem_servico->__get('situacao_atual_fk'),
                 ],
-                [0 => $this->input->post('img')]//talvez seja interessante a view já mandar no formato de array mesmo quando é uma.
+                [0 => $this->input->post('img')]
             );
 
             $this->begin_transaction();
@@ -203,7 +202,10 @@ class Ordem_ServicoWS extends MY_Controller
 
             $this->ordem_servico->update();
 
-            $this->ordem_servico->insert_images($paths, $_POST['ordem_servico_pk'], $token_decodificado->id_empresa);
+            if ($paths !== null && !empty($paths)) 
+            {
+                $this->ordem_servico->insert_images($paths, $_POST['ordem_servico_pk'], $token_decodificado->id_empresa);
+            }
 
             $this->end_transaction();
 

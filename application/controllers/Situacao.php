@@ -41,7 +41,6 @@ class Situacao extends CRUD_Controller
             $this->situacao_model->run_form_validation();
 
             $this->situacao_model->fill();
-            $this->situacao_model->__set('organizacao_fk', $this->session->user['id_organizacao']);
 
             $this->begin_transaction();
 
@@ -69,7 +68,7 @@ class Situacao extends CRUD_Controller
 
         $data = $this->situacao_model->get_all(
             '*, situacoes.ativo as ativo',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            null,
             -1,
             -1
         );
