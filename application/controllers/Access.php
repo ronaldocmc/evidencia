@@ -1,19 +1,21 @@
 
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
-require_once APPPATH . "core/MyException.php";
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+require_once APPPATH.'core/MyException.php';
 
 /**
- * Acess Class
+ * Acess Class.
  *
- * @package     Evidencia
  * @category    Controller
+ *
  * @author      Pedro Cerdeirinha & Matheus Palmeira & Darlan
  */
 class Access extends CI_Controller
 {
     /**
-     * Variavel que representa a resposta do servidor ao usuário
+     * Variavel que representa a resposta do servidor ao usuário.
      *
      * @var Response
      */
@@ -23,13 +25,11 @@ class Access extends CI_Controller
     //-------------------------------------------------------------------------------
 
     /**
-     * Construtor da Classe
-     * 
-     * Chama o construtor da classe pai
+     * Construtor da Classe.
      *
-     * @return void
+     * Chama o construtor da classe pai
      */
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
         date_default_timezone_set('America/Sao_Paulo');
@@ -53,14 +53,13 @@ class Access extends CI_Controller
     }
 
     //--------------------------------------------------------------------------------
+
     /**
      * Método para efetuar o logout do sistema.
-     *
-     * @return void
      */
     public function quit()
     {
-        log_message('monitoring', $this->session->user['email_user'] . ' from ' . $this->input->ip_address() . ' logged out');
+        log_message('monitoring', $this->session->user['email_user'].' from '.$this->input->ip_address().' logged out');
         session_destroy();
         redirect(base_url());
     }
@@ -83,12 +82,11 @@ class Access extends CI_Controller
     private function check_login_attempts()
     {
         if (ENVIRONMENT != 'testing') {
-
             $response = verify_attempt($this->input->ip_address());
 
             if ($response != true) {
-                log_message('monitoring', 'Número de tentativas excedidas para ' . $this->input->ip_address());
-                throw new MyException('Número de tentativas excedidas. ' . $response, Response::FORBIDDEN);
+                log_message('monitoring', 'Número de tentativas excedidas para '.$this->input->ip_address());
+                throw new MyException('Número de tentativas excedidas. '.$response, Response::FORBIDDEN);
             }
         }
     }
@@ -97,14 +95,14 @@ class Access extends CI_Controller
     {
         $login_array = explode('@', $this->input->post('login'));
 
-        return ($login_array[1] == 'admin');
+        return $login_array[1] == 'admin';
     }
 
     private function clear_login_attempts()
-    {   
-        $this->tentativa_model->__set('tentativa_tempo', date('Y/m/d')." 00:00:00");
+    {
+        $this->tentativa_model->__set('tentativa_tempo', date('Y/m/d').' 00:00:00');
         $this->tentativa_model->__set('tentativa_ip', $this->input->ip_address());
-        
+
         $this->tentativa_model->delete();
     }
 
@@ -123,16 +121,14 @@ class Access extends CI_Controller
 
         $this->authorization = new Authorization();
 
-        $authorized = $this->authorization->check_permission( 
-            'Dashboard', 
-            'funcionario_administrador', 
+        $authorized = $this->authorization->check_permission(
+            'Dashboard',
+            'funcionario_administrador',
             $user->funcao_pk
         );
 
-        if(!$authorized)
-        {
+        if (!$authorized) {
             throw new MyException('Você não tem autorização para acessar o sistema', Response::FORBIDDEN);
-
         }
     }
 
@@ -156,18 +152,18 @@ class Access extends CI_Controller
 
     private function set_session($user)
     {
-        $userdata =  [
-            'id_user'           => $user->funcionario_pk,
-            'email_user'        => $user->funcionario_login,
-            'password_user'     => $user->funcionario_senha,
-            'id_organizacao'    => $user->organizacao_pk,
-            'name_user'         => $user->funcionario_nome,
-            'name_organizacao'  => $user->organizacao_nome,
-            'is_superusuario'   => FALSE,
-            'image_user_min'    => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
-            'image_user'        => $user->funcionario_caminho_foto !== null ? base_url($user->funcionario_caminho_foto) : base_url('assets/uploads/perfil_images/default.png'),
-            'func_funcao'       => $user->funcao_nome,
-            'id_funcao'         => $user->funcao_pk,
+        $userdata = [
+            'id_user' => $user->funcionario_pk,
+            'email_user' => $user->funcionario_login,
+            'password_user' => $user->funcionario_senha,
+            'id_organizacao' => $user->organizacao_pk,
+            'name_user' => $user->funcionario_nome,
+            'name_organizacao' => $user->organizacao_nome,
+            'is_superusuario' => false,
+            'image_user_min' => $user->funcionario_caminho_foto !== null ? $user->funcionario_caminho_foto : base_url('assets/uploads/perfil_images/default.png'),
+            'image_user' => $user->funcionario_caminho_foto !== null ? $user->funcionario_caminho_foto : base_url('assets/uploads/perfil_images/default.png'),
+            'func_funcao' => $user->funcao_nome,
+            'id_funcao' => $user->funcao_pk,
         ];
 
         $this->session->set_userdata('user', $userdata);
@@ -178,7 +174,7 @@ class Access extends CI_Controller
         $this->load->model('Super_model', 'superuser');
 
         $this->superuser->__set('superusuario_login', $this->input->post('login'));
-        $this->superuser->__set('superusuario_senha', hash(ALGORITHM_HASH, $this->input->post('password') . SALT));
+        $this->superuser->__set('superusuario_senha', hash(ALGORITHM_HASH, $this->input->post('password').SALT));
 
         $superuser = $this->superuser->get_one_or_404('*');
 
@@ -190,35 +186,33 @@ class Access extends CI_Controller
     private function authenticate_user()
     {
         $this->funcionario->__set('funcionario_login', $this->input->post('login'));
-        $this->funcionario->__set('funcionario_senha', hash(ALGORITHM_HASH, $this->input->post('password') . SALT));
+        $this->funcionario->__set('funcionario_senha', hash(ALGORITHM_HASH, $this->input->post('password').SALT));
 
-        
         $worker = $this->funcionario->get_or_404();
 
         $this->check_permissions($worker);
 
-        $this->response->add_data('permissions', 
+        $this->response->add_data('permissions',
          json_encode($this->_get_user_permissions($worker->funcao_pk), JSON_UNESCAPED_UNICODE));
 
         $this->set_session($worker);
 
         $this->clear_login_attempts();
-     }
+    }
 
     //--------------------------------------------------------------------------------
+
     /**
      * Método que recebe as informações de usuário e valida-as e, caso seja valido
-     * realiza o login e informa o sucesso, caso contrário informa as inconsistências
+     * realiza o login e informa o sucesso, caso contrário informa as inconsistências.
      *
      * @param       Input string g-recaptcha-response
      * @param       Input string login
      * @param       Input string password
-     * @return      void
      */
     public function login()
     {
         try {
-
             $this->load_login();
 
             $this->check_login_attempts();

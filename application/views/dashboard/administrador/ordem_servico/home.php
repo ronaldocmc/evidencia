@@ -149,7 +149,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive table--no-card m-b-40">
+                        <div id="loading">
+                            <div align="center" class="center">
+                                <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
+                            </div>
+                        </div>
+                        <div class="table-responsive table--no-card m-b-40" style="display: none;">
                             <table id="ordens_servico" class="table table-striped">
                                 <thead>
                                     <tr>
@@ -423,7 +428,7 @@
                                     <input type="password" name="senha" id="senha" class="form-control" required>
                                 </div>
                             </div>
-                            <?php endif?>
+                            <?php endif; ?>
                             <div class="text-center">
                                 <button type="button" class="btn btn-primary submit_os">
                                     <i class="fa fa-dot-circle-o"></i> Finalizar
@@ -512,7 +517,7 @@
         <div class="form-group">
             <div id="loading">
                 <div align="center" class="center">
-                    <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                    <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
                 </div>
             </div>
             <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
@@ -544,7 +549,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div> -->
              <!-- <div align="center" class="center">
-                <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="ov_loading"
+                <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="ov_loading"
                             alt="Carregando">
                     </div> -->
         <!-- </div>
@@ -649,7 +654,7 @@
             </div>
         </div>
         <!-- <div align="center" class="center">
-            <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading"
+            <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="v_loading"
                 alt="Carregando">
         </div> -->
         <div class="container-fluid" id="card_slider_historic"></div>
