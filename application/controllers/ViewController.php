@@ -246,23 +246,24 @@ class ViewController extends AuthorizationController
 
         $prioridades = $this->prioridade->get_all(
             '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            null,
             -1,
             -1
         );
         $situacoes = $this->situacao->get_all(
             '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            null,
             -1,
             -1
         );
         $servicos = $this->servico->get_all(
             '*',
-            ['situacoes.organizacao_fk' => $this->session->user['id_organizacao']],
+            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
             -1,
             -1,
             [
-                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk'],
+                ['table' => 'tipos_servicos', 'on' => 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk'],
+                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
             ]
         );
         $departamentos = $this->departamento->get_all(
