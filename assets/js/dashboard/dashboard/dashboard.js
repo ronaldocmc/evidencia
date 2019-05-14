@@ -19,7 +19,7 @@ class View extends GenericView {
 		const allCards = [
 			{
 				text: 'nova ordem',
-				url: 'ordem_servico',
+				url: 'Ordem_Servico',
 				color: 'blue',
 				icon: 'fa-thumbtack',
 				action: 'ver',

@@ -38,6 +38,7 @@ switch (ENVIRONMENT) {
         break;
     case 'release':
         $config['base_url'] = 'http://evidencia-staging.azurewebsites.net';
+        break;
 }
 
 /*
