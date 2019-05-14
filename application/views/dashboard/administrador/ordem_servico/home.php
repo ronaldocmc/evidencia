@@ -386,6 +386,10 @@
                                     <div class="row form-group" style="margin-top: 30px !important;">
                                         <input type="hidden" id="localizacao_lat"  name="localizacao_lat">
                                         <input type="hidden" id="localizacao_long"  name="localizacao_long">
+                                        <input type="hidden" id="ordem_servico_cod"  name="ordem_servico_cod">
+                                        <!-- <input type="hidden" id="servico_nome"  name="servico_nome">
+                                        <input type="hidden" id="setor_nome"  name="setor_nome">
+                                        <input type="hidden" id="prioridade_nome" name="prioridade_nome"> -->
                                         <div class="col-12">
                                         <div id="map"></div>
                                             <small class="form-text text-muted">Visualize ou selecione o local no

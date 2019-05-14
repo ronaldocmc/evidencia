@@ -46,6 +46,7 @@ class Ordem_Servico_model extends MY_Model
             sa.situacao_nome as situacao_atual_nome,
             setores.setor_pk as setor_fk,
             setores.setor_nome,
+            localizacoes.localizacao_municipio,
             localizacoes.localizacao_lat,
             localizacoes.localizacao_long,
             localizacoes.localizacao_rua,
