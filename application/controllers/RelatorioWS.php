@@ -155,14 +155,16 @@ class RelatorioWS extends MY_Controller
 
             $this->begin_transaction();
 
-            $report = $this->relatorio->get_one('*', 
-            [
-                'relatorio_func_responsavel' => $token_decodificado->id_funcionario,
-                'ativo' => 1,   
-            ]);
+            $report = $this->relatorio->get_one(
+                '*', 
+                [
+                    'relatorio_func_responsavel' => $token_decodificado->id_funcionario,
+                    'ativo' => 1,   
+                ]
+            );
 
             if(count($report) == 0){
-                throw new MyException("Tudo certo. Seu relatório já foi recebido pela central!");
+                throw new MyException("Tudo certo. Seu relatório já foi recebido pela central!", Response::SUCCESS);
             }
 
             $not_finished = $this->relatorio->not_finished($report->relatorio_pk);
