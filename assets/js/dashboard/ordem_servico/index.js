@@ -35,6 +35,26 @@ class View extends GenericView {
 
     }
 
+    createJsonWithFields(fields) {
+        const dataContainer = {};
+        const dataName = {};
+
+        fields.forEach(field => {
+            
+            dataContainer[field] = $(`#${field}`).val();
+
+            if($(`#${field}`).is('select')){
+                dataName[field] = $(`#${field} option:selected`).text();
+            }
+        });
+
+        dataContainer.prioridade_nome = dataName['prioridade_fk'];
+        dataContainer.servico_nome = dataName['servico_fk'];
+        dataContainer.setor_nome = dataName ['setor_fk'];
+
+        return dataContainer;
+    }
+    
     filter(data, target) {
         const type = $(target).val();
         const renderData = data.filter(d => (d.situacao_atual_fk == type || type == -1 ));
@@ -325,6 +345,7 @@ class Control extends GenericControl {
         $(document).on('click', '.action_export', () => { this.exportData() });
         $(document).on('click', '.btn_delete', () => { this.handleDelete() });
         $(document).on('click', '#confirm_delete', () => { this.delete() });
+
     }
 
     deleteImage(index){
@@ -365,13 +386,16 @@ class Control extends GenericControl {
 
     saveNewOrdem(){
 
-        this.save({
+        let response = this.save({
             imagens: this.saveImages(),
             situacao_atual_fk: $('#situacao_inicial_fk').val()
         });
-        
-        this.counter = 0;
-        $('#images_saved').html("");
+
+        if(response.code == 200){
+            this.counter = 0;
+            $('#images_saved').html("");
+        }
+
     }
 
     async saveNewSituation(moreFields = null) {
@@ -529,7 +553,7 @@ class Control extends GenericControl {
 const myControl = new Control();
 myControl.init();
 
-let map;
+var map;
 
 initMap = () => {
 
@@ -608,12 +632,13 @@ initMap = () => {
     }
 
     map.handleCity = function (id, name) {
+
         // let exists = false;
 
         myControl.data.municipios.forEach((municipio) => {
             if (name == municipio.municipio_nome) {
-  
                 $(`#${id}`).val(municipio.municipio_pk);
+                $(`#${id} option:selected`).val(municipio.municipio_pk);
                 exists = true;
             }
         });
