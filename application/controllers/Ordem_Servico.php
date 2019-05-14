@@ -86,7 +86,6 @@ class Ordem_Servico extends CRUD_Controller
     {
         try {
             $where = $this->choose_filter($this->input->post('filtro'));
-            // echo $where; die();
             $ordens_servico = $this->ordem_servico->get_home($this->session->user['id_organizacao'], $where);
 
             $this->response->set_code(Response::SUCCESS);
@@ -105,14 +104,14 @@ class Ordem_Servico extends CRUD_Controller
         $this->session->set_flashdata('css', [
             0 => base_url('assets/css/modal_desativar.css'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/css/loading_input.css'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            3 => base_url('assets/css/modal_map.css'),
-            4 => base_url('assets/vendor/cropper/cropper.css'),
-            5 => base_url('assets/vendor/input-image/input-image.css'),
-            6 => base_url('assets/css/timeline.css'),
-            7 => base_url('assets/css/style_card.css'),
-            8 => base_url('assets/css/user_guide.css'),
+            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            3 => base_url('assets/css/loading_input.css'),
+            4 => base_url('assets/css/modal_map.css'),
+            5 => base_url('assets/vendor/cropper/cropper.css'),
+            6 => base_url('assets/vendor/input-image/input-image.css'),
+            7 => base_url('assets/css/timeline.css'),
+            8 => base_url('assets/css/style_card.css'),
+            9 => base_url('assets/css/user_guide.css'),
         ]);
 
         $this->session->set_flashdata('scripts', [
