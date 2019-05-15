@@ -8,7 +8,6 @@ require_once APPPATH . "core/MY_Model.php";
 
 class Ordem_Servico_model extends MY_Model
 {
-
     const NAME = 'ordem_servico';
     const TABLE_NAME = 'ordens_servicos';
     const PRI_INDEX = 'ordem_servico_pk';
@@ -245,27 +244,42 @@ class Ordem_Servico_model extends MY_Model
         ->get()->result();       
     }
 
-    function get_images($organizacao, $where = null)
-    {
-        if($where != null){
+    function get_images($organizacao, $where = null) {
+        if($where != null) {
             $this->CI->db->where($where);
         }
         
-        return $this->CI->db
-        ->select("*")
-        ->from("imagens_os")
-        ->where("imagens_os.organizacao_fk", $organizacao)
-        ->join("situacoes","imagens_os.situacao_fk = situacoes.situacao_pk")
-        ->get()->result();  
+        $images = $this->CI->db
+                    ->select("*")
+                    ->from("imagens_os")
+                    ->where("imagens_os.organizacao_fk", $organizacao)
+                    ->join("situacoes","imagens_os.situacao_fk = situacoes.situacao_pk")
+                    ->get()->result();  
+ 
+        if (count($images) > 0) {
+            foreach ($images as $image_os) {
+                $image_os->imagem_os = $this->check_and_update_url($image_os->imagem_os);
+            }
+        }
+
+        return $images; 
     }
   
-    function get_images_id($id){
-        return $this->CI->db
-        ->select("*")
-        ->from("imagens_os")
-        ->where("imagens_os.ordem_servico_fk", $id)
-        ->join("situacoes","imagens_os.situacao_fk = situacoes.situacao_pk")
-        ->get()->result();  
+    function get_images_id($id) {
+        $image_os = $this->CI->db
+                    ->select("*")
+                    ->from("imagens_os")
+                    ->where("imagens_os.ordem_servico_fk", $id)
+                    ->join("situacoes","imagens_os.situacao_fk = situacoes.situacao_pk")
+                    ->get()->result();  
+        
+        if (count($image_os) > 0) {
+            foreach ($image_os as $img) {
+                $img->imagem_os = $this->check_and_update_url($img->imagem_os);
+            }
+        }
+
+        return $image_os; 
     }
 
     // A localização e funcionario já devem estar setados no array
@@ -348,5 +362,13 @@ class Ordem_Servico_model extends MY_Model
         }
 
         return $rows;
+    }
+
+    private function check_and_update_url($img_path) {
+        if (!strpos($img_path, 'storage')) {
+            return base_url($img_path);
+        } else {
+            return $img_path;
+        }
     }
 }
