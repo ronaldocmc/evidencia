@@ -4,13 +4,10 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once dirname(__FILE__) . "/Response.php";
-
-require_once APPPATH . "core\CRUD_Controller.php";
-
-require_once APPPATH . "models\Ordem_Servico_model.php";
-
-require_once APPPATH . "core\MyException.php";
+require_once dirname(__FILE__).'/Response.php';
+require_once APPPATH.'core/CRUD_Controller.php';
+require_once APPPATH.'models/Ordem_Servico_model.php';
+require_once APPPATH.'core/MyException.php';
 
 class Ordem_Servico extends CRUD_Controller
 {
@@ -55,7 +52,6 @@ class Ordem_Servico extends CRUD_Controller
 
                 foreach ($imagens as $img) {
                     if ($os->ordem_servico_pk == $img->ordem_servico_fk) {
-
                         array_push($os->imagens, $img);
 
                         unset($img);
@@ -65,21 +61,12 @@ class Ordem_Servico extends CRUD_Controller
         }
 
         $this->load();
+
         $departamentos = $this->departamento->get_all(
             '*',
             ['organizacao_fk' => $this->session->user['id_organizacao']],
             -1,
             -1
-        );
-
-        $tipos_servico = $this->tipo_servico->get_all(
-            '*',
-            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1,
-            [
-                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
-            ]
         );
 
         $prioridades = $this->prioridade->get_all(
@@ -104,24 +91,33 @@ class Ordem_Servico extends CRUD_Controller
             [
                 ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk'],
                 ['table' => 'tipos_servicos', 'on' => 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk'],
-                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
-            ]
-        );
+                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
+                ]
+            );
+
+        $tipos_servico = $this->tipo_servico->get_all(
+                '*',
+                ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
+                -1,
+                -1,
+                [
+                    ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
+                ]
+            );
 
         $procedencias = $this->procedencia->get_all(
-            '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
+                '*',
+                ['organizacao_fk' => $this->session->user['id_organizacao']],
+                -1,
+                -1
+            );
 
         $setores = $this->setor->get_all(
-            '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
-
+                '*',
+                ['organizacao_fk' => $this->session->user['id_organizacao']],
+                -1,
+                -1
+            );
         $municipios = $this->localizacao->get_cities();
 
         $this->session->set_flashdata('css', [
@@ -182,12 +178,11 @@ class Ordem_Servico extends CRUD_Controller
 
     public function save()
     {
-        try
-        {
+        try {
             $this->load->model('Localizacao_model', 'localizacao');
             $this->load->library('form_validation');
             $this->load->helper('exception');
-          
+
             $this->localizacao->add_lat_long(
                 $this->input->post('localizacao_lat'),
                 $this->input->post('localizacao_long')
@@ -196,7 +191,7 @@ class Ordem_Servico extends CRUD_Controller
                 $this->localizacao->__set('localizacao_ponto_referencia', $this->input->post('localizacao_ponto_referencia')) :
                 $this->localizacao->__set('localizacao_ponto_referencia', null);
             $this->localizacao->fill();
-           
+
             $this->ordem_servico->fill();
 
             $this->ordem_servico->config_form_validation();
@@ -219,7 +214,6 @@ class Ordem_Servico extends CRUD_Controller
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -230,8 +224,8 @@ class Ordem_Servico extends CRUD_Controller
     private function insert()
     {
         $this->load->helper('insert_images');
-        $this->ordem_servico->__set("localizacao_fk", $this->localizacao->insert());
-        $this->ordem_servico->__set("funcionario_fk", $this->session->user['id_user']);
+        $this->ordem_servico->__set('localizacao_fk', $this->localizacao->insert());
+        $this->ordem_servico->__set('funcionario_fk', $this->session->user['id_user']);
 
         $id = $this->ordem_servico->insert_os($this->session->user['id_organizacao']);
 
@@ -256,7 +250,7 @@ class Ordem_Servico extends CRUD_Controller
 
         $this->ordem_servico->__set('ordem_servico_pk', $this->input->post('ordem_servico_pk'));
         $this->ordem_servico->__set('localizacao_fk', $this->input->post('localizacao_pk'));
-        $this->ordem_servico->__set("ordem_servico_atualizacao", $this->now());
+        $this->ordem_servico->__set('ordem_servico_atualizacao', $this->now());
         $this->ordem_servico->update();
     }
 
@@ -272,6 +266,7 @@ class Ordem_Servico extends CRUD_Controller
     private function now()
     {
         date_default_timezone_set('America/Sao_Paulo');
+
         return date('Y-m-d H:i:s');
     }
 
@@ -283,17 +278,14 @@ class Ordem_Servico extends CRUD_Controller
 
             $now = $this->now();
 
-            $this->ordem_servico->__set("ordem_servico_comentario", $_POST['ordem_servico_comentario']);
-            $this->ordem_servico->__set("situacao_atual_fk", $_POST['situacao_atual_fk']);
-            $this->ordem_servico->__set("ordem_servico_pk", $id);
-            $this->ordem_servico->__set("ordem_servico_atualizacao", $now);
+            $this->ordem_servico->__set('ordem_servico_comentario', $_POST['ordem_servico_comentario']);
+            $this->ordem_servico->__set('situacao_atual_fk', $_POST['situacao_atual_fk']);
+            $this->ordem_servico->__set('ordem_servico_pk', $id);
+            $this->ordem_servico->__set('ordem_servico_atualizacao', $now);
 
-            if ($_POST['situacao_atual_fk'] === '5') 
-            {
-                $this->ordem_servico->__set("ordem_servico_finalizacao", $now);
-            }
-            else
-            {
+            if ($_POST['situacao_atual_fk'] === '5') {
+                $this->ordem_servico->__set('ordem_servico_finalizacao', $now);
+            } else {
                 $this->ordem_servico->remove_finalizacao_date($id);
             }
 
@@ -319,7 +311,6 @@ class Ordem_Servico extends CRUD_Controller
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
