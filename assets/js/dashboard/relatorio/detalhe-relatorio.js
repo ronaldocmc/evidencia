@@ -95,7 +95,7 @@ $(document).on('click','#btn-deletar-relatorio',function(event) {
 		}
         else if(response.code == 401)
         {
-            alerts('failed','Erro!',response.data);
+            alerts('failed','Erro!',response.data.mensagem);
         }
 		else if(response.code == 200)
 		{
