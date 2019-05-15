@@ -10,7 +10,6 @@
                             data-target="#modal" id="btn-exportar">
                             <i class="zmdi zmdi-task"></i>exportar
                         </button>
-                        <!-- <input type="hidden" id="ordem_servico_pk" name="ordem_servico_pk" class="form-control"> -->
                         <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Nova Ordem de Serviço" data-contentid="save"
                             data-target="#modal">
                             <i class="zmdi zmdi-plus"></i>nova ordem de serviço</button>
@@ -149,7 +148,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive table--no-card m-b-40">
+                        <div id="loading">
+                            <div class="center" style="text-align: center">
+                                <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
+                            </div>
+                        </div>
+                        <div class="table-responsive table--no-card m-b-40" style="display: none;">
                             <table id="ordens_servico" class="table table-striped">
                                 <thead>
                                     <tr>
@@ -382,6 +386,10 @@
                                     <div class="row form-group" style="margin-top: 30px !important;">
                                         <input type="hidden" id="localizacao_lat"  name="localizacao_lat">
                                         <input type="hidden" id="localizacao_long"  name="localizacao_long">
+                                        <input type="hidden" id="ordem_servico_cod"  name="ordem_servico_cod">
+                                        <!-- <input type="hidden" id="servico_nome"  name="servico_nome">
+                                        <input type="hidden" id="setor_nome"  name="setor_nome">
+                                        <input type="hidden" id="prioridade_nome" name="prioridade_nome"> -->
                                         <div class="col-12">
                                         <div id="map"></div>
                                             <small class="form-text text-muted">Visualize ou selecione o local no
@@ -423,7 +431,7 @@
                                     <input type="password" name="senha" id="senha" class="form-control" required>
                                 </div>
                             </div>
-                            <?php endif?>
+                            <?php endif; ?>
                             <div class="text-center">
                                 <button type="button" class="btn btn-primary submit_os">
                                     <i class="fa fa-dot-circle-o"></i> Finalizar
@@ -512,7 +520,7 @@
         <div class="form-group">
             <div id="loading">
                 <div align="center" class="center">
-                    <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                    <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
                 </div>
             </div>
             <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
@@ -544,7 +552,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div> -->
              <!-- <div align="center" class="center">
-                <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="ov_loading"
+                <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="ov_loading"
                             alt="Carregando">
                     </div> -->
         <!-- </div>
@@ -649,7 +657,7 @@
             </div>
         </div>
         <!-- <div align="center" class="center">
-            <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading"
+            <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="v_loading"
                 alt="Carregando">
         </div> -->
         <div class="container-fluid" id="card_slider_historic"></div>

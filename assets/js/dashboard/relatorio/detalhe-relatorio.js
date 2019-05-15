@@ -172,7 +172,7 @@ function change_situacao (os) {
     formData.append('situacao_atual_fk', parseInt($('#' + os).val()));
     formData.append('image_os', null);
 
-    var URL = base_url + '/ordem_servico/insert_situacao/' + os;
+    var URL = base_url + '/Ordem_Servico/insert_situacao/' + os;
     $.ajax({
         url: URL,
         method: "POST",
