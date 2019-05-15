@@ -2,20 +2,16 @@
 <?php
 
 /**
- * CRUD_Controller
+ * CRUD_Controller.
  *
- * @package     application
- * @subpackage  core
  * @author      Pietro
  */
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once dirname(__FILE__) . "/../controllers/Response.php";
-require_once APPPATH."core\MyException.php";
-
+require_once dirname(__FILE__).'/../controllers/Response.php';
+require_once APPPATH.'core/MyException.php';
 
 class CRUD_Controller extends CI_Controller
 {
@@ -27,8 +23,7 @@ class CRUD_Controller extends CI_Controller
     {
         $this->ci = &get_instance();
 
-        if($this->ci === NULL)
-        {
+        if ($this->ci === null) {
             $this->is_web = true;
             parent::__construct();
 
@@ -38,24 +33,21 @@ class CRUD_Controller extends CI_Controller
 
     private function check_if_has_user()
     {
-        if ($this->session->has_userdata('user'))
-        {
+        if ($this->session->has_userdata('user')) {
             $this->set_pseudo_session();
             $this->verify_password_superuser();
-            if(!$this->is_superuser()){
+            if (!$this->is_superuser()) {
                 $this->check_permissions();
             }
-        }        
-        else
-        {
+        } else {
             redirect(base_url());
         }
     }
 
     private function check_permissions()
-    {        
+    {
         $this->check_if_current_controller_is_allowed();
-     
+
         $this->check_if_current_method_is_allowed();
     }
 
@@ -73,9 +65,9 @@ class CRUD_Controller extends CI_Controller
 
         $controller_exceptions = $this->load_controller_exceptions($function);
 
-        if(array_key_exists($current_controller, $controller_exceptions))
-        {
+        if (array_key_exists($current_controller, $controller_exceptions)) {
             $this->load_view_unauthorized();
+
             return;
         }
     }
@@ -101,53 +93,50 @@ class CRUD_Controller extends CI_Controller
 
         $method_exceptions = $this->load_method_exceptions($function);
 
-        if(array_key_exists($current_controller, $controller_exceptions))
-        {
-            if(array_key_exists($current_method, $method_exceptions))
-            {
+        if (array_key_exists($current_controller, $controller_exceptions)) {
+            if (array_key_exists($current_method, $method_exceptions)) {
                 $this->load_view_unauthorized();
+
                 return;
             }
         }
-
     }
 
     private function load_method_exceptions($function)
     {
-        if($function == 'Administrador'){
+        if ($function == 'Administrador') {
             return array(
                 0 => [
                 'controller' => 'organizacao',
-                'methods'    => ['deactivate', 'activate', 'index']
-                ]
+                'methods' => ['deactivate', 'activate', 'index'],
+                ],
             );
         }
-        
-        if($function == 'Atendente'){
+
+        if ($function == 'Atendente') {
             return array(
                 0 => [
                     'controller' => 'dashboard',
-                    'methods'    => ['superusuario']
+                    'methods' => ['superusuario'],
                 ],
                 1 => [
                     'controller' => 'ordem_servico',
-                    'methods'    => 'deactivate'
-                ]
+                    'methods' => 'deactivate',
+                ],
             );
         }
     }
 
-
     private function load_controller_exceptions($function)
     {
-        if($function == 'Administrador'){
+        if ($function == 'Administrador') {
             return array(
                 0 => 'superusuario',
                 // 0 => 'organizacao',
             );
         }
 
-        if($function == 'Atendente'){
+        if ($function == 'Atendente') {
             return array(
                 0 => 'organizacao',
                 1 => 'superusuario',
@@ -157,7 +146,7 @@ class CRUD_Controller extends CI_Controller
                 5 => 'servico',
                 6 => 'setor',
                 7 => 'situacao',
-                8 => 'tipo_servico'
+                8 => 'tipo_servico',
             );
         }
     }
@@ -167,32 +156,26 @@ class CRUD_Controller extends CI_Controller
      */
     private function verify_permission()
     {
-
-        if($this->session->permissions)
-        {
+        if ($this->session->permissions) {
             $this->verify_controller_exceptions($this->session->permissions['controller_exceptions']);
 
             $this->verify_method_exceptions($this->session->permissions['method_exceptions']);
-        }else
-        {
+        } else {
             $this->load_view_unauthorized();
         }
-
     }
 
     private function verify_controller_exceptions($controller_exceptions)
     {
-        $this->load->model('Log_model','log_model');
-        //este é o controller que ele está acessando atualmente 
+        $this->load->model('Log_model', 'log_model');
+        //este é o controller que ele está acessando atualmente
         $current_controller = $this->uri->segment(1);
-        foreach($controller_exceptions as $exception)
-        {
-            if($current_controller == $exception)
-            {
+        foreach ($controller_exceptions as $exception) {
+            if ($current_controller == $exception) {
                 // Salva no log que o usuário tentou acessar um controlador que não tem permissão
                 $this->log_model->insert([
                     'log_pessoa_fk' => $this->session->user['id_user'],
-                    'log_descricao' => 'Tentou acessar controlador' . $exception
+                    'log_descricao' => 'Tentou acessar controlador'.$exception,
                 ]);
                 $this->load_view_unauthorized();
             }
@@ -201,25 +184,22 @@ class CRUD_Controller extends CI_Controller
 
     private function verify_method_exceptions($method_exceptions)
     {
-        $this->load->model('Log_model','log_model');
+        $this->load->model('Log_model', 'log_model');
         $current_controller = $this->uri->segment(1);
 
         $current_method = '';
-        if (null !== $this->uri->segment(2)) 
-        {
+        if (null !== $this->uri->segment(2)) {
             $current_method = $this->uri->segment(2);
         }
-       
-        foreach($method_exceptions as $exception)
-        {   
-            if($current_controller == $exception['controller'] && $current_method == $exception['method'])
-            {
+
+        foreach ($method_exceptions as $exception) {
+            if ($current_controller == $exception['controller'] && $current_method == $exception['method']) {
                 // Salva no log que o usuário tentou acessar um método que não tem permissão
                 $this->log_model->insert([
                     'log_pessoa_fk' => $this->session->user['id_user'],
-                    'log_descricao' => 'Tentou acessar ' . $exception['method'] . ' do controlador ' . $current_controller
+                    'log_descricao' => 'Tentou acessar '.$exception['method'].' do controlador '.$current_controller,
                 ]);
-                $this->load_view_unauthorized();   
+                $this->load_view_unauthorized();
             }
         }
     }
@@ -235,42 +215,36 @@ class CRUD_Controller extends CI_Controller
     }
 
     /**
-     * Esse método verifica apenas se é superusuário e 
+     * Esse método verifica apenas se é superusuário e
      * se o campo de senha ao realizar um dos métodos está correto.
      */
     private function verify_password_superuser()
     {
-        if ($this->session->user['is_superusuario']) 
-        {
+        if ($this->session->user['is_superusuario']) {
             $method = null;
-            
-            /**
+
+            /*
              * URI Segment:
              * 0 - HOST - localhost
              * 1 - Controller - Funcionario
              * 2 - Method - activate
              */
-            if ($this->uri->segment(2) !== null) 
-            {
+            if ($this->uri->segment(2) !== null) {
                 $method = $this->uri->segment(2);
-                
-                if ($this->method_authorization($method)) 
-                {
+
+                if ($this->method_authorization($method)) {
                     $this->authenticate_password();
                 }
-                
             }
-        }   
+        }
     }
-
 
     private function authenticate_password()
     {
         $response = new Response();
-                    
+
         // Validação da sua senha
-        if (!authenticate_operation($this->input->post('senha'), $this->session->user['password_user'])) 
-        {
+        if (!authenticate_operation($this->input->post('senha'), $this->session->user['password_user'])) {
             // Caso a senha esteja incorreta
             $response->set_code(Response::UNAUTHORIZED);
             $response->set_data(['password_user' => 'Senha informada incorreta']);
@@ -281,41 +255,37 @@ class CRUD_Controller extends CI_Controller
 
     private function method_authorization($method)
     {
-       return ($method == 'insert' ||
+        return $method == 'insert' ||
                 $method == 'update' ||
                 $method == 'activate' ||
                 $method == 'deactivate' ||
-                $method == 'insert_update');
+                $method == 'insert_update';
     }
 
     private function send_response($response)
     {
-        if($this->is_web)
-        {
+        if ($this->is_web) {
             $response->send();
             die();
         }
+
         return $response;
     }
 
     private function store_log($method)
     {
-        if ($this->method_authorization($method))
-        {
-            return TRUE;
-        }
-        else
-        {
-            return FALSE;
+        if ($this->method_authorization($method)) {
+            return true;
+        } else {
+            return false;
         }
     }
-
 
     public function add_password_to_form_validation()
     {
         $this->form_validation->set_rules(
-            'senha', 
-            'senha', 
+            'senha',
+            'senha',
             'trim|required|min_length[8]'
         );
     }
@@ -325,26 +295,21 @@ class CRUD_Controller extends CI_Controller
         return $this->session->user['is_superusuario'];
     }
 
-
     public function begin_transaction()
     {
         $this->db->trans_start();
     }
 
-
     public function end_transaction()
     {
-        if ($this->db->trans_status() === FALSE)
-        {
+        if ($this->db->trans_status() === false) {
             $this->db->trans_rollback();
-            if(is_array($this->db->error())){
-                throw new MyException('Erro ao realizar operação.<br>'.implode('<br>',$this->db->error()), Response::SERVER_FAIL);
+            if (is_array($this->db->error())) {
+                throw new MyException('Erro ao realizar operação.<br>'.implode('<br>', $this->db->error()), Response::SERVER_FAIL);
             } else {
                 throw new MyException('Erro ao realizar operação.<br>'.$this->db->error(), Response::SERVER_FAIL);
             }
-        }
-        else
-        {
+        } else {
             $this->db->trans_commit();
         }
     }
