@@ -164,7 +164,7 @@ class RelatorioWS extends MY_Controller
                 ]
             );
 
-            if(count($report) == 0){
+            if($report){
                 throw new MyException("Tudo certo. Seu relatório já foi recebido pela central!", Response::SUCCESS);
             }
 
