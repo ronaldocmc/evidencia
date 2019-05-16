@@ -164,7 +164,7 @@ class RelatorioWS extends MY_Controller
                 ]
             );
 
-            if($report){
+            if(!$report){
                 throw new MyException("Tudo certo. Seu relatório já foi recebido pela central!", Response::SUCCESS);
             }
 
