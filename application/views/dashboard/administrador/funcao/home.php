@@ -220,7 +220,7 @@
                             </button>
 
                             
-                            <button type="button" class="btn btn-primary submit btn-sm not_superusuario">
+                            <button type="button" class="btn btn-primary submit btn-sm not_superusuario d-none load">
                                 <i class="fa fa-dot-circle-o"></i> Finalizar
                             </button>
                         </div>
@@ -248,6 +248,9 @@
                         <div class="card-footer text-center">
                             <button type="button" class="btn btn-secondary previous btn-sm">
                                 <i class="fas fa-arrow-circle-left"></i> Anterior
+                            </button>
+                            <button type="button" class="btn btn-primary submit btn-sm load">
+                                <i class="fa fa-dot-circle-o"></i> Finalizar
                             </button>
                         </div>
                     </div>
