@@ -165,7 +165,7 @@ class Superusuario extends CRUD_Controller
     public function create_access()
     {
         try {
-            $this->load->model('recuperacao_model', 'recuperacao');
+            $this->load->model('Recuperacao_super_model', 'recuperacao');
 
             $token = $this->input->post('token');
 
