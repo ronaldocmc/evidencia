@@ -299,7 +299,8 @@ class Contact extends CI_Controller
     //Função que cadastra uma nova senha e um login para um novo usuário que acessou o token de recuperação
     public function first_login($token)
     {
-        $this->load->model('recuperacao_model', 'rmodel');
+        $this->load->model('recuperacao_super_model', 'rsmodel');
+        $this->load->model('Super_model', 'super_model');
 
         //Padronizando os dados para select
         $where = array(
@@ -307,7 +308,7 @@ class Contact extends CI_Controller
         );
 
         //Chamando função get para realizar a operação e encontrar o usuário especifico do acesso
-        $retorno = $this->rmodel->get($where);
+        $retorno = $this->rsmodel->get_one('*', $where);
 
         if ($retorno) //Se o token existir então exibimos a view para preenchimento de senha e login
         {
@@ -316,16 +317,8 @@ class Contact extends CI_Controller
                 'ativo' => 0,
             ]);
 
-            if ($super === false) {
-                $func = $this->funcionario_model->get([
-                    'funcionarios.pessoa_fk' => $retorno->pessoa_fk,
-                    'funcionarios.funcionario_status' => 1,
-                ]);
-
-                $retorno->organizacao_fk = $func !== false ? $func[count($func) - 1]->organizacao_fk : "admin";
-            } else {
-                $retorno->organizacao_fk = "admin";
-            }
+            $retorno->organizacao_fk = "admin";
+            $retorno->superusuario_login = $super->superusuario_login;
 
             $this->session->set_flashdata('css', array(
                 0 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
@@ -336,16 +329,15 @@ class Contact extends CI_Controller
                 0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
                 1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
                 2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-                3 => base_url('assets/js/utils.js'),
-                4 => base_url('assets/js/constants.js'),
-                5 => base_url('assets/js/jquery.noty.packaged.min.js'),
-                6 => base_url('assets/js/dashboard/first-login/index.js'),
+                3 => base_url('assets/js/constants.js'),
+                4 => base_url('assets/js/jquery.noty.packaged.min.js'),
+                5 => base_url('assets/js/dashboard/first-login/index.js')
             ));
 
             load_view([
                 0 => [
                     'src' => 'dashboard/commons/first-login/home',
-                    'params' => $retorno,
+                    'params' => $retorno
                 ],
                 1 => [
                     'src' => 'access/pre_loader',
