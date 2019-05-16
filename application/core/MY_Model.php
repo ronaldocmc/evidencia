@@ -1,9 +1,11 @@
-<?php if (!defined('BASEPATH')) {
+<?php
+
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once dirname(__FILE__) . "/Generic_model.php";
-require_once dirname(__FILE__) . "/MyException.php";
+require_once dirname(__FILE__).'/Generic_model.php';
+require_once dirname(__FILE__).'/MyException.php';
 
 class MY_Model extends Generic_Model
 {
@@ -38,7 +40,7 @@ class MY_Model extends Generic_Model
     {
         if (!array_key_exists($key, $array)) {
             throw new MyException(
-                'O atributo ativo não existe em ' . $this->getName(),
+                'O atributo ativo não existe em '.$this->getName(),
                 Response::NOT_FOUND
             );
         }
@@ -79,7 +81,7 @@ class MY_Model extends Generic_Model
         }
 
         if ($res == null || $res == false) {
-            throw new MyException($this->getName() . ' não encontrado.', Response::NOT_FOUND);
+            throw new MyException($this->getName().' não encontrado.', Response::NOT_FOUND);
         } else {
             return $res;
         }
@@ -96,7 +98,7 @@ class MY_Model extends Generic_Model
             return $this->update_object($this->object, $this->object[$this->getPriIndex()]);
         } else {
             throw new MyException(
-                'Primary Index de ' . $this->getName() . ' deve estar preenchido!',
+                'Primary Index de '.$this->getName().' deve estar preenchido!',
                 Response::NOT_FOUND
             );
         }
@@ -108,40 +110,31 @@ class MY_Model extends Generic_Model
             return $this->delete_object($this->object[$this->getPriIndex()]);
         } else {
             throw new MyException(
-                'Primary Index de ' . $this->getName() . ' deve estar preenchido!',
+                'Primary Index de '.$this->getName().' deve estar preenchido!',
                 Response::NOT_FOUND
             );
         }
     }
 
-    public function deactivate($dependent_model = NULL, $model_method = NULL)
+    public function deactivate($dependent_model = null, $model_method = null)
     {
         $this->object = $this->get_one('*', [$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
         $this->check_if_key_exists('ativo', $this->object);
 
-        if ($this->object->ativo == 0)
-        {
+        if ($this->object->ativo == 0) {
             throw new MyException(
-                $this->getName() . ' já está desativado!',
+                $this->getName().' já está desativado!',
                 Response::BAD_REQUEST
             );
-        }
-        else
-        {
+        } else {
             $field = $this->getPriIndex();
-            if ($dependent_model !== NULL) 
-            {
-                if ($this->check_dependences($dependent_model, $this->object->$field, $model_method)) 
-                {
+            if ($dependent_model !== null) {
+                if ($this->check_dependences($dependent_model, $this->object->$field, $model_method)) {
                     return $this->update_object(['ativo' => 0], $this->object->$field);
-                } 
-                else
-                {
-                    throw new MyException($this->getName() . " ainda possui dependentes", 403);
+                } else {
+                    throw new MyException($this->getName().' ainda possui dependentes', 403);
                 }
-            }
-            else
-            {
+            } else {
                 return $this->update_object(['ativo' => 0], $this->object->$field);
             }
         }
@@ -155,11 +148,12 @@ class MY_Model extends Generic_Model
 
         if ($this->object->ativo == 1) {
             throw new MyException(
-                $this->getName() . ' já está ativo!',
+                $this->getName().' já está ativo!',
                 Response::BAD_REQUEST
             );
         } else {
             $field = $this->getPriIndex();
+
             return $this->update_object(['ativo' => 1], $this->object->$field);
         }
     }
