@@ -173,8 +173,6 @@ class Ordem_Servico extends CRUD_Controller
             }
         }
 
-        $this->load();
-
         $departamentos = $this->departamento->get_all(
             '*',
             ['organizacao_fk' => $this->session->user['id_organizacao']],
@@ -235,7 +233,7 @@ class Ordem_Servico extends CRUD_Controller
 
         $response->add_data('self', $ordens_servico);
         $response->add_data('departamentos', $departamentos);
-        $response->add_data('tipos_servicos', $tipos_servicos);
+        $response->add_data('tipos_servicos', $tipos_servico);
         $response->add_data('prioridades', $prioridades);
         $response->add_data('situacoes', $situacoes);
         $response->add_data('servicos', $servicos);

@@ -70,12 +70,11 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->db->join('municipios', 'municipios.municipio_pk = localizacoes.localizacao_municipio');
         $this->CI->db->join('funcionarios', 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk');
 
-        $this->CI->db->where('procedencias.organizacao_fk', $organization);
+        $this->CI->db->where('setores.organizacao_fk', $organization);
+
         // HOTFIX/v2.0.1 - Exibir somente as Ordens de Servico em Aberto ou em andamento
         // para diminuir a quantidade de requisições
-        $this->CI->db->where('situacao_atual_fk', 1);
-        $this->CI->db->or_where('situacao_atual_fk', 2);
-        $this->CI->db->where('setores.organizacao_fk', $organization);
+        $this->CI->db->where_in('situacao_atual_fk', array(1, 2));
 
         if ($where !== null) {
             if (is_array($where)) {
@@ -92,6 +91,8 @@ class Ordem_Servico_model extends MY_Model
         if ($limit !== null) {
             $this->CI->db->limit($limit);
         }
+
+        //echo $this->CI->db->get_compiled_select();
 
         return $this->CI->db->get()->result();
     }
