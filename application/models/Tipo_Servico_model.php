@@ -4,11 +4,10 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core/MY_Model.php";
+require_once APPPATH.'core/MY_Model.php';
 
 class Tipo_Servico_model extends MY_Model
 {
-
     const NAME = 'tipos_servicos';
     const TABLE_NAME = 'tipos_servicos';
     const PRI_INDEX = 'tipo_servico_pk';
@@ -20,7 +19,7 @@ class Tipo_Servico_model extends MY_Model
         'prioridade_padrao_fk',
         'departamento_fk',
         'tipo_servico_abreviacao',
-        'ativo'
+        'ativo',
     );
 
     // @override
@@ -28,8 +27,8 @@ class Tipo_Servico_model extends MY_Model
     {
         $this->CI->db->select($select);
         $this->CI->db->from(self::TABLE_NAME);
-        $this->CI->db->join('prioridades', 'prioridades.prioridade_pk = ' . self::TABLE_NAME . '.prioridade_padrao_fk', 'LEFT');
-        $this->CI->db->join('departamentos', 'departamentos.departamento_pk = ' . self::TABLE_NAME . '.departamento_fk');
+        $this->CI->db->join('prioridades', 'prioridades.prioridade_pk = '.self::TABLE_NAME.'.prioridade_padrao_fk', 'LEFT');
+        $this->CI->db->join('departamentos', 'departamentos.departamento_pk = '.self::TABLE_NAME.'.departamento_fk');
         if ($where !== null) {
             if (is_array($where)) {
                 foreach ($where as $field => $value) {
@@ -44,7 +43,6 @@ class Tipo_Servico_model extends MY_Model
 
         return $result;
     }
-
 
     public function config_form_validation()
     {
@@ -70,7 +68,7 @@ class Tipo_Servico_model extends MY_Model
             'tipo_servico_abreviacao',
             'Abreviação',
             'trim|required|max_length[10]'
-        );        
+        );
 
         $this->CI->form_validation->set_rules(
             'departamento_fk',
@@ -93,6 +91,7 @@ class Tipo_Servico_model extends MY_Model
         $this->CI->db->select('tipo_servico_nome as name');
         $this->CI->db->from('tipos_servicos');
         $this->CI->db->where('departamento_fk', $departamento);
+
         return $this->CI->db->get()->result();
     }
 
@@ -101,7 +100,7 @@ class Tipo_Servico_model extends MY_Model
         $this->CI->db->select('tipo_servico_nome as name');
         $this->CI->db->from('tipos_servicos');
         $this->CI->db->where('prioridade_padrao_fk', $prioridade);
+
         return $this->CI->db->get()->result();
     }
 }
-

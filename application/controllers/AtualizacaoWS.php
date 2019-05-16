@@ -84,7 +84,7 @@ class AtualizacaoWS extends MY_Controller
                 "servicos.*",
                 [
                     'servicos.ativo' => 1,
-                    'situacoes.organizacao_fk' => $token_decodificado->id_empresa,
+                    'departamentos.organizacao_fk' => $token_decodificado->id_empresa,
                 ]
             );
 
@@ -98,7 +98,7 @@ class AtualizacaoWS extends MY_Controller
 
             $atualizar['prioridade'] = $this->prioridade_model->get_all(
                 '*',
-                ["organizacao_fk" => $token_decodificado->id_empresa],
+                null,
                 -1,
                 -1
             );
@@ -111,9 +111,7 @@ class AtualizacaoWS extends MY_Controller
 
             $atualizar['prioridades'] = $this->prioridade_model->get_all(
                 '*',
-                [
-                    "organizacao_fk" => $token_decodificado->id_empresa,
-                ],
+                null,
                 -1,
                 -1
             );

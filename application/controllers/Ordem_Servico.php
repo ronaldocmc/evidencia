@@ -180,16 +180,6 @@ class Ordem_Servico extends CRUD_Controller
             -1
         );
 
-        $tipos_servicos = $this->tipo_servico->get_all(
-            '*',
-            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1,
-            [
-                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
-            ]
-        );
-
         $prioridades = $this->prioridade->get_all(
             '*',
             ['ativo' => 1],
@@ -213,28 +203,37 @@ class Ordem_Servico extends CRUD_Controller
                 ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk'],
                 ['table' => 'tipos_servicos', 'on' => 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk'],
                 ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
-            ]
-        );
+                ]
+            );
+
+        $tipos_servico = $this->tipo_servico->get_all(
+                '*',
+                ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
+                -1,
+                -1,
+                [
+                    ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
+                ]
+            );
 
         $procedencias = $this->procedencia->get_all(
-            '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
+                '*',
+                ['organizacao_fk' => $this->session->user['id_organizacao']],
+                -1,
+                -1
+            );
 
         $setores = $this->setor->get_all(
-            '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
-
+                '*',
+                ['organizacao_fk' => $this->session->user['id_organizacao']],
+                -1,
+                -1
+            );
         $municipios = $this->localizacao->get_cities();
 
         $response->add_data('self', $ordens_servico);
         $response->add_data('departamentos', $departamentos);
-        $response->add_data('tipos_servicos', $tipos_servicos);
+        $response->add_data('tipos_servicos', $tipos_servico);
         $response->add_data('prioridades', $prioridades);
         $response->add_data('situacoes', $situacoes);
         $response->add_data('servicos', $servicos);
@@ -320,7 +319,8 @@ class Ordem_Servico extends CRUD_Controller
     private function update()
     {
         $this->ordem_servico->__set('ordem_servico_pk', $this->input->post('ordem_servico_pk'));
-        $this->ordem_servico->__set('localizacao_fk', $this->localizacao->insert());
+        $this->ordem_servico->__set('localizacao_fk', $this->input->post('localizacao_pk'));
+        $this->ordem_servico->__set('ordem_servico_atualizacao', $this->now());
         $this->ordem_servico->update();
     }
 
@@ -333,15 +333,31 @@ class Ordem_Servico extends CRUD_Controller
         $this->response->send();
     }
 
+    private function now()
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+
+        return date('Y-m-d H:i:s');
+    }
+
     public function insert_situacao($id)
     {
         try {
             $this->load->helper('exception');
             $this->load->helper('insert_images');
 
+            $now = $this->now();
+
             $this->ordem_servico->__set('ordem_servico_comentario', $_POST['ordem_servico_comentario']);
             $this->ordem_servico->__set('situacao_atual_fk', $_POST['situacao_atual_fk']);
             $this->ordem_servico->__set('ordem_servico_pk', $id);
+            $this->ordem_servico->__set('ordem_servico_atualizacao', $now);
+
+            if ($_POST['situacao_atual_fk'] === '5') {
+                $this->ordem_servico->__set('ordem_servico_finalizacao', $now);
+            } else {
+                $this->ordem_servico->remove_finalizacao_date($id);
+            }
 
             $paths = upload_img(
                 [

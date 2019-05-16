@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db = array(
 	'dsn'	=> '',
-	'hostname' => 'dbprdevidencia01.mysql.database.azure.com',
-	'username' => 'admin_prudenco@dbprdevidencia01',
-	'password' => 'Developers10',
+	// 'hostname' => 'dbprdevidencia01.mysql.database.azure.com',
+	// 'username' => 'admin_prudenco@dbprdevidencia01',
+	// 'password' => 'Developers10',
 	// 'database' => 'evidencia',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
@@ -98,85 +98,44 @@ $db = array(
 	'save_queries' => TRUE
 );
 
-switch(ENVIRONMENT){
-	case 'production':
-		$db['database'] = 'evidencia-producao';
-		$db['production'] = $db;
-		$active_group = 'production';
+if(ENVIRONMENT == 'development'){
+	$db['hostname'] = 'dbprdevidencia01.mysql.database.azure.com';
+	$db['username'] = 'admin_prudenco@dbprdevidencia01';
+	$db['password'] = 'Developers10';
+	$db['database'] = 'evidencia';
 
-		break;
+	$db['development'] = $db;
+	$active_group = 'development';
+} else {
+	$db['hostname'] = getenv('MYSQLCONNSTR_HOSTNAME');
+	$db['username'] = getenv('MYSQLCONNSTR_USERNAME');
+	$db['password'] = getenv('MYSQLCONNSTR_PASSWORD');
+	$db['database'] = getenv('MYSQLCONNSTR_DATABASE');
 
-	case 'development':
-		$db['database'] = 'evidencia';
-		$db['development'] = $db;
-		$active_group = 'development';
+	$db[ENVIRONMENT] = $db;
+	$active_group = ENVIRONMENT;
 
-		break;
-
-	case 'release':
-		$db['database'] = 'evidencia';
-		$db['release'] = $db;
-		$active_group = 'release';
-
-		break;
 }
 
+// switch(ENVIRONMENT){
+// 	case 'production':
+// 		$db['database'] = 'evidencia-producao';
+// 		$db['production'] = $db;
+// 		$active_group = 'production';
 
-// if(ENVIRONMENT == 'production'){
-// 	$active_group = 'production';
-// } else {
-// 	$active_group = 'development';
+// 		break;
+
+// 	case 'development':
+// 		$db['database'] = 'evidencia';
+// 		$db['development'] = $db;
+// 		$active_group = 'development';
+// 		break;
+
+// 	case 'release':
+// 		$db['database'] = 'evidencia';
+// 		$db['release'] = $db;
+// 		$active_group = 'release';
+
+// 		break;
 // }
 
-
-
-// $db['development'] = array(
-// 	'dsn'	=> '',
-// 	'hostname' => 'dbprdevidencia01.mysql.database.azure.com',
-// 	'username' => 'admin_prudenco@dbprdevidencia01',
-// 	'password' => 'Developers10',
-// 	'database' => 'evidencia',
-// 	'dbdriver' => 'mysqli',
-// 	'dbprefix' => '',
-// 	'pconnect' => FALSE,
-// 	'db_debug' => FALSE,
-// 	'cache_on' => FALSE,
-// 	'cachedir' => '',
-// 	'char_set' => 'utf8',
-// 	'dbcollat' => 'utf8_general_ci',
-// 	'swap_pre' => '',
-// 	'encrypt' => array(
-//         'ssl_ca' => realpath('./assets/ssl/BaltimoreCyberTrustRoot.crt.pem'),
-//         'ssl_verify' => FALSE
-//     ),
-// 	'compress' => FALSE,
-// 	'stricton' => FALSE,
-// 	'failover' => array(),
-// 	'save_queries' => TRUE
-// );
-
-
-// $db['production'] = array(
-// 	'dsn'	=> '',
-// 	'hostname' => 'dbprdevidencia01.mysql.database.azure.com',
-// 	'username' => 'admin_prudenco@dbprdevidencia01',
-// 	'password' => 'Developers10',
-// 	'database' => 'evidencia-producao',
-// 	'dbdriver' => 'mysqli',
-// 	'dbprefix' => '',
-// 	'pconnect' => FALSE,
-// 	'db_debug' => FALSE,
-// 	'cache_on' => FALSE,
-// 	'cachedir' => '',
-// 	'char_set' => 'utf8',
-// 	'dbcollat' => 'utf8_general_ci',
-// 	'swap_pre' => '',
-// 	'encrypt' => array(
-//         'ssl_ca' => realpath('./assets/ssl/BaltimoreCyberTrustRoot.crt.pem'),
-//         'ssl_verify' => FALSE
-//     ),
-// 	'compress' => FALSE,
-// 	'stricton' => FALSE,
-// 	'failover' => array(),
-// 	'save_queries' => TRUE
-// );
