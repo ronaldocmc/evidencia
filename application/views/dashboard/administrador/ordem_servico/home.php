@@ -228,7 +228,7 @@
                                     <div class="row form-group">
                                         <div class="col-7 col-md-4">
                                             <label for="departamento"><strong>Departamento*</strong></label>
-                                            <select class="form-control" id="departamento_fk" name="departamento"
+                                            <select class="form-control" onchange="myControl.handleSelects($(this).val());"id="departamento_fk" name="departamento"
                                                 required="true">
 
                                             </select>
@@ -518,11 +518,11 @@
 <div id="create_history" class="d-none">
     <div class="modal-body">
         <div class="form-group">
-            <div id="loading">
+            <!-- <div id="loading">
                 <div align="center" class="center">
                     <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
                 </div>
-            </div>
+            </div> -->
             <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
             </div>
             <div class="modal-footer">

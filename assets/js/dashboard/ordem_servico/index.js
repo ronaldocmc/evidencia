@@ -61,12 +61,6 @@ class View extends GenericView {
         this.render(renderData);
     }
     
-    // Aqui vamos iniciar a função que selecionado o departamento, então os selects de tipo de servico e servico são 
-    //preenchidos
-    fillSelectByOption(){
-
-    }
-
 
     generateButtons(condition, i) {
         return `<div class='btn-group'>` +
@@ -278,7 +272,7 @@ class View extends GenericView {
     }
 
     renderDetailOrdem(data){
-        console.log(data);
+        
         let render = '';
 
         data.imagens.length !== 0 ? 
@@ -345,6 +339,9 @@ class Control extends GenericControl {
         $(document).on('click', '.action_export', () => { this.exportData() });
         $(document).on('click', '.btn_delete', () => { this.handleDelete() });
         $(document).on('click', '#confirm_delete', () => { this.delete() });
+        $(document).on('click', '.new', () => { this.handleSelects($('#departamento_fk').val()) });
+        $(document).on('change', '#tipo_servico_fk', () => { this.optionsServices($('#tipo_servico_fk').val()) });
+        $(document).on('click', '.btn_edit', () => { this.handleFillFields(); this.handleSelectEdit(); });
 
     }
 
@@ -400,7 +397,7 @@ class Control extends GenericControl {
 
     async saveNewSituation(moreFields = null) {
         //Aprimorar esse load para funcionar
-        this.myView.initLoad();
+        // this.myView.initLoad();
 
         const data = this.myView.createJsonWithFields(this.fields);
         data[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
@@ -414,7 +411,7 @@ class Control extends GenericControl {
 
         const response = await this.myRequests.send('/insert_situacao/'+data[this.primaryKey], sendData);
         sendData.imagens = response.data.new.imagens;
-        this.myView.endLoad();
+        // this.myView.endLoad();
 
         this.handleResponse(response, sendData);
         $('#images_saved').html("");
@@ -499,14 +496,15 @@ class Control extends GenericControl {
     }
     
     fillHistoricFields(object, fields) {
-        let local ='';
+        let local = ' ';
 
         fields.forEach(field => {
             if(!field.indexOf('localizacao')){
-                object[field] !== null && 
+                (object[field] !== null && 
                 object[field] != undefined && 
                 field != 'localizacao_lat' && 
-                field != 'localizacao_long' ? local += object[field] + " " : local += ""; 
+                field != 'localizacao_long' &&
+                field != 'localizacao_municipio') ? local += object[field] + " " : local += ""; 
             }else{
                 $(`#${field}_historic`).text(object[field]);
             }     
@@ -545,7 +543,52 @@ class Control extends GenericControl {
 
     removeObject(){
         this.data.self.splice(this.state.selectedId,1);
-        console.log(this.data.self);
+    
+    }
+
+    optionsByDepartament(val){
+        let tipos_servicos = [];
+        this.data.tipos_servicos.forEach((tp)=>{
+            if(tp.departamento_fk == val){
+                tipos_servicos.push(tp);
+            }
+        });
+        return tipos_servicos;
+    }
+
+     optionsServices(val){
+        let selecteds = [];
+
+        this.data.servicos.forEach((s) =>{
+            if(s.tipo_servico_fk == val){
+                selecteds.push(s);
+            }
+        });
+
+        this.myView.generateSelect(selecteds, 'servico_nome', 'servico_pk', 'servico_fk');
+
+    }
+
+    async handleSelects(val){
+        await this.myView.checkElementDom("#servico_fk");
+        let tipos_servicos = [];
+
+        tipos_servicos = this.optionsByDepartament(val);
+        this.myView.generateSelect(tipos_servicos, 'tipo_servico_nome', 'tipo_servico_pk', 'tipo_servico_fk');;
+        this.optionsServices(tipos_servicos[0].tipo_servico_pk);
+    }
+
+    async handleSelectEdit(){
+        await this.myView.checkElementDom('#servico_fk');
+        let val = $('#servico_fk').val();
+
+        this.data.servicos.forEach((s) =>{
+            if(s.servico_pk == val){
+                this.handleSelects(s.departamento_fk);
+                this.optionsServices(s.tipo_servico_fk);
+                $('#departamento_fk').val(s.departamento_fk);
+            }
+        });   
     }
 
 }
@@ -615,6 +658,8 @@ initMap = () => {
     map.handleDivOpen = function () {
 
         $('#modal').on('shown.bs.modal', (event) => {
+
+            // myControl.handleSelects($("#departamento_fk".val()));
 
             if (myControl.getSelectedId()) {
 
