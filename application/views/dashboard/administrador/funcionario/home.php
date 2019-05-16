@@ -206,7 +206,7 @@
                         <li class="active">Informações Pessoais</li>
                         <li>Acesso</li>
                         <li>Profissional</li>
-                        <li>Foto</li>
+                        <!-- <li>Foto</li> -->
 
                         <li class="d-none superusuario">Identificação</li>
                     </ul>
@@ -361,16 +361,19 @@
                                     <button type="button" class="btn btn-secondary previous btn-sm">
                                         <i class="fas fa-arrow-circle-left"></i> Anterior
                                     </button>
-                                    <button type="button" class="btn btn-secondary next btn-sm">
-                                        <i class="fas fa-arrow-circle-right"></i> Próximo
+                                    <button type="button" class="btn btn-primary submit btn-sm not_superusuario" id="botao-finalizar">
+                                        <i class="fa fa-dot-circle-o"></i> Finalizar
                                     </button>
+                                    <!-- <button type="button" class="btn btn-secondary next btn-sm">
+                                        <i class="fas fa-arrow-circle-right"></i> Próximo
+                                    </button> -->
                                 </div>
                             </div>
 
 
                             <!-- STEP 4 -->
 
-                            <div class="card card-step col-12 px-0">
+                            <!-- <div class="card card-step col-12 px-0">
                                 <div class="card-header">
                                     Foto
                                 </div>
@@ -415,7 +418,7 @@
                                         <i class="fa fa-dot-circle-o"></i> Finalizar
                                     </button>
                                 </div>
-                            </div>
+                            </div> -->
 
                     <!-- STEP 5 -->
 
