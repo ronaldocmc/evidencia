@@ -14,7 +14,6 @@ class Ordem_Servico_model extends MY_Model
 
     const FORM = array(
         'prioridade_fk',
-        'procedencia_fk',
         'servico_fk',
         'setor_fk',
         'situacao_inicial_fk',
@@ -23,7 +22,7 @@ class Ordem_Servico_model extends MY_Model
         'ordem_servico_comentario',
     );
 
-    public function get_home($organization, array $where = null)
+    public function get_home($organization, $where = null, $limit = null)
     {
         $this->CI->db->select('
             ordens_servicos.ordem_servico_pk,
@@ -46,12 +45,14 @@ class Ordem_Servico_model extends MY_Model
             sa.situacao_nome as situacao_atual_nome,
             setores.setor_pk as setor_fk,
             setores.setor_nome,
+            localizacoes.localizacao_municipio,
             localizacoes.localizacao_lat,
             localizacoes.localizacao_long,
             localizacoes.localizacao_rua,
             localizacoes.localizacao_num,
             localizacoes.localizacao_bairro,
             localizacoes.localizacao_ponto_referencia,
+            municipios.municipio_pk,
             municipios.municipio_nome,
             funcionarios.funcionario_nome,
             funcionarios.funcionario_caminho_foto,
@@ -74,14 +75,23 @@ class Ordem_Servico_model extends MY_Model
         // para diminuir a quantidade de requisições
         $this->CI->db->where('situacao_atual_fk', 1);
         $this->CI->db->or_where('situacao_atual_fk', 2);
+        $this->CI->db->where('setores.organizacao_fk', $organization);
+
         if ($where !== null) {
-            foreach ($where as $field => $value) {
-                $this->CI->db->where($field, $value);
+            if (is_array($where)) {
+                foreach ($where as $field => $value) {
+                    $this->CI->db->where($field, $value);
+                }
+            } else {
+                $this->CI->db->where($where);
             }
         }
+
         $this->CI->db->order_by('ordens_servicos.ordem_servico_pk', 'DESC');
 
-        //echo $this->CI->db->get_compiled_select();
+        if ($limit !== null) {
+            $this->CI->db->limit($limit);
+        }
 
         return $this->CI->db->get()->result();
     }
@@ -152,6 +162,7 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->db->join('situacoes', 'situacoes.situacao_pk = '.$this->getTableName().'.situacao_inicial_fk');
         // $this->CI->db->where('funcionario_fk', $where['funcionario_fk']);
         $this->CI->db->where('situacao_atual_fk', '1');
+        $this->CI->db->where('ordens_servicos.ativo', '1');
         $this->CI->db->where('ordem_servico_criacao BETWEEN '."'".$where['data_inicial']." 00:00:01'".' AND '."'".$where['data_final']." 23:59:59'");
         $this->CI->db->where_in('setor_fk', $where['setor']);
         $this->CI->db->where_in('tipo_servico_fk', $where['tipo']);
@@ -177,12 +188,6 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->form_validation->set_rules(
             'prioridade_fk',
             'Prioridade',
-            'trim|required|is_natural'
-        );
-
-        $this->CI->form_validation->set_rules(
-            'procedencia_fk',
-            'Procedência',
             'trim|required|is_natural'
         );
 
@@ -228,22 +233,44 @@ class Ordem_Servico_model extends MY_Model
         ->get()->result();
     }
 
-    public function get_images($organizacao)
+    public function get_images($organizacao, $where = null)
     {
-        return $this->CI->db
-        ->select('*')
-        ->from('imagens_os')
-        ->get()->result();
+        if ($where != null) {
+            $this->CI->db->where($where);
+        }
+
+        $images = $this->CI->db
+                    ->select('*')
+                    ->from('imagens_os')
+                    ->where('imagens_os.organizacao_fk', $organizacao)
+                    ->join('situacoes', 'imagens_os.situacao_fk = situacoes.situacao_pk')
+                    ->get()->result();
+
+        if (count($images) > 0) {
+            foreach ($images as $image_os) {
+                $image_os->imagem_os = $this->check_and_update_url($image_os->imagem_os);
+            }
+        }
+
+        return $images;
     }
 
     public function get_images_id($id)
     {
-        return $this->CI->db
-        ->select('*')
-        ->from('imagens_os')
-        ->where('imagens_os.ordem_servico_fk', $id)
-        ->join('situacoes', 'imagens_os.situacao_fk = situacoes.situacao_pk')
-        ->get()->result();
+        $image_os = $this->CI->db
+                    ->select('*')
+                    ->from('imagens_os')
+                    ->where('imagens_os.ordem_servico_fk', $id)
+                    ->join('situacoes', 'imagens_os.situacao_fk = situacoes.situacao_pk')
+                    ->get()->result();
+
+        if (count($image_os) > 0) {
+            foreach ($image_os as $img) {
+                $img->imagem_os = $this->check_and_update_url($img->imagem_os);
+            }
+        }
+
+        return $image_os;
     }
 
     // A localização e funcionario já devem estar setados no array
@@ -304,12 +331,12 @@ class Ordem_Servico_model extends MY_Model
         return $shortenings[0]->tipo_servico_abreviacao.$shortenings[0]->servico_abreviacao;
     }
 
-    public function insert_images($paths, $os)
+    public function insert_images($paths, $os, $organizacao)
     {
-        $this->CI->db->insert_batch('imagens_os', $this->build_images_rows($paths, $os));
+        $this->CI->db->insert_batch('imagens_os', $this->build_images_rows($paths, $os, $organizacao));
     }
 
-    public function build_images_rows($paths, $os)
+    public function build_images_rows($paths, $os, $organizacao)
     {
         $rows = [];
 
@@ -319,6 +346,7 @@ class Ordem_Servico_model extends MY_Model
                     'ordem_servico_fk' => $os,
                     'situacao_fk' => $this->__get('situacao_atual_fk'),
                     'imagem_os' => $p,
+                    'organizacao_fk' => $organizacao,
                 );
             }
         }
@@ -331,5 +359,14 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->db->set('ordens_servicos.ordem_servico_finalizacao', null);
         $this->CI->db->where('ordens_servicos.ordem_servico_pk', $os);
         $this->CI->db->update('ordens_servicos');
+    }
+
+    private function check_and_update_url($img_path)
+    {
+        if (!strpos($img_path, 'storage')) {
+            return base_url($img_path);
+        } else {
+            return $img_path;
+        }
     }
 }

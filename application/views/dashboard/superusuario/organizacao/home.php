@@ -214,7 +214,7 @@
                                                 <div class="col-12 col-md-6">
                                                     <input type="hidden" name="logradouro_nome" id="logradouro_pk">
                                                     <div class="dropdown" id="drop">
-                                                        <input type="text" id="logradouro-input" name="logradouro_nome"  class="form-control input-dropdown" autocomplete="off" data-src = '["<?php echo base_url('localizacao/logradouros'); ?>","https://viacep.com.br/ws"]' data-index='["logradouro_pk","logradouro"]' data-value='["logradouro_nome","logradouro"]' data-params  = '[[["this","logradouro_nome","val"],["cidade-input","municipio_pk","val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["this",null,"val"],["json",null,"param"]]]' data-action='["post","get"]' data-arrayret='["data",null]'>
+                                                        <input type="text" id="logradouro-input" name="logradouro_nome"  class="form-control input-dropdown">
                                                         <small class="help-block form-text helper-dropdown">Por favor, informe o logradouro da organização</small>
                                                         <ul class="dropdown-menu" data-return = "#logradouro_pk" data-next="#numero-input">
                                                         </ul>
@@ -242,7 +242,7 @@
                                                 <div class="col-12 col-md-10">
                                                    <input type="hidden" name="bairro_nome" id="bairro_pk">
                                                    <div class="dropdown" id="drop">
-                                                    <input type="text" id="bairro-input" name="bairro"  class="form-control input-dropdown" autocomplete="off" data-src = '["<?php echo base_url('localizacao/bairros'); ?>","https://viacep.com.br/ws"]' data-index='["bairro_pk","bairro"]' data-value='["bairro_nome","bairro"]' data-params  = '[[["cidade-input",null,"val"]],[["uf-input",null,"text"],["cidade-input",null,"text"],["logradouro-input",null,"val"],["json",null,"param"]]]' data-action='["get","get"]' data-arrayret='["data",null]'>
+                                                    <input type="text" id="bairro-input" name="bairro"  class="form-control input-dropdown">
                                                     <small class="help-block form-text helper-dropdown">Por favor, informe o bairro da organização</small>
                                                     <ul class="dropdown-menu" data-return = "#bairro_pk" data-next="#bairro-input">
                                                     </ul>

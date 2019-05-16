@@ -23,7 +23,6 @@ remove_image = () => {
 }
 
 $(document).on('click','.btn-attr-superusuario_pk',function(){
-  console.log(superusuarios[$(this).val()]['superusuario_pk']);
   $('#superusuario_pk').val(superusuarios[$(this).val()]['superusuario_pk']);
   posicao_selecionada = $(this).val();
 });
@@ -43,7 +42,7 @@ $('#btn-deactivate').click(() => {
 
     if (response.code == 200){
       alerts('success', 'Sucesso!', 'Superusuário desativado com sucesso');
-      superusuarios[posicao_selecionada]['usuario_status'] = 0;
+      superusuarios[posicao_selecionada]['ativo'] = 0;
       $('#d-superusuario').modal('hide');
     }else{
       alerts('failed', 'Erro!', 'Houve um erro ao desativar.');
@@ -68,7 +67,7 @@ $('#btn-activate').click(() => {
 
     if (response.code == 200){
       alerts('success', 'Sucesso!', 'Superusuário ativado com sucesso');
-      superusuarios[posicao_selecionada]['usuario_status'] = 1;
+      superusuarios[posicao_selecionada]['ativo'] = 1;
       $('#a-superusuario').modal('hide');
     }else{
       alerts('failed', 'Erro!', 'Houve um erro ao ativar.');
@@ -78,53 +77,53 @@ $('#btn-activate').click(() => {
 });
 
 update_table = () => {
-  table.clear().draw();
-
-  switch ($('#filter-ativo').val()) {
-
-    case "todos":
-      $.each(superusuarios, function (i, user) {
-        if(user.usuario_status == 1){
-        table.row.add([
-          user.superusuario_nome,
-          user.superusuario_login,
-          '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
-        ]).draw(false);
-      }else{
-        table.row.add([
-          user.superusuario_nome,
-          user.superusuario_login,
-          '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
-        ]).draw(false);
-      }
-      });
-      break;
-    case "ativos":
-      table.clear().draw();
-      $.each(superusuarios, function (i, user) {
-        if (user.usuario_status == 1) {
-          table.row.add([
-            user.superusuario_nome,
-            user.superusuario_login,
-            '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-attr-superusuario_pk btn-danger" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
-          ]).draw(false);
-        }
-      });
-      break;
-    case "desativados":
     table.clear().draw();
-    $.each(superusuarios, function (i, user) {
-      if (user.usuario_status == 0) {
-        table.row.add([
-          user.superusuario_nome,
-          user.superusuario_login,
-          '<div class="btn-group">' +
-            '<button type="button" class="btn btn-sm btn-success btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
-        ]).draw(false);
-      }
-    });
-      break;
-  }
+
+    switch($('#filter-ativo').val()) {
+        case 'todos':
+            $.each(superusuarios, function (i, user) {
+                if(user.ativo == 1){
+                    table.row.add([
+                        user.superusuario_nome,
+                        user.superusuario_login,
+                        '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
+                    ]).draw(false);
+                } else {
+                    table.row.add([
+                        user.superusuario_nome,
+                        user.superusuario_login,
+                        '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
+                    ]).draw(false);
+                }
+            });
+            break;
+
+        case 'ativos':
+            $.each(superusuarios, function (i, user) {
+                if(user.ativo == 1){
+                    table.row.add([
+                        user.superusuario_nome,
+                        user.superusuario_login,
+                        '<div class="btn-group"><button type="button" class="btn btn-sm btn-primary reset_multistep btn-editar-super" data-toggle="modal" value="' + (i) + '" data-target="#ce_superusuario">Editar</button><button type="button" class="btn btn-sm btn-danger btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#d-superusuario">Desativar</button></div>'
+                    ]).draw(false);
+                }
+            });
+            break;
+
+        case 'desativados':
+            $.each(superusuarios, function (i, user) {
+                if(user.ativo == 0){
+                    table.row.add([
+                        user.superusuario_nome,
+                        user.superusuario_login,
+                        '<div class="btn-group"><button type="button" class="btn btn-sm btn-success btn-attr-superusuario_pk" data-toggle="modal" value="' + (i) + '" data-target="#a-superusuario">Ativar</button></div>'
+                    ]).draw(false);
+                }
+            });
+            break;
+
+
+    }
 }
 
 
@@ -152,7 +151,6 @@ send_data = () => {
 send = (imagem) => {
   //pre_loader_show();
 
-  console.log($('#pass-modal-edit').val());
   btn_load($('.submit'));
 
   const formData = new FormData();
@@ -168,7 +166,6 @@ send = (imagem) => {
   formData.append('superusuario_email', $('#email-input').val());
   formData.append('superusuario_login', $('#login-input').val());
 
-  console.log($('#superusuario_pk').val());
 
   var URL = ($('#superusuario_pk').val() == "") ? base_url + '/superusuario/insert' : base_url + '/superusuario/update';
 

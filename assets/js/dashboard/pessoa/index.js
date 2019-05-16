@@ -1,24 +1,36 @@
+class View extends GenericView {
+
+    constructor() {
+        super();
+    }
+
+}
+
+const myView = new View();
+
+myView.renderMenu();
+
 const google = "6LfwtV4UAAAAANnXXJhkM87IgNRNQghpwW467CEc"; //REFATORAR PARA CONSTANTES
 
 
 $(document).ready(function () {
-    image = loadAvatarImage();
+    let image = loadAvatarImage();
     image.style = "width: 50%";
     image.className = "img-responsive img-thumbnail align-center";
     document.getElementById('img-div').appendChild(image);
 });
 
 
-function btn_load(button_submit){
-  button_submit.attr('disabled', 'disabled');
-  button_submit.css('cursor', 'default');
-  button_submit.find('i').removeClass();
-  button_submit.find('i').addClass('fa fa-refresh fa-spin');
+function btn_load(button_submit) {
+    button_submit.attr('disabled', 'disabled');
+    button_submit.css('cursor', 'default');
+    button_submit.find('i').removeClass();
+    button_submit.find('i').addClass('fa fa-refresh fa-spin');
 }
 
 
 
-function btn_ativar(button_submit){
+function btn_ativar(button_submit) {
     button_submit.removeAttr('disabled');
     button_submit.css('cursor', 'pointer');
     button_submit.find('i').removeClass();
@@ -34,7 +46,7 @@ $('#btn-open-modal-save').click(function () {
     var form = document.getElementById("form-profile");
 
     if (form.checkValidity()) {
-       send_data();
+        send_data();
     } else {
         alerts('failed', "Erro de formulário", "O formulário apresenta campos obrigatórios que não foram preenchidos ou incorretos.");
     }
@@ -49,9 +61,7 @@ remove_image = () => {
 
 send_data = () => {
     try {
-        $('#img-input').cropper('getCroppedCanvas').toBlob((blob) => {
-            this.send(blob);
-        });
+        this.send($('#img-input').cropper('getCroppedCanvas').toDataURL());
     } catch (err) {
         this.send(null);
     }
@@ -64,21 +74,19 @@ send = (imagem) => {
     pre_loader_show();
     btn_load($('#btn-open-modal-save'));
 
-    const formData = new FormData();
-    formData.append('funcionario_pk', $('#pessoa_pk').val());
-    formData.append('funcionario_nome', $('#nome-input').val());
-    formData.append('funcionario_cpf', $('#cpf-input').val());
-    formData.append('funcionario_login', $('#email-input').val());
+    const formData = {
+        'funcionario_pk': $('#funcionario_pk').val(),
+        'funcionario_nome': $('#funcionario_nome').val(),
+        'funcionario_cpf': $('#funcionario_cpf').val(),
+        'funcionario_login': $('#funcionario_login').val(),
+        'img': imagem
+    }
 
-    formData.append('img', imagem);
     var URL = base_url + '/funcionario/save';
 
-    $.ajax({
+    $.post({
         url: URL,
-        method: "POST",
         data: formData,
-        processData: false,
-        contentType: false,
         success: function (response) {
 
             btn_ativar($('#btn-open-modal-save'));
@@ -91,8 +99,8 @@ send = (imagem) => {
                 }
             } else {
                 alerts('success', 'Dados alterados com sucesso!', 'Aguarde um momento, pois atualizaremos os dados de sua conta.');
-
-                window.location.replace(base_url+'/funcionario/minha_conta');
+                updateAvatar();
+                window.location.replace(base_url + '/minha_conta');
             }
 
             pre_loader_hide();
@@ -128,15 +136,14 @@ sendForm = () => {
 }
 
 
-$('#btn-change-password').click(function(){
+$('#btn-change-password').click(function () {
     let new_pass = $('#new_password').val();
     let confirm_password = $('#confirm_new_password').val();
 
-    if(new_pass != confirm_password)
-    {
-        $('.area-acesso').append(alerts('failed', 'Erro no formulário', 
-        'Nova senha e confirmar senha estão diferentes.'));
+    if (new_pass != confirm_password) {
+        $('.area-acesso').append(alerts('failed', 'Erro no formulário',
+            'Nova senha e confirmar senha estão diferentes.'));
     } else {
-       sendForm();
+        sendForm();
     }
 });

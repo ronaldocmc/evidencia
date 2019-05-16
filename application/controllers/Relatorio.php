@@ -4,9 +4,8 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once dirname(__FILE__) . "/Response.php";
 require_once APPPATH . "core/CRUD_Controller.php";
-require_once dirname(__FILE__) . "/Response.php";
+require_once APPPATH . "core/Response.php";
 
 class Relatorio extends CRUD_Controller
 {
@@ -15,7 +14,7 @@ class Relatorio extends CRUD_Controller
     public function __construct()
     {
         parent::__construct();
-        
+
         date_default_timezone_set('America/Sao_Paulo');
 
         $this->load->library('form_validation');
@@ -25,161 +24,6 @@ class Relatorio extends CRUD_Controller
         $this->load->model('Ordem_Servico_model', 'ordem_servico_model');
         $this->load->model('Funcionario_model', 'funcionario_model');
         $this->response = new Response();
-    }
-
-    public function novo_relatorio()
-    {
-        //Carregando os models para recuperação de dados a serem exibidos na view Novo Relatório
-        $this->load->model('Servico_model', 'servico_model');
-        $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
-        $this->load->model('Setor_model', 'setor_model');
-
-        //Selecionando o setores
-        $setores = $this->setor_model->get_all(
-            '*',
-            ["organizacao_fk" => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
-        //Selecionando os tipos de serviços
-        $tipos_servicos = $this->tipo_servico_model->get(
-            '*',
-            ["departamentos.organizacao_fk" => $this->session->user['id_organizacao']]
-        );
-        //Selecionando os serviços
-        $servicos = $this->servico_model->get(
-            '*',
-            ["situacoes.organizacao_fk" => $this->session->user['id_organizacao']]
-        );
-        //Selecionando os funcionários com a função de revisor
-        $funcionarios = $this->funcionario_model->get(
-            "*",
-            [
-                "funcionarios.organizacao_fk" => $this->session->user['id_organizacao'],
-                "funcionarios.funcao_fk" => "6",
-            ]
-        );
-        //Carregando CSS utilizados na view
-        $this->session->flashdata('css', [
-            0 => base_url('assets/css/modal_desativar.css'),
-        ]);
-        //Carregando os scripts utilizados na view
-        $this->load_scripts();
-
-        //Finalmente, carregando para view os dados recuperados no banco
-        load_view([
-            0 => [
-                'src' => 'dashboard/administrador/relatorio/novo_relatorio',
-                'params' => [
-                    'setores' => $setores,
-                    'tipos_servicos' => $tipos_servicos,
-                    'servicos' => $servicos,
-                    //pegamos os motoristas de caminhão
-                    'motoristas_de_caminhao' => $funcionarios,
-                    'message' => $this->session->flashdata('error'),
-                ],
-            ],
-        ], 'administrador');
-    }
-
-    public function mapa()
-    {
-        $this->load->model('Prioridade_model', 'prioridade');
-        $this->load->model('Situacao_model', 'situacao');
-        $this->load->model('Departamento_model', 'departamento');
-        $this->load->model('Servico_model', 'servico');
-        $this->load->model('Tipo_Servico_model', 'tipo_servico');
-        $this->load->model('Setor_model', 'setor');
-        $this->load->helper('form');
-        
-        $prioridades = $this->prioridade->get_all(
-            '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
-        $situacoes = $this->situacao->get_all(
-            '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
-        $servicos = $this->servico->get_all(
-            '*',
-            ['situacoes.organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1,
-            [
-                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk']
-            ]
-        );
-        $departamentos = $this->departamento->get_all(
-            '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
-        $tipos_servicos = $this->tipo_servico->get_all(
-            '*',
-            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1,
-            [
-                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
-            ]
-        );
-        $setores = $this->setor->get_all(
-            '*',
-            ['setores.organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
-        
-        $this->session->set_flashdata('css', [
-            0 => base_url('assets/css/modal_desativar.css'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/css/loading_input.css'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            4 => base_url('assets/css/modal_map.css'),
-            5 => base_url('assets/css/timeline.css'),
-            6 => base_url('assets/css/style_card.css'),
-            7 => base_url('assets/css/user_guide.css'),
-        ]);
-        $this->session->set_flashdata('scripts', [
-            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            2 => base_url('assets/js/masks.js'),
-            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            4 => base_url('assets/vendor/datatables/datatables.min.js'),
-            5 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            6 => base_url('assets/js/utils.js'),
-            7 => base_url('assets/js/constants.js'),
-            8 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            9 => base_url('assets/js/dashboard/mapa/mapa.js'),
-            10 => base_url('assets/vendor/select-input/select-input.js'),
-            11 => base_url('assets/js/localizacao.js')
-        ]);
-        $this->session->set_flashdata('mapa', [
-            0 => true,
-        ]);
-
-        load_view([
-            0 => [
-                'src' => 'dashboard/administrador/mapa/home',
-                'params' => [
-                    'prioridades' => $prioridades,
-                    'situacoes' => $situacoes,
-                    'servicos' => $servicos,
-                    'departamentos' => $departamentos,
-                    'tipos_servicos' => $tipos_servicos,
-                    'setores' => $setores
-                ],
-            ],
-            1 => [
-                'src' => 'access/pre_loader',
-                'params' => null,
-            ],
-        ], 'administrador');
     }
 
     private function load_scripts()
@@ -194,18 +38,20 @@ class Relatorio extends CRUD_Controller
         ]);
     }
 
-    private function check_if_is_not_empty($array, $error_message){
-        if(!isset($array)){
+    private function check_if_is_not_empty($array, $error_message)
+    {
+        if (!isset($array)) {
             throw new MyException($error_message, Response::BAD_REQUEST);
         }
     }
 
-    private function validate_dates($initial, $final){
-        if(!$this->validateDate($initial)){
+    private function validate_dates($initial, $final)
+    {
+        if (!$this->validateDate($initial)) {
             throw new MyException('Data inicial inválida.', Response::BAD_REQUEST);
         }
 
-        if(!$this->validateDate($final)){
+        if (!$this->validateDate($final)) {
             throw new MyException('Data final inválida.', Response::BAD_REQUEST);
         }
 
@@ -217,10 +63,10 @@ class Relatorio extends CRUD_Controller
     //Função que realiza a validação dos itens selecionados no filtro
     private function validate_filter($filtro)
     {
-        if(!isset($filtro['setor'])){
+        if (!isset($filtro['setor'])) {
             throw new MyException('Marque pelo menos um setor.', Response::BAD_REQUEST);
         }
-        if(!isset($filtro['tipo'])){
+        if (!isset($filtro['tipo'])) {
             throw new MyException('Marque pelo menos um tipo de serviço.', Response::BAD_REQUEST);
         }
 
@@ -230,11 +76,11 @@ class Relatorio extends CRUD_Controller
     //Função que recupera as ordens de serviço com as especificações do flitro, realiza também a contagem
     public function select_os_by_filter()
     {
-        try{
+        try {
             $filter = $this->input->post();
-            
+
             $this->validate_filter($filter);
-            
+
             $ordens_servicos = $this->ordem_servico_model->get_for_new_report($filter, true);
 
             $this->response->set_data($ordens_servicos);
@@ -244,7 +90,7 @@ class Relatorio extends CRUD_Controller
             handle_my_exception($e);
         } catch (Exception $e) {
             handle_exception($e);
-        }   
+        }
     }
 
     private function standardizes_data($data, $field_name, $id)
@@ -264,7 +110,7 @@ class Relatorio extends CRUD_Controller
     }
 
     private function set_report_fields()
-    {   
+    {
         $this->report_model->__set('relatorio_func_responsavel', $this->input->post('funcionario_fk'));
         $this->report_model->__set('relatorio_criador', $this->session->user['id_user']);
         $this->report_model->__set('relatorio_data_inicio_filtro', $this->input->post('data_inicial'));
@@ -272,21 +118,19 @@ class Relatorio extends CRUD_Controller
         $this->report_model->__set('relatorio_situacao', 'Criado');
     }
 
-
     private function verify_reports_of_worker($worker_id)
     {
         $report_on_working = $this->report_model->get_all(
             '*',
             [
                 'relatorio_func_responsavel' => $worker_id,
-                'ativo' => 1
+                'ativo' => 1,
             ],
             -1,
             -1
         );
-        
-        if (!empty($report_on_working)) 
-        {
+
+        if (!empty($report_on_working)) {
             throw new MyException('Não foi possível executar operação! Funcionário já possui outro relatório.', Response::BAD_REQUEST);
         }
 
@@ -304,7 +148,8 @@ class Relatorio extends CRUD_Controller
 
     public function create_new_report()
     {
-        try{
+        try {
+            log_message('monitoring', 'Attempt to generate new report by '.$this->session->user['email_user']);
             //Configurando as regras de preenchimento de formulário
             $this->report_model->config_form_validation();
 
@@ -319,7 +164,7 @@ class Relatorio extends CRUD_Controller
 
             //Verificando se existe um relatório em andamento para o funcionário selecionado
             $this->verify_reports_of_worker($this->input->post('funcionario_fk'));
-            
+
             //Recuperando as ordens de serviço que pertencerão ao relatório conforme especificação do filtro
             $ordens_servicos = $this->ordem_servico_model->get_for_new_report($filter);
 
@@ -334,7 +179,7 @@ class Relatorio extends CRUD_Controller
                 'id' => $id_report,
                 'message' => 'Relatório criado com sucesso!<br>Aguarde enquanto estamos recarregando a página ...',
             ]);
-        
+
             $this->response->send();
 
         } catch (MyException $e) {
@@ -351,7 +196,7 @@ class Relatorio extends CRUD_Controller
 
             //Setando os campos do Object Relatório no model.
             $this->set_report_fields();
-            
+
             //DAQUI ATÉ O END DA TRANSACTION PODE SER FEITO DEPOIS DE TODAS VERIFICAÇÕES.
             //Abrindo uma transaction para caso de falhas de inserção
             $this->begin_transaction();
@@ -442,18 +287,23 @@ class Relatorio extends CRUD_Controller
     public function select_orders_of_report($id)
     {
 
-        $ordens_servicos = $this->report_model->get_orders_of_report(['relatorio_fk' => $id]);
-        
-            foreach ($ordens_servicos as $os) {
-                $os->ordem_servico_atualizacao = date('d/m/Y H:i:s', strtotime($os->ordem_servico_atualizacao));
+        $ordens_servicos = $this->report_model->get_orders_of_report(
+            [
+                'relatorio_fk' => $id,
+                'ordens_servicos.ativo' => 1,
+            ]
+        );
 
-                //Se não tiver sido entregue, vamos mostrar: Não Finalizado, se tiver, vamos printar a situação atual
-                if ($os->situacao_atual_fk == 2) {
-                    $os->ordem_servico_comentario = 'Não Finalizado';
-                } else {
-                    $os->ordem_servico_comentario = $os->situacao_nome;
-                }
+        foreach ($ordens_servicos as $os) {
+            $os->ordem_servico_atualizacao = date('d/m/Y H:i:s', strtotime($os->ordem_servico_atualizacao));
+
+            //Se não tiver sido entregue, vamos mostrar: Não Finalizado, se tiver, vamos printar a situação atual
+            if ($os->situacao_atual_fk == 2) {
+                $os->ordem_servico_comentario = 'Não Finalizado';
+            } else {
+                $os->ordem_servico_comentario = $os->situacao_nome;
             }
+        }
 
         return $ordens_servicos;
     }
@@ -464,7 +314,7 @@ class Relatorio extends CRUD_Controller
         $data_filter = [];
 
         $this->load->model('setor_model');
-        $this->load->model('tipo_servico_model', 'ts_model');
+        $this->load->model('Tipo_Servico_model', 'ts_model');
 
         $sector_filters = $this->setor_model->get_all(
             'setor_pk, setor_nome',
@@ -488,7 +338,7 @@ class Relatorio extends CRUD_Controller
             ]
         );
 
-        $data_filter['tipos_servicos'] =  $services_type_filters;
+        $data_filter['tipos_servicos'] = $services_type_filters;
 
         return $data_filter;
     }
@@ -509,24 +359,22 @@ class Relatorio extends CRUD_Controller
 
         $situacoes = $this->situacao->get_all(
             '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            null,
             -1,
             -1
         );
 
         $responsible = $this->funcionario_model->get_one(
-            'funcionario_pk, funcionario_nome', 
+            'funcionario_pk, funcionario_nome',
             ['funcionario_pk' => $report->relatorio_func_responsavel]
         );
 
         //Recebendo as ordens de serviço do relatório em questão
         $ordens_servicos = $this->select_orders_of_report($report_id);
 
-        foreach ($ordens_servicos as $os) 
-        {
+        foreach ($ordens_servicos as $os) {
             $images = $this->ordem_servico_model->get_images_id($os->ordem_servico_pk);
-            if (!empty($images)) 
-            {
+            if (!empty($images)) {
                 // última imagem
                 $os->image = array_pop($images)->imagem_os;
             }
@@ -544,7 +392,7 @@ class Relatorio extends CRUD_Controller
             'funcionarios' => $workers,
             'relatorio' => $report,
             'filtros' => $strings_filters,
-            'situacoes' => $situacoes
+            'situacoes' => $situacoes,
         ];
 
         return $params;
@@ -557,7 +405,7 @@ class Relatorio extends CRUD_Controller
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
             2 => base_url('assets/css/loading_input.css'),
             3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            4 => base_url('assets/css/modal_map.css')
+            4 => base_url('assets/css/modal_map.css'),
         ]);
     }
 
@@ -574,23 +422,23 @@ class Relatorio extends CRUD_Controller
             7 => base_url('assets/js/constants.js'),
             8 => base_url('assets/js/jquery.noty.packaged.min.js'),
             9 => base_url('assets/vendor/select-input/select-input.js'),
-            10 => base_url('assets/js/dashboard/relatorio/detalhe-relatorio.js')
+            10 => base_url('assets/js/dashboard/relatorio/detalhe-relatorio.js'),
         ]);
     }
 
     public function imprimir($report_id)
     {
         $report = $this->report_model->get_one('*', ['relatorio_pk' => $report_id]);
-        
-        if($report){
+
+        if ($report) {
 
             $this->load_css_detail();
             $this->load_script_detail();
 
             load_view([
                 0 => [
-                    'src'    => 'dashboard/administrador/relatorio/imprimir_relatorio',
-                    'params' => $this->get_report_detail_data($report)
+                    'src' => 'dashboard/administrador/relatorio/imprimir_relatorio',
+                    'params' => $this->get_report_detail_data($report),
                 ],
             ], 'administrador', false);
         } else {
@@ -598,22 +446,21 @@ class Relatorio extends CRUD_Controller
         }
     }
 
-
     public function detalhes($report_id)
     {
         $report = $this->report_model->get_one('*', ['relatorio_pk' => $report_id]);
-        
-        if($report){
+
+        if ($report) {
 
             $this->load_css_detail();
             $this->load_script_detail();
-        
-                load_view([
-                    0 => [
-                        'src'    => 'dashboard/administrador/relatorio/detalhe_relatorio',
-                        'params' => $this->get_report_detail_data($report)
-                    ],
-                ], 'administrador');
+
+            load_view([
+                0 => [
+                    'src' => 'dashboard/administrador/relatorio/detalhe_relatorio',
+                    'params' => $this->get_report_detail_data($report),
+                ],
+            ], 'administrador');
         } else {
             $this->load->view('errors/html/error_404');
         }
@@ -649,8 +496,6 @@ class Relatorio extends CRUD_Controller
         }
     }
 
-    
-
     // Recebe por parâmetro o id do relatório
     public function change_worker($id)
     {
@@ -674,19 +519,18 @@ class Relatorio extends CRUD_Controller
             handle_my_exception($e);
         } catch (Exception $e) {
             handle_exception($e);
-        }   
+        }
     }
 
     public function deactivate($id)
     {
-        try{
+        try {
             $this->report_model->__set('relatorio_pk', $id);
             $this->verify_report_was_started($id);
 
             $ordens_servicos = $this->report_model->get_orders_of_report(['relatorio_fk' => $id]);
 
-            foreach ($ordens_servicos as $os) 
-            {
+            foreach ($ordens_servicos as $os) {
                 //Registrando no histórico o último dado atualizado da OS
                 $this->ordem_servico_model->handle_historico($os->ordem_servico_pk);
 
@@ -714,7 +558,7 @@ class Relatorio extends CRUD_Controller
             handle_my_exception($e);
         } catch (Exception $e) {
             handle_exception($e);
-        }  
+        }
 
     }
 
@@ -748,46 +592,6 @@ class Relatorio extends CRUD_Controller
         return $reports;
     }
 
-    // Index será responsável pela listagem dos relatórios
-    public function index()
-    {
-
-        $reports = $this->get_all_reports();
-
-        $this->session->set_flashdata('css', array(
-            0 => base_url('assets/vendor/cropper/cropper.css'),
-            1 => base_url('assets/vendor/input-image/input-image.css'),
-            2 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            3 => base_url('assets/css/modal_desativar.css'),
-            4 => base_url('assets/css/user_guide.css'),
-        ));
-
-        $this->session->set_flashdata('scripts', array(
-            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            1 => base_url('assets/vendor/datatables/datatables.min.js'),
-            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            4 => base_url('assets/js/utils.js'),
-            5 => base_url('assets/js/constants.js'),
-            6 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            7 => base_url('assets/js/dashboard/relatorio/home.js'),
-        ));
-
-        $this->load->helper('form');
-        load_view([
-            0 => [
-                'src' => 'dashboard/administrador/relatorio/home',
-                'params' => [
-                    'relatorios' => $reports,
-                ],
-            ],
-            1 => [
-                'src' => 'access/pre_loader',
-                'params' => null,
-            ],
-        ], 'administrador');
-    }
-
     private function verify_password()
     {
         if (!authenticate_operation($this->input->post('senha'), $this->session->user['password_user'])) {
@@ -812,16 +616,16 @@ class Relatorio extends CRUD_Controller
     {
         $report = $this->report_model->get_em_andamento_or_criado($report_id);
 
-        if($report !== NULL){
+        if ($report !== null) {
             $this->restore_orders_of_report($report_id);
         } else {
             throw new MyException('O relatório já foi recebido!', Response::NOT_FOUND);
         }
     }
 
-    public function receive_report($report_id = NULL)
+    public function receive_report($report_id = null)
     {
-        try{
+        try {
             $this->load->helper('password_helper');
 
             $this->add_password_to_form_validation();
@@ -831,7 +635,7 @@ class Relatorio extends CRUD_Controller
             $this->verify_password();
 
             //devemos receber TODOS os relatórios que estão em Andamento
-            if($report_id === NULL){ 
+            if ($report_id === null) {
                 $this->receive_all_reports();
 
             } else {
@@ -850,10 +654,15 @@ class Relatorio extends CRUD_Controller
     }
 
     private function restore_orders_of_report($id)
-    {   
+    {
         try {
-            $all_executed = TRUE;
-            $ordens_servico = $this->report_model->get_orders_of_report(['relatorio_fk' => $id]);
+            $all_executed = true;
+            $ordens_servico = $this->report_model->get_orders_of_report(
+                [
+                    'relatorio_fk' => $id,
+                    'ordens_servicos.ativo' => 1,
+                ]
+            );
 
             $this->begin_transaction();
             foreach ($ordens_servico as $os) {
@@ -873,7 +682,7 @@ class Relatorio extends CRUD_Controller
                     //Atualizando a situação atual da ordem de serviço (Situação 2 - Em andamento)
                     $this->ordem_servico_model->update();
 
-                    $all_executed = FALSE;
+                    $all_executed = false;
 
                 }
             }
@@ -883,8 +692,8 @@ class Relatorio extends CRUD_Controller
             $this->report_model->__set('ativo', 0);
             $this->report_model->__set('relatorio_pk', $id);
 
-            if(!$all_executed){
-                $this->report_model->__set('relatorio_situacao', 'Entregue incompleto'); 
+            if (!$all_executed) {
+                $this->report_model->__set('relatorio_situacao', 'Entregue incompleto');
             }
 
             $this->report_model->update();

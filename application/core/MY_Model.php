@@ -29,8 +29,10 @@ class MY_Model extends Generic_Model
     private function check_attributes()
     {
         if (empty(static::FORM)) {
-            throw new MyException('FORM não pode ser vazio!',
-                Response::NOT_FOUND);
+            throw new MyException(
+                'FORM não pode ser vazio!',
+                Response::NOT_FOUND
+            );
         }
     }
 
@@ -79,7 +81,7 @@ class MY_Model extends Generic_Model
         }
 
         if ($res == null || $res == false) {
-            throw MyException($this->getName().' não encontrado.', Response::NOT_FOUND);
+            throw new MyException($this->getName().' não encontrado.', Response::NOT_FOUND);
         } else {
             return $res;
         }
@@ -102,10 +104,21 @@ class MY_Model extends Generic_Model
         }
     }
 
-    public function deactivate()
+    public function delete()
+    {
+        if (array_key_exists($this->getPriIndex(), $this->object)) {
+            return $this->delete_object($this->object[$this->getPriIndex()]);
+        } else {
+            throw new MyException(
+                'Primary Index de '.$this->getName().' deve estar preenchido!',
+                Response::NOT_FOUND
+            );
+        }
+    }
+
+    public function deactivate($dependent_model = null, $model_method = null)
     {
         $this->object = $this->get_one('*', [$this->getPriIndex() => $this->object[$this->getPriIndex()]]);
-        // var_dump($this->object);die();
         $this->check_if_key_exists('ativo', $this->object);
 
         if ($this->object->ativo == 0) {
@@ -115,8 +128,15 @@ class MY_Model extends Generic_Model
             );
         } else {
             $field = $this->getPriIndex();
-
-            return $this->update_object(['ativo' => 0], $this->object->$field);
+            if ($dependent_model !== null) {
+                if ($this->check_dependences($dependent_model, $this->object->$field, $model_method)) {
+                    return $this->update_object(['ativo' => 0], $this->object->$field);
+                } else {
+                    throw new MyException($this->getName().' ainda possui dependentes', 403);
+                }
+            } else {
+                return $this->update_object(['ativo' => 0], $this->object->$field);
+            }
         }
     }
 
@@ -136,5 +156,12 @@ class MY_Model extends Generic_Model
 
             return $this->update_object(['ativo' => 1], $this->object->$field);
         }
+    }
+
+    private function check_dependences($model, $pk, $method)
+    {
+        $dependents = $model->$method($pk);
+
+        return empty($dependents) ? true : false;
     }
 }

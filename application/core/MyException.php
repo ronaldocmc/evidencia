@@ -1,5 +1,5 @@
 <?php 
-require_once dirname(__FILE__) . "/../controllers/Response.php";
+require_once APPPATH . "core/Response.php";
 class MyException extends Exception {
 	public $code;
 
@@ -13,4 +13,3 @@ class MyException extends Exception {
 		$this->code = $code;
 	}
 }
-?>

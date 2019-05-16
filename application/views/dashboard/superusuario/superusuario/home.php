@@ -18,7 +18,6 @@
                     <div class="col-12">
                         <div class="au-card">
                             <h2 class="title-1 m-b-25">Superusuários</h2>
-                            <div class="">
                             <h5>Filtrar por</h5><br>
                             <div class="row">
                                 <div class="col-md-3">
@@ -27,8 +26,8 @@
                                         <option value="todos">Todos</option>
                                         <option value="ativos">Apenas ativos</option>
                                         <option value="desativados">Apenas desativados</option>
-                                    </select><br>
-                                </div>
+                                    </select>
+                                    <br>
                                 </div>
                             </div>
                             <div class="table-responsive table--no-card m-b-40">
@@ -233,7 +232,8 @@
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-confirmar-senha" id="btn-deactivate" name="post">
-<i class="fa fa-dot-circle-o"></i> Desativar</button>
+                        <i class="fa fa-dot-circle-o"></i> Desativar
+                    </button>
                 </div>
             </div>
         </div>
@@ -260,7 +260,8 @@
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-confirmar-senha" id="btn-activate" name="post">
-<i class="fa fa-dot-circle-o"></i> Ativar</button>
+                        <i class="fa fa-dot-circle-o"></i> Ativar
+                    </button>
                 </div>
             </div>
         </div>
@@ -269,5 +270,4 @@
 
 <script type="text/javascript">
     var superusuarios = <?php echo json_encode($superusuarios !== false ? $superusuarios : [] ) ?>;
-    console.log(superusuarios);
 </script>

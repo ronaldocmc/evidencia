@@ -1,3 +1,7 @@
+const view = new GenericView();
+
+view.renderMenu();
+
 var form;
 
 function btn_load(button_submit){

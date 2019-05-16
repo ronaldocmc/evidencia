@@ -3,6 +3,7 @@
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
+
 require_once dirname(__FILE__).'/../../system/core/Model.php';
 class Generic_Model extends CI_Model
 {
@@ -107,12 +108,14 @@ class Generic_Model extends CI_Model
      *
      * @return int Number of rows affected by the delete query
      */
-    public function delete_object($where = array())
+    public function delete_object($where)
     {
-        if (!is_array()) {
+        if (!is_array($where)) {
             $where = array($this->getPriIndex() => $where);
         }
+
         $this->CI->db->delete($this->getTableName(), $where);
+
         if ($this->CI->db->affected_rows() == -1) {
             throw new MyException('Erro ao deletar '.$this->getTableName(), Response::NOT_FOUND);
         }

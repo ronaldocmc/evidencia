@@ -108,6 +108,8 @@ define('ENABLE_EMAIL',TRUE);
 define('ID_SITUACAO_ABERTA', 1);
 define('ID_SITUACAO_FINALIZADO', 2);
 
-define('SHOW_HIDE_MENU', false); //Prioridades, situações, tipos e serviços
+define('SHOW_HIDE_MENU', false); //tipos e serviços
 
-define('VERSION', '2.0.1');
+define('VERSION', '2.1.0');
+
+define('TOKEN', 'token');

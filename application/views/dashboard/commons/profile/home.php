@@ -18,7 +18,7 @@
                             <div class="">
                                 Informações Pessoais
                             </div>
-                            <input type="hidden" name="pessoa_pk" id="pessoa_pk" value="<?= $this->session->user['id_user'] ?>">
+                            <input type="hidden" name="funcionario_pk" id="funcionario_pk" value="<?= $this->session->user['id_user']; ?>">
                             <div class="card-body card-block">
                                 <div class="row form-group">
                                     <div class="col col-md-2">
@@ -27,8 +27,8 @@
                                         </label>
                                     </div>
                                     <div class="col-12 col-md-10">
-                                        <input type="text" id="nome-input" name="nome" placeholder="Nome Completo" class="form-control nome-input" required maxlength="50"
-                                            minlength="5" required value="<?= $worker->funcionario_nome ?>">
+                                        <input type="text" id="funcionario_nome" name="funcionario_nome" placeholder="Nome Completo" class="form-control nome-input" required maxlength="50"
+                                            minlength="5" required value="<?= $worker->funcionario_nome; ?>">
                                         <small class="form-text text-muted">Por favor, informe o nome completo</small>
                                     </div>
                                 </div>
@@ -39,7 +39,7 @@
                                         </label>
                                     </div>
                                     <div class="col-12 col-md-10">
-                                        <input type="text" id="cpf-input" name="cpf" placeholder="CPF" class="form-control cpf-input" required value="<?= $worker->funcionario_cpf ?>">
+                                        <input type="text" id="funcionario_cpf" name="funcionario_cpf" placeholder="CPF" class="form-control cpf-input" required value="<?= $worker->funcionario_cpf; ?>">
                                         <small class="form-text text-muted">Por favor, informe o CPF</small>
                                     </div>
                                 </div>
@@ -58,7 +58,7 @@
                                         </label>
                                     </div>
                                     <div class="col-12 col-md-10">
-                                        <input type="email" id="email-input" name="email" placeholder="Email" class="form-control email-input" required="true" value="<?= $worker->funcionario_login ?>">
+                                        <input type="email" id="funcionario_login" name="funcionario_login" placeholder="Email" class="form-control email-input" required="true" value="<?= $worker->funcionario_login; ?>">
                                         <small class="help-block form-text">Por favor, informe o email</small>
                                     </div>
                                 </div>

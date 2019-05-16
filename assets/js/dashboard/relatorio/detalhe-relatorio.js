@@ -1,3 +1,7 @@
+const view = new GenericView();
+
+view.conditionalRender();
+
 function btn_load(button_submit){
     button_submit.attr('disabled', 'disabled');
     button_submit.css('cursor', 'default');
@@ -95,7 +99,7 @@ $(document).on('click','#btn-deletar-relatorio',function(event) {
         }
 		else if(response.code == 200)
 		{
-			window.location.href = base_url+'/Relatorio/novo_relatorio/';
+			window.location.href = base_url+'/relatorio/';
 		}
 	});
 });
@@ -168,7 +172,7 @@ function change_situacao (os) {
     formData.append('situacao_atual_fk', parseInt($('#' + os).val()));
     formData.append('image_os', null);
 
-    var URL = base_url + '/ordem_servico/insert_situacao/' + os;
+    var URL = base_url + '/Ordem_Servico/insert_situacao/' + os;
     $.ajax({
         url: URL,
         method: "POST",

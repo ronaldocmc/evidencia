@@ -10,7 +10,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once dirname(__FILE__) . "/Response.php";
+require_once APPPATH."core/Response.php";   
 require_once APPPATH . "core/MY_Controller.php";
 
 class AccessWS extends MY_Controller
@@ -75,8 +75,11 @@ class AccessWS extends MY_Controller
         $this->load->helper('token');
         $this->load->helper('string');
         $this->load->library('form_validation');
+        $this->load->library('Authorization');
         $this->load->model('Funcionario_model', 'funcionario_model');
         $this->load->model('Tentativa_model');
+
+        $authorization = new Authorization();
 
         $today = date('Y-m-d H:i:s');
 
@@ -135,12 +138,15 @@ class AccessWS extends MY_Controller
                     $data_token['id_empresa'] = $user->organizacao_fk;
                     $data_token['last_update'] = "01/01/2000";
 
+                    $permissions = $authorization->return_permissions($user->funcao_fk);
+
                     $dados['token'] = generate_token($data_token);
 
                     $d = [];
                     $d['nome'] = $user->funcionario_nome;
                     $d['tipo'] = $user->funcao_nome;
                     $d['count'] = 10;
+                    $d['permissions'] = $permissions;
 
                     $setores = $this->funcionario_model->get_setores(
                         ["funcionarios.funcionario_pk" => $user->funcionario_pk]
@@ -155,7 +161,8 @@ class AccessWS extends MY_Controller
                     $dados['dados'] = $d;
 
                     $this->response->set_data($dados);
-                    $this->tentativa_model->delete($this->input->ip_address());
+                    $this->tentativa_model->delete_ip($this->input->ip_address());
+                    
                 } else {
                     $this->response->set_code(Response::NOT_FOUND);
                     $this->response->set_message('Usuário não encontrado');
@@ -196,12 +203,12 @@ class AccessWS extends MY_Controller
             $obj = apache_request_headers();
 
 
-            $new_token = verify_token($obj['Token'], $this->response);
+            $new_token = verify_token($obj[TOKEN], $this->response);
 
             if ($new_token) {
                 $dados['token'] = $new_token;
                 $this->response->set_data($dados);
-                $this->tentativa_model->delete($this->input->ip_address());
+                $this->tentativa_model->delete_ip($this->input->ip_address());
             } else {
                 $this->response->set_code(Response::UNAUTHORIZED);
                 $this->response->set_message('Seção expirada');

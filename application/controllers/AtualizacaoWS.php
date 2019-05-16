@@ -10,7 +10,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once dirname(__FILE__) . "/Response.php";
+require_once APPPATH."core/Response.php";   
 require_once APPPATH . "core/MY_Controller.php";
 
 class AtualizacaoWS extends MY_Controller
@@ -75,7 +75,7 @@ class AtualizacaoWS extends MY_Controller
 
         if ($attempt_result === true) {
 
-            $token_decodificado = json_decode(token_decrypt($header_obj['Token']));
+            $token_decodificado = json_decode(token_decrypt($header_obj[TOKEN]));
             // $token_decodificado->id_empresa
             // $token_decodificado->id_funcionario
             // $last_update = $token_decodificado->last_update;
@@ -84,7 +84,7 @@ class AtualizacaoWS extends MY_Controller
                 "servicos.*",
                 [
                     'servicos.ativo' => 1,
-                    'situacoes.organizacao_fk' => $token_decodificado->id_empresa,
+                    'departamentos.organizacao_fk' => $token_decodificado->id_empresa,
                 ]
             );
 
@@ -98,7 +98,7 @@ class AtualizacaoWS extends MY_Controller
 
             $atualizar['prioridade'] = $this->prioridade_model->get_all(
                 '*',
-                ["organizacao_fk" => $token_decodificado->id_empresa],
+                null,
                 -1,
                 -1
             );
@@ -111,9 +111,7 @@ class AtualizacaoWS extends MY_Controller
 
             $atualizar['prioridades'] = $this->prioridade_model->get_all(
                 '*',
-                [
-                    "organizacao_fk" => $token_decodificado->id_empresa,
-                ],
+                null,
                 -1,
                 -1
             );

@@ -1,14 +1,14 @@
 <?php
+
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core/MY_Model.php";
-require_once APPPATH."core/MyException.php";
+require_once APPPATH.'core/MY_Model.php';
+require_once APPPATH.'core/MyException.php';
 
 class Funcionario_model extends MY_Model
 {
-
     const NAME = 'funcionário';
     const TABLE_NAME = 'funcionarios';
     const PRI_INDEX = 'funcionario_pk';
@@ -22,7 +22,7 @@ class Funcionario_model extends MY_Model
         'funcionario_caminho_foto',
     );
 
-    function config_form_validation()
+    public function config_form_validation()
     {
         $this->CI->form_validation->set_rules(
             'funcionario_login',
@@ -50,38 +50,38 @@ class Funcionario_model extends MY_Model
     }
 
     // @override
-    function get_or_404()
-    {   
+    public function get_or_404()
+    {
         $this->CI->db->select('*');
         $this->CI->db->from(self::TABLE_NAME);
-        $this->CI->db->join('organizacoes', 'organizacoes.organizacao_pk = ' . self::TABLE_NAME . '.organizacao_fk');
+        $this->CI->db->join('organizacoes', 'organizacoes.organizacao_pk = '.self::TABLE_NAME.'.organizacao_fk');
         $this->CI->db->join('funcoes', 'funcoes.funcao_pk = funcionarios.funcao_fk');
-        
-        foreach($this->object as $k => $v){
+
+        foreach ($this->object as $k => $v) {
             $this->CI->db->where($k, $this->object[$k]);
         }
 
         $res = $this->CI->db->get()->row();
 
-        if($res == NULL || $res == FALSE){
+        if ($res == null || $res == false) {
             throw new MyException('Usuário e/ou senha inválidos.', Response::NOT_FOUND);
         } else {
             return $res;
         }
     }
 
-    function get($select = "*", $where = null)
+    public function get($select = '*', $where = null)
     {
         $this->CI->db->select($select);
         $this->CI->db->from(self::TABLE_NAME);
-        $this->CI->db->join('funcionarios_setores', 'funcionarios_setores.funcionario_fk = ' . self::TABLE_NAME . '.' . self::PRI_INDEX, 'left');
-        $this->CI->db->join('organizacoes', 'organizacoes.organizacao_pk = ' . self::TABLE_NAME . '.organizacao_fk');
+        $this->CI->db->join('funcionarios_setores', 'funcionarios_setores.funcionario_fk = '.self::TABLE_NAME.'.'.self::PRI_INDEX, 'left');
+        $this->CI->db->join('organizacoes', 'organizacoes.organizacao_pk = '.self::TABLE_NAME.'.organizacao_fk');
         $this->CI->db->join('funcoes', 'funcoes.funcao_pk = funcionarios.funcao_fk');
         $this->CI->db->group_by('funcionarios.funcionario_pk');
 
         if ($where !== null) {
             if (is_array($where)) {
-                foreach ($where as $field=>$value) {
+                foreach ($where as $field => $value) {
                     $this->CI->db->where($field, $value);
                 }
             } else {
@@ -91,6 +91,7 @@ class Funcionario_model extends MY_Model
         // $this->CI->db->where(self::TABLE_NAME . '.ativo', 1);
 
         // var_dump($this->CI->db->get_compiled_select());die();
+        // echo $this->CI->db->get_compiled_select(); die();
 
         return $this->CI->db->get()->result();
         if ($result) {
@@ -104,9 +105,9 @@ class Funcionario_model extends MY_Model
         }
     }
 
-    function get_setores($where)
+    public function get_setores($where)
     {
-        $this->CI->db->select("setores.*, funcionarios_setores.*");
+        $this->CI->db->select('setores.*, funcionarios_setores.*');
         $this->CI->db->from('funcionarios_setores');
         $this->CI->db->join('setores', 'funcionarios_setores.setor_fk = setores.setor_pk');
         $this->CI->db->join('funcionarios', 'funcionarios_setores.funcionario_fk = funcionarios.funcionario_pk');
@@ -117,7 +118,7 @@ class Funcionario_model extends MY_Model
         return $this->CI->db->get()->result();
     }
 
-    function count($where = null)
+    public function count($where = null)
     {
         $this->CI->db->select('count(*) as total');
         $this->CI->db->from(self::TABLE_NAME);
@@ -138,48 +139,46 @@ class Funcionario_model extends MY_Model
         }
     }
 
-    function insert_funcionario($data_setores)
+    public function insert_funcionario($data_setores = null)
     {
-
         $id = $this->insert();
 
-        if($data_setores != '')
-        {
+        if ($data_setores !== null) {
             $insert_setores = $this->explode_setores($data_setores, $id);
             $this->CI->db->insert_batch('funcionarios_setores', $insert_setores);
         }
-        
+        // var_dump($insert_setores);die();
         return $id;
     }
 
-    function update_funcionario($id, $data_setores=NULL)
+    public function update_funcionario($id, $data_setores = null)
     {
-        $insert_setores = [];       
+        $insert_setores = [];
 
         $this->update();
 
-        if($data_setores != "" && $data_setores != NULL){
+        if ($data_setores != '' && $data_setores != null) {
             $insert_setores = $this->explode_setores($data_setores, $id);
-
         }
-        
-        $this->CI->db->delete('funcionarios_setores', ["funcionario_fk" => $id]);
 
-        if($insert_setores != []){
+        $this->CI->db->delete('funcionarios_setores', ['funcionario_fk' => $id]);
 
+        if ($insert_setores != []) {
             $this->CI->db->insert_batch('funcionarios_setores', $insert_setores);
         }
-        
     }
 
-    function update_image($path, $id){
-        $this->CI->db->where("funcionario_pk",$id)
-        ->update(self::TABLE_NAME, ["funcionario_caminho_foto" => $path]);
-    }
-
-    function explode_setores($data_setores, $id)
+    public function update_image($path, $id)
     {
-        $data_setores = explode(",", $data_setores);
+        $this->CI->db->where('funcionario_pk', $id)
+        ->update(self::TABLE_NAME, ['funcionario_caminho_foto' => $path]);
+    }
+
+    public function explode_setores($data_setores, $id)
+    {
+        if (!is_array($data_setores)) {
+            $data_setores = explode(',', $data_setores);
+        }
 
         foreach ($data_setores as $key => $set):
             $insert_setores[$key] = array(
@@ -187,7 +186,30 @@ class Funcionario_model extends MY_Model
                 'funcionario_fk' => $id,
             );
         endforeach;
+
         return $insert_setores;
     }
 
+    public function get_dependents($funcao)
+    {
+        $this->CI->db->select('funcionario_nome as name');
+        $this->CI->db->from('funcionarios');
+        $this->CI->db->where('funcao_fk', $funcao);
+
+        return $this->CI->db->get()->result();
+    }
+
+    public function get_revisores($select, $organizacao)
+    {
+        $this->CI->db->select($select);
+        $this->CI->db->from('funcionarios');
+
+        $this->CI->db->join('funcoes_permissoes', 'funcoes_permissoes.funcao_fk = funcionarios.funcao_fk');
+        $this->CI->db->join('permissoes', 'permissoes.permissao_pk = funcoes_permissoes.permissao_fk');
+
+        $this->CI->db->where('funcionarios.organizacao_fk', $organizacao);
+        $this->CI->db->where('permissoes.acao_fk', 27);
+
+        return $this->CI->db->get()->result();
+    }
 }
