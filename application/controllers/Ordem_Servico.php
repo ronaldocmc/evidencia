@@ -446,8 +446,8 @@ class Ordem_Servico extends CRUD_Controller
 
     public function get_specific($ordem_servico_pk)
     {
-        $ordem_servico = $this->ordem_servico->get_home(
-            $this->session->user['id_organizacao'],
+        $ordem_servico = $this->ordem_servico->get_one(
+            '*',
             ['ordens_servicos.ordem_servico_pk' => $ordem_servico_pk]
         );
         $os_hist = $this->ordem_servico->get_historico($ordem_servico_pk);
