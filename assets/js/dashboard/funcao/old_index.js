@@ -46,8 +46,6 @@ function send_data(){
 
 	$.post(base_url+'/funcao/save',data).done(function (response) {
 
-		console.log(response);
-
 		btn_ativar($('#pula-para-confirmacao'));
 		btn_ativar($('.submit'));
 

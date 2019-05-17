@@ -154,22 +154,9 @@
                             <a href="<?php echo base_url('mapa'); ?>">
                             <i class="fas fa-map-marker-alt"></i>Mapa</a>
                         </li>
-                        <li class="relatorio-menu d-none">
-                            <a class="js-arrow" href="#">
+                        <li class="mapa-menu d-none">
+                            <a href="<?php echo base_url('relatorio'); ?>">
                             <i class="fas fa-clipboard-list"></i>Relatórios</a>
-                            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                 <li>
-                                    <a href="<?= base_url('relatorio'); ?>">Listar Relatórios</a>
-                                </li>
-                                <?php if (SHOW_HIDE_MENU): ?>
-                                    <li>
-                                        <a href="<?= base_url('relatorio/relatorios_gerais'); ?>">Relatórios Gerais</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?= base_url('relatorio/relatorio_especifico'); ?>">Relatório Específico</a>
-                                    </li>
-                                <?php endif; ?>
-                            </ul>
                         </li>
                         <li class="has-sub organizacao-menu d-none">
                             <a class="js-arrow" href="#">
@@ -259,8 +246,6 @@
             <script>
                 function imageNotFound()
                 {
-                    console.log('image not found');
-                    console.log(this);
                     this.src = "<?= base_url('assets/img/default.png'); ?>";
                 }
 

@@ -164,7 +164,6 @@ function send_data(){
 			'senha': $('#pass-modal-desativar').val()
 		}
 		
-		console.log(data);
 
 		btn_load($('#btn-desativar'));
 

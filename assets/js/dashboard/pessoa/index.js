@@ -122,7 +122,6 @@ sendForm = () => {
 
         btn_ativar($('#btn-change-password'));
 
-        console.log(response);
         if (response.code == 200) {
             $('.area-acesso').append(alerts('success', 'Sucesso', 'Senha alterada com sucesso.'));
             $('#cp-pessoa').modal('hide');

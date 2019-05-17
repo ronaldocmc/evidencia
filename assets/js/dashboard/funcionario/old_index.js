@@ -282,8 +282,6 @@ send = (imagem) => {
     formData.append('funcionario_senha', $('#funcionario_senha').val());
   }
 
-  console.log($('#funcionario_senha'));
-
   $.ajax({
     url: URL,
     method: "POST",

@@ -23,7 +23,6 @@ $(".submit").click(function(){
 	// btn_load($(".submit"));
     
     $.post(base_url+'/setor/save',data).done(function (response) {
-    	console.log(response);
     	btn_ativar($(".submit"));
 
   		if(response.code == 200)

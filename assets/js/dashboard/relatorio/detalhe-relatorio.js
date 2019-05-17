@@ -48,8 +48,7 @@ $(document).on('click','#btn-trocar-funcionario',function(event) {
 	{	
 		'funcionario_fk': $('#novo-funcionario').val()
     }
-    
-    console.log(data);
+
 
 	$.post(base_url+'/Relatorio/change_worker/'+id_relatorio,data).done(function (response) {	
 
