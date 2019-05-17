@@ -1,22 +1,18 @@
 <?php
 
 /**
- * MY_Controller
+ * MY_Controller.
  *
- * @package     application
- * @subpackage  core
  * @author      Gustavo
  */
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 class MY_Controller extends CI_Controller
 {
-
     /**
-     * Variável que pega a instancia do CodeIgniter
+     * Variável que pega a instancia do CodeIgniter.
      *
      * @var object
      */
@@ -26,7 +22,7 @@ class MY_Controller extends CI_Controller
 
     /**
      * Construtor da classe, carregando os helpers necessário
-     * e chamando o method_filter()
+     * e chamando o method_filter().
      */
     public function __construct($response)
     {
@@ -44,40 +40,37 @@ class MY_Controller extends CI_Controller
 
     /**
      * Verifica o tipo de requisição que o servidor estará recebendo
-     * e redireciona o fluxo para o método que corresponde à requisição
+     * e redireciona o fluxo para o método que corresponde à requisição.
      */
     public function method_filter()
     {
         $method = '';
 
-        log_message('monitoring', strtoupper($this->uri->segment(2)) . ' request on ' . $this->uri->segment(1));
+        log_message('monitoring', strtoupper($this->uri->segment(2)).' request on '.$this->uri->segment(1));
 
         //Se for POST e possuir mais um parametro na URL, redirecione para esse parametro
-        if (is_post_request() && null !== $this->uri->segment(2) && $this->uri->segment(2) != "post") {
+        if (is_post_request() && null !== $this->uri->segment(2) && $this->uri->segment(2) != 'post') {
             $method = $this->uri->segment(2);
         } else {
             //Verifica as tentativas
             $attempt_result = verify_attempt($this->input->ip_address());
 
-
-
             //Se ele estiver liberado
             if ($attempt_result === true) {
-
                 $header_obj = apache_request_headers();
 
                 // echo "<pre>";
                 // var_dump($header_obj);die();
 
                 //Verifica o token e lá dentro cria um novo token
+                log_message('MONITORING', 'tentando verificar o token '.$header_obj[TOKEN]);
                 $new_token = verify_token($header_obj[TOKEN], $this->response);
-
 
                 if ($new_token == false) {
                     $this->response->send();
                     die();
                 } else {
-                    $this->response->add_data("token", $new_token);
+                    $this->response->add_data('token', $new_token);
                 }
             } else {
                 $this->response->set_code(Response::FORBIDDEN);
@@ -95,18 +88,17 @@ class MY_Controller extends CI_Controller
         $this->db->trans_start();
     }
 
-
     public function end_transaction()
     {
-        if ($this->db->trans_status() === FALSE) {
-                $this->db->trans_rollback();
-                if (is_array($this->db->error())) {
-                    throw new MyException('Erro ao realizar operação.<br>' . implode('<br>', $this->db->error()), Response::SERVER_FAIL);
-                } else {
-                    throw new MyException('Erro ao realizar operação.<br>' . $this->db->error(), Response::SERVER_FAIL);
-                }
+        if ($this->db->trans_status() === false) {
+            $this->db->trans_rollback();
+            if (is_array($this->db->error())) {
+                throw new MyException('Erro ao realizar operação.<br>'.implode('<br>', $this->db->error()), Response::SERVER_FAIL);
             } else {
-                $this->db->trans_commit();
+                throw new MyException('Erro ao realizar operação.<br>'.$this->db->error(), Response::SERVER_FAIL);
             }
+        } else {
+            $this->db->trans_commit();
+        }
     }
 }

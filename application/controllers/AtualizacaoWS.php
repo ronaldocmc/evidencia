@@ -1,23 +1,19 @@
 <?php
 
 /**
- * AccessWS
+ * AccessWS.
  *
- * @package     application
- * @subpackage  core
  * @author      Pietro, Gustavo
  */
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once APPPATH."core/Response.php";   
-require_once APPPATH . "core/MY_Controller.php";
+require_once APPPATH.'core/Response.php';
+require_once APPPATH.'core/MY_Controller.php';
 
 class AtualizacaoWS extends MY_Controller
 {
-
     /**
-     * Objeto responsável por monstar a resposta da requisição
+     * Objeto responsável por monstar a resposta da requisição.
      *
      * @var Response
      */
@@ -25,7 +21,7 @@ class AtualizacaoWS extends MY_Controller
 
     /**
      * Construtor da classe, responsável por setar a timezone
-     * e chamar o construtor do pai
+     * e chamar o construtor do pai.
      */
     public function __construct()
     {
@@ -36,16 +32,14 @@ class AtualizacaoWS extends MY_Controller
     }
 
     /**
-     * Destrutor da classe
+     * Destrutor da classe.
      */
     public function __destruct()
     {
-
     }
 
     public function index()
     {
-
     }
 
     /**
@@ -56,6 +50,12 @@ class AtualizacaoWS extends MY_Controller
      */
     public function get()
     {
+        log_message('MONITORING', 'GET UPDATE');
+
+        $obj = json_decode(file_get_contents('php://input'));
+        log_message('MONITORING', 'hahahaa: ');
+        var_dump($obj);
+
         $this->load->helper('attempt');
         $this->load->helper('token');
         $this->load->model('tentativa_model');
@@ -66,22 +66,19 @@ class AtualizacaoWS extends MY_Controller
         $this->load->model('setor_model');
         $this->load->model('funcionario_model');
 
-        $obj = json_decode(file_get_contents('php://input'));
-
         $now = date('Y-m-d H:i:s');
         $header_obj = apache_request_headers();
 
         $attempt_result = verify_attempt($this->input->ip_address());
 
         if ($attempt_result === true) {
-
             $token_decodificado = json_decode(token_decrypt($header_obj[TOKEN]));
             // $token_decodificado->id_empresa
             // $token_decodificado->id_funcionario
             // $last_update = $token_decodificado->last_update;
 
             $atualizar['servico'] = $this->servico_model->get(
-                "servicos.*",
+                'servicos.*',
                 [
                     'servicos.ativo' => 1,
                     'departamentos.organizacao_fk' => $token_decodificado->id_empresa,
@@ -92,7 +89,7 @@ class AtualizacaoWS extends MY_Controller
                 'tipos_servicos.*',
                 [
                     'tipos_servicos.ativo' => 1,
-                    "departamentos.organizacao_fk" => $token_decodificado->id_empresa,
+                    'departamentos.organizacao_fk' => $token_decodificado->id_empresa,
                 ]
             );
 
@@ -105,7 +102,7 @@ class AtualizacaoWS extends MY_Controller
 
             $atualizar['setores'] = $this->funcionario_model->get_setores(
                 [
-                    "funcionarios_setores.funcionario_fk" => $token_decodificado->id_funcionario,
+                    'funcionarios_setores.funcionario_fk' => $token_decodificado->id_funcionario,
                 ]
             );
 
@@ -117,7 +114,6 @@ class AtualizacaoWS extends MY_Controller
             );
 
             $this->response->add_data('atualizacao', $atualizar);
-
         } else {
             $this->response->set_code(Response::FORBIDDEN);
             $this->response->set_message($attempt_result);
@@ -126,5 +122,4 @@ class AtualizacaoWS extends MY_Controller
         $this->response->send();
         $this->__destruct();
     }
-
 }

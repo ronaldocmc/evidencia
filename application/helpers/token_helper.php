@@ -2,11 +2,13 @@
 
 function verify_token($token, $response)
 {
+    log_message('MONITORING', 'tentando verificar o token:['.$token.'] Resp: '.$response);
     $token_decodificado = json_decode(token_decrypt($token));
 
     if (is_object($token_decodificado)) {
         if (!verify_token_timestamp($token_decodificado->timestamp)) {
             $response->set_code(Response::TOKEN_TIMEOUT);
+
             return false;
         } else {
             $data['id_pessoa'] = $token_decodificado->id_pessoa;
@@ -18,6 +20,7 @@ function verify_token($token, $response)
         }
     } else {
         $response->set_code(Response::FORBIDDEN);
+
         return false;
     }
 }
@@ -30,14 +33,17 @@ function generate_token($data)
     return $token;
 }
 
-function get($atribute, $token){
+function get($atribute, $token)
+{
     $token_decodificado = json_decode(token_decrypt($token));
-	return $token_decodificado->$atribute;
+
+    return $token_decodificado->$atribute;
 }
 
 function generate_token_timestamp($duracao = '+5 days')
 {
     $today = date('Y-m-d H:i:s');
+
     return date('Y-m-d H:i:s', strtotime($duracao, strtotime($today)));
 }
 
@@ -52,13 +58,14 @@ function verify_token_timestamp($timestamp)
     return false;
 }
 
-function token_encrypt($string){
+function token_encrypt($string)
+{
     $output = false;
- 
-    $encrypt_method = "AES-256-CBC";
+
+    $encrypt_method = 'AES-256-CBC';
     $secret_key = '2925612f39ae98f805b86ce5400b70df';
     $secret_iv = 'e3317304c70e3f69a9ef8895c69de64b';
- 
+
     // hash
     $key = hash('sha256', $secret_key);
     $iv = substr(hash('sha256', $secret_iv), 0, 16);
@@ -69,19 +76,19 @@ function token_encrypt($string){
     return $output;
 }
 
-function token_decrypt($string){
+function token_decrypt($string)
+{
     $output = false;
- 
-    $encrypt_method = "AES-256-CBC";
+
+    $encrypt_method = 'AES-256-CBC';
     $secret_key = '2925612f39ae98f805b86ce5400b70df';
     $secret_iv = 'e3317304c70e3f69a9ef8895c69de64b';
- 
+
     // hash
     $key = hash('sha256', $secret_key);
     $iv = substr(hash('sha256', $secret_iv), 0, 16);
-    
+
     $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
-    
+
     return $output;
 }
-
