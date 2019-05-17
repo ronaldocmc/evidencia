@@ -63,7 +63,7 @@ class MY_Controller extends CI_Controller
                 // var_dump($header_obj);die();
 
                 //Verifica o token e lá dentro cria um novo token
-                log_message('MONITORING', 'tentando verificar o token '.$header_obj[TOKEN]);
+                log_message('MONITORING', 'tentando verificar o token '.$header_obj['token']);
                 $new_token = verify_token($header_obj[TOKEN], $this->response);
 
                 if ($new_token == false) {
