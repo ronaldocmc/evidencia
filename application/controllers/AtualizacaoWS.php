@@ -53,7 +53,6 @@ class AtualizacaoWS extends MY_Controller
         log_message('MONITORING', 'GET UPDATE');
 
         $obj = json_decode(file_get_contents('php://input'));
-        log_message('MONITORING', 'hahahaa: ');
         var_dump($obj);
 
         $this->load->helper('attempt');

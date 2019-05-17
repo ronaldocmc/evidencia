@@ -2,7 +2,7 @@
 
 function verify_token($token, $response)
 {
-    log_message('MONITORING', 'tentando verificar o token:['.$token.'] Resp: '.$response);
+    //log_message('MONITORING', 'tentando verificar o token:['.$token.'] Resp: '.$response);
     $token_decodificado = json_decode(token_decrypt($token));
 
     if (is_object($token_decodificado)) {
