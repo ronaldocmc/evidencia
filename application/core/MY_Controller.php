@@ -58,10 +58,6 @@ class MY_Controller extends CI_Controller
             //Se ele estiver liberado
             if ($attempt_result === true) {
                 $header_obj = apache_request_headers();
-                foreach ($header_obj as $key => $obj) {
-                    log_message('MONITORING', $key.': '.$obj);
-                }
-
                 // echo "<pre>";
                 // var_dump($header_obj);die();
 
