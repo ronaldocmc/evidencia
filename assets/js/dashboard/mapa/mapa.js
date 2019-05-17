@@ -104,13 +104,13 @@ function initMap() {
         remove_data();
 
         $.ajax({
-            url: base_url + '/Ordem_Servico/get_specific/' + id + '/' + 0,
+            url: base_url + '/Ordem_Servico/get_specific/' + id,
             dataType: "json",
             success: function (response) {
-                $("#v_descricao").html(response.data.ordem_servico.ordem_servico_desc);
-                $("#v_codigo").html(response.data.ordem_servico.ordem_servico_cod);
-                $("#v_setor").html(response.data.ordem_servico.setor_nome);
-                $("#v_servico").html(response.data.ordem_servico.servico_nome);
+                $("#v_descricao").html(response.data.ordem_servico[0].ordem_servico_desc);
+                $("#v_codigo").html(response.data.ordem_servico[0].ordem_servico_cod);
+                $("#v_setor").html(response.data.ordem_servico[0].setor_nome);
+                $("#v_servico").html(response.data.ordem_servico[0].servico_nome);
 
                 var html = "";
                 var indicators = "";
@@ -150,7 +150,7 @@ function initMap() {
                     }
 
                 });
-                timeline += create_timeline(response.data.ordem_servico.ordem_servico_comentario, response.data.ordem_servico.funcionario_nome, base_url + '/assets/uploads/perfil_images/' + response.data.ordem_servico.funcionario_caminho_foto, response.data.ordem_servico.situacao_atual_nome, reformatDate(response.data.ordem_servico.ordem_servico_criacao));
+                timeline += create_timeline(response.data.ordem_servico[0].ordem_servico_comentario, response.data.ordem_servico[0].funcionario_nome, base_url + '/assets/uploads/perfil_images/default.png' + response.data.ordem_servico[0].funcionario_caminho_foto, response.data.ordem_servico[0].situacao_nome, reformatDate(response.data.ordem_servico[0].ordem_servico_criacao));
 
                 response.data.imagens.map((img, i) => {
                     html += create_cards(img.imagem_os, img.situacao_nome, img.imagem_os_timestamp, active);
