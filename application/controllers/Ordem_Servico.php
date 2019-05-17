@@ -446,9 +446,17 @@ class Ordem_Servico extends CRUD_Controller
 
     public function get_specific($ordem_servico_pk)
     {
-        $ordem_servico = $this->ordem_servico->get_one(
+        $ordem_servico = $this->ordem_servico->get_all(
             '*',
-            ['ordens_servicos.ordem_servico_pk' => $ordem_servico_pk]
+            ['ordens_servicos.ordem_servico_pk' => $ordem_servico_pk],
+            -1,
+            -1,
+            [
+                ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk'],
+                ['table' => 'setores', 'on' => 'setores.setor_pk = ordens_servicos.setor_fk'],
+                ['table' => 'servicos', 'on' => 'servicos.servico_pk = ordens_servicos.servico_fk'],
+                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = ordens_servicos.situacao_atual_fk']
+            ]
         );
         $os_hist = $this->ordem_servico->get_historico($ordem_servico_pk);
         $os_images = $this->ordem_servico->get_images_id($ordem_servico_pk);
