@@ -58,12 +58,13 @@ class MY_Controller extends CI_Controller
             //Se ele estiver liberado
             if ($attempt_result === true) {
                 $header_obj = apache_request_headers();
+                log_message('MONITORING', 'HEADER: '.implode('~', $header_obj));
 
                 // echo "<pre>";
                 // var_dump($header_obj);die();
 
                 //Verifica o token e lá dentro cria um novo token
-                log_message('MONITORING', 'tentando verificar o token '.$header_obj['token']);
+                log_message('MONITORING', 'tentando verificar o token '.$header_obj[TOKEN]);
                 $new_token = verify_token($header_obj[TOKEN], $this->response);
 
                 if ($new_token == false) {
