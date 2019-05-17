@@ -33,13 +33,13 @@ class Contact extends CI_Controller
             $this->load->model('super_model', 'worker_model');
 
             $this->kind_user = 'superusuario';
-            $this->select = 'superusuario_fk as pk, superusuario_login as email';
+            $this->select = 'superusuario_pk as pk, superusuario_email as email';
         } else {
             $this->load->model('recuperacao_funcionario_model', 'recuperacao_model');
             $this->load->model('funcionario_model', 'worker_model');
 
             $this->kind_user = 'funcionario';
-            $this->select = 'funcionario_fk as pk, funcionario_login as email';
+            $this->select = 'funcionario_pk as pk, funcionario_login as email';
         }
 
         $this->load->model('tentativa_recuperacao_model');
@@ -164,12 +164,28 @@ class Contact extends CI_Controller
 
     public function is_superuser()
     {
-        return $this->session->user['is_superusuario'];
+        if (isset($this->session->user['is_superusuario'])) {
+            return $this->session->user['is_superusuario'];
+        } else {
+
+            if (strpos($this->input->post('email'), '@') !== false) {
+                $login = explode('@', $this->input->post('email'));
+                
+                if ($login[1] === 'admin') {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                throw new MyException("Insira um e-mail válido", 4);
+                
+            }
+        }
     }
 
     private function fetch_contact_by_email()
     {
-        $contact_fetch = $this->funcionario_model->get(
+        $contact_fetch = $this->worker_model->get_all(
             $this->select,
             [$this->kind_user.'_login' => $this->input->post('email')],
             -1,
@@ -234,9 +250,6 @@ class Contact extends CI_Controller
     public function restore_password()
     {
         try {
-            $this->recuperacao_model->config_form_validation();
-            $this->recuperacao_model->run_form_validation();
-
             $this->auth_restore();
 
             $worker = $this->fetch_contact_by_email();
