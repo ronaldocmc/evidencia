@@ -111,6 +111,7 @@ function upload_to_storage(string $content, string $blobName)
         log_message('MONITORING', 'Uploading file to Blob Storage...');
         // Upload blob
         $blobClient->createBlockBlob($containerName, $blobName, $content);
+        log_message('MONITORING', 'Success uploading file');
 
         // public URLS are [http|https]://[account-name].[endpoint-suffix(usually blob.core.windows.net]/[container-name]/[blob-name]
         $blobUrl = 'https://'.getenv('AZURE_STORAGE_ACCOUNT').'.blob.core.windows.net/'.$containerName.'/'.$blobName;

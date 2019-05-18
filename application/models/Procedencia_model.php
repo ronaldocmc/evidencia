@@ -4,7 +4,7 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core/MY_Model.php";
+require_once APPPATH.'core/MY_Model.php';
 
 class Procedencia_model extends MY_Model
 {
@@ -17,7 +17,7 @@ class Procedencia_model extends MY_Model
         'procedencia_desc',
     );
 
-    function config_form_validation()
+    public function config_form_validation()
     {
         $this->CI->form_validation->set_rules(
             'procedencia_nome',

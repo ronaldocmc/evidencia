@@ -115,7 +115,6 @@ $(document).on('click', '.btn_novo', function (event) {
 $(document).on('click', '.btn_editar', function (event) {
     acao = ".submit";
     $("#ce_servico").find(".modal-title").text("Editar Serviço");
-    console.log(servicos);
     $('#servico_pk').val(servicos[$(this).val()]["servico_pk"]);
     $('#nome-input').val(servicos[$(this).val()]["servico_nome"]);
     $('#abreviacao-input').val(servicos[$(this).val()]["servico_abreviacao"]);

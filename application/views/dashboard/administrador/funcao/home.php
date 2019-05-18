@@ -109,7 +109,7 @@
                         </div>
                         <div id="loading">
                             <div align="center" class="center">
-                                <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                                <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
                             </div>
                         </div>
                         <div class="table-responsive table--no-card m-b-40" style="display: none;">
@@ -220,7 +220,7 @@
                             </button>
 
                             
-                            <button type="button" class="btn btn-primary submit btn-sm not_superusuario">
+                            <button type="button" class="btn btn-primary submit btn-sm not_superusuario d-none load">
                                 <i class="fa fa-dot-circle-o"></i> Finalizar
                             </button>
                         </div>
@@ -249,6 +249,9 @@
                             <button type="button" class="btn btn-secondary previous btn-sm">
                                 <i class="fas fa-arrow-circle-left"></i> Anterior
                             </button>
+                            <button type="button" class="btn btn-primary submit btn-sm load">
+                                <i class="fa fa-dot-circle-o"></i> Finalizar
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -273,7 +276,7 @@
 
             <div id="loading-deactivate">
                 <div align="center" class="center">
-                    <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading"
+                    <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="v_loading"
                         alt="Carregando">
                 </div>
             </div>

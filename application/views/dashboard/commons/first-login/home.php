@@ -11,7 +11,6 @@
                             <!-- progressbar -->
                             <ul class="progressbar">
                                 <li class="active">ATENÇÃO</li>
-                                <li>Login</li>
                                 <li>Senha</li>
                                 <li>Confirmar</li>
                             </ul>
@@ -25,39 +24,12 @@
                                     <h4 style="text-align: center" class="text-danger py-2"><i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO</h4>
                                     <p>Esse é seu primeiro login, por questões de segurança nos próximos passos você criará um login e uma senha.</p>
                                     <ul style="margin-left: 15px">
-                                        <li>Seu usuário tem acesso ao sistema, então tome alguns cuidados!</li>
+                                        <li>Seu usuário tem acesso total ao sistema, então tome alguns cuidados!</li>
                                         <li>Utilize uma senha segura, com caracteres especiais, letras maiúsculas, minúsculas e números.</li>
                                         <li>Jamais divulgue sua senha, cada usuário deve utilizar sua conta para que seja possível identificar o responsável por cada mudança.</li>
                                     </ul>
                                 </div>
                                 <div class="card-footer text-center">
-                                    <button type="button" class="btn btn-secondary next btn-sm">
-                                        <i class="fas fa-arrow-circle-right"></i> Próximo
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card card-step col-12 px-0">
-                                <div class="card-header">
-                                    Login
-                                </div>
-                                <div class="card-body card-block">
-                                    <div class="row form-group">
-                                        <div class="col-12">
-                                            <p>Para acessar o sistema, você utilizará a sintaxe <b><span class="login">login</span>@<?=$organizacao_fk ?></b></p>
-                                        </div>
-                                        <div class="col-12 col-md-2">
-                                            <label for="login-input" class=" form-control-label"><strong>Login</strong></label>
-                                        </div>
-                                        <div class="col-12 col-md-10">
-                                            <input type="text" id="login-input" name="acesso_login" placeholder="Login" class="form-control" disabled="true" value="<?= $superusuario_login ?>">
-                                            <small class="help-block form-text">Utilize este login para acessar o sistema</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <button type="button" class="btn btn-secondary previous btn-sm">
-                                        <i class="fas fa-arrow-circle-left"></i> Anterior
-                                    </button>
                                     <button type="button" class="btn btn-secondary next btn-sm">
                                         <i class="fas fa-arrow-circle-right"></i> Próximo
                                     </button>
@@ -102,7 +74,7 @@
                                 </div>
                                 <div class="card-body card-block">
                                     <div class="row form-group" style="text-align: center !important;">
-                                        <p>Tudo pronto para criar seu acesso!</p><br>
+                                        <p>Tudo pronto para criar seu acesso! </p>
                                         <p>Login: <span class="login"></span><?= $superusuario_login ?></p>
                                     </div>
                                 </div>

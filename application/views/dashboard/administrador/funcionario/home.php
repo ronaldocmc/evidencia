@@ -146,7 +146,7 @@
 
                         <div id="loading">
                             <div align="center" class="center">
-                                <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                                <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
                             </div>
                         </div>
                         <div class="table-responsive table--no-card m-b-40" style="display: none;">
@@ -206,7 +206,7 @@
                         <li class="active">Informações Pessoais</li>
                         <li>Acesso</li>
                         <li>Profissional</li>
-                        <li>Foto</li>
+                        <!-- <li>Foto</li> -->
 
                         <li class="d-none superusuario">Identificação</li>
                     </ul>
@@ -225,7 +225,7 @@
                                             </label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <input type="text" id="funcionario_nome" name="pessoa_nome"
+                                            <input type="text" id="funcionario_nome" name="funcionario_nome"
                                                 placeholder="Nome Completo" class="form-control nome-input" required
                                                 maxlength="50" minlength="5" required>
                                             <small class="form-text text-muted">Por favor, informe o nome completo do
@@ -239,7 +239,7 @@
                                             </label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <input type="text" id="funcionario_cpf" name="pessoa_cpf" placeholder="CPF"
+                                            <input type="text" id="funcionario_cpf" name="funcionario_cpf" placeholder="CPF"
                                                 class="form-control cpf-input" required>
                                             <small class="form-text text-muted">Por favor, informe o CPF do
                                                 funcionário</small>
@@ -268,7 +268,7 @@
                                             </label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <input type="email" id="funcionario_login" name="contato_email"
+                                            <input type="email" id="funcionario_login" name="funcionario_login"
                                                 placeholder="Email" class="form-control email-input" required="true">
                                             <small class="help-block form-text">Por favor, informe o login do
                                                 funcionário</small>
@@ -361,16 +361,19 @@
                                     <button type="button" class="btn btn-secondary previous btn-sm">
                                         <i class="fas fa-arrow-circle-left"></i> Anterior
                                     </button>
-                                    <button type="button" class="btn btn-secondary next btn-sm">
-                                        <i class="fas fa-arrow-circle-right"></i> Próximo
+                                    <button type="button" class="btn btn-primary submit btn-sm not_superusuario" id="botao-finalizar">
+                                        <i class="fa fa-dot-circle-o"></i> Finalizar
                                     </button>
+                                    <!-- <button type="button" class="btn btn-secondary next btn-sm">
+                                        <i class="fas fa-arrow-circle-right"></i> Próximo
+                                    </button> -->
                                 </div>
                             </div>
 
 
                             <!-- STEP 4 -->
 
-                            <div class="card card-step col-12 px-0">
+                            <!-- <div class="card card-step col-12 px-0">
                                 <div class="card-header">
                                     Foto
                                 </div>
@@ -415,7 +418,7 @@
                                         <i class="fa fa-dot-circle-o"></i> Finalizar
                                     </button>
                                 </div>
-                            </div>
+                            </div> -->
 
                     <!-- STEP 5 -->
 
@@ -475,7 +478,7 @@
 
             <div id="loading-deactivate">
                 <div align="center" class="center">
-                    <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading" alt="Carregando">
+                    <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="v_loading" alt="Carregando">
                 </div>
             </div>
             <div id="dependences" style="margin: 20px 0" class="container"></div>

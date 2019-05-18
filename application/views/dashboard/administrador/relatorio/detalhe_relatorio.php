@@ -14,7 +14,7 @@
                         Opções
                       </button>
                       <div class="dropdown-menu">
-                        <a class="dropdown-item imprimir_relatorio d-none" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk) ?>">
+                        <a class="dropdown-item imprimir_relatorio d-none" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk); ?>">
                             Imprimir relatório
                         </a>
                         <?php if ($relatorio->relatorio_situacao == 'Criado'): ?>
@@ -22,7 +22,7 @@
                                data-target="#delegar_para_outra_pessoa">
                                 Alterar funcionário
                             </a>
-                        <?php endif ?>
+                        <?php endif; ?>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item imprimir_relatorio d-none" href="#" data-toggle="modal" data-target="#d-relatorio">
                             Destruir relatório
@@ -31,60 +31,52 @@
                             <a class="dropdown-item receive_report d-none" href="#" data-toggle="modal" data-target="#restaurar_os">
                                 Receber relatório
                             </a>  
-                        <?php endif ?>
+                        <?php endif; ?>
                       </div>
                     
                 </div>
             </div>
 
-            <input type="hidden" name="" id="id-relatorio" value="<?= $relatorio->relatorio_pk ?>">
+            <input type="hidden" name="" id="id-relatorio" value="<?= $relatorio->relatorio_pk; ?>">
 
 
 
             <div class="row py-2">
                 <div class="col-lg-12">
                     <div class="au-card d-flex flex-column">
-                        <h3 class="title-1 m-b-25"> Relatório do dia <?= date("d/m/Y", strtotime($relatorio->relatorio_data_criacao)) ?>
-                        <h3 class="title-2 m-b-25" style="margin-bottom: 5px; padding-bottom: 5px;"> Revisor responsável: <?= $funcionario->funcionario_nome ?> </h3>
+                        <h3 class="title-1 m-b-25"> Relatório do dia <?= date('d/m/Y', strtotime($relatorio->relatorio_data_criacao)); ?>
+                        <h3 class="title-2 m-b-25" style="margin-bottom: 5px; padding-bottom: 5px;"> Revisor responsável: <?= $funcionario->funcionario_nome; ?> </h3>
                             
-                            <?php 
+                            <?php
 
-                                    if($relatorio->relatorio_situacao == 'Entregue incompleto')
-                                    {
-                                        $label = "ENTREGUE INCOMPLETO";
-                                        $class = "warning";
-                                    }
-                                    
-                                    if($relatorio->relatorio_situacao == 'Criado')
-                                    {
-                                        $label = "CRIADO";
-                                        $class = "primary";
+                                    if ($relatorio->relatorio_situacao == 'Entregue incompleto') {
+                                        $label = 'ENTREGUE INCOMPLETO';
+                                        $class = 'warning';
                                     }
 
-                                    if($relatorio->relatorio_situacao == 'Entregue')
-                                    {
-                                        $label = "Entregue";
-                                        $class = "success";
-
+                                    if ($relatorio->relatorio_situacao == 'Criado') {
+                                        $label = 'CRIADO';
+                                        $class = 'primary';
                                     }
 
-                                    if($relatorio->relatorio_situacao == 'Inativo')
-                                    {
-                                        $label = "INATIVO";
-                                        $class = "danger";
-
+                                    if ($relatorio->relatorio_situacao == 'Entregue') {
+                                        $label = 'Entregue';
+                                        $class = 'success';
                                     }
 
-                                    if($relatorio->relatorio_situacao == 'Em andamento')
-                                    {
-                                        $label = "EM ANDAMENTO";
-                                        $class = "primary";
+                                    if ($relatorio->relatorio_situacao == 'Inativo') {
+                                        $label = 'INATIVO';
+                                        $class = 'danger';
+                                    }
 
+                                    if ($relatorio->relatorio_situacao == 'Em andamento') {
+                                        $label = 'EM ANDAMENTO';
+                                        $class = 'primary';
                                     }
                                     ?>
                             <div class = "col-12 col-md-12">
-                            <span style="font-size:9pt; margin: 2px;" class="badge badge-pill badge-<?= $class ?> pull-right">
-                                <?= $label ?></span></h2>
+                            <span style="font-size:9pt; margin: 2px;" class="badge badge-pill badge-<?= $class; ?> pull-right">
+                                <?= $label; ?></span></h2>
                             </div>
                         <div class="card-group">
 
@@ -93,7 +85,7 @@
                                     <b>Período</b>
                                 </div>
                                 <div class="card-body">
-                                    <?= $filtros['data'] ?>
+                                    <?= $filtros['data']; ?>
                                 </div>
                             </div>
 
@@ -103,7 +95,7 @@
                                     <b>Setores Selecionados</b>
                                 </div>
                                 <div class="card-body">
-                                    <?= $filtros['setor'] ?>
+                                    <?= $filtros['setor']; ?>
                                 </div>
                             </div>
 
@@ -113,7 +105,7 @@
                                     <b>Tipos de Serviços</b>
                                 </div>
                                 <div class="card-body">
-                                    <?= $filtros['tipos_servicos'] ?>
+                                    <?= $filtros['tipos_servicos']; ?>
                                 </div>
                             </div>
 
@@ -122,7 +114,7 @@
                         <!-- <button class="au-btn au-btn-icon btn au-btn--blue pull-left btn-primary col-md-4">
                             Receber relatório
                         </button> -->
-                        <!-- <a target="blank" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk) ?>" class="au-btn au-btn-icon btn au-btn--blue pull-right col-md-4" style="margin-top: 10px;">
+                        <!-- <a target="blank" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk); ?>" class="au-btn au-btn-icon btn au-btn--blue pull-right col-md-4" style="margin-top: 10px;">
                             <i class="fas fa-print"></i>Imprimir relatório
                         </a> -->
     
@@ -149,47 +141,47 @@
 
                                     <tr>
                                         <td>
-                                            <?=$ordem_servico->ordem_servico_cod?>
+                                            <?=$ordem_servico->ordem_servico_cod; ?>
                                         </td>
                                         <td>
-                                            <?= $ordem_servico->ordem_servico_criacao ?>
+                                            <?= $ordem_servico->ordem_servico_criacao; ?>
                                         </td>
                                         <td>
-                                            <?=$ordem_servico->prioridade_nome?>
+                                            <?=$ordem_servico->prioridade_nome; ?>
                                         </td>
                                         <td>
                                             <span style="text-align: justify;">
-                                                <?=$ordem_servico->localizacao_rua . ", " .
-                                                                $ordem_servico->localizacao_num . " - " .
-                                                                $ordem_servico->localizacao_bairro?>
+                                                <?=$ordem_servico->localizacao_rua.', '.
+                                                                $ordem_servico->localizacao_num.' - '.
+                                                                $ordem_servico->localizacao_bairro; ?>
                                             </span>
                                         </td>
                                         <td>
-                                            <?=$ordem_servico->servico_nome?>
+                                            <?=$ordem_servico->servico_nome; ?>
                                         </td>
 
                                         <td>
-                                            <?=$ordem_servico->setor_nome?>
+                                            <?=$ordem_servico->setor_nome; ?>
                                         </td>
                                         <td>
-                                            <?= $ordem_servico->ordem_servico_comentario ?>
+                                            <?= $ordem_servico->ordem_servico_comentario; ?>
                                         </td>
                                         <td>
-                                            <select class="form-control" id="<?= $ordem_servico->ordem_servico_pk ?>">
+                                            <select class="form-control" id="<?= $ordem_servico->ordem_servico_pk; ?>">
                                                 <?php foreach ($situacoes as $situacao): ?>
-                                                    <option value="<?= $situacao->situacao_pk ?>">
-                                                        <?= $situacao->situacao_nome ?>
+                                                    <option value="<?= $situacao->situacao_pk; ?>">
+                                                        <?= $situacao->situacao_nome; ?>
                                                     </option>
-                                                <?php endforeach ?>
+                                                <?php endforeach; ?>
                                             </select>
                                         </td>
                                         <td>
-                                            <button class="btn btn-primary save_situacao" id="btn<?=$ordem_servico->ordem_servico_pk?>" value="<?= $ordem_servico->ordem_servico_pk ?>">Salvar</button>
+                                            <button class="btn btn-primary save_situacao" id="btn<?=$ordem_servico->ordem_servico_pk; ?>" value="<?= $ordem_servico->ordem_servico_pk; ?>">Salvar</button>
                                         </td>    
                                     </tr>
-                                    <?php $count++; ?>
-                                    <?php endforeach?>
-                                    <?php endif?>
+                                    <?php ++$count; ?>
+                                    <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -391,10 +383,10 @@
                                                 <option value="" selected="true" disabled="true">Selecione um
                                                     funcionário</option>
                                                 <?php
-                                                    foreach($funcionarios as $func):
+                                                    foreach ($funcionarios as $func):
                                                         ?>
-                                                <option value="<?= $func->funcionario_pk ?>">
-                                                    <?= $func->funcionario_nome?>
+                                                <option value="<?= $func->funcionario_pk; ?>">
+                                                    <?= $func->funcionario_nome; ?>
                                                 </option>
                                                 <?php
                                                     endforeach;

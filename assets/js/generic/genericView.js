@@ -19,6 +19,8 @@ class GenericView {
         this.render(data.self);
         $('.table-responsive').show();
         $('#loading').hide();
+        // Para remover o style fantasma na tabela
+        $('.table-striped').removeAttr('style');
     }
 
     render(data) {
@@ -164,7 +166,7 @@ class GenericView {
     // }
 
     conditionalRender() {
-        if (localStorage.getItem('is_superusuario') == 1) {
+        if (this.state.is_superusuario == 1) {
             $('.superusuario').removeClass('d-none');
         } else {
             $('.not_superusuario').removeClass('d-none');

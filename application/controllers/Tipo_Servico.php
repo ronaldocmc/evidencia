@@ -1,13 +1,13 @@
 <?php
 
-
-if (!defined('BASEPATH')) exit('No direct script access allowed');
-require_once APPPATH . "core/CRUD_Controller.php";
-require_once APPPATH . "core/Response.php";
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+require_once APPPATH.'core/CRUD_Controller.php';
+require_once APPPATH.'core/Response.php';
 
 class Tipo_Servico extends CRUD_Controller
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -45,10 +45,7 @@ class Tipo_Servico extends CRUD_Controller
 
         $prioridades = $this->prioridade->get_all(
             '*',
-            [
-                'organizacao_fk' => $this->session->user['id_organizacao'],
-                'ativo' => 1,
-            ],
+            ['ativo' => 1],
             -1,
             -1
         );
@@ -89,7 +86,7 @@ class Tipo_Servico extends CRUD_Controller
                     '*,tipos_servicos.ativo as ativo',
                     [
                         'departamentos.organizacao_fk' => $this->session->user['id_organizacao'],
-                        'tipos_servicos.tipo_servico_pk' => $id
+                        'tipos_servicos.tipo_servico_pk' => $id,
                     ]
                 );
 
@@ -101,7 +98,6 @@ class Tipo_Servico extends CRUD_Controller
 
             $response->set_code(Response::SUCCESS);
             $response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -145,7 +141,7 @@ class Tipo_Servico extends CRUD_Controller
             );
 
             if (count($servico) > 0) {
-                throw new MyException("Ainda há serviços ativos com esse tipo de serviço", Response::BAD_REQUEST);
+                throw new MyException('Ainda há serviços ativos com esse tipo de serviço', Response::BAD_REQUEST);
             }
 
             $this->tipo_servico->config_form_validation_primary_key();
@@ -160,7 +156,6 @@ class Tipo_Servico extends CRUD_Controller
             $response->set_code(Response::SUCCESS);
             $response->set_message('Tipo de Serviço desativado com sucesso!');
             $response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -184,7 +179,6 @@ class Tipo_Servico extends CRUD_Controller
             $response->set_code(Response::SUCCESS);
             $response->set_message('Tipo de Servio ativado com sucesso!');
             $response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {

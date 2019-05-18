@@ -10,7 +10,6 @@
                             data-target="#modal" id="btn-exportar">
                             <i class="zmdi zmdi-task"></i>exportar
                         </button>
-                        <!-- <input type="hidden" id="ordem_servico_pk" name="ordem_servico_pk" class="form-control"> -->
                         <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new" data-toggle="modal" data-title="Nova Ordem de Serviço" data-contentid="save"
                             data-target="#modal">
                             <i class="zmdi zmdi-plus"></i>nova ordem de serviço</button>
@@ -33,9 +32,7 @@
                                             dela <strong>(Aberta, Em Andamento, Fechada)</strong>, além de controlar
                                             operações de inserção, edição, remoção ou ativação de uma ordem de serviço!
                                             Cada ordem de serviço possui um código único que é exibido após a sua
-                                            criação! Caso a OS esteja sendo solicitada por um cidadão via telefone, não
-                                            se esqueça de alterar o tipo de procedência <strong>(Externa)</strong> e
-                                            registrar os dados do cidadão na ordem, além de informá-lo o código da OS.
+                                            criação!
                                         </p><br>
 
                                         <p> <strong> Importante: </strong> toda ordem de serviço gera um histórico! Ele
@@ -151,7 +148,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive table--no-card m-b-40">
+                        <div id="loading">
+                            <div class="center" style="text-align: center">
+                                <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
+                            </div>
+                        </div>
+                        <div class="table-responsive table--no-card m-b-40" style="display: none;">
                             <table id="ordens_servico" class="table table-striped">
                                 <thead>
                                     <tr>
@@ -226,7 +228,7 @@
                                     <div class="row form-group">
                                         <div class="col-7 col-md-4">
                                             <label for="departamento"><strong>Departamento*</strong></label>
-                                            <select class="form-control" id="departamento_fk" name="departamento"
+                                            <select class="form-control" onchange="myControl.handleSelects($(this).val());"id="departamento_fk" name="departamento"
                                                 required="true">
 
                                             </select>
@@ -247,13 +249,6 @@
                                     </div>
 
                                     <div class="row form-group">
-                                        <div class="col-7 col-md-4" id="procedencias_options">
-                                            <label for="procedencia_pk"><strong>Procedência*</strong></label>
-                                            <select class="form-control" id="procedencia_fk" name="procedencia_fk"
-                                                required="true">
-                                            </select>
-                                            <small class="form-text text-muted">Por favor, informe a procedência desta ordem</small>
-                                        </div>
                                         <div class="col-7 col-md-4">
                                             <label for="prioridade_pk"><strong>Prioridade*</strong></label>
                                             <select class="form-control" id="prioridade_fk" name="prioridade_fk"
@@ -391,6 +386,10 @@
                                     <div class="row form-group" style="margin-top: 30px !important;">
                                         <input type="hidden" id="localizacao_lat"  name="localizacao_lat">
                                         <input type="hidden" id="localizacao_long"  name="localizacao_long">
+                                        <input type="hidden" id="ordem_servico_cod"  name="ordem_servico_cod">
+                                        <!-- <input type="hidden" id="servico_nome"  name="servico_nome">
+                                        <input type="hidden" id="setor_nome"  name="setor_nome">
+                                        <input type="hidden" id="prioridade_nome" name="prioridade_nome"> -->
                                         <div class="col-12">
                                         <div id="map"></div>
                                             <small class="form-text text-muted">Visualize ou selecione o local no
@@ -432,7 +431,7 @@
                                     <input type="password" name="senha" id="senha" class="form-control" required>
                                 </div>
                             </div>
-                            <?php endif?>
+                            <?php endif; ?>
                             <div class="text-center">
                                 <button type="button" class="btn btn-primary submit_os">
                                     <i class="fa fa-dot-circle-o"></i> Finalizar
@@ -519,11 +518,11 @@
 <div id="create_history" class="d-none">
     <div class="modal-body">
         <div class="form-group">
-            <div id="loading">
+            <!-- <div id="loading">
                 <div align="center" class="center">
-                    <img src="<?= base_url('assets/images/loading.gif') ?>" id="v_loading">
+                    <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
                 </div>
-            </div>
+            </div> -->
             <div class="qa-message-list py-5" id="otimeline" style="margin-top: 10px !important; padding-top: 10px !important;">
             </div>
             <div class="modal-footer">
@@ -553,7 +552,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div> -->
              <!-- <div align="center" class="center">
-                <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="ov_loading"
+                <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="ov_loading"
                             alt="Carregando">
                     </div> -->
         <!-- </div>
@@ -599,14 +598,6 @@
                         </div>
                         <div class="card-body card-block">
                             <p id="ordem_servico_desc_historic"></p>
-                        </div>
-                    </div>
-                    <div class="card col-md-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                        <div class="card-header">
-                            <strong>Procedência:</strong>
-                        </div>
-                        <div class="card-body card-block">
-                            <p id="procedencia_nome_historic"></p>
                         </div>
                     </div>
                 </div>
@@ -666,7 +657,7 @@
             </div>
         </div>
         <!-- <div align="center" class="center">
-            <img width="150px" src="<?=base_url('assets/images/loading.gif')?>" id="v_loading"
+            <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="v_loading"
                 alt="Carregando">
         </div> -->
         <div class="container-fluid" id="card_slider_historic"></div>

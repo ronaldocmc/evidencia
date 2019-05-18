@@ -59,6 +59,3 @@ const myControl = new Control();
 const myView = new View();
 
 myControl.init();
-
-// myView.generateSelect(this.data.departamentos, 'departamento_nome', 'departamento_pk', 'departamento_fk');
-// myView.generateSelect(this.data.prioridades, 'prioridade_nome', 'prioridade_pk', 'prioridade_padrao_fk');

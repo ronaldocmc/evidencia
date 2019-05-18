@@ -48,8 +48,7 @@ $(document).on('click','#btn-trocar-funcionario',function(event) {
 	{	
 		'funcionario_fk': $('#novo-funcionario').val()
     }
-    
-    console.log(data);
+
 
 	$.post(base_url+'/Relatorio/change_worker/'+id_relatorio,data).done(function (response) {	
 
@@ -95,7 +94,7 @@ $(document).on('click','#btn-deletar-relatorio',function(event) {
 		}
         else if(response.code == 401)
         {
-            alerts('failed','Erro!',response.data);
+            alerts('failed','Erro!',response.data.mensagem);
         }
 		else if(response.code == 200)
 		{
@@ -172,7 +171,7 @@ function change_situacao (os) {
     formData.append('situacao_atual_fk', parseInt($('#' + os).val()));
     formData.append('image_os', null);
 
-    var URL = base_url + '/ordem_servico/insert_situacao/' + os;
+    var URL = base_url + '/Ordem_Servico/insert_situacao/' + os;
     $.ajax({
         url: URL,
         method: "POST",

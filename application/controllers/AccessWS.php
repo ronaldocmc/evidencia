@@ -208,7 +208,7 @@ class AccessWS extends MY_Controller
             if ($new_token) {
                 $dados['token'] = $new_token;
                 $this->response->set_data($dados);
-                $this->tentativa_model->delete($this->input->ip_address());
+                $this->tentativa_model->delete_ip($this->input->ip_address());
             } else {
                 $this->response->set_code(Response::UNAUTHORIZED);
                 $this->response->set_message('Seção expirada');

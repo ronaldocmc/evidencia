@@ -30,32 +30,34 @@ function upload_img($params, array $base64_images = null)
 {
     //Crio um array que será setado com os caminhos das imagens que foram salvas (banco)
     $images_uploaded = [];
-    
+
     if ($base64_images != 'null' && $base64_images != null) {
         //Se uma ou mais imagens foram enviadas, percorreremos:
         foreach ($base64_images as $image) {
-            //Gerando o nome da imagem hasheado (segurança)
-            $blob_name = get_current_date().'/'.(hash(ALGORITHM_HASH, $params['id'].uniqid(rand(), true)).'.jpg');
-            
-            //Recebemos uma imagem em base64, portanto e necessário remover o cabeçalho dela.
-            list(, $image) = explode(';', $image);
-            list(, $image) = explode(',', $image);
-            //Decodificando o texto na base64
-            $image_content = base64_decode($image);
+            if ($image !== null) {
+                //Gerando o nome da imagem hasheado (segurança)
+                $blob_name = get_current_date().'/'.(hash(ALGORITHM_HASH, $params['id'].uniqid(rand(), true)).'.jpg');
 
-            //Realizamos um tratamento específico caso as imagens sejam de uma ordem de serviço
-            if ($params['is_os']) {
-                $blob_name = 'ordens_servico/'.$blob_name;
-            } else {
-                $blob_name = 'perfil_images/'.$blob_name;
-            }
+                //Recebemos uma imagem em base64, portanto e necessário remover o cabeçalho dela.
+                list(, $image) = explode(';', $image);
+                list(, $image) = explode(',', $image);
+                //Decodificando o texto na base64
+                $image_content = base64_decode($image);
 
-            try {
-                $blob_url = upload_to_storage($image_content, $blob_name);
-                //Adicionando o caminho da última imagem armazenada
-                array_push($images_uploaded, $blob_url);
-            } catch (Exception $e) {
-                throw new MyException('ERROR: Falha no upload da imagem: ['.$e->getMessage().']', Response::SERVER_FAIL);
+                //Realizamos um tratamento específico caso as imagens sejam de uma ordem de serviço
+                if ($params['is_os']) {
+                    $blob_name = 'ordens_servico/'.$blob_name;
+                } else {
+                    $blob_name = 'perfil_images/'.$blob_name;
+                }
+
+                try {
+                    $blob_url = upload_to_storage($image_content, $blob_name);
+                    //Adicionando o caminho da última imagem armazenada
+                    array_push($images_uploaded, $blob_url);
+                } catch (Exception $e) {
+                    throw new MyException('ERROR: Falha ao salvar a imagem: ['.$e->getMessage().']', Response::SERVER_FAIL);
+                }
             }
         }
     } else {

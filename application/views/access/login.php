@@ -57,7 +57,7 @@
           </div>
           <div class="modal-body">
               <div class="form-group">
-                <input type="text" class="form-control" name="email_recover" placeholder="Digite seu email" required="required" id="email_recover">
+                <input type="text" class="form-control" name="email_recover" placeholder="Digite seu LOGIN" required="required" id="email_recover">
               </div>
               <div class="form-group">
                 <button type="button" class="btn btn-primary btn-lg btn-block"  onclick="verify_email()" name="post">Enviar</button>

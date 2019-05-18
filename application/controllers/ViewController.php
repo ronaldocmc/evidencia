@@ -1,61 +1,60 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-require_once APPPATH."core/AuthorizationController.php";
+<?php
 
-class ViewController extends AuthorizationController 
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+require_once APPPATH.'core/AuthorizationController.php';
+
+class ViewController extends AuthorizationController
 {
-    
     public function __construct()
     {
         parent::__construct();
-        if ($this->session->has_userdata('user'))
-        {
-            if(!$this->is_superuser()){
+        if ($this->session->has_userdata('user')) {
+            if (!$this->is_superuser()) {
                 $this->check_permissions();
             }
-        }
-        else
-        {
+        } else {
             redirect(base_url());
         }
     }
 
-    public function index($name){
+    public function index($name)
+    {
         $this->_load_css();
-        
+
         $this->_load_scripts($name);
-        
-        $this->_load_view($name, $name.'s', NULL);
+
+        $this->_load_view($name, $name.'s', null);
     }
 
-    public function funcionario() 
+    public function funcionario()
     {
-        $organizacao = $this->session->user['id_organizacao'];       
+        $organizacao = $this->session->user['id_organizacao'];
 
         $dados['primeiro_nome'] = $this->primeiro_nome($this->session->user['name_user']);
 
-        $this->session->set_flashdata('css',[
+        $this->session->set_flashdata('css', [
             0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
             1 => base_url('assets/vendor/icon-hover-effects/component.css'),
             2 => base_url('assets/vendor/icon-hover-effects/default.css'),
-            3 => base_url('assets/css/dashboard.css')
+            3 => base_url('assets/css/dashboard.css'),
         ]);
 
-
-        $this->session->set_flashdata('scripts',[
+        $this->session->set_flashdata('scripts', [
             0 => base_url('assets/js/constants.js'),
             1 => base_url('assets/js/dashboard/dashboard/dashboard.js'),
             2 => base_url('assets/vendor/masks/jquery.mask.min.js'),
             3 => base_url('assets/vendor/datatables/datatables.min.js'),
             4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
             5 => base_url('assets/js/utils.js'),
-
         ]);
         load_view([
             0 => [
-                'src'=>'dashboard/administrador/principal/dashboard',
-                'params' =>  $dados
-            ]
-        ],'administrador');
+                'src' => 'dashboard/administrador/principal/dashboard',
+                'params' => $dados,
+            ],
+        ], 'administrador');
     }
 
     public function listar_relatorios()
@@ -104,27 +103,24 @@ class ViewController extends AuthorizationController
         //Selecionando o setores
         $setores = $this->setor_model->get_all(
             '*',
-            ["organizacao_fk" => $this->session->user['id_organizacao']],
+            ['organizacao_fk' => $this->session->user['id_organizacao']],
             -1,
             -1
         );
         //Selecionando os tipos de serviços
         $tipos_servicos = $this->tipo_servico_model->get(
             '*',
-            ["departamentos.organizacao_fk" => $this->session->user['id_organizacao']]
+            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']]
         );
         //Selecionando os serviços
         $servicos = $this->servico_model->get(
             '*',
-            ["situacoes.organizacao_fk" => $this->session->user['id_organizacao']]
+            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']]
         );
         //Selecionando os funcionários com a função de revisor
-        $funcionarios = $this->funcionario_model->get(
-            "*",
-            [
-                "funcionarios.organizacao_fk" => $this->session->user['id_organizacao'],
-                "funcionarios.funcao_fk" => "6",
-            ]
+        $funcionarios = $this->funcionario_model->get_revisores(
+            '*',
+            $this->session->user['id_organizacao']
         );
         //Carregando CSS utilizados na view
         $this->session->flashdata('css', [
@@ -154,7 +150,7 @@ class ViewController extends AuthorizationController
                 ],
             ],
         ], 'administrador');
-    } 
+    }
 
     public function minha_conta()
     {
@@ -203,24 +199,22 @@ class ViewController extends AuthorizationController
     public function editar_informacoes_organizacao()
     {
         $this->load->model('organizacao_model', 'organizacao');
-        // Pegando a organização salva na session 
-        if ($this->has_organization())
-        {   
+        // Pegando a organização salva na session
+        if ($this->has_organization()) {
             $this->load->model('municipio_model', 'municipio');
 
             $data['organizacao'] = $this->organizacao->get_object($this->session->user['id_organizacao']);
 
             $data['municipios'] = $this->municipio->get(); //get all
-            
 
             // CSS para a edição
-            $this->session->set_flashdata('css',[
+            $this->session->set_flashdata('css', [
                 0 => base_url('assets/css/modal_desativar.css'),
                 1 => base_url('assets/css/loading_input.css'),
-                2 => base_url('assets/css/media_query_edit_org.css')
+                2 => base_url('assets/css/media_query_edit_org.css'),
             ]);
             //Scripts para edição
-            $this->session->set_flashdata('scripts',[
+            $this->session->set_flashdata('scripts', [
                 0 => base_url('assets/js/localizacao.js'),
                 1 => base_url('assets/vendor/datatables/datatables.min.js'),
                 2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
@@ -229,15 +223,14 @@ class ViewController extends AuthorizationController
                 5 => base_url('assets/js/constants.js'),
                 6 => base_url('assets/js/utils.js'),
                 7 => base_url('assets/js/jquery.noty.packaged.min.js'),
-                8 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js')
+                8 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
             ]);
             load_view([
                 0 => [
                     'src' => 'dashboard/administrador/organizacao/editar_informacoes',
-                    'params' => $data
-                ]
-            ],'administrador');
-
+                    'params' => $data,
+                ],
+            ], 'administrador');
         }
     }
 
@@ -253,23 +246,24 @@ class ViewController extends AuthorizationController
 
         $prioridades = $this->prioridade->get_all(
             '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            null,
             -1,
             -1
         );
         $situacoes = $this->situacao->get_all(
             '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            null,
             -1,
             -1
         );
         $servicos = $this->servico->get_all(
             '*',
-            ['situacoes.organizacao_fk' => $this->session->user['id_organizacao']],
+            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
             -1,
             -1,
             [
-                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk'],
+                ['table' => 'tipos_servicos', 'on' => 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk'],
+                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
             ]
         );
         $departamentos = $this->departamento->get_all(
@@ -341,17 +335,19 @@ class ViewController extends AuthorizationController
         ], 'administrador');
     }
 
-    private function _load_css(){
-        $this->session->set_flashdata('css',[
+    private function _load_css()
+    {
+        $this->session->set_flashdata('css', [
             0 => base_url('assets/css/modal_desativar.css'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
             2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            3 => base_url('assets/css/user_guide.css')
+            3 => base_url('assets/css/user_guide.css'),
         ]);
     }
 
-    private function _load_scripts($name){
-        $this->session->set_flashdata('scripts',[
+    private function _load_scripts($name)
+    {
+        $this->session->set_flashdata('scripts', [
             0 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
             2 => base_url('assets/vendor/datatables/datatables.min.js'),
@@ -360,37 +356,43 @@ class ViewController extends AuthorizationController
             5 => base_url('assets/js/constants.js'),
             6 => base_url('assets/js/jquery.noty.packaged.min.js'),
             7 => base_url('assets/js/dashboard/'.$name.'/index.js'),
-            8 => base_url('assets/js/response_messages.js')
+            8 => base_url('assets/js/response_messages.js'),
+            9 => base_url('assets/vendor/input-image/input-image.js'),
         ]);
     }
 
-    private function _load_view($name, $plural, $data){
+    private function _load_view($name, $plural, $data)
+    {
         load_view([
             0 => [
                 'src' => 'dashboard/administrador/'.$name.'/home',
                 'params' => [$plural => $data],
-            ]
-        ],'administrador');
+            ],
+        ], 'administrador');
     }
 
     private function check_permissions()
-    {   
-        if(!$this->is_authorized()) $this->load_view_forbidden();
+    {
+        if (!$this->is_authorized()) {
+            $this->load_view_forbidden();
+        }
     }
 
     private function has_organization()
     {
         return $this->session->user['id_organizacao'];
     }
-    
-    private function primeiro_nome($nome){
+
+    private function primeiro_nome($nome)
+    {
         $array = explode(' ', $nome);
+
         return $array[0];
     }
 
     private function load_view_forbidden()
     {
-        $response = new Response(); 
+        $response = new Response();
 
         $response->set_code(Response::FORBIDDEN);
         $response->set_data(['error' => 'Você não possui permissão para acessar esta área']);
@@ -401,9 +403,9 @@ class ViewController extends AuthorizationController
     private function get_all_reports()
     {
         $current_date = date('Y-m-d H:i:s');
-        $lastweek_time= mktime (0, 0, 0, date("m"), date("d")-7,  date("Y"));
+        $lastweek_time = mktime(0, 0, 0, date('m'), date('d') - 7, date('Y'));
         $lastweek_date = date('Y-m-d H:i:s', $lastweek_time);
-        
+
         $this->load->model('Relatorio_model', 'report_model');
         $reports = $this->report_model->get_all_reports($this->session->user['id_organizacao'], $current_date, $lastweek_date);
 
@@ -419,9 +421,7 @@ class ViewController extends AuthorizationController
                 }
             }
         }
+
         return $reports;
     }
 }
-
-
-?>

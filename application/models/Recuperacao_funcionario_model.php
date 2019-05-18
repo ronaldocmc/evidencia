@@ -1,5 +1,5 @@
 <?php
-require_once APPPATH . "core\MY_Model.php";
+require_once APPPATH . "core/MY_Model.php";
 
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');

@@ -20,7 +20,6 @@ function btn_ativar(button_submit){
 $("#btn-restaurar").click(function() {
 	btn_load($('#btn-restaurar'));
 	var senha = $("#pass-modal-restaurar").val();
-	console.log(senha);
 
 	if(senha == ""){
 		alerts('failed','Erro!','Informe a senha!');

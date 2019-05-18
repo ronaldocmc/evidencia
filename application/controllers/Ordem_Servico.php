@@ -4,13 +4,13 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core/Response.php";
+require_once APPPATH.'core/Response.php';
 
-require_once APPPATH . "core/CRUD_Controller.php";
+require_once APPPATH.'core/CRUD_Controller.php';
 
-require_once APPPATH . "models/Ordem_Servico_model.php";
+require_once APPPATH.'models/Ordem_Servico_model.php';
 
-require_once APPPATH . "core/MyException.php";
+require_once APPPATH.'core/MyException.php';
 
 class Ordem_Servico extends CRUD_Controller
 {
@@ -48,12 +48,11 @@ class Ordem_Servico extends CRUD_Controller
         $where = null;
 
         if ($option == 'semana') {
-
             $current_date = date('Y-m-d H:i:s');
-            $lastweek_time = mktime(0, 0, 0, date("m"), date("d") - 7, date("Y"));
+            $lastweek_time = mktime(0, 0, 0, date('m'), date('d') - 7, date('Y'));
             $lastweek_date = date('Y-m-d H:i:s', $lastweek_time);
 
-            $where = "ordens_servicos.ordem_servico_criacao BETWEEN '" . $lastweek_date . "' AND '" . $current_date . "'";
+            $where = "ordens_servicos.ordem_servico_criacao BETWEEN '".$lastweek_date."' AND '".$current_date."'";
         }
 
         if ($option == 'finalizadas') {
@@ -82,19 +81,16 @@ class Ordem_Servico extends CRUD_Controller
 
         return $where;
     }
-    
-    public function filtro_tabela(){
 
+    public function filtro_tabela()
+    {
         try {
-
             $where = $this->choose_filter($this->input->post('filtro'));
-            // echo $where; die();
             $ordens_servico = $this->ordem_servico->get_home($this->session->user['id_organizacao'], $where);
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->set_data($ordens_servico);
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -108,14 +104,14 @@ class Ordem_Servico extends CRUD_Controller
         $this->session->set_flashdata('css', [
             0 => base_url('assets/css/modal_desativar.css'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/css/loading_input.css'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            3 => base_url('assets/css/modal_map.css'),
-            4 => base_url('assets/vendor/cropper/cropper.css'),
-            5 => base_url('assets/vendor/input-image/input-image.css'),
-            6 => base_url('assets/css/timeline.css'),
-            7 => base_url('assets/css/style_card.css'),
-            8 => base_url('assets/css/user_guide.css'),
+            2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+            3 => base_url('assets/css/loading_input.css'),
+            4 => base_url('assets/css/modal_map.css'),
+            5 => base_url('assets/vendor/cropper/cropper.css'),
+            6 => base_url('assets/vendor/input-image/input-image.css'),
+            7 => base_url('assets/css/timeline.css'),
+            8 => base_url('assets/css/style_card.css'),
+            9 => base_url('assets/css/user_guide.css'),
         ]);
 
         $this->session->set_flashdata('scripts', [
@@ -169,7 +165,6 @@ class Ordem_Servico extends CRUD_Controller
 
                 foreach ($imagens as $img) {
                     if ($os->ordem_servico_pk == $img->ordem_servico_fk) {
-
                         array_push($os->imagens, $img);
 
                         unset($img);
@@ -185,61 +180,60 @@ class Ordem_Servico extends CRUD_Controller
             -1
         );
 
-        $tipos_servicos = $this->tipo_servico->get_all(
-            '*',
-            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1,
-            [
-                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
-            ]
-        );
-
         $prioridades = $this->prioridade->get_all(
             '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            ['ativo' => 1],
             -1,
             -1
         );
 
         $situacoes = $this->situacao->get_all(
             '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
+            ['ativo' => 1],
             -1,
             -1
         );
 
         $servicos = $this->servico->get_all(
             '*',
-            ['situacoes.organizacao_fk' => $this->session->user['id_organizacao']],
+            ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
             -1,
             -1,
             [
                 ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = servicos.situacao_padrao_fk'],
                 ['table' => 'tipos_servicos', 'on' => 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk'],
                 ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
-            ]
-        );
+                ]
+            );
+
+        $tipos_servico = $this->tipo_servico->get_all(
+                '*',
+                ['departamentos.organizacao_fk' => $this->session->user['id_organizacao']],
+                -1,
+                -1,
+                [
+                    ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
+                ]
+            );
 
         $procedencias = $this->procedencia->get_all(
-            '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
+                '*',
+                ['organizacao_fk' => $this->session->user['id_organizacao']],
+                -1,
+                -1
+            );
 
         $setores = $this->setor->get_all(
-            '*',
-            ['organizacao_fk' => $this->session->user['id_organizacao']],
-            -1,
-            -1
-        );
-
+                '*',
+                ['organizacao_fk' => $this->session->user['id_organizacao']],
+                -1,
+                -1
+            );
         $municipios = $this->localizacao->get_cities();
 
         $response->add_data('self', $ordens_servico);
         $response->add_data('departamentos', $departamentos);
-        $response->add_data('tipos_servicos', $tipos_servicos);
+        $response->add_data('tipos_servicos', $tipos_servico);
         $response->add_data('prioridades', $prioridades);
         $response->add_data('situacoes', $situacoes);
         $response->add_data('servicos', $servicos);
@@ -248,15 +242,11 @@ class Ordem_Servico extends CRUD_Controller
         $response->add_data('municipios', $municipios);
 
         $response->send();
-
     }
 
     public function save()
     {
-        try
-        {
-
-            
+        try {
             $this->load->model('Localizacao_model', 'localizacao');
             $this->load->library('form_validation');
             $this->load->helper('exception');
@@ -290,10 +280,9 @@ class Ordem_Servico extends CRUD_Controller
             }
 
             $this->end_transaction();
-            
+
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -304,11 +293,11 @@ class Ordem_Servico extends CRUD_Controller
     private function insert()
     {
         $this->load->helper('insert_images');
-        $this->ordem_servico->__set("localizacao_fk", $this->localizacao->insert());
-        $this->ordem_servico->__set("funcionario_fk", $this->session->user['id_user']);
+        $this->ordem_servico->__set('localizacao_fk', $this->localizacao->insert());
+        $this->ordem_servico->__set('funcionario_fk', $this->session->user['id_user']);
 
         $id = $this->ordem_servico->insert_os($this->session->user['id_organizacao']);
-        
+
         $paths = upload_img(
             [
                 'id' => $id,
@@ -319,23 +308,19 @@ class Ordem_Servico extends CRUD_Controller
             $this->input->post('imagens') //Recebe um array de imagens
         );
 
-        $this->ordem_servico->insert_images($paths, $id);
+        $this->ordem_servico->insert_images($paths, $id, $this->session->user['id_organizacao']);
 
         $new = $this->ordem_servico->get_home($this->session->user['id_organizacao'], ['ordem_servico_pk' => $id]);
         $new[0]->imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao'], ['ordem_servico_fk' => $id]);
         $this->response->add_data('id', $id);
         $this->response->add_data('new', $new[0]);
-
     }
 
     private function update()
     {
-        $this->localizacao->__set('localizacao_pk', $this->input->post('localizacao_pk'));
-        $this->localizacao->__set('localizacao_ponto_referencia', $this->input->post('localizacao_ponto_referencia'));
-        $this->localizacao->update();
-
         $this->ordem_servico->__set('ordem_servico_pk', $this->input->post('ordem_servico_pk'));
         $this->ordem_servico->__set('localizacao_fk', $this->input->post('localizacao_pk'));
+        $this->ordem_servico->__set('ordem_servico_atualizacao', $this->now());
         $this->ordem_servico->update();
     }
 
@@ -348,15 +333,31 @@ class Ordem_Servico extends CRUD_Controller
         $this->response->send();
     }
 
+    private function now()
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+
+        return date('Y-m-d H:i:s');
+    }
+
     public function insert_situacao($id)
     {
         try {
             $this->load->helper('exception');
             $this->load->helper('insert_images');
 
-            $this->ordem_servico->__set("ordem_servico_comentario", $_POST['ordem_servico_comentario']);
-            $this->ordem_servico->__set("situacao_atual_fk", $_POST['situacao_atual_fk']);
-            $this->ordem_servico->__set("ordem_servico_pk", $id);
+            $now = $this->now();
+
+            $this->ordem_servico->__set('ordem_servico_comentario', $_POST['ordem_servico_comentario']);
+            $this->ordem_servico->__set('situacao_atual_fk', $_POST['situacao_atual_fk']);
+            $this->ordem_servico->__set('ordem_servico_pk', $id);
+            $this->ordem_servico->__set('ordem_servico_atualizacao', $now);
+
+            if ($_POST['situacao_atual_fk'] === '5') {
+                $this->ordem_servico->__set('ordem_servico_finalizacao', $now);
+            } else {
+                $this->ordem_servico->remove_finalizacao_date($id);
+            }
 
             $paths = upload_img(
                 [
@@ -374,7 +375,7 @@ class Ordem_Servico extends CRUD_Controller
 
             $this->ordem_servico->update();
 
-            $this->ordem_servico->insert_images($paths, $id);
+            $this->ordem_servico->insert_images($paths, $id, $this->session->user['id_organizacao']);
             $new = (object) [];
             // $new = $this->ordem_servico->get_home($this->session->user['id_organizacao'], ['ordem_servico_pk' => $id]);
             $new->imagens = $this->ordem_servico->get_images($this->session->user['id_organizacao'], ['ordem_servico_fk' => $id]);
@@ -385,7 +386,6 @@ class Ordem_Servico extends CRUD_Controller
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -395,12 +395,11 @@ class Ordem_Servico extends CRUD_Controller
 
     public function delete($id)
     {
-
         try {
             $this->load->helper('exception');
             $this->load->model('relatorio_model', 'relatorio');
 
-            $this->ordem_servico->__set("ordem_servico_pk", $id);
+            $this->ordem_servico->__set('ordem_servico_pk', $id);
 
             $os = $this->relatorio->get_orders_of_report(
                 [
@@ -419,7 +418,7 @@ class Ordem_Servico extends CRUD_Controller
                 throw new MyException('A ordem não pode ser excluída pois possúi um histórico de modificações', Response::BAD_REQUEST);
             }
 
-            $this->ordem_servico->__set("ativo", 0);
+            $this->ordem_servico->__set('ativo', 0);
 
             $this->begin_transaction();
 
@@ -429,7 +428,6 @@ class Ordem_Servico extends CRUD_Controller
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -448,9 +446,17 @@ class Ordem_Servico extends CRUD_Controller
 
     public function get_specific($ordem_servico_pk)
     {
-        $ordem_servico = $this->ordem_servico->get_home(
-            $this->session->user['id_organizacao'],
-            ['ordens_servicos.ordem_servico_pk' => $ordem_servico_pk]
+        $ordem_servico = $this->ordem_servico->get_all(
+            '*',
+            ['ordens_servicos.ordem_servico_pk' => $ordem_servico_pk],
+            -1,
+            -1,
+            [
+                ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk'],
+                ['table' => 'setores', 'on' => 'setores.setor_pk = ordens_servicos.setor_fk'],
+                ['table' => 'servicos', 'on' => 'servicos.servico_pk = ordens_servicos.servico_fk'],
+                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = ordens_servicos.situacao_atual_fk']
+            ]
         );
         $os_hist = $this->ordem_servico->get_historico($ordem_servico_pk);
         $os_images = $this->ordem_servico->get_images_id($ordem_servico_pk);

@@ -3,8 +3,8 @@
             <div class="header-mobile__bar">
                 <div class="container-fluid">
                     <div class="header-mobile-inner">
-                        <a class="logo" href="<?php echo base_url('dashboard/funcionario_administrador') ?>">
-                            <img src="<?php echo base_url('assets/images/icon/logo.png') ?>" alt="Evidência" />
+                        <a class="logo" href="<?php echo base_url('dashboard/funcionario_administrador'); ?>">
+                            <img src="<?php echo base_url('assets/images/icon/logo.png'); ?>" alt="Evidência" />
                         </a>
                         <button class="hamburger hamburger--slider" type="button">
                             <span class="hamburger-box">
@@ -18,7 +18,7 @@
                 <div class="container-fluid">
                     <ul class="navbar-mobile__list list-unstyled">
                         <li>
-                            <a href="<?= base_url('dashboard/funcionario_administrador') ?>">
+                            <a href="<?= base_url('dashboard/funcionario_administrador'); ?>">
                                 <i class="fas fa-home"></i>Início</a>
                         </li>
                         <li class="has-sub">
@@ -43,7 +43,7 @@
                                 <li class="servico-menu d-none">
                                     <a href="<?php echo base_url('servico'); ?>">Serviços</a>
                                 </li>
-                                <?php if(SHOW_HIDE_MENU): ?>
+                                <?php if (SHOW_HIDE_MENU): ?>
                                     <li class="prioridade-menu d-none">
                                         <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
                                     </li>
@@ -58,7 +58,7 @@
                             </ul>
                         </li>
                         <li class="mapa-menu d-none">
-                            <a href="<?php echo base_url('mapa') ?>">
+                            <a href="<?php echo base_url('mapa'); ?>">
                             <i class="fas fa-map-marker-alt"></i>Mapa</a>
                         </li>
                         <li class="relatorio-menu d-none">
@@ -66,14 +66,14 @@
                             <i class="fas fa-clipboard-list"></i>Relatórios</a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
                                 <li>
-                                    <a href="<?= base_url('relatorio') ?>">Listar Relatórios</a>
+                                    <a href="<?= base_url('relatorio'); ?>">Listar Relatórios</a>
                                 </li>
-                                <?php if(SHOW_HIDE_MENU): ?>
+                                <?php if (SHOW_HIDE_MENU): ?>
                                 <li>
-                                    <a href="<?= base_url('relatorio/relatorios_gerais') ?>">Relatórios Gerais</a>
+                                    <a href="<?= base_url('relatorio/relatorios_gerais'); ?>">Relatórios Gerais</a>
                                 </li>
                                 <li>
-                                    <a href="<?= base_url('relatorio/relatorio_especifico') ?>">Relatório Específico</a>
+                                    <a href="<?= base_url('relatorio/relatorio_especifico'); ?>">Relatório Específico</a>
                                 </li>
                                 <?php endif; ?>
                             </ul>
@@ -90,11 +90,11 @@
                         </li>
                         <?php if ($this->session->user['is_superusuario']): ?>
                         <li>
-                            <a class="js-arrow"href="<?php echo base_url('dashboard/funcionario_administrador') ?>">
+                            <a class="js-arrow"href="<?php echo base_url('dashboard/funcionario_administrador'); ?>">
                             <i class="fas fa-sign-out-alt"></i>Voltar ao menu</a>
                         </li>
 
-                        <?php endif;?>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </nav>
@@ -104,15 +104,15 @@
         <!-- MENU SIDEBAR-->
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
-                <a href="<?php echo base_url('dashboard/funcionario_administrador') ?>">
-                    <img src="<?php echo base_url('assets/images/icon/logo.png') ?>" alt="Evidência" />
+                <a href="<?php echo base_url('dashboard/funcionario_administrador'); ?>">
+                    <img src="<?php echo base_url('assets/images/icon/logo.png'); ?>" alt="Evidência" />
                 </a>
             </div>
             <div class="menu-sidebar__content js-scrollbar1">
                 <nav class="navbar-sidebar">
                     <ul class="list-unstyled navbar__list">
                         <li>
-                            <a href="<?php echo base_url('dashboard/funcionario_administrador') ?>">
+                            <a href="<?php echo base_url('dashboard/funcionario_administrador'); ?>">
                                 <i class="fas fa-home"></i>Início</a>
                         </li>
                         <li class="has-sub">
@@ -137,7 +137,7 @@
                                 <li class="servico-menu d-none">
                                     <a href="<?php echo base_url('servico'); ?>">Serviços</a>
                                 </li>
-                                <?php if(SHOW_HIDE_MENU): ?>
+                                <?php if (SHOW_HIDE_MENU): ?>
                                     <li class="prioridade-menu d-none">
                                         <a href="<?php echo base_url('prioridade'); ?>">Prioridades</a>
                                     </li>
@@ -151,25 +151,12 @@
                             </ul>
                         </li>
                         <li class="mapa-menu d-none">
-                            <a href="<?php echo base_url('mapa') ?>">
+                            <a href="<?php echo base_url('mapa'); ?>">
                             <i class="fas fa-map-marker-alt"></i>Mapa</a>
                         </li>
-                        <li class="relatorio-menu d-none">
-                            <a class="js-arrow" href="#">
+                        <li class="mapa-menu d-none">
+                            <a href="<?php echo base_url('relatorio'); ?>">
                             <i class="fas fa-clipboard-list"></i>Relatórios</a>
-                            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                 <li>
-                                    <a href="<?= base_url('relatorio') ?>">Listar Relatórios</a>
-                                </li>
-                                <?php if(SHOW_HIDE_MENU): ?>
-                                    <li>
-                                        <a href="<?= base_url('relatorio/relatorios_gerais') ?>">Relatórios Gerais</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?= base_url('relatorio/relatorio_especifico') ?>">Relatório Específico</a>
-                                    </li>
-                                <?php endif; ?>
-                            </ul>
                         </li>
                         <li class="has-sub organizacao-menu d-none">
                             <a class="js-arrow" href="#">
@@ -182,24 +169,24 @@
                         </li>
                         <?php if ($this->session->user['is_superusuario']): ?>
                         <li>
-                            <a href="<?php echo base_url('dashboard/superusuario') ?>">
+                            <a href="<?php echo base_url('dashboard/superusuario'); ?>">
                             <i class="fas fa-sign-out-alt"></i>Voltar ao menu</a>
                         </li>
 
-                        <?php endif;?>
+                        <?php endif; ?>
                     </ul>
                      <div style="margin-top: 30px !important;">
                         <a href="#">
-                            <img class="logo_parceiros" src="<?php echo base_url('assets/images/icon/maps-logo.png') ?>" alt="Evidência" />
+                            <img class="logo_parceiros" src="<?php echo base_url('assets/images/icon/maps-logo.png'); ?>" alt="Evidência" />
                         </a>
                     </div>
                     <div style="margin-top: 15px !important;">
                         <a href="#">
-                            <img  class="logo_parceiros" src="<?php echo base_url('assets/images/icon/certified microsoft.png') ?>" alt="Evidência" />
+                            <img  class="logo_parceiros" src="<?php echo base_url('assets/images/icon/certified microsoft.png'); ?>" alt="Evidência" />
                         </a>
                     </div>
                     <div>
-                        <small> Evidência - v<?= VERSION ?> </small>   
+                        <small> Evidência - v<?= VERSION; ?> </small>   
                     </div>
                 </nav>
             </div>
@@ -238,12 +225,12 @@
                                             </div>
                                             <div class="account-dropdown__body">
                                                 <div class="account-dropdown__item">
-                                                    <a href="<?php echo base_url('minha_conta') ?>">
+                                                    <a href="<?php echo base_url('minha_conta'); ?>">
                                                         <i class="zmdi zmdi-account"></i>Conta</a>
                                                 </div>
                                             </div>
                                             <div class="account-dropdown__footer">
-                                                <a href="<?= base_url('access/quit') ?>">
+                                                <a href="<?= base_url('access/quit'); ?>">
                                                     <i class="zmdi zmdi-power"></i>Sair</a>
                                             </div>
                                         </div>
@@ -259,16 +246,14 @@
             <script>
                 function imageNotFound()
                 {
-                    console.log('image not found');
-                    console.log(this);
-                    this.src = "<?= base_url('assets/img/default.png') ?>";
+                    this.src = "<?= base_url('assets/img/default.png'); ?>";
                 }
 
                 function loadAvatarImage(){
                     let image = new Image();
                     image.alt = "<?= $this->session->user['name_user']; ?>";
                     image.onerror = imageNotFound;
-                    image.src = "<?= $this->session->user['image_user_min'] ?>";
+                    image.src = "<?= $this->session->user['image_user_min']; ?>";
 
                     return image;
                 }
@@ -281,10 +266,16 @@
                     return image;
                 }
 
+                const updateAvatar = () => {
+                    let img = loadAvatarImage();
+                    let old_img = document.getElementById('avatar').firstChild;
+                    document.getElementById('avatar').replaceChild(img, old_img);
+                }
+
                 let image = loadAvatarImage();
-                let newImage = loadAvatarImage()
-
+                let newImage = loadAvatarImage();
+                
                 document.getElementById('avatar').appendChild(image);
-
                 document.getElementById('image-a').appendChild(newImage);
+
             </script>

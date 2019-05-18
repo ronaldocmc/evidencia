@@ -35,18 +35,32 @@ class View extends GenericView {
 
     }
 
+    createJsonWithFields(fields) {
+        const dataContainer = {};
+        const dataName = {};
+
+        fields.forEach(field => {
+            
+            dataContainer[field] = $(`#${field}`).val();
+
+            if($(`#${field}`).is('select')){
+                dataName[field] = $(`#${field} option:selected`).text();
+            }
+        });
+
+        dataContainer.prioridade_nome = dataName['prioridade_fk'];
+        dataContainer.servico_nome = dataName['servico_fk'];
+        dataContainer.setor_nome = dataName ['setor_fk'];
+
+        return dataContainer;
+    }
+    
     filter(data, target) {
         const type = $(target).val();
         const renderData = data.filter(d => (d.situacao_atual_fk == type || type == -1 ));
         this.render(renderData);
     }
     
-    // Aqui vamos iniciar a função que selecionado o departamento, então os selects de tipo de servico e servico são 
-    //preenchidos
-    fillSelectByOption(){
-
-    }
-
 
     generateButtons(condition, i) {
         return `<div class='btn-group'>` +
@@ -258,7 +272,7 @@ class View extends GenericView {
     }
 
     renderDetailOrdem(data){
-        console.log(data);
+        
         let render = '';
 
         data.imagens.length !== 0 ? 
@@ -292,7 +306,7 @@ class Request extends GenericRequest {
 
     constructor() {
         super();
-        this.route = '/ordem_servico';
+        this.route = '/Ordem_Servico';
     }
 
 }
@@ -325,6 +339,10 @@ class Control extends GenericControl {
         $(document).on('click', '.action_export', () => { this.exportData() });
         $(document).on('click', '.btn_delete', () => { this.handleDelete() });
         $(document).on('click', '#confirm_delete', () => { this.delete() });
+        $(document).on('click', '.new', () => { this.handleSelects($('#departamento_fk').val()) });
+        $(document).on('change', '#tipo_servico_fk', () => { this.optionsServices($('#tipo_servico_fk').val()) });
+        $(document).on('click', '.btn_edit', () => { this.handleFillFields(); this.handleSelectEdit(); });
+
     }
 
     deleteImage(index){
@@ -365,18 +383,21 @@ class Control extends GenericControl {
 
     saveNewOrdem(){
 
-        this.save({
+        let response = this.save({
             imagens: this.saveImages(),
             situacao_atual_fk: $('#situacao_inicial_fk').val()
         });
-        
-        this.counter = 0;
-        $('#images_saved').html("");
+
+        if(response.code == 200){
+            this.counter = 0;
+            $('#images_saved').html("");
+        }
+
     }
 
     async saveNewSituation(moreFields = null) {
         //Aprimorar esse load para funcionar
-        this.myView.initLoad();
+        // this.myView.initLoad();
 
         const data = this.myView.createJsonWithFields(this.fields);
         data[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
@@ -390,7 +411,7 @@ class Control extends GenericControl {
 
         const response = await this.myRequests.send('/insert_situacao/'+data[this.primaryKey], sendData);
         sendData.imagens = response.data.new.imagens;
-        this.myView.endLoad();
+        // this.myView.endLoad();
 
         this.handleResponse(response, sendData);
         $('#images_saved').html("");
@@ -475,14 +496,15 @@ class Control extends GenericControl {
     }
     
     fillHistoricFields(object, fields) {
-        let local ='';
+        let local = ' ';
 
         fields.forEach(field => {
             if(!field.indexOf('localizacao')){
-                object[field] !== null && 
+                (object[field] !== null && 
                 object[field] != undefined && 
                 field != 'localizacao_lat' && 
-                field != 'localizacao_long' ? local += object[field] + " " : local += ""; 
+                field != 'localizacao_long' &&
+                field != 'localizacao_municipio') ? local += object[field] + " " : local += ""; 
             }else{
                 $(`#${field}_historic`).text(object[field]);
             }     
@@ -521,15 +543,60 @@ class Control extends GenericControl {
 
     removeObject(){
         this.data.self.splice(this.state.selectedId,1);
-        console.log(this.data.self);
+    
+    }
+
+    optionsByDepartament(val){
+        let tipos_servicos = [];
+        this.data.tipos_servicos.forEach((tp)=>{
+            if(tp.departamento_fk == val){
+                tipos_servicos.push(tp);
+            }
+        });
+        return tipos_servicos;
+    }
+
+     optionsServices(val){
+        let selecteds = [];
+
+        this.data.servicos.forEach((s) =>{
+            if(s.tipo_servico_fk == val){
+                selecteds.push(s);
+            }
+        });
+
+        this.myView.generateSelect(selecteds, 'servico_nome', 'servico_pk', 'servico_fk');
+
+    }
+
+    async handleSelects(val){
+        await this.myView.checkElementDom("#servico_fk");
+        let tipos_servicos = [];
+
+        tipos_servicos = this.optionsByDepartament(val);
+        this.myView.generateSelect(tipos_servicos, 'tipo_servico_nome', 'tipo_servico_pk', 'tipo_servico_fk');;
+        this.optionsServices(tipos_servicos[0].tipo_servico_pk);
+    }
+
+    async handleSelectEdit(){
+        await this.myView.checkElementDom('#servico_fk');
+        let val = $('#servico_fk').val();
+
+        this.data.servicos.forEach((s) =>{
+            if(s.servico_pk == val){
+                this.handleSelects(s.departamento_fk);
+                this.optionsServices(s.tipo_servico_fk);
+                $('#departamento_fk').val(s.departamento_fk);
+            }
+        });   
     }
 
 }
 
 const myControl = new Control();
-let map;
-
 myControl.init();
+
+var map;
 
 initMap = () => {
 
@@ -592,6 +659,8 @@ initMap = () => {
 
         $('#modal').on('shown.bs.modal', (event) => {
 
+            // myControl.handleSelects($("#departamento_fk".val()));
+
             if (myControl.getSelectedId()) {
 
                 const { localizacao_lat, localizacao_long } = myControl.data.self[myControl.getSelectedId()];
@@ -608,12 +677,13 @@ initMap = () => {
     }
 
     map.handleCity = function (id, name) {
+
         // let exists = false;
 
         myControl.data.municipios.forEach((municipio) => {
             if (name == municipio.municipio_nome) {
-  
                 $(`#${id}`).val(municipio.municipio_pk);
+                $(`#${id} option:selected`).val(municipio.municipio_pk);
                 exists = true;
             }
         });

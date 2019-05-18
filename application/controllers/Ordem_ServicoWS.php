@@ -1,23 +1,19 @@
 <?php
 
 /**
- * AccessWS
+ * AccessWS.
  *
- * @package     application
- * @subpackage  controllers
  * @author      Pietro
  */
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once APPPATH . "core/Response.php";
-require_once dirname(__FILE__) . "/Localizacao.php";
-require_once APPPATH . "core/MY_Controller.php";
-require_once APPPATH . "core/MyException.php";
+require_once APPPATH.'core/Response.php';
+require_once dirname(__FILE__).'/Localizacao.php';
+require_once APPPATH.'core/MY_Controller.php';
+require_once APPPATH.'core/MyException.php';
 
 class Ordem_ServicoWS extends MY_Controller
 {
-
     private $response;
 
     public function __construct()
@@ -30,23 +26,19 @@ class Ordem_ServicoWS extends MY_Controller
     }
 
     /**
-     * Destrutor da classe
+     * Destrutor da classe.
      */
     public function __destruct()
     {
-
     }
 
     public function index()
     {
-
     }
 
-   
     /**
-     * Método responsável por receber os dados de uma ordem de serviço e fazer a inserção
+     * Método responsável por receber os dados de uma ordem de serviço e fazer a inserção.
      */
-
     public function post()
     {
         $this->load->model('Ordem_Servico_model', 'ordem_servico');
@@ -60,7 +52,6 @@ class Ordem_ServicoWS extends MY_Controller
         $this->load->library('form_validation');
 
         try {
-
             $obj = json_decode(file_get_contents('php://input'));
             $this->load->model('Localizacao_model', 'localizacao');
 
@@ -85,16 +76,15 @@ class Ordem_ServicoWS extends MY_Controller
             $this->begin_transaction();
 
             $city = $this->localizacao->get_cities([
-                'municipio_nome' => $this->input->post('localizacao_municipio')
+                'municipio_nome' => $this->input->post('localizacao_municipio'),
             ]);
-            if (count($city) === 0)
-            {
-                throw new MyException("Cidade inválida. Consulte o suporte em sua organização.", 400);
+            if (count($city) === 0) {
+                throw new MyException('Cidade inválida. Consulte o suporte em sua organização.', 400);
             }
             $this->localizacao->__set('localizacao_municipio', $city[0]->municipio_pk);
 
-            $this->ordem_servico->__set("localizacao_fk", $this->localizacao->insert());
-            $this->ordem_servico->__set("funcionario_fk", $token_decodificado->id_funcionario);
+            $this->ordem_servico->__set('localizacao_fk', $this->localizacao->insert());
+            $this->ordem_servico->__set('funcionario_fk', $token_decodificado->id_funcionario);
 
             $id = $this->ordem_servico->insert_os($token_decodificado->id_empresa);
 
@@ -108,13 +98,12 @@ class Ordem_ServicoWS extends MY_Controller
                 [0 => $this->input->post('img')]//talvez seja interessante a view já mandar no formato de array mesmo quando é uma.
             );
 
-            $this->ordem_servico->insert_images($paths, $id);
+            $this->ordem_servico->insert_images($paths, $id, $token_decodificado->id_empresa);
 
             $this->end_transaction();
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -128,7 +117,6 @@ class Ordem_ServicoWS extends MY_Controller
         $this->session->sess_destroy();
 
         try {
-
             isset($_GET['id']) ? $id = $_GET['id'] : $id = null;
 
             $this->load->model('Ordem_Servico_model', 'ordem_servico');
@@ -144,19 +132,18 @@ class Ordem_ServicoWS extends MY_Controller
                 $historico = $this->ordem_servico->get_historico($id);
                 $imagens = $this->ordem_servico->get_images_id($id);
 
-                $this->response->add_data("historico", $historico);
-                $this->response->add_data("imagens", $imagens);
+                $this->response->add_data('historico', $historico);
+                $this->response->add_data('imagens', $imagens);
             }
 
-            $where['ordens_servicos.situacao_atual_fk != 3 AND ordens_servicos.situacao_atual_fk != 4 AND ordens_servicos.situacao_atual_fk != '] = 5;
+            $where['ordens_servicos.ativo'] = 1;
 
             $ordens_servico = $this->ordem_servico->get_home($empresa, $where, 50);
 
-            $this->response->add_data("ordens", $ordens_servico);
+            $this->response->add_data('ordens', $ordens_servico);
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -174,18 +161,17 @@ class Ordem_ServicoWS extends MY_Controller
         $this->load->library('form_validation');
 
         try {
-
             $obj = json_decode(file_get_contents('php://input'));
             $headers = apache_request_headers();
 
-            
+            $token_decodificado = json_decode(token_decrypt($headers[TOKEN]));
             $_POST = get_object_vars($obj);
             $_POST['img'] = isset($obj->img) ? $obj->img : null;
             $_POST['ordem_servico_comentario'] = isset($obj->ordem_servico_comentario) ? $obj->ordem_servico_comentario : 'Nenhum comentário adicionado.';
 
-            $this->ordem_servico->__set("ordem_servico_comentario", $_POST['ordem_servico_comentario']);
-            $this->ordem_servico->__set("situacao_atual_fk", $_POST['situacao_atual_fk']);
-            $this->ordem_servico->__set("ordem_servico_pk", $_POST['ordem_servico_pk']);
+            $this->ordem_servico->__set('ordem_servico_comentario', $_POST['ordem_servico_comentario']);
+            $this->ordem_servico->__set('situacao_atual_fk', $_POST['situacao_atual_fk']);
+            $this->ordem_servico->__set('ordem_servico_pk', $_POST['ordem_servico_pk']);
 
             $paths = upload_img(
                 [
@@ -194,7 +180,7 @@ class Ordem_ServicoWS extends MY_Controller
                     'is_os' => true,
                     'situation' => $this->ordem_servico->__get('situacao_atual_fk'),
                 ],
-                [0 => $this->input->post('img')]//talvez seja interessante a view já mandar no formato de array mesmo quando é uma.
+                [0 => $this->input->post('img')]
             );
 
             $this->begin_transaction();
@@ -203,13 +189,14 @@ class Ordem_ServicoWS extends MY_Controller
 
             $this->ordem_servico->update();
 
-            $this->ordem_servico->insert_images($paths, $_POST['ordem_servico_pk']);
+            if ($paths !== null && !empty($paths)) {
+                $this->ordem_servico->insert_images($paths, $_POST['ordem_servico_pk'], $token_decodificado->id_empresa);
+            }
 
             $this->end_transaction();
 
             $this->response->set_code(Response::SUCCESS);
             $this->response->send();
-
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {

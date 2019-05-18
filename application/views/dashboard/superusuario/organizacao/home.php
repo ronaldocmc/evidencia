@@ -45,18 +45,18 @@
                                                 <?php foreach ($organizacoes as $key => $organizacao): ?>
                                                     <tr>
                                                         <td>
-                                                            <?=$organizacao->organizacao_nome?>
+                                                            <?=$organizacao->organizacao_nome; ?>
                                                         </td>
                                                         <td>
-                                                            <?=$organizacao->organizacao_pk?>
+                                                            <?=$organizacao->organizacao_pk; ?>
                                                         </td>
                                                         <td>
-                                                        <?=ucwords(mb_strtolower($organizacao->localizacao_rua, 'UTF-8')) . ", " . $organizacao->localizacao_num . " - " . ucwords(mb_strtolower($organizacao->localizacao_bairro, 'UTF-8')) . " - " . $organizacao->municipio_nome . "/SP"?>
+                                                        <?=ucwords(mb_strtolower($organizacao->localizacao_rua, 'UTF-8')).', '.$organizacao->localizacao_num.' - '.ucwords(mb_strtolower($organizacao->localizacao_bairro, 'UTF-8')).' - '.$organizacao->municipio_nome.'/SP'; ?>
                                                         </td>
                                                         <td>
                                                             <?php if ($organizacao->ativo): ?>
                                                                 <div class="btn-group">
-                                                                    <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$key?>" data-target="#ce_organizacao">
+                                                                    <button type="button" class="btn btn-sm btn-primary reset_multistep btn_editar" data-toggle="modal" value="<?=$key; ?>" data-target="#ce_organizacao">
                                                                         <div class="d-none d-sm-block">
                                                                             Editar
                                                                         </div>
@@ -64,7 +64,7 @@
                                                                             <i class="fas fa-edit fa-fw"></i>
                                                                         </div>
                                                                     </button>
-                                                                    <button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="<?=$key?>" data-target="#d-organizacao">
+                                                                    <button type="button" class="btn btn-sm btn-danger btn-desativar" data-toggle="modal" value="<?=$key; ?>" data-target="#d-organizacao">
                                                                         <div class="d-none d-sm-block">
                                                                             Desativar
                                                                         </div>
@@ -72,7 +72,7 @@
                                                                             <i class="fas fa-times fa-fw"></i>
                                                                         </div>
                                                                     </button>
-                                                                    <button type="button" class="btn btn-sm btn-success btn-acessar" data-toggle="modal" value="<?=$key?>" data-target="#a-organizacao">
+                                                                    <button type="button" class="btn btn-sm btn-success btn-acessar" data-toggle="modal" value="<?=$key; ?>" data-target="#a-organizacao">
                                                                         <div class="d-none d-sm-block">
                                                                             Acessar
                                                                         </div>
@@ -83,7 +83,7 @@
                                                                 </div>
                                                                 <?php else: ?>
                                                                     <div class="btn-group">
-                                                                        <button type="button" class="btn btn-sm btn-success btn_reativar" value="<?=$key?>" data-toggle="modal" data-target="#r-organizacao">
+                                                                        <button type="button" class="btn btn-sm btn-success btn_reativar" value="<?=$key; ?>" data-toggle="modal" data-target="#r-organizacao">
                                                                             <div class="d-none d-sm-block">
                                                                                 Reativar
                                                                             </div>
@@ -92,11 +92,11 @@
                                                                             </div>
                                                                         </button>
                                                                     </div>
-                                                                <?php endif?>
+                                                                <?php endif; ?>
                                                             </td>
                                                         </tr>
-                                                    <?php endforeach?>
-                                                <?php endif?>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -199,8 +199,8 @@
                                                 <div class="col-12 col-md-10">
                                                     <select class="form-control" id="cidade-input" name="municipio_pk">
                                                         <?php foreach ($municipios as $m): ?>
-                                                            <option value="<?=$m->municipio_pk?>"><?=$m->municipio_nome?></option>
-                                                        <?php endforeach;?>
+                                                            <option value="<?=$m->municipio_pk; ?>"><?=$m->municipio_nome; ?></option>
+                                                        <?php endforeach; ?>
                                                     </select>
                                                     <small class="help-block form-text">Por favor, informe a cidade</small>
                                                 </div>
@@ -360,7 +360,6 @@
 </div>
 <script type="text/javascript">
     var organizacoes = <?php echo json_encode($organizacoes !== false ? $organizacoes : []); ?>;
-    console.log(organizacoes);
 
 </script>
 <!-- END MAIN CONTENT-->
