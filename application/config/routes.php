@@ -1,5 +1,6 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------------
@@ -51,8 +52,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'Access';
 $route['upload'] = 'Superusuario/new_execute';
-$route['download/(:any)/(:any)'] = 'Superusuario/download_img'; 
+$route['download/(:any)/(:any)'] = 'Superusuario/download_img';
 $route['test/(:any)/(:any)'] = '_test/$1/$2';
 $route['404_override'] = '';
-$route['translate_uri_dashes'] = FALSE;
-$route['home'] = 'dashboard/funcionario_administrador';
+$route['translate_uri_dashes'] = false;
+$route['home'] = 'viewcontroller/funcionario';
+
+$route['dashboard/funcionario_administrador'] = 'ViewController/funcionario';
+$route['minha_conta'] = 'ViewController/minha_conta';
+$route['organizacao/editar'] = 'ViewController/editar_informacoes_organizacao';
+
+$route['departamento'] = 'ViewController/index/departamento';
+$route['setor'] = 'ViewController/index/setor';
+$route['funcionario'] = 'ViewController/index/funcionario';
+$route['funcao'] = 'ViewController/index/funcao';
+$route['servico'] = 'ViewController/index/servico';
+$route['tipo_servico'] = 'ViewController/index/tipo_servico';
+$route['ordem_servico'] = 'ViewController/index/Ordem_Servico';
+// $route['prioridade'] = 'ViewController/index/prioridade';
+// $route['situacao'] = 'ViewController/index/situacao';
+$route['relatorio'] = 'ViewController/listar_relatorios';
+$route['relatorio/novo'] = 'ViewController/novo_relatorio';
+$route['mapa'] = 'ViewController/mapa';

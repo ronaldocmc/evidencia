@@ -4,11 +4,10 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once APPPATH . "core\MY_Model.php";
+require_once APPPATH.'core/MY_Model.php';
 
 class Relatorio_model extends MY_Model
 {
-
     const NAME = 'relatorios';
     const TABLE_NAME = 'relatorios';
     const PRI_INDEX = 'relatorio_pk';
@@ -21,21 +20,20 @@ class Relatorio_model extends MY_Model
         'relatorio_criador',
         'relatorio_data_inicio_filtro',
         'relatorio_data_fim_filtro',
-        'relatorio_situacao'
+        'relatorio_situacao',
     );
 
-    public function config_password_validation(){
-        
+    public function config_password_validation()
+    {
         $this->CI->form_validation->set_rules(
             'senha',
             'Senha',
             'required'
-        );   
+        );
     }
 
     public function config_form_validation()
     {
-
         $this->CI->form_validation->set_rules(
             'setor[]',
             'Setor',
@@ -69,17 +67,14 @@ class Relatorio_model extends MY_Model
 
     public function insert_filter_data($data, $table_name)
     {
-
-        if($this->CI->db->insert_batch($table_name, $data)){
-            
+        if ($this->CI->db->insert_batch($table_name, $data)) {
             return $this->CI->db->insert_id();
-
         } else {
             throw new MyException('Não foi possível inserir na tabela '.$table_name, Response::SERVER_FAIL);
         }
     }
 
-    public function insert_report_os(Array $data)
+    public function insert_report_os(array $data)
     {
         if ($this->CI->db->insert('relatorios_os', $data)) {
             return true;
@@ -88,16 +83,17 @@ class Relatorio_model extends MY_Model
         }
     }
 
-    public function get_images($relatorio_pk){
+    public function get_images($relatorio_pk)
+    {
         return $this->CI->db
-        ->select("imagens_os.*")
-        ->from("relatorios_os")
-        ->where("relatorios_os.relatorio_fk",$relatorio_pk)
-        ->join("imagens_os", "relatorios_os.os_fk = imagens_os.ordem_servico_fk")
+        ->select('imagens_os.*')
+        ->from('relatorios_os')
+        ->where('relatorios_os.relatorio_fk', $relatorio_pk)
+        ->join('imagens_os', 'relatorios_os.os_fk = imagens_os.ordem_servico_fk')
         ->get()->result();
     }
 
-    public function get_orders_of_report($where = null, $count = FALSE)
+    public function get_orders_of_report($where = null, $count = false)
     {
         $this->CI->db->select(
                 'ordens_servicos.ordem_servico_pk,
@@ -129,17 +125,17 @@ class Relatorio_model extends MY_Model
 
         $this->CI->db->from('relatorios_os');
         $this->CI->db->join('ordens_servicos', 'relatorios_os.os_fk = ordens_servicos.ordem_servico_pk');
-        $this->CI->db->join('servicos','servicos.servico_pk = ordens_servicos.servico_fk');
+        $this->CI->db->join('servicos', 'servicos.servico_pk = ordens_servicos.servico_fk');
         $this->CI->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
-        $this->CI->db->join('situacoes','situacoes.situacao_pk = ordens_servicos.situacao_atual_fk');
-        $this->CI->db->join('prioridades','prioridades.prioridade_pk = ordens_servicos.prioridade_fk');
-        $this->CI->db->join('procedencias','procedencias.procedencia_pk = ordens_servicos.procedencia_fk');
-        $this->CI->db->join('setores','setores.setor_pk = ordens_servicos.setor_fk');
+        $this->CI->db->join('situacoes', 'situacoes.situacao_pk = ordens_servicos.situacao_atual_fk');
+        $this->CI->db->join('prioridades', 'prioridades.prioridade_pk = ordens_servicos.prioridade_fk');
+        $this->CI->db->join('procedencias', 'procedencias.procedencia_pk = ordens_servicos.procedencia_fk');
+        $this->CI->db->join('setores', 'setores.setor_pk = ordens_servicos.setor_fk');
         $this->CI->db->join('localizacoes', 'localizacoes.localizacao_pk = ordens_servicos.localizacao_fk');
         $this->CI->db->join('departamentos', 'departamentos.departamento_pk = tipos_servicos.departamento_fk');
         $this->CI->db->group_by('ordens_servicos.ordem_servico_pk');
 
-        if ($where !== NULL) {
+        if ($where !== null) {
             if (is_array($where)) {
                 foreach ($where as $field => $value) {
                     $this->CI->db->where($field, $value);
@@ -149,45 +145,42 @@ class Relatorio_model extends MY_Model
             }
         }
 
-        if($count == TRUE){
+        if ($count == true) {
             return $this->CI->db->count_all_results();
         }
 
         $result = $this->CI->db->get()->result();
         if ($result) {
-            return ($result);
+            return $result;
         } else {
             return false;
         }
     }
 
-    public function not_finished($relatorio_pk){
+    public function not_finished($relatorio_pk)
+    {
         // $where['ordens_servicos.situacao_atual_fk != 3 AND ordens_servicos.situacao_atual_fk != 4 AND ordens_servicos.situacao_atual_fk != '] = 5;
 
         return $this->CI->db
         ->select('relatorios_os.os_fk')
         ->from('relatorios_os')
-        ->join('ordens_servicos','ordens_servicos.ordem_servico_pk = relatorios_os.os_fk')
-        ->where('relatorios_os.relatorio_fk',$relatorio_pk) //todas as ordens do relatório especificado
+        ->join('ordens_servicos', 'ordens_servicos.ordem_servico_pk = relatorios_os.os_fk')
+        ->where('relatorios_os.relatorio_fk', $relatorio_pk) //todas as ordens do relatório especificado
         ->where('ordens_servicos.situacao_atual_fk', 2) //que estão em andamento
-        ->get()->result();        
+        ->get()->result();
     }
 
-    public function get_em_andamento_or_criado($relatorio_id = NULL)
+    public function get_all_reports($organizacao, $today, $last_week)
     {
         $this->CI->db->select('*');
         $this->CI->db->from('relatorios');
-        $this->CI->db->where('relatorios.relatorio_situacao', 'Em andamento');
-        $this->CI->db->or_where('relatorios.relatorio_situacao', 'Criado');
-        $this->CI->db->where('relatorios.ativo', '1');
-        
-        if ($relatorio_id !== NULL) 
-        {
-            $this->CI->db->where('relatorios.relatorio_pk', $relatorio_id);
-        }
-        
+        $this->CI->db->join('funcionarios', 'funcionarios.funcionario_pk = relatorios.relatorio_func_responsavel');
+
+        $this->CI->db->where('funcionarios.organizacao_fk', $organizacao);
+        $this->CI->db->where("relatorios.relatorio_data_criacao BETWEEN '".$last_week."' AND '".$today."'");
+
+        $this->CI->db->order_by('relatorios.relatorio_pk', 'DESC');
+
         return $this->CI->db->get()->result();
     }
-
 }
-?>

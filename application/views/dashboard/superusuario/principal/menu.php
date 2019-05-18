@@ -1,4 +1,4 @@
-<!-- HEADER MOBILE-->
+
 <header class="header-mobile d-block d-lg-none">
             <div class="header-mobile__bar">
                 <div class="container-fluid">
@@ -25,13 +25,9 @@
                                     <a href="<?=base_url('superusuario')?>">Superusuários</a>
                                 </li>
                                 <li>
-                                    <a href="<?=base_url('organizacao')?>">Organizações</a>
+                                    <a href="<?=base_url('organizacao')?>">Filiais</a>
                                 </li>
                             </ul>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-chart-bar"></i>Resultados</a>
                         </li>
                     </ul>
                 </div>
@@ -57,13 +53,9 @@
                                     <a href="<?=base_url('superusuario')?>">Superusuários</a>
                                 </li>
                                 <li>
-                                    <a href="<?=base_url('organizacao')?>">Organizações</a>
+                                    <a href="<?=base_url('organizacao')?>">Filiais</a>
                                 </li>
                             </ul>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-chart-bar"></i>Resultados</a>
                         </li>
                     </ul>
                     <div style="margin-top: 50px !important;">
@@ -113,13 +105,13 @@
                                                     <span class="email"><?php echo $this->session->user['email_user']; ?></span>
                                                 </div>
                                             </div>
-                                            <div class="account-dropdown__body">
+                                            <!-- <div class="account-dropdown__body">
                                                 <div class="account-dropdown__item">
                                                     <a href="<?php echo base_url('pessoa/profile') ?>">
                                                         <i class="zmdi zmdi-account"></i>Conta
                                                     </a>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="account-dropdown__footer">
                                                 <a href="<?= base_url('access/quit') ?>">
                                                     <i class="zmdi zmdi-power"></i>Sair</a>
@@ -132,4 +124,4 @@
                     </div>
                 </div>
             </header>
-            <!-- HEADER DESKTOP-->
+            <!-- HEADER DESKTOP -->

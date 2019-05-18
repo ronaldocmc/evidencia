@@ -37,47 +37,32 @@
                                     </div>
                                     <div class="col-md-6 user-guide">
                                         <div class="col-md-12" style="display: inline-flex;">
-                                            <div class="col-md-6">
+                                            <div class="col-md-12">
                                                 <p><b>Legenda dos Markers:</b></p>
                                             </div>
-                                            <div class="col-md-6">
-                                                <p><b> Legenda das Situações:</b></p>
-                                            </div>
                                         </div>
-                                        <div class="col-md-3 functions-page" >
+                                        <div class="col-md-6 functions-page" style="margin-left: 5px;">
                                             <div class="row">
-                                                <div class="col-md-2 icon-guide">
-                                                    <img src="<?= base_url('assets/img/icons/Alta.png') ?>">
+                                                <div class="col-md-3 icon-guide">
+                                                    <img src="<?= base_url('assets/img/icons/Markers/Status/prioridade_alta.png') ?>">
                                                 </div>
-                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Prioridade Alta</div>
-                                                <div class="col-md-2 icon-guide">
-                                                    <img src="<?= base_url('assets/img/icons/Aberta.png') ?>">
-                                                </div>
-                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Aberta</div>
+                                                <div class="col-md-4 text-guide" style="padding-top: 10px;">Prioridade Alta</div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-2 icon-guide">
-                                                    <img src="<?= base_url('assets/img/icons/Media.png') ?>">
+                                                <div class="col-md-3 icon-guide">
+                                                    <img src="<?= base_url('assets/img/icons/Markers/Status/prioridade_media.png') ?>">
                                                 </div>
-                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Prioridade Média</div>
-                                                <div class="col-md-2 icon-guide">
-                                                    <img src="<?= base_url('assets/img/icons/Em Andamento.png') ?>">
-                                                </div>
-                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Em Andamento</div>
+                                                <div class="col-md-4 text-guide" style="padding-top: 10px;">Prioridade Média</div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-2 icon-guide">
-                                                    <img src="<?= base_url('assets/img/icons/Baixa.png') ?>">
+                                                <div class="col-md-3 icon-guide">
+                                                    <img src="<?= base_url('assets/img/icons/Markers/Status/prioridade_baixa.png') ?>">
                                                 </div>
-                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Prioridade Baixa</div>
-                                                <div class="col-md-2 icon-guide">
-                                                    <img src="<?= base_url('assets/img/icons/Finalizada.png') ?>">
-                                                </div>
-                                                <div class="col-md-4 text-guide" style="padding-top: 20px;">Finalizada</div>
+                                                <div class="col-md-4 text-guide" style="padding-top: 10px;">Prioridade Baixa</div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-12>">
-                                                    <br><p>Os serviços são representados por ícones únicos de identificação. Para visualizar a ordem de serviço e identificar o serviço, basta clicar sobre o marker.</p>
+                                                    <br><p> Para visualizar a ordem de serviço e identificar o serviço, basta clicar sobre o marker.</p>
                                                 </div>
                                             </div>
                                             <div class="row">

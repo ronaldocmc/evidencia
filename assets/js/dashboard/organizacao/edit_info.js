@@ -92,7 +92,6 @@ $("#btn-edit").click(function()
 
 $("#btn-confirmar-edicao").click(function()
 {
-    console.log("Aqui");
     var i = 0;
     $(this).find('select, textarea, input').each(function(){
         if($(this)[0].checkValidity())

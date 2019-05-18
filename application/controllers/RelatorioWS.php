@@ -10,8 +10,8 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once dirname(__FILE__) . "\Response.php";
-require_once APPPATH . "core\MY_Controller.php";
+require_once APPPATH . "core/Response.php";
+require_once APPPATH . "core/MY_Controller.php";
 
 class RelatorioWS extends MY_Controller
 {
@@ -60,29 +60,31 @@ class RelatorioWS extends MY_Controller
         $this->load->helper('exception');
 
         try {
-
             $obj = json_decode(file_get_contents('php://input'));
             $headers = apache_request_headers();
-            $token_decodificado = json_decode(token_decrypt($headers['Token']));
+            $token_decodificado = json_decode(token_decrypt($headers[TOKEN]));
 
             $where['relatorios.relatorio_func_responsavel'] = $token_decodificado->id_funcionario;
             $where['relatorios.ativo'] = 1;
 
-            $relatorio = $this->relatorio->get_one(
-                '*',
-                $where,
-                -1,
-                -1
-            );
+            $relatorio = $this->relatorio->get_one('*', $where);
 
             if ($relatorio == null) {
                 throw new MyException('Nenhum relatório ativo foi encontrado!', Response::NOT_FOUND);
             }
 
             $ordens_servicos = $this->relatorio->get_all(
-                'ordens_servicos.ordem_servico_pk, ordens_servicos.ordem_servico_cod, ordens_servicos.ordem_servico_desc, ordens_servicos.ordem_servico_comentario, ordens_servicos.ordem_servico_criacao,
-                funcionarios.funcionario_nome, funcionarios.funcionario_caminho_foto,
-                localizacoes.localizacao_lat, localizacoes.localizacao_long, localizacoes.localizacao_rua, localizacoes.localizacao_num,
+                'ordens_servicos.ordem_servico_pk,
+                ordens_servicos.ordem_servico_cod,
+                ordens_servicos.ordem_servico_desc,
+                ordens_servicos.ordem_servico_comentario,
+                ordens_servicos.ordem_servico_criacao,
+                funcionarios.funcionario_nome,
+                funcionarios.funcionario_caminho_foto,
+                localizacoes.localizacao_lat,
+                localizacoes.localizacao_long,
+                localizacoes.localizacao_rua,
+                localizacoes.localizacao_num,
                 prioridades.prioridade_nome,
                 procedencias.procedencia_nome,
                 servicos.servico_nome',
@@ -148,21 +150,22 @@ class RelatorioWS extends MY_Controller
         $this->load->helper('exception');
 
         try {
-
             $obj = json_decode(file_get_contents('php://input'));
             $headers = apache_request_headers();
-            $token_decodificado = json_decode(token_decrypt($headers['Token']));
+            $token_decodificado = json_decode(token_decrypt($headers[TOKEN]));
 
             $this->begin_transaction();
 
-            $report = $this->relatorio->get_one('*', 
-            [
-                'relatorio_func_responsavel' => $token_decodificado->id_funcionario,
-                'ativo' => 1,   
-            ]);
+            $report = $this->relatorio->get_one(
+                '*', 
+                [
+                    'relatorio_func_responsavel' => $token_decodificado->id_funcionario,
+                    'ativo' => 1,   
+                ]
+            );
 
-            if(count($report) == 0){
-                throw new MyException("Tudo certo. Seu relatório já foi recebido pela central!");
+            if(!$report){
+                throw new MyException("Tudo certo. Seu relatório já foi recebido pela central!", Response::SUCCESS);
             }
 
             $not_finished = $this->relatorio->not_finished($report->relatorio_pk);
@@ -171,8 +174,8 @@ class RelatorioWS extends MY_Controller
                 $this->ordem_servico->__set("ordem_servico_comentario", "Não foi concluído no relatório de " . $report->relatorio_data_criacao . ".");
                 $this->ordem_servico->__set("situacao_atual_fk", 1);
                 $this->ordem_servico->__set("ordem_servico_pk",$os->os_fk);
-
-                $this->ordem_servico->handle_historico($_POST['ordem_servico_pk']);
+                
+                $this->ordem_servico->handle_historico($os->os_fk);
                 $this->ordem_servico->update();
             }
             if(count($not_finished) > 0){
@@ -267,7 +270,7 @@ class RelatorioWS extends MY_Controller
     }
 
     /**
-    Retorna o relatório que está em aberto do funcionário
+     * Retorna o relatório que está em aberto do funcionário
      **/
     private function get_relatorio_do_funcionario($id_funcionario)
     {

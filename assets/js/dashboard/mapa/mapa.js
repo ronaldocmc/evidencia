@@ -1,3 +1,9 @@
+const view = new GenericView();
+
+// view.renderMenu();
+view.conditionalRender();
+
+
 var main_map;
 var main_marker = null;
 var markers = null;
@@ -45,7 +51,7 @@ function initMap() {
         $('#de').val(formatDate(lastWeek()));
         $('#ate').val(formatDate(new Date()));
 
-        let url = base_url + '/ordem_servico/get_map';
+        let url = base_url + '/Ordem_Servico/get_map';
 
 
         $.post(url, filters)
@@ -63,7 +69,7 @@ function initMap() {
     });
 
     function seleciona_imagem(prioridade) {
-        let imagem = '../assets/img/icons/Markers/Status/';
+        let imagem = './assets/img/icons/Markers/Status/';
 
         switch (prioridade) {
             case "1": {
@@ -98,7 +104,7 @@ function initMap() {
         remove_data();
 
         $.ajax({
-            url: base_url + '/ordem_servico/get_specific/' + id + '/' + 0,
+            url: base_url + '/Ordem_Servico/get_specific/' + id,
             dataType: "json",
             success: function (response) {
                 $("#v_descricao").html(response.data.ordem_servico[0].ordem_servico_desc);
@@ -144,10 +150,10 @@ function initMap() {
                     }
 
                 });
-                timeline += create_timeline(response.data.ordem_servico[0].ordem_servico_comentario, response.data.ordem_servico[0].funcionario_nome, base_url + '/assets/uploads/perfil_images/' + response.data.ordem_servico[0].funcionario_caminho_foto, response.data.ordem_servico[0].situacao_atual_nome, reformatDate(response.data.ordem_servico[0].ordem_servico_criacao));
+                timeline += create_timeline(response.data.ordem_servico[0].ordem_servico_comentario, response.data.ordem_servico[0].funcionario_nome, base_url + '/assets/uploads/perfil_images/default.png' + response.data.ordem_servico[0].funcionario_caminho_foto, response.data.ordem_servico[0].situacao_nome, reformatDate(response.data.ordem_servico[0].ordem_servico_criacao));
 
                 response.data.imagens.map((img, i) => {
-                    html += create_cards(base_url + '/' + img.imagem_os.replace('./', '/'), img.situacao_nome, img.imagem_os_timestamp, active);
+                    html += create_cards(img.imagem_os, img.situacao_nome, img.imagem_os_timestamp, active);
                 });
 
                 $('#v_loading').hide();
@@ -322,7 +328,7 @@ function initMap() {
         btn_load($('#filtrar'));
 
         let filters = get_filters();
-        let url = base_url + '/ordem_servico/get_map';
+        let url = base_url + '/Ordem_Servico/get_map';
 
         $.post(url, filters)
             .done(function (response) {
@@ -333,6 +339,7 @@ function initMap() {
                 });
             })
             .fail(function (response) {
+                
             });
 
         btn_ativar($('#filtrar'));

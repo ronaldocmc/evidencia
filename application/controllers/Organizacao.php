@@ -4,11 +4,11 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-require_once dirname(__FILE__) . "\Response.php";
+require_once APPPATH . "core/Response.php";
 
-require_once APPPATH."core\CRUD_Controller.php";
+require_once APPPATH."core/CRUD_Controller.php";
 
-require_once APPPATH."models\Organizacao_model.php";
+require_once APPPATH."models/Organizacao_model.php";
 
 class Organizacao extends CRUD_Controller {
     public $response;
@@ -76,45 +76,43 @@ class Organizacao extends CRUD_Controller {
     }
 
 
-    public function edit_info()
+    private function _organization_is_active($organization)
     {
-        // Pegando a organização salva na session 
-        if ($this->has_organization())
-        {   
-            $this->load->model('municipio_model', 'municipio');
-
-            $data['organizacao'] = $this->organizacao->get_object($this->session->user['id_organizacao']);
-
-            $data['municipios'] = $this->municipio->get(); //get all
-            
-
-            // CSS para a edição
-            $this->session->set_flashdata('css',[
-                0 => base_url('assets/css/modal_desativar.css'),
-                1 => base_url('assets/css/loading_input.css'),
-                2 => base_url('assets/css/media_query_edit_org.css')
-            ]);
-            //Scripts para edição
-            $this->session->set_flashdata('scripts',[
-                0 => base_url('assets/js/localizacao.js'),
-                1 => base_url('assets/vendor/datatables/datatables.min.js'),
-                2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-                3 => base_url('assets/vendor/select-input/select-input.js'),
-                4 => base_url('assets/js/dashboard/organizacao/edit_info.js'),
-                5 => base_url('assets/js/constants.js'),
-                6 => base_url('assets/js/utils.js'),
-                7 => base_url('assets/js/jquery.noty.packaged.min.js'),
-                8 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js')
-            ]);
-            load_view([
-                0 => [
-                    'src' => 'dashboard/administrador/organizacao/editar_informacoes',
-                    'params' => $data
-                ]
-            ],'administrador');
-
+        if(!$organization->ativo)
+        {
+            throw new MyException(
+                'Organização inativa.', 
+                Response::FORBIDDEN
+            );
         }
     }
+
+    public function access()
+    {
+        try{
+            $organization = $this->organizacao->get_one_or_404(
+                'organizacao_pk, ativo',
+                ['organizacao_pk' => $this->input->post('organizacao_pk')]
+            );
+
+            $this->_organization_is_active($organization);
+
+            $user = $this->session->user;
+            $this->session->unset_userdata('user');
+            $user['id_organizacao'] = $organization->organizacao_pk;
+            $this->session->set_userdata('user', $user);
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
+           
+            
+        }catch(MyException $e){
+            handle_my_exception($e);
+        } catch(Exception $e){
+            handle_exception($e);
+        }
+    }
+
 
     public function save()
     {
@@ -218,13 +216,7 @@ class Organizacao extends CRUD_Controller {
         } catch(Exception $e){
             handle_exception($e);
         }
-    }
-
-    private function has_organization()
-    {
-        return $this->session->user['id_organizacao'];
-    }
-    
+    }    
 }
 
 ?>

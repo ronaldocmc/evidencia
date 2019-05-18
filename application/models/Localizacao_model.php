@@ -1,20 +1,22 @@
 <?php
-require_once APPPATH."core\MY_Model.php";
+
+require_once APPPATH.'core/MY_Model.php';
 
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-class Localizacao_model extends MY_Model {
+class Localizacao_model extends MY_Model
+{
     const NAME = 'localização';
-	const TABLE_NAME = 'localizacoes';
+    const TABLE_NAME = 'localizacoes';
     const PRI_INDEX = 'localizacao_pk';
-    
+
     const FORM = array(
         'localizacao_rua',
         'localizacao_num',
         'localizacao_bairro',
-        'localizacao_municipio'
+        'localizacao_municipio',
     );
 
     public function config_form_validation()
@@ -44,15 +46,13 @@ class Localizacao_model extends MY_Model {
         );
     }
 
-    public function get_cities(Array $where = null)
+    public function get_cities(array $where = null)
     {
         $this->CI->db->select('*');
         $this->CI->db->from('municipios');
-        
-        if ($where !== null) 
-        {
-            foreach ($where as $key => $value) 
-            {
+
+        if ($where !== null) {
+            foreach ($where as $key => $value) {
                 $this->CI->db->where($key, $value);
             }
         }
@@ -66,4 +66,3 @@ class Localizacao_model extends MY_Model {
         $this->__set('localizacao_long', $long);
     }
 }
-?>

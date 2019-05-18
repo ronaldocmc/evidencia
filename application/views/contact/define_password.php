@@ -7,12 +7,12 @@
 	<div class="shadow-lg mt-5 px-0 card col-md-4" style="margin: 0 auto; float: none; margin-bottom: 10px;">
 		<div class="card-header">
         	<h4>
-        		<img src= "<?=base_url('/assets/images/icon/logo-mini.png')?>" alt="Avatar">
+        		<img src= "<?=base_url('/assets/images/icon/logo-mini.png'); ?>" alt="Avatar">
         		<?php if ($define !== null): ?>
 					Definir senha
 				<?php else: ?>
 					 Recuperar senha
-				<?php endif ?>
+				<?php endif; ?>
         	</h4>
     	</div>
 
@@ -20,10 +20,10 @@
     		<div class="row form-group">
     			<div class="col-md-12 mb-0">
     				<?php if ($define !== null): ?>
-                    <form class="form" method="POST" action="<?php echo base_url('contact/define_password/' . $token) ?>">
+                    <form class="form" method="POST" action="<?php echo base_url('contact/define_password/'.$token); ?>">
                     <?php else: ?>
-                    <form class="form" method="POST" action="<?php echo base_url('contact/new_password/' . $token) ?>">
-                    <?php endif ?>
+                    <form class="form" method="POST" action="<?php echo base_url('contact/new_password/'.$token); ?>">
+                    <?php endif; ?>
 
                         	<div class="row">
                         		
@@ -43,7 +43,7 @@
 
                         	</div>	
                         	<div class="card-footer mb-0 bg-transparent text-center">
-                        		<!-- <button type="button" id="submit" class="btn btn-primary submit btn-sm">
+                        		<button type="submit" id="submit" class="btn btn-primary submit btn-sm">
                                     <i class="fa fa-dot-circle-o"></i> Enviar
                                 </button> -->
 								<input type="submit" id="submit" value="Enviar" class="btn btn-primary btn-block">

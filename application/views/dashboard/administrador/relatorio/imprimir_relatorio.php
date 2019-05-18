@@ -126,7 +126,7 @@
                 </td>
                 <td width="100">
                     <?php if (isset($ordem_servico->image)): ?>
-                        <img src="<?= base_url($ordem_servico->image) ?>">
+                        <img src="<?= $ordem_servico->image ?>">
                     <?php else: ?>
                         Sem Imagem
                     <?php endif ?>

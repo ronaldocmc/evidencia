@@ -1,14 +1,20 @@
+<!-- MAIN CONTENT-->
 <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="overview-wrap">
-                        <h2 class="title-1">Gerenciamento de Funcionário</h2>
-                        <button class="au-btn au-btn-icon au-btn--blue reset_multistep new btn_novo" data-toggle="modal"
-                            data-target="#ce_funcionario">
-                            <i class="zmdi zmdi-plus"></i>novo funcionário</button>
+                        <h2 class="title-1">gerenciamento de funcionarios
+                        </h2>
+                        <button id="btn_new" class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal"
+                            data-title="Novo Serviço" data-contentid="save" data-target="#modal">
+                            <i class="zmdi zmdi-plus"></i>novo funcionario</button>
                     </div>
+                    <input type="hidden" name="opcao-editar" id="opcao-editar" value="false">
+
+
+
                     <div class="col-md-12 mt-3">
                         <div class="collapse" id="collapseHelp">
                             <div class="card">
@@ -22,8 +28,7 @@
                                         <p>Bem-vindo a área de Gerenciamento de Funcionários!</p><br>
                                         <p> Aqui você poderá realizar algumas operações para controlar os funcionários
                                             da sua organização!</p><br>
-                                        <p>Nesta área é possível registrar dados dos funcionários, como dados pessoais e
-                                            dados departamentais! É importante ressaltar que alguns dados são
+                                        <p>Nesta área é possível registrar dados dos funcionários. É importante ressaltar que alguns dados são
                                             obrigatórios e estão indicados com um asterisco <strong>(*)</strong>. <p>
                                                 Aqui, gerenciar os funcionários conforme seu departamento e função
                                                 dentro da organização, torna-se uma tarefa prática e segura!</p>
@@ -66,8 +71,19 @@
                                                         </div>
                                                     </button>
                                                 </div>
-                                                <div class="col-md-10 text-guide">Desativar um funcionário
-                                                    afastado/inativo</div>
+                                                <div class="col-md-10 text-guide">Desativar um funcionário</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" disabled="true"
+                                                        class="btn btn-sm btn-success reset_multistep" title="Editar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-lock fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Alterar a senha do funcionário
+                                                </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-2 icon-guide">
@@ -93,37 +109,48 @@
                             </div>
                         </div>
                     </div>
-                    <!-- CAMPO HIDDEN PARA O ID -->
-                    <input type="hidden" id="pessoa_pk" name="pessoa_pk" class="form-control">
-                    <input type="hidden" id="opcao-editar" name="editar" class="form-control" value="false">
+
+                </div>
+
+
+
+
+
+
                 </div>
             </div>
-
             <div class="row py-2">
-                <div class="col-12">
-                    <div class="au-card">
+                <div class="col-lg-12">
+                    <div class="au-card d-flex flex-column">
+
                         <h2 class="title-1 m-b-25">
                             <i style="cursor: pointer; color: gray" class="fas fa-info pull-right"
                                 data-toggle="collapse" href="#collapseHelp" role="button" aria-expanded="false"
                                 aria-controls="collapseHelp"></i>
-                            Funcionários</h2>
+                            funcionarios</h2>
+
+
                         <div class="">
-                            <h5>Filtrar por</h5>
-                            <br>
+                            <h5>Filtrar por</h5><br>
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label for="filter-ativo">Mostrar</label>
                                     <select name="filter-ativo" id="filter-ativo" class="form-control">
-                                        <option value="todos">Todos</option>
-                                        <option value="ativos">Apenas ativos</option>
-                                        <option value="desativados">Apenas desativados</option>
-                                    </select>
-                                    <br>
+                                        <option value="-1">Todos</option>
+                                        <option value="1">Apenas ativos</option>
+                                        <option value="0">Apenas desativados</option>
+                                    </select><br>
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive table--no-card m-b-40">
-                            <table class="table table-striped table-datatable">
+
+                        <div id="loading">
+                            <div align="center" class="center">
+                                <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
+                            </div>
+                        </div>
+                        <div class="table-responsive table--no-card m-b-40" style="display: none;">
+                            <table id="funcionarios" class="table table-striped table-datatable">
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
@@ -134,59 +161,6 @@
                                 </thead>
                                 <tbody>
 
-                                    <?php
-if ($funcionarios):
-
-    foreach ($funcionarios as $key => $f): ?>
-				                                    <tr>
-				                                        <td>
-				                                            <?=$f->funcionario_nome?>
-				                                        </td>
-				                                        <td>
-				                                            <?=$f->funcionario_login?>
-				                                        </td>
-				                                        <td>
-				                                            <?=$f->funcao_nome?>
-				                                        </td>
-				                                        <td>
-				                                            <div class="btn-group">
-
-				                                                <?php if ($f->ativo == 1): ?>
-				                                                <button
-				                                                    class="btn btn-sm btn-primary reset_multistep btn-editar btn-attr-pessoa_pk"
-				                                                    value="<?=$key?>" data-toggle="modal" data-target="#ce_funcionario"
-				                                                    title="Editar">
-				                                                    <div class="d-none d-sm-block">
-				                                                        <i class="fas fa-edit fa-fw"></i>
-				                                                    </div>
-				                                                </button>
-				                                                <button class="btn btn-sm btn-danger btn-desativar btn-attr-pessoa_pk"
-				                                                    value="<?=$key?>" data-toggle="modal" data-target="#d_funcionario"
-				                                                    title="Desativar">
-				                                                    <div class="d-none d-sm-block">
-				                                                        <i class="fas fa-times fa-fw"></i>
-				                                                    </div>
-				                                                </button>
-				                                                <button class="btn btn-sm btn-info btn-attr-pessoa_pk" value="<?=$key?>"
-				                                                    data-toggle="modal" data-target="#p_funcionario"
-				                                                    title="Alterar senha">
-				                                                    <div class="d-none d-sm-block">
-				                                                        <i class="fas fa-lock"></i>
-				                                                    </div>
-				                                                </button>
-				                                                <?php else: ?>
-                                                <button class="btn btn-sm btn-success btn-reativar btn-attr-pessoa_pk"
-                                                    value="<?=$key?>" data-toggle="modal" data-target="#a_funcionario"
-                                                    title="Reativar">
-                                                    <div class="d-none d-sm-block">
-                                                        <i class="fas fa-power-off fa-fw"></i>
-                                                    </div>
-                                                </button>
-                                                <?php endif;?>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach;endif;?>
                                 </tbody>
                             </table>
                         </div>
@@ -197,52 +171,61 @@ if ($funcionarios):
             <div class="row">
                 <div class="col-md-12">
                     <div class="copyright">
-                        <p>Copyright © 2018 Colorlib. All rights reserved. Template by
-                            <a href="https://colorlib.com">Colorlib</a>.</p>
+                        <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a
+                                href="https://colorlib.com">Colorlib</a>.</p>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
-<div class="modal fade modal-multistep" id="ce_funcionario">
+
+<!-- MODAL -->
+<div class="modal fade" id="modal">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="titulo">Editar Funcionário</h4>
+                <h4 class="modal-title">TITLE</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
+            <div class="content">
 
-                        <form class="msform">
-                            <!-- progressbar -->
-                            <ul class="progressbar">
-                                <li class="active">Informações Pessoais</li>
-                                <li>Acesso</li>
-                                <li>Profissional</li>
-                                <li>Foto</li>
-                                <?php if ($this->session->user['is_superusuario']): ?>
-                                <li>Identificação</li>
-                                <?php endif;?>
-                            </ul>
-                            <!-- fieldsets -->
-                            <div class="card card-step col-12 px-0">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="save" class="d-none">
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form class="msform">
+
+                    <ul class="progressbar">
+                        <li class="active">Informações Pessoais</li>
+                        <li>Acesso</li>
+                        <li>Profissional</li>
+                        <!-- <li>Foto</li> -->
+
+                        <li class="d-none superusuario">Identificação</li>
+                    </ul>
+
+                    <!-- STEP 1 -->
+
+                    <div class="card card-step col-12 px-0">
                                 <div class="card-header">
                                     Informações Pessoais
                                 </div>
                                 <div class="card-body card-block">
                                     <div class="row form-group">
                                         <div class="col col-md-2">
-                                            <label for="nome-input" class=" form-control-label">
+                                            <label for="funcionario_nome" class=" form-control-label">
                                                 <strong>Nome*</strong>
                                             </label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <input type="text" id="nome-input" name="pessoa_nome"
+                                            <input type="text" id="funcionario_nome" name="funcionario_nome"
                                                 placeholder="Nome Completo" class="form-control nome-input" required
                                                 maxlength="50" minlength="5" required>
                                             <small class="form-text text-muted">Por favor, informe o nome completo do
@@ -251,12 +234,12 @@ if ($funcionarios):
                                     </div>
                                     <div class="row form-group">
                                         <div class="col-12 col-md-2">
-                                            <label for="cpf-input" class=" form-control-label">
+                                            <label for="funcionario_cpf" class=" form-control-label">
                                                 <strong>CPF*</strong>
                                             </label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <input type="text" id="cpf-input" name="pessoa_cpf" placeholder="CPF"
+                                            <input type="text" id="funcionario_cpf" name="funcionario_cpf" placeholder="CPF"
                                                 class="form-control cpf-input" required>
                                             <small class="form-text text-muted">Por favor, informe o CPF do
                                                 funcionário</small>
@@ -270,6 +253,9 @@ if ($funcionarios):
                                     </button>
                                 </div>
                             </div>
+
+                            <!-- STEP 2 -->
+
                             <div class="card card-step col-12 px-0">
                                 <div class="card-header">
                                     Acesso
@@ -277,12 +263,12 @@ if ($funcionarios):
                                 <div class="card-body card-block">
                                     <div class="row form-group">
                                         <div class="col-12 col-md-2">
-                                            <label for="email-input" class=" form-control-label">
+                                            <label for="funcionario_login" class=" form-control-label">
                                                 <strong>E-mail*</strong>
                                             </label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <input type="email" id="email-input" name="contato_email"
+                                            <input type="email" id="funcionario_login" name="funcionario_login"
                                                 placeholder="Email" class="form-control email-input" required="true">
                                             <small class="help-block form-text">Por favor, informe o login do
                                                 funcionário</small>
@@ -324,6 +310,9 @@ if ($funcionarios):
                                     </button>
                                 </div>
                             </div>
+
+                            <!-- STEP 3 -->
+
                             <div class="card card-step col-12 px-0">
                                 <div class="card-header">
                                     Profissional
@@ -336,7 +325,7 @@ if ($funcionarios):
                                             </label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <?php echo form_dropdown('funcao_fk', $funcoes, null, 'class="form-control" required="true" id="funcao-input"'); ?>
+                                            <select class="form-control" required="true" id="funcao_fk"></select>
                                             <small class="help-block form-text">Por favor, informe a função do
                                                 funcionário</small>
                                         </div>
@@ -347,15 +336,8 @@ if ($funcionarios):
                                                 class=" form-control-label">Departamento</label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <select class="form-control" id="departamento-input">
+                                            <select class="form-control" id="departamento_fk">
                                                 <option value="">Nenhum Departamento</option>
-                                                <?php
-
-foreach ($departamentos as $key => $dep):
-
-    echo '<option value="' . $dep->departamento_pk . '">' . $dep->departamento_nome . '</option>';
-endforeach
-?>
                                             </select>
                                             <small class="help-block form-text">Por favor, informe o departamento do
                                                 funcionário</small>
@@ -366,15 +348,7 @@ endforeach
                                             <label for="setor_input" class=" form-control-label">Setor</label>
                                         </div>
                                         <div class="col-12 col-md-10">
-                                            <?php if ($setores != null): ?>
-                                            <select multiple class="form-control" id="setor-input">
-                                                <?php foreach ($setores as $s): ?>
-                                                <option value="<?=$s->setor_pk?>">
-                                                    <?=$s->setor_nome?>
-                                                </option>
-                                                <?php endforeach?>
-                                            </select>
-                                            <?php endif?>
+                                            <select multiple class="form-control" id="setor_fk"></select>
                                             <small class="help-block form-text">Por favor, informe o setor do
                                                 funcionário, caso ele seja funcionário de campo <br>
                                                 <strong>
@@ -387,12 +361,19 @@ endforeach
                                     <button type="button" class="btn btn-secondary previous btn-sm">
                                         <i class="fas fa-arrow-circle-left"></i> Anterior
                                     </button>
-                                    <button type="button" class="btn btn-secondary next btn-sm">
-                                        <i class="fas fa-arrow-circle-right"></i> Próximo
+                                    <button type="button" class="btn btn-primary submit btn-sm not_superusuario" id="botao-finalizar">
+                                        <i class="fa fa-dot-circle-o"></i> Finalizar
                                     </button>
+                                    <!-- <button type="button" class="btn btn-secondary next btn-sm">
+                                        <i class="fas fa-arrow-circle-right"></i> Próximo
+                                    </button> -->
                                 </div>
                             </div>
-                            <div class="card card-step col-12 px-0">
+
+
+                            <!-- STEP 4 -->
+
+                            <!-- <div class="card card-step col-12 px-0">
                                 <div class="card-header">
                                     Foto
                                 </div>
@@ -418,7 +399,7 @@ endforeach
                                                 <img id="img-input" class="file-upload-image" src="#"
                                                     alt="your image" />
                                                 <div class="col-12">
-                                                    <button type="button" onclick="remove_image()"
+                                                    <button type="button" onclick="myControl.remove_image()"
                                                         class="btn btn-danger">Remover Imagem</button>
                                                 </div>
                                             </div>
@@ -428,170 +409,146 @@ endforeach
                                 <div class="card-footer text-center">
                                     <button type="button" class="btn btn-secondary previous btn-sm">
                                         <i class="fas fa-arrow-circle-left"></i> Anterior
-                                    </button>
-                                    <?php if ($this->session->user['is_superusuario']): ?>
-                                    <button type="button" class="btn btn-secondary next btn-sm">
+
+                                    <button type="button" class="btn btn-secondary next btn-sm d-none superusuario">
                                         <i class="fas fa-arrow-circle-right"></i> Próximo
                                     </button>
-                                    <?php else: ?>
-                                    <button type="button" class="btn btn-primary submit btn-sm" id="botao-finalizar">
-                                        <i class="fa fa-dot-circle-o"></i> Finalizar
-                                    </button>
-                                    <?php endif;?>
-                                </div>
-                            </div>
-                            <?php if ($this->session->user['is_superusuario']): ?>
-                            <div class="card card-step col-12 px-0">
-                                <div class="card-header">
-                                    Identificação
-                                </div>
-                                <div class="card-body card-block">
-                                    <div class="row form-group">
-                                        <div class="col col-md-2">
-                                            <label for="nome-input" class=" form-control-label">
-                                                <strong>Senha</strong>
-                                            </label>
-                                        </div>
-                                        <div class="col-12 col-md-10">
-                                            <input type="password" id="pass-modal-edit" name="senha_su"
-                                                placeholder="Confirme sua senha" class="form-control" required
-                                                minlength="8" autocomplete="new-password">
-                                            <small class="form-text text-muted">Por favor, informe novamente sua senha
-                                                para confirmar a operação</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <button type="button" class="btn btn-secondary previous btn-sm">
-                                        <i class="fas fa-arrow-circle-left"></i> Anterior
-                                    </button>
-                                    <button type="button" class="btn btn-primary submit btn-sm" id="botao-finalizar">
+
+                                    <button type="button" class="btn btn-primary submit btn-sm not_superusuario" id="botao-finalizar">
                                         <i class="fa fa-dot-circle-o"></i> Finalizar
                                     </button>
                                 </div>
+                            </div> -->
+
+                    <!-- STEP 5 -->
+
+                    <div class="card card-step col-12 px-0 d-none superusuario">
+                        <div class="card-header">
+                            Identificação
+                        </div>
+                        <div class="card-body card-block">
+                            <div class="row form-group">
+                                <div class="col col-md-2">
+                                    <label for="senha" class=" form-control-label"><strong>Senha*</strong></label>
+                                </div>
+                                <div class="col-12 col-md-10">
+                                    <input type="password" id="pass-modal-save" name="senha" placeholder="Senha Pessoal"
+                                        class="form-control" autocomplete="new-password" minlength="8" required="true">
+                                    <small class="form-text text-muted">Por favor, informe sua senha de
+                                        acesso</small>
+                                </div>
                             </div>
-                            <?php endif;?>
-                        </form>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="button" class="btn btn-secondary previous btn-sm">
+                                <i class="fas fa-arrow-circle-left"></i> Anterior
+                            </button>
+                            <button type="button" class="btn btn-primary submit load btn-sm">
+                                <i class="fa fa-dot-circle-o"></i> Finalizar
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary submit btn-sm" id="pula-para-confirmacao"><i
-                        class="fa fa-dot-circle-o"></i> Salvar</button>
 
-                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Fechar</button>
 
-            </div>
-        </div>
 
-    </div>
-</div>
-
-<div class="modal fade" id="d_funcionario">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Desativar Funcionário</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <h4 style="text-align: center" class="text-danger">
-                        <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO
-                    </h4>
-                    <p>Ao desativar o funcionário, o mesmo:</p>
-                    <ul style="margin-left: 15px">
-                        <li>Perderá acesso ao sistema</li>
-                        <li>Não poderá exercer suas atividades</li>
-                    </ul>
-                </div>
-                <?php if ($this->session->user['is_superusuario']): ?>
-                <div class="form-group">
-                    <input type="password" class="form-control" autocomplete="false" placeholder="Confirme sua senha"
-                        required="required" id="pass-modal-desativar" pattern="{8,}">
-                </div>
-                <?php endif;?>
-                <div class="form-group">
-                    <button type="button" class="btn btn-confirmar-senha" id="btn-deactivate" name="post"><i
-                            class="fa fa-dot-circle-o"></i> Desativar</button>
-                </div>
+                </form>
             </div>
         </div>
     </div>
-</div>
-
-<div class="modal fade" id="a_funcionario">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Ativar Funcionário</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <h4 style="text-align: center" class="text-danger">
-                        <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO
-                    </h4>
-                    <p>Ao ativar o funcionário, o mesmo:</p>
-                    <ul style="margin-left: 15px">
-                        <li>Recuperará o acesso ao sistema</li>
-                    </ul>
-                </div>
-                <?php if ($this->session->user['is_superusuario']): ?>
-                <div class="form-group">
-                    <input type="password" class="form-control" autocomplete="false" placeholder="Confirme sua senha"
-                        required="required" id="pass-modal-ativar">
-                </div>
-                <?php endif;?>
-                <div class="form-group">
-                    <button type="button" class="btn btn-confirmar-senha" id="btn-activate" name="post"><i
-                            class="fa fa-dot-circle-o"></i> Ativar</button>
-                </div>
-            </div>
-        </div>
+    <!-- Modal footer -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Fechar</button>
     </div>
 </div>
 
 
-<div class="modal fade" id="p_funcionario">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Alterar senha</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+
+
+
+
+<div id="deactivate" class="d-none">
+    <div class="modal-body">
+        <form>
+            <div class="form-group">
+                <h4 style="text-align: center" class="text-danger"><i
+                        class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
+                    ATENÇÃO</h4>
             </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <h4 style="text-align: center" class="text-danger">
-                        <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO
-                    </h4>
-                    <p style="text-align: center">A senha deve possuir 8 ou mais caracteres!</p>
 
-                    <label>Digite a nova senha</label>
-                    <input id="p-senha" type="password" class="form-control">
-
-                    <label>Confirme a nova senha</label>
-                    <input id="p-confirmar-senha" type="password" class="form-control">
-
-                    <p id="p-msg" style="color: red; text-align: center"></p>
-                </div>
-                <?php if ($this->session->user['is_superusuario']): ?>
-                <div class="form-group">
-                    <input type="password" class="form-control" autocomplete="false"
-                        placeholder="Confirmar senha de superusuario" required="required" id="pass-modal-desativar"
-                        pattern="{8,}">
-                </div>
-                <?php endif;?>
-                <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-alterar-senha" id="btn-password" name="post"><i
-                            class="fa fa-dot-circle-o"></i> Alterar</button>
+            <div id="loading-deactivate">
+                <div align="center" class="center">
+                    <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="v_loading" alt="Carregando">
                 </div>
             </div>
+            <div id="dependences" style="margin: 20px 0" class="container"></div>
+
+            <div class="form-group d-none superusuario">
+                <input type="password" class="form-control press_enter" autocomplete="false"
+                    placeholder="Confirme sua senha" required="required" id="pass-modal-deactivate" minlength="8">
+            </div>
+
+            <div class="form-group">
+                <button type="button" class="btn btn-confirmar-senha action_deactivate load" name="post" value=""><i
+                        class="fa fa-dot-circle-o" id="icone-do-desativar"></i> Desativar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="activate" class="d-none">
+    <div class="modal-body">
+        <form>
+            <div class="form-group">
+                <h4 style="text-align: center" class="text-danger"><i
+                        class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
+                    ATENÇÃO</h4>
+                <p>Você está prestes a ativar um funcionário que foi desativado!</p>
+
+            </div>
+            <div class="form-group d-none superusuario">
+                <input type="password" class="form-control press_enter" autocomplete="false"
+                    placeholder="Confirme sua senha" required="required" id="pass-modal-activate">
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-confirmar-senha action_activate load" name="post" value=""><i
+                        class="fa fa-dot-circle-o"></i> Reativar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="password" class="d-none">
+    <div class="modal-body">
+        <div class="form-group">
+            <h4 style="text-align: center" class="text-danger">
+                <i class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO
+            </h4>
+            <p style="text-align: center">A senha deve possuir 8 ou mais caracteres!</p>
+
+            <label>Digite a nova senha</label>
+            <input id="p-senha" type="password" class="form-control">
+
+            <label>Confirme a nova senha</label>
+            <input id="p-confirmar-senha" type="password" class="form-control">
+
+            <p id="p-msg" style="color: red; text-align: center"></p>
+        </div>
+
+        <div class="form-group d-none superusuario">
+            <input type="password" class="form-control" autocomplete="false"
+                placeholder="Confirmar senha de superusuario" required="required" id="pass-modal-desativar"
+                pattern="{8,}">
+        </div>
+
+        <div class="form-group">
+            <button type="button" class="btn btn-primary action_change_password load" id="btn_password" name="post"><i
+                    class="fa fa-dot-circle-o"></i> Alterar</button>
         </div>
     </div>
 </div>
+
 
 <script type="text/javascript">
-    var funcionarios = <?php echo json_encode($funcionarios !== false ? $funcionarios : []) ?>;
-    var funcoes = <?php echo json_encode($funcoes !== false ? $funcoes : []) ?>;
+    const is_superusuario = <?php echo $this->session->user['is_superusuario'] === true ? 1 : 0; ?>;
 </script>
