@@ -365,8 +365,6 @@ class Ordem_Servico_model extends MY_Model
     private function check_and_update_url($img_path)
     {
         if (!strpos($img_path, 'storage')) {
-            log_message('MONITORING', 'URL: '.base_url($img_path));
-
             return base_url($img_path);
         } else {
             return $img_path;
