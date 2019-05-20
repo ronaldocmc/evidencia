@@ -129,3 +129,31 @@ function upload_to_storage(string $content, string $blobName)
         throw new MyException($error_message, $code);
     }
 }
+
+function remove_from_storage($blobName)
+{
+    $connectionString = 'DefaultEndpointsProtocol=https;AccountName='.getenv('AZURE_STORAGE_ACCOUNT').';AccountKey='.getenv('AZURE_STORAGE_KEY');
+
+    try {
+        // Create blob client.
+        $blobClient = BlobRestProxy::createBlobService($connectionString);
+        $containerName = 'evidenciaimages';
+
+        log_message('MONITORING', 'Removing file from Blob Storage...');
+        // Delete blob
+        $blobClient->deleteBlob($containerName, $blobName);
+        log_message('MONITORING', 'Success deleting file');
+
+        return true; // File has been deleted
+    } catch (ServiceException $e) {
+        $code = $e->getCode();
+        $error_message = $e->getMessage();
+        log_message('ERROR', 'CODE ['.$code.'] - '.$error_message);
+        throw new MyException($error_message, $code);
+    } catch (InvalidArgumentTypeException $e) {
+        $code = $e->getCode();
+        $error_message = $e->getMessage();
+        log_message('ERROR', 'CODE ['.$code.'] - '.$error_message);
+        throw new MyException($error_message, $code);
+    }
+}
