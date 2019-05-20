@@ -75,6 +75,6 @@ function upload_img($params, array $base64_images = null)
  */
 function remove_image(string $path_to_image)
 {
-    $blob_name = explode('.net/', $path_to_image);
-    var_dump($blob_name);
+    $blob_name = explode('.net/evidenciaimages/', $path_to_image);
+    remove_from_storage($blob_name[1]);
 }
