@@ -67,3 +67,14 @@ function upload_img($params, array $base64_images = null)
     //Retorno o array de caminhos
     return $images_uploaded;
 }
+
+/**
+ * Wrapper funtion to remove a image from Blob Storage.
+ *
+ * @param string $path_to_image
+ */
+function remove_image(string $path_to_image)
+{
+    $blob_name = explode('.net/', $path_to_image);
+    var_dump($blob_name);
+}

@@ -75,7 +75,9 @@ class Funcionario extends CRUD_Controller
     private function update()
     {
         $this->funcionario_model->__set('funcionario_pk', $_POST['funcionario_pk']);
-
+        if ($this->input->post('img')) {
+            remove_image($this->funcionario_model->__get('funcionario_caminho_foto'));
+        }
         $path = upload_img(
             [
                 'id' => $_POST['funcionario_pk'],
