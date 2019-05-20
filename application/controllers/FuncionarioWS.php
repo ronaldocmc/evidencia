@@ -54,7 +54,7 @@ class FuncionarioWS extends MY_Controller
 
         $this->load->helper('exception');
         $this->load->helper('token_helper');
-        $this->load->helper('insert_images');
+        $this->load->helper('images');
         $this->load->library('form_validation');
 
         try {

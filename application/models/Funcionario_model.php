@@ -174,6 +174,15 @@ class Funcionario_model extends MY_Model
         ->update(self::TABLE_NAME, ['funcionario_caminho_foto' => $path]);
     }
 
+    public function get_image_path($id)
+    {
+        $this->CI->db->select('funcionario_caminho_foto');
+        $this->CI->db->from('funcionarios');
+        $this->CI->db->where('funcionario_pk', $id);
+
+        return $this->CI->db->get()->result();
+    }
+
     public function explode_setores($data_setores, $id)
     {
         if (!is_array($data_setores)) {
