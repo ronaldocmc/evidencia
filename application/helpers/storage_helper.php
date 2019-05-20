@@ -130,6 +130,20 @@ function upload_to_storage(string $content, string $blobName)
     }
 }
 
+/**
+ * Function to remove a file from Blob Storage.
+ *
+ * This function expects a remote blob name as parameter
+ * and uses the `evidenciaimages`container by default
+ *
+ * Given that the connection to BlobStorage was successful,
+ * we send a DELETE request and return `true` if the removal
+ * was completed without errors.
+ *
+ * @param string $blobName
+ *
+ * @return bool
+ */
 function remove_from_storage($blobName)
 {
     $connectionString = 'DefaultEndpointsProtocol=https;AccountName='.getenv('AZURE_STORAGE_ACCOUNT').';AccountKey='.getenv('AZURE_STORAGE_KEY');
