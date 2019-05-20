@@ -27,7 +27,7 @@ class Funcionario extends CRUD_Controller
 
         $this->load->library('form_validation');
         $this->load->library('upload');
-        $this->load->helper('insert_images');
+        $this->load->helper('images');
 
         $this->load->helper('exception');
 
