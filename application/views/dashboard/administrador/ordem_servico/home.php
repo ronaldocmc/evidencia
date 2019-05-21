@@ -132,7 +132,6 @@
                                 aria-controls="collapseHelp"></i>
                             Ordens de Serviço</h2>
                         <div class="">
-                            <h5>Filtrar por</h5><br>
                             <div class="row">
                                 <div class="col-md-4">
                                     <label for="filter-ativo">Mostrar</label>
