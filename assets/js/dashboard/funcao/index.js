@@ -18,6 +18,7 @@ class View extends GenericView {
         let checkbox = '';
         let entities = [];
         let exists;
+        let check_all;
         
         permissions.forEach(permission => {
             exists = false;
@@ -35,12 +36,16 @@ class View extends GenericView {
                 entities.push(permission.entidade);
                 title = this.generateTitle(permission.entidade, 4);
                 $(`#${permission.entidade.split(' ').join('_')}`).append(title + '<br>');
+                // Colocar o botão de ajuda aqui, e dar o <br> depois
             }
 
             $(`#${permission.entidade.split(' ').join('_')}`).append(checkbox + '&nbsp' + '&nbsp');
         });
 
         entities.forEach(e => {
+            check_all = this.generateCheckAll(e.split(' ').join('_'));
+            $(`#${e.split(' ').join('_')}`).append(check_all + '&nbsp' + '&nbsp');
+
             $(`#${e.split(' ').join('_')}`).append(`<br><hr>`);
         });
     }
@@ -49,6 +54,15 @@ class View extends GenericView {
         permissions.forEach(permission => {
             $(`#id-${permission.id}`).prop('checked', true);
         });
+    }
+
+    generateCheckAll(entity) {
+        let render = `<input class='check_all' type='checkbox'
+                    id='id-${entity}'
+                    name='check_all'>
+                    <label for='id-${entity}'> Selecionar Todas </label>`;
+
+        return render;
     }
 
 }
@@ -64,6 +78,7 @@ class Request extends GenericRequest {
 
 class Control extends GenericControl {
 
+
     constructor() {
         super();
 
@@ -71,15 +86,18 @@ class Control extends GenericControl {
         this.fields = ['funcao_nome'];
         this.tableFields = ['funcao_nome'];
         this.verifyDependences = true;
+        this.permissions = null;
     }
 
     async init() {
         super.init();
 
         let response = await this.myRequests.send('/get_all_permissions', {});
-        let permissions = response.data.permissions;
+        this.permissions = response.data.permissions;
 
-        this.myView.fillPermissions(permissions);
+        this.myView.fillPermissions(this.permissions);
+
+        $(document).on('click', '.check_all', (e) => { this.handleCheckAll(e.target); });
     }
 
     async handleFillFields() {
@@ -104,6 +122,32 @@ class Control extends GenericControl {
 
         data.permissions = permissions;
         super.save(data);
+    }
+
+    handleCheckAll (e) {
+        let entity = this.getEntity($(e).attr('id'));
+        let status;
+
+        if ($(e).is(':checked')) {
+            status = true;
+        } else {
+            status = false;
+        }
+
+        this.permissions.forEach(permission => {
+            if (permission.entidade === entity) {
+                $(`#id-${permission.permissao_pk}`).prop('checked', status);
+            }
+        });
+
+        return;
+    }
+
+    getEntity (id) {
+        let splitted = id.split('-');
+        splitted[1] = splitted[1].split('_').join(' ');
+
+        return splitted[1];
     }
 }
 
