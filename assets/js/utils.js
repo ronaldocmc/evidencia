@@ -156,7 +156,7 @@ async function pre_loader_show() {
   $('#preloader').delay(350).fadeIn('slow');
 }
 
-pre_loader_hide = () => {
+const pre_loader_hide = () => {
   $('.inner').hide();
   $('#preloader .inner').delay(1000).fadeOut();
   $('#preloader').delay(350).fadeOut('slow');
