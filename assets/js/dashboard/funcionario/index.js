@@ -171,7 +171,7 @@ class Control extends GenericControl {
 
 	remove_image() {
 		$("#img-input").attr("src", "");
-		removeUpload();
+		removeUploadFromForm();
 	}
 
 	blobToBase64(blob) {
