@@ -344,6 +344,8 @@ class ViewController extends AuthorizationController
             3 => base_url('assets/css/user_guide.css'),
             4 => base_url('assets/vendor/cropper/cropper.css'),
             5 => base_url('assets/vendor/input-image/input-image.css'),
+            6 => base_url('assets/css/tool_tip.css'),
+            7 => base_url('assets/css/user_guide.css')
         ]);
     }
 
@@ -360,7 +362,7 @@ class ViewController extends AuthorizationController
             7 => base_url('assets/js/dashboard/'.$name.'/index.js'),
             8 => base_url('assets/js/response_messages.js'),
             9 => base_url('assets/vendor/cropper/cropper.js'),
-            10 => base_url('assets/vendor/input-image/input-image.js'),
+            10 => base_url('assets/vendor/input-image/input-image.js')
         ]);
     }
 

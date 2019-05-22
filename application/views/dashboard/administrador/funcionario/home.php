@@ -114,27 +114,27 @@
                 </div>
 
             </div>
-        </div>
-        <div class="row py-2">
-            <div class="col-lg-12">
-                <div class="au-card d-flex flex-column">
+            <div class="row py-2">
+                <div class="col-lg-12">
+                    <div class="au-card d-flex flex-column">
 
-                    <h2 class="title-1 m-b-25">
-                        <i style="cursor: pointer; color: gray" class="fas fa-info pull-right" data-toggle="collapse"
-                            href="#collapseHelp" role="button" aria-expanded="false" aria-controls="collapseHelp"></i>
-                        funcionarios
-                    </h2>
+                        <h2 class="title-1 m-b-25">
+                            <i style="cursor: pointer; color: gray" class="fas fa-info pull-right"
+                                data-toggle="collapse" href="#collapseHelp" role="button" aria-expanded="false"
+                                aria-controls="collapseHelp"></i>
+                            funcionarios</h2>
 
-                    <div class="">
-                        <h5>Filtrar por</h5><br>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="filter-ativo">Mostrar</label>
-                                <select name="filter-ativo" id="filter-ativo" class="form-control">
-                                    <option value="-1">Todos</option>
-                                    <option value="1">Apenas ativos</option>
-                                    <option value="0">Apenas desativados</option>
-                                </select><br>
+
+                        <div class="">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="filter-ativo">Mostrar</label>
+                                    <select name="filter-ativo" id="filter-ativo" class="form-control">
+                                        <option value="-1">Todos</option>
+                                        <option value="1">Apenas ativos</option>
+                                        <option value="0">Apenas desativados</option>
+                                    </select><br>
+                                </div>
                             </div>
                         </div>
                     </div>
