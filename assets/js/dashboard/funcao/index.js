@@ -19,6 +19,7 @@ class View extends GenericView {
         let entities = [];
         let exists;
         let check_all;
+        let tooltip;
         
         permissions.forEach(permission => {
             exists = false;
@@ -35,8 +36,9 @@ class View extends GenericView {
                 $('#permissions').append(`<div id='${permission.entidade.split(' ').join('_')}' class='conteiner'></div>`);
                 entities.push(permission.entidade);
                 title = this.generateTitle(permission.entidade, 4);
-                $(`#${permission.entidade.split(' ').join('_')}`).append(title + '<br>');
-                // Colocar o botão de ajuda aqui, e dar o <br> depois
+                tooltip = this.generateToolTip('teste');
+                $(`#${permission.entidade.split(' ').join('_')}`).append(title);
+                $(`#${permission.entidade.split(' ').join('_')}`).append(tooltip + '<br>');
             }
 
             $(`#${permission.entidade.split(' ').join('_')}`).append(checkbox + '&nbsp' + '&nbsp');
@@ -63,6 +65,13 @@ class View extends GenericView {
                     <label for='id-${entity}'> Selecionar Todas </label>`;
 
         return render;
+    }
+
+    generateToolTip(tooltip_text) {
+        let tooltip = `<div class="tooltip"><i class="fas fa-question-circle"></i>
+                            <span class="tooltiptext"> ${tooltip_text} </span>
+                        </div> `;
+        return tooltip;
     }
 
 }
