@@ -343,6 +343,7 @@ class ViewController extends AuthorizationController
             2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
             3 => base_url('assets/css/user_guide.css'),
             4 => base_url('assets/vendor/cropper/cropper.css'),
+            5 => base_url('assets/vendor/input-image/input-image.css'),
         ]);
     }
 
