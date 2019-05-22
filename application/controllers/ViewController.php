@@ -341,7 +341,8 @@ class ViewController extends AuthorizationController
             0 => base_url('assets/css/modal_desativar.css'),
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
             2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-            3 => base_url('assets/css/user_guide.css'),
+            3 => base_url('assets/css/tool_tip.css'),
+            4 => base_url('assets/css/user_guide.css')
         ]);
     }
 
@@ -357,7 +358,7 @@ class ViewController extends AuthorizationController
             6 => base_url('assets/js/jquery.noty.packaged.min.js'),
             7 => base_url('assets/js/dashboard/'.$name.'/index.js'),
             8 => base_url('assets/js/response_messages.js'),
-            9 => base_url('assets/vendor/input-image/input-image.js'),
+            9 => base_url('assets/vendor/input-image/input-image.js')
         ]);
     }
 
