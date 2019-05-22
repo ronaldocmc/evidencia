@@ -7,13 +7,11 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de funcionarios
                         </h2>
-                        <button id="btn_new" class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal"
-                            data-title="Novo Serviço" data-contentid="save" data-target="#modal">
+                        <button id="btn_new" class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none"
+                            data-toggle="modal" data-title="Novo Serviço" data-contentid="save" data-target="#modal">
                             <i class="zmdi zmdi-plus"></i>novo funcionario</button>
                     </div>
                     <input type="hidden" name="opcao-editar" id="opcao-editar" value="false">
-
-
 
                     <div class="col-md-12 mt-3">
                         <div class="collapse" id="collapseHelp">
@@ -28,8 +26,10 @@
                                         <p>Bem-vindo a área de Gerenciamento de Funcionários!</p><br>
                                         <p> Aqui você poderá realizar algumas operações para controlar os funcionários
                                             da sua organização!</p><br>
-                                        <p>Nesta área é possível registrar dados dos funcionários. É importante ressaltar que alguns dados são
-                                            obrigatórios e estão indicados com um asterisco <strong>(*)</strong>. <p>
+                                        <p>Nesta área é possível registrar dados dos funcionários. É importante
+                                            ressaltar que alguns dados são obrigatórios e estão indicados com um
+                                            asterisco <strong>(*)</strong>.
+                                            <p>
                                                 Aqui, gerenciar os funcionários conforme seu departamento e função
                                                 dentro da organização, torna-se uma tarefa prática e segura!</p>
                                             <br>
@@ -100,7 +100,8 @@
                                                 <div class="col-md-12>">
                                                     <br>
                                                     <p><strong>Atenção:</strong> Após desativar um funcionário ele não
-                                                        possuirá mais acesso a nenhum módulo do sistema! </p></strong>
+                                                        possuirá mais acesso a nenhum módulo do sistema! </p>
+                                                    </strong>
                                                 </div>
                                             </div>
                                         </div>
@@ -112,12 +113,6 @@
 
                 </div>
 
-
-
-
-
-
-                </div>
             </div>
             <div class="row py-2">
                 <div class="col-lg-12">
@@ -142,43 +137,43 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div id="loading">
-                            <div align="center" class="center">
-                                <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
-                            </div>
+                    <div id="loading">
+                        <div align="center" class="center">
+                            <img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading">
                         </div>
-                        <div class="table-responsive table--no-card m-b-40" style="display: none;">
-                            <table id="funcionarios" class="table table-striped table-datatable">
-                                <thead>
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>Login</th>
-                                        <th>Função</th>
-                                        <th>Opções</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                    </div>
+                    <div class="table-responsive table--no-card m-b-40" style="display: none;">
+                        <table id="funcionarios" class="table table-striped table-datatable">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Login</th>
+                                    <th>Função</th>
+                                    <th>Opções</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                </tbody>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="copyright">
-                        <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a
-                                href="https://colorlib.com">Colorlib</a>.</p>
-                    </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="copyright">
+                    <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a
+                            href="https://colorlib.com">Colorlib</a>.</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+</div>
 
 <!-- MODAL -->
 <div class="modal fade" id="modal">
@@ -205,7 +200,6 @@
                         <li class="active">Informações Pessoais</li>
                         <li>Acesso</li>
                         <li>Profissional</li>
-                        <!-- <li>Foto</li> -->
 
                         <li class="d-none superusuario">Identificação</li>
                     </ul>
@@ -213,211 +207,206 @@
                     <!-- STEP 1 -->
 
                     <div class="card card-step col-12 px-0">
-                                <div class="card-header">
-                                    Informações Pessoais
+                        <div class="card-header">
+                            Informações Pessoais
+                        </div>
+                        <div class="card-body card-block">
+                            <div class="row form-group">
+                                <div class="col col-md-2">
+                                    <label for="funcionario_nome" class=" form-control-label">
+                                        <strong>Nome*</strong>
+                                    </label>
                                 </div>
-                                <div class="card-body card-block">
-                                    <div class="row form-group">
-                                        <div class="col col-md-2">
-                                            <label for="funcionario_nome" class=" form-control-label">
-                                                <strong>Nome*</strong>
-                                            </label>
-                                        </div>
-                                        <div class="col-12 col-md-10">
-                                            <input type="text" id="funcionario_nome" name="funcionario_nome"
-                                                placeholder="Nome Completo" class="form-control nome-input" required
-                                                maxlength="50" minlength="5" required>
-                                            <small class="form-text text-muted">Por favor, informe o nome completo do
-                                                funcionário</small>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-12 col-md-2">
-                                            <label for="funcionario_cpf" class=" form-control-label">
-                                                <strong>CPF*</strong>
-                                            </label>
-                                        </div>
-                                        <div class="col-12 col-md-10">
-                                            <input type="text" id="funcionario_cpf" name="funcionario_cpf" placeholder="CPF"
-                                                class="form-control cpf-input" required>
-                                            <small class="form-text text-muted">Por favor, informe o CPF do
-                                                funcionário</small>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <button type="button" class="btn btn-secondary next btn-sm">
-                                        <i class="fas fa-arrow-circle-right"></i> Próximo
-                                    </button>
+                                <div class="col-12 col-md-10">
+                                    <input type="text" id="funcionario_nome" name="funcionario_nome"
+                                        placeholder="Nome Completo" class="form-control nome-input" required
+                                        maxlength="50" minlength="5" required>
+                                    <small class="form-text text-muted">Por favor, informe o nome completo do
+                                        funcionário</small>
                                 </div>
                             </div>
-
-                            <!-- STEP 2 -->
-
-                            <div class="card card-step col-12 px-0">
-                                <div class="card-header">
-                                    Acesso
+                            <div class="row form-group">
+                                <div class="col-12 col-md-2">
+                                    <label for="funcionario_cpf" class=" form-control-label">
+                                        <strong>CPF*</strong>
+                                    </label>
                                 </div>
-                                <div class="card-body card-block">
-                                    <div class="row form-group">
-                                        <div class="col-12 col-md-2">
-                                            <label for="funcionario_login" class=" form-control-label">
-                                                <strong>E-mail*</strong>
-                                            </label>
-                                        </div>
-                                        <div class="col-12 col-md-10">
-                                            <input type="email" id="funcionario_login" name="funcionario_login"
-                                                placeholder="Email" class="form-control email-input" required="true">
-                                            <small class="help-block form-text">Por favor, informe o login do
-                                                funcionário</small>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group" id="div-senha">
-                                        <!-- <div id="div-senha"> -->
-                                            <div class="col-12 col-md-2">
-                                                <label for="email-input" class=" form-control-label">
-                                                    <strong>Senha</strong>
-                                                </label>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <input type="password" id="funcionario_senha" name="funcionario_senha"
-                                                    placeholder="Senha" class="form-control">
-                                                <small class="help-block form-text">Por favor, informe a senha para o
-                                                    funcionário</small>
-                                            </div>
-                                            <div class="col-12 col-md-2">
-                                                <label for="email-input" class=" form-control-label">
-                                                    <strong>Confirme</strong>
-                                                </label>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <input type="password" id="funcionario_confirmar_senha"
-                                                    name="funcionario_confirmar_senha" placeholder="Confirmar senha"
-                                                    class="form-control">
-                                                <small class="help-block form-text">Por favor, confirme a senha</small>
-                                            </div>
-                                        <!-- </div> -->
-                                    </div>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <button type="button" class="btn btn-secondary previous btn-sm">
-                                        <i class="fas fa-arrow-circle-left"></i> Anterior
-                                    </button>
-                                    <button type="button" class="btn btn-secondary next btn-sm">
-                                        <i class="fas fa-arrow-circle-right"></i> Próximo
-                                    </button>
+                                <div class="col-12 col-md-10">
+                                    <input type="text" id="funcionario_cpf" name="funcionario_cpf" placeholder="CPF"
+                                        class="form-control cpf-input" required>
+                                    <small class="form-text text-muted">Por favor, informe o CPF do
+                                        funcionário</small>
+
                                 </div>
                             </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="button" class="btn btn-secondary next btn-sm">
+                                <i class="fas fa-arrow-circle-right"></i> Próximo
+                            </button>
+                        </div>
+                    </div>
 
-                            <!-- STEP 3 -->
+                    <!-- STEP 2 -->
 
-                            <div class="card card-step col-12 px-0">
-                                <div class="card-header">
-                                    Profissional
+                    <div class="card card-step col-12 px-0">
+                        <div class="card-header">
+                            Acesso
+                        </div>
+                        <div class="card-body card-block">
+                            <div class="row form-group">
+                                <div class="col-12 col-md-2">
+                                    <label for="funcionario_login" class=" form-control-label">
+                                        <strong>E-mail*</strong>
+                                    </label>
                                 </div>
-                                <div class="card-body card-block">
-                                    <div class="row form-group">
-                                        <div class="col-12 col-md-2">
-                                            <label for="funcao-input" class=" form-control-label">
-                                                <strong>Função*</strong>
-                                            </label>
-                                        </div>
-                                        <div class="col-12 col-md-10">
-                                            <select class="form-control" required="true" id="funcao_fk"></select>
-                                            <small class="help-block form-text">Por favor, informe a função do
-                                                funcionário</small>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-12 col-md-2">
-                                            <label for="departamento-input"
-                                                class=" form-control-label">Departamento</label>
-                                        </div>
-                                        <div class="col-12 col-md-10">
-                                            <select class="form-control" id="departamento_fk">
-                                                <option value="">Nenhum Departamento</option>
-                                            </select>
-                                            <small class="help-block form-text">Por favor, informe o departamento do
-                                                funcionário</small>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-12 col-md-2">
-                                            <label for="setor_input" class=" form-control-label">Setor</label>
-                                        </div>
-                                        <div class="col-12 col-md-10">
-                                            <select multiple class="form-control" id="setor_fk"></select>
-                                            <small class="help-block form-text">Por favor, informe o setor do
-                                                funcionário, caso ele seja funcionário de campo <br>
-                                                <strong>
-                                                    Segure CTRL para selecionar mais de um setor</strong>
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <button type="button" class="btn btn-secondary previous btn-sm">
-                                        <i class="fas fa-arrow-circle-left"></i> Anterior
-                                    </button>
-                                    <button type="button" class="btn btn-primary submit btn-sm not_superusuario" id="botao-finalizar">
-                                        <i class="fa fa-dot-circle-o"></i> Finalizar
-                                    </button>
-                                    <!-- <button type="button" class="btn btn-secondary next btn-sm">
-                                        <i class="fas fa-arrow-circle-right"></i> Próximo
-                                    </button> -->
+                                <div class="col-12 col-md-10">
+                                    <input type="email" id="funcionario_login" name="funcionario_login"
+                                        placeholder="Email" class="form-control email-input" required="true">
+                                    <small class="help-block form-text">Por favor, informe o login do
+                                        funcionário</small>
                                 </div>
                             </div>
-
-
-                            <!-- STEP 4 -->
-
-                            <!-- <div class="card card-step col-12 px-0">
-                                <div class="card-header">
-                                    Foto
+                            <div class="row form-group" id="div-senha">
+                                <!-- <div id="div-senha"> -->
+                                <div class="col-12 col-md-2">
+                                    <label for="email-input" class=" form-control-label">
+                                        <strong>Senha</strong>
+                                    </label>
                                 </div>
-                                <div class="card-body card-block">
-                                    <div class="row form-group">
-                                        <div class="file-upload col-12">
-                                        <div style="text-align: center">
-                                                <img width="300px" src="" id="show-img-funcionario" alt="">
-                                            <br>
-                                            </div>
-                                        <button class="btn btn-secondary col-12" type="button"
-                                                onclick="$('.file-upload-input').trigger( 'click' )">Carregar
-                                                Foto</button>
+                                <div class="col-12 col-md-10">
+                                    <input type="password" id="funcionario_senha" name="funcionario_senha"
+                                        placeholder="Senha" class="form-control">
+                                    <small class="help-block form-text">Por favor, informe a senha para o
+                                        funcionário</small>
+                                </div>
+                                <div class="col-12 col-md-2">
+                                    <label for="email-input" class=" form-control-label">
+                                        <strong>Confirme</strong>
+                                    </label>
+                                </div>
+                                <div class="col-12 col-md-10">
+                                    <input type="password" id="funcionario_confirmar_senha"
+                                        name="funcionario_confirmar_senha" placeholder="Confirmar senha"
+                                        class="form-control">
+                                    <small class="help-block form-text">Por favor, confirme a senha</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="button" class="btn btn-secondary previous btn-sm">
+                                <i class="fas fa-arrow-circle-left"></i> Anterior
+                            </button>
+                            <button type="button" class="btn btn-secondary next btn-sm">
+                                <i class="fas fa-arrow-circle-right"></i> Próximo
+                            </button>
+                        </div>
+                    </div>
 
-                                            <div class="image-upload-wrap">
-                                                <input class="file-upload-input" name="img" type='file'
-                                                    onchange="readURL(this);" accept="image/*" />
-                                                <div class="drag-text">
-                                                    <h3>Arraste e solte uma foto aqui ou clique em Carregar Foto</h3>
-                                                </div>
-                                            </div>
-                                            <div class="file-upload-content">
-                                                <img id="img-input" class="file-upload-image" src="#"
-                                                    alt="your image" />
-                                                <div class="col-12">
-                                                    <button type="button" onclick="myControl.remove_image()"
-                                                        class="btn btn-danger">Remover Imagem</button>
-                                                </div>
-                                            </div>
+                    <!-- STEP 3 -->
+
+                    <div class="card card-step col-12 px-0">
+                        <div class="card-header">
+                            Profissional
+                        </div>
+                        <div class="card-body card-block">
+                            <div class="row form-group">
+                                <div class="col-12 col-md-2">
+                                    <label for="funcao-input" class=" form-control-label">
+                                        <strong>Função*</strong>
+                                    </label>
+                                </div>
+                                <div class="col-12 col-md-10">
+                                    <select class="form-control" required="true" id="funcao_fk"></select>
+                                    <small class="help-block form-text">Por favor, informe a função do
+                                        funcionário</small>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-12 col-md-2">
+                                    <label for="departamento-input" class=" form-control-label">Departamento</label>
+                                </div>
+                                <div class="col-12 col-md-10">
+                                    <select class="form-control" id="departamento_fk">
+                                        <option value="">Nenhum Departamento</option>
+                                    </select>
+                                    <small class="help-block form-text">Por favor, informe o departamento do
+                                        funcionário</small>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-12 col-md-2">
+                                    <label for="setor_input" class=" form-control-label">Setor</label>
+                                </div>
+                                <div class="col-12 col-md-10">
+                                    <select multiple class="form-control" id="setor_fk"></select>
+                                    <small class="help-block form-text">Por favor, informe o setor do
+                                        funcionário, caso ele seja funcionário de campo <br>
+                                        <strong>
+                                            Segure CTRL para selecionar mais de um setor</strong>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="button" class="btn btn-secondary previous btn-sm">
+                                <i class="fas fa-arrow-circle-left"></i> Anterior
+                            </button>
+                            <button type="button" class="btn btn-secondary next btn-sm">
+                                <i class="fas fa-arrow-circle-right"></i> Próximo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4 -->
+
+                    <div class="card card-step col-12 px-0">
+                        <div class="card-header">
+                            Foto
+                        </div>
+                        <div class="card-body card-block">
+                            <div class="row form-group">
+                                <div class="file-upload col-12">
+
+                                    <div style="text-align: center">
+                                        <img width="300px" src="" id="show-img-funcionario" alt="">
+                                        <br>
+                                    </div>
+                                    <button class="btn btn-secondary col-12" type="button"
+                                        onclick="$('.file-upload-input').trigger( 'click' )">Carregar
+                                        Foto</button>
+
+                                    <div class="image-upload-wrap">
+                                        <input class="file-upload-input" type='file' onchange="readURL(this);"
+                                            accept="image/*" />
+                                        <div class="drag-text">
+                                            <h3>Ou clique/arraste e solte uma imagem aqui</h3>
+                                        </div>
+                                    </div>
+                                    <div class="file-upload-content">
+                                        <img id="img-input" class="file-upload-image" alt="Sua imagem carregada"/>
+                                        <div class="col-12">
+                                            <button type="button" onclick="myControl.remove_image()"
+                                                class="btn btn-danger">Remover Imagem</button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer text-center">
-                                    <button type="button" class="btn btn-secondary previous btn-sm">
-                                        <i class="fas fa-arrow-circle-left"></i> Anterior
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="button" class="btn btn-secondary previous btn-sm">
+                                <i class="fas fa-arrow-circle-left"></i> Anterior
 
-                                    <button type="button" class="btn btn-secondary next btn-sm d-none superusuario">
-                                        <i class="fas fa-arrow-circle-right"></i> Próximo
-                                    </button>
+                                <button type="button" class="btn btn-secondary next btn-sm d-none superusuario">
+                                    <i class="fas fa-arrow-circle-right"></i> Próximo
+                                </button>
 
-                                    <button type="button" class="btn btn-primary submit btn-sm not_superusuario" id="botao-finalizar">
-                                        <i class="fa fa-dot-circle-o"></i> Finalizar
-                                    </button>
-                                </div>
-                            </div> -->
+                                <button type="button" class="btn btn-primary submit btn-sm not_superusuario"
+                                    id="botao-finalizar">
+                                    <i class="fa fa-dot-circle-o"></i> Finalizar
+                                </button>
+                        </div>
+                    </div>
 
                     <!-- STEP 5 -->
 
@@ -448,8 +437,6 @@
                         </div>
                     </div>
 
-
-
                 </form>
             </div>
         </div>
@@ -460,24 +447,19 @@
     </div>
 </div>
 
-
-
-
-
-
-
 <div id="deactivate" class="d-none">
     <div class="modal-body">
         <form>
             <div class="form-group">
                 <h4 style="text-align: center" class="text-danger"><i
-                        class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
-                    ATENÇÃO</h4>
+                        class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO
+                </h4>
             </div>
 
             <div id="loading-deactivate">
                 <div align="center" class="center">
-                    <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="v_loading" alt="Carregando">
+                    <img width="150px" src="<?=base_url('assets/images/loading.gif'); ?>" id="v_loading"
+                        alt="Carregando">
                 </div>
             </div>
             <div id="dependences" style="margin: 20px 0" class="container"></div>
@@ -500,8 +482,8 @@
         <form>
             <div class="form-group">
                 <h4 style="text-align: center" class="text-danger"><i
-                        class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i>
-                    ATENÇÃO</h4>
+                        class="fa fa-exclamation-triangle animated tada infinite" aria-hidden="true"></i> ATENÇÃO
+                </h4>
                 <p>Você está prestes a ativar um funcionário que foi desativado!</p>
 
             </div>
@@ -547,7 +529,6 @@
     </div>
 </div>
 
-
 <script type="text/javascript">
-    const is_superusuario = <?php echo $this->session->user['is_superusuario'] === true ? 1 : 0; ?>;
+const is_superusuario = <?php echo $this->session->user['is_superusuario'] === true ? 1 : 0; ?>;
 </script>

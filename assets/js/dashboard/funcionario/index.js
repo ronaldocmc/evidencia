@@ -131,10 +131,6 @@ class Control extends GenericControl {
 			this.myView.showPasswordInput();
 		});
 
-		$(document).on("click", ".btn_new", () => {
-			this.myView.showPasswordInput();
-		});
-
 		$(document).on("click", ".action_change_password", async () => {
 			this.myView.initLoad();
 
@@ -171,7 +167,7 @@ class Control extends GenericControl {
 
 	remove_image() {
 		$("#img-input").attr("src", "");
-		removeUpload();
+		removeUploadFromForm();
 	}
 
 	blobToBase64(blob) {
