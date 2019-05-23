@@ -95,7 +95,7 @@ function remove_data() {
 
 function request_data(id, setor) {
     remove_data();
-
+    btn_load($('#filtrar'));
     $.ajax({
         url: base_url + '/Ordem_Servico/get_specific/' + id,
         dataType: "json",
@@ -125,6 +125,7 @@ function request_data(id, setor) {
             $('#timeline').html(timeline);
         }
     });
+    btn_ativar($('#filtrar'));
 }
 
 function createCurrentSituationOject(os) {
