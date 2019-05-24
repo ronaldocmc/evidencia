@@ -38,6 +38,11 @@ class GenericControl {
 
 		// $('#filter-ativo').val(1);
 		// $('#filter-ativo').trigger('change');
+
+		// Habilitando as tooltips
+		$(document).ready(function() {
+			$('[data-toggle="tooltip"]').tooltip();
+		});
 	}
 
 	handleResponse(response, data) {
