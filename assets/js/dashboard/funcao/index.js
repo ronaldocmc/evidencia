@@ -1,163 +1,169 @@
 /*
- * == Variáveis globais: == 
- * 
+ * == Variáveis globais: ==
+ *
  * @Boolean: is_superusuario
- * 
+ *
  * @String: base_url
- * 
+ *
  */
 
 class View extends GenericView {
+	constructor() {
+		super();
+	}
 
-    constructor() {
-        super();
+	async fillPermissions(permissions) {
+		let title;
+		let checkbox = "";
+		let entities = [];
+		let exists;
+		let check_all;
+		let tooltip;
+
+		permissions.forEach(permission => {
+			exists = false;
+
+			checkbox = this.generateCheckBox(
+				"acao_nome",
+				"permissao_pk",
+				permission,
+				"permissoes"
+			);
+
+			entities.forEach(e => {
+				if (e === permission.entidade) {
+					exists = true;
+				}
+			});
+
+			if (!exists) {
+				$("#permissions").append(
+					`<div id='${permission.entidade
+						.split(" ")
+						.join("_")}' class='container'></div>`
+				);
+				entities.push(permission.entidade);
+				title = this.generateTitle(permission.entidade, 4);
+				tooltip = this.generateToolTip(permission.entidade);
+				$(`#${permission.entidade.split(" ").join("_")}`).append(title);
+				$(`#${permission.entidade.split(" ").join("_")}`).append(
+					tooltip + "<br>"
+				);
+			}
+
+			$(`#${permission.entidade.split(" ").join("_")}`).append(
+				checkbox + "&nbsp" + "&nbsp"
+			);
+		});
+
+		entities.forEach(e => {
+			check_all = this.generateCheckAll(e.split(" ").join("_"));
+			$(`#${e.split(" ").join("_")}`).append(check_all + "&nbsp" + "&nbsp");
+
+			$(`#${e.split(" ").join("_")}`).append(`<br><hr>`);
+		});
     }
+    
+	checkPermissions(permissions) {
+		permissions.forEach(permission => {
+			$(`#id-${permission.id}`).prop("checked", true);
+		});
+	}
 
-    async fillPermissions(permissions) {
-        let title;
-        let checkbox = '';
-        let entities = [];
-        let exists;
-        let check_all;
-        let tooltip;
-        
-        permissions.forEach(permission => {
-            exists = false;
-
-            checkbox = this.generateCheckBox('acao_nome', 'permissao_pk', permission, 'permissoes');
-
-            entities.forEach(e => {
-                if (e === permission.entidade) {
-                    exists = true;
-                }
-            });
-
-            if (!exists) {
-                $('#permissions').append(`<div id='${permission.entidade.split(' ').join('_')}' class='conteiner'></div>`);
-                entities.push(permission.entidade);
-                title = this.generateTitle(permission.entidade, 4);
-                tooltip = this.generateToolTip('teste');
-                $(`#${permission.entidade.split(' ').join('_')}`).append(title);
-                $(`#${permission.entidade.split(' ').join('_')}`).append(tooltip + '<br>');
-            }
-
-            $(`#${permission.entidade.split(' ').join('_')}`).append(checkbox + '&nbsp' + '&nbsp');
-        });
-
-        entities.forEach(e => {
-            check_all = this.generateCheckAll(e.split(' ').join('_'));
-            $(`#${e.split(' ').join('_')}`).append(check_all + '&nbsp' + '&nbsp');
-
-            $(`#${e.split(' ').join('_')}`).append(`<br><hr>`);
-        });
-    }
-
-    checkPermissions(permissions) {
-        permissions.forEach(permission => {
-            $(`#id-${permission.id}`).prop('checked', true);
-        });
-    }
-
-    generateCheckAll(entity) {
-        let render = `<input class='check_all' type='checkbox'
+	generateCheckAll(entity) {
+		let render = `<input class='check_all' type='checkbox'
                     id='id-${entity}'
                     name='check_all'>
                     <label for='id-${entity}'> Selecionar Todas </label>`;
 
-        return render;
-    }
+		return render;
+	}
 
-    generateToolTip(tooltip_text) {
-        let tooltip = `<div class="tooltip"><i class="fas fa-question-circle"></i>
-                            <span class="tooltiptext"> ${tooltip_text} </span>
-                        </div> `;
-        return tooltip;
-    }
-
+	generateToolTip(tooltip_text) {
+		let tooltip = `<i class="fas fa-question-circle" data-toggle='tooltip' data-placement='top' title='${tooltip_text}'></i>`;
+		return tooltip;
+	}
 }
 
 class Request extends GenericRequest {
-
-    constructor() {
-        super();
-        this.route = '/funcao';
-    }
-
+	constructor() {
+		super();
+		this.route = "/funcao";
+	}
 }
 
 class Control extends GenericControl {
+	constructor() {
+		super();
 
+		this.primaryKey = "funcao_pk";
+		this.fields = ["funcao_nome"];
+		this.tableFields = ["funcao_nome"];
+		this.verifyDependences = true;
+		this.permissions = null;
+	}
 
-    constructor() {
-        super();
+	async init() {
+		super.init();
 
-        this.primaryKey = "funcao_pk";
-        this.fields = ['funcao_nome'];
-        this.tableFields = ['funcao_nome'];
-        this.verifyDependences = true;
-        this.permissions = null;
-    }
+		let response = await this.myRequests.send("/get_all_permissions", {});
+		this.permissions = response.data.permissions;
 
-    async init() {
-        super.init();
+		this.myView.fillPermissions(this.permissions);
 
-        let response = await this.myRequests.send('/get_all_permissions', {});
-        this.permissions = response.data.permissions;
+		$(document).on("click", ".check_all", e => {
+			this.handleCheckAll(e.target);
+		});
+	}
 
-        this.myView.fillPermissions(this.permissions);
+	async handleFillFields() {
+		super.handleFillFields("edit");
 
-        $(document).on('click', '.check_all', (e) => { this.handleCheckAll(e.target); });
-    }
+		const response = await this.myRequests.send("/get_all_permissions", {
+			funcao: this.data.self[this.state.selectedId][this.primaryKey]
+		});
 
-    async handleFillFields() {
-        super.handleFillFields('edit');
+		this.myView.checkPermissions(response.data.permissions);
+	}
 
-        const response = await this.myRequests.send('/get_all_permissions',
-            {
-                funcao: this.data.self[this.state.selectedId][this.primaryKey]
-            });
+	save() {
+		let permissions = [];
+		const data = {};
+		$.each($('input[name="permissoes"]:checked'), function() {
+			let id = $(this).attr("id");
+			id = id.split("-");
+			permissions.push(id[1]);
+		});
 
-        this.myView.checkPermissions(response.data.permissions);
-    }
+		data.permissions = permissions;
+		super.save(data);
+	}
 
-    save () {
-        let permissions = [];
-        const data = {};
-        $.each($('input[name="permissoes"]:checked'), function () {
-            let id = $(this).attr('id');
-            id = id.split('-');
-            permissions.push(id[1]);
-        });
+	handleCheckAll(e) {
+		let entity = this.getEntity($(e).attr("id"));
+		let status;
 
-        data.permissions = permissions;
-        super.save(data);
-    }
+		if ($(e).is(":checked")) {
+			status = true;
+		} else {
+			status = false;
+		}
 
-    handleCheckAll (e) {
-        let entity = this.getEntity($(e).attr('id'));
-        let status;
+		this.permissions.forEach(permission => {
+			if (permission.entidade === entity) {
+				$(`#id-${permission.permissao_pk}`).prop("checked", status);
+			}
+		});
 
-        if ($(e).is(':checked')) {
-            status = true;
-        } else {
-            status = false;
-        }
+		return;
+	}
 
-        this.permissions.forEach(permission => {
-            if (permission.entidade === entity) {
-                $(`#id-${permission.permissao_pk}`).prop('checked', status);
-            }
-        });
+	getEntity(id) {
+		let splitted = id.split("-");
+		splitted[1] = splitted[1].split("_").join(" ");
 
-        return;
-    }
-
-    getEntity (id) {
-        let splitted = id.split('-');
-        splitted[1] = splitted[1].split('_').join(' ');
-
-        return splitted[1];
-    }
+		return splitted[1];
+	}
 }
 
 const myControl = new Control();
