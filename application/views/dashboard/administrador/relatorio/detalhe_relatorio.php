@@ -8,31 +8,31 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">Painel de Gerenciamento de Relatórios </h2>
+                        <button type="button" class="au-btn au-btn-icon btn au-btn--blue pull-left dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Opções
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item imprimir_relatorio d-none" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk); ?>">
+                                Imprimir relatório
+                            </a>
+                            <?php if ($relatorio->relatorio_situacao == 'Criado'): ?>
+                                <a class="dropdown-item" href="#" data-toggle="modal" 
+                                   data-target="#delegar_para_outra_pessoa">
+                                    Alterar funcionário
+                                </a>
+                            <?php endif; ?>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item imprimir_relatorio d-none" href="#" data-toggle="modal" data-target="#d-relatorio">
+                                Destruir relatório
+                            </a>
+                            <?php if ($relatorio->relatorio_situacao == 'Em andamento'): ?>
+                                <a class="dropdown-item receive_report d-none" href="#" data-toggle="modal" data-target="#restaurar_os">
+                                    Receber relatório
+                                </a>  
+                            <?php endif; ?>
+                        </div>
                     </div>
 
-                      <button type="button" class="au-btn au-btn-icon btn au-btn--blue pull-left dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Opções
-                      </button>
-                      <div class="dropdown-menu">
-                        <a class="dropdown-item imprimir_relatorio d-none" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk); ?>">
-                            Imprimir relatório
-                        </a>
-                        <?php if ($relatorio->relatorio_situacao == 'Criado'): ?>
-                            <a class="dropdown-item" href="#" data-toggle="modal" 
-                               data-target="#delegar_para_outra_pessoa">
-                                Alterar funcionário
-                            </a>
-                        <?php endif; ?>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item imprimir_relatorio d-none" href="#" data-toggle="modal" data-target="#d-relatorio">
-                            Destruir relatório
-                        </a>
-                        <?php if ($relatorio->relatorio_situacao == 'Em andamento'): ?>
-                            <a class="dropdown-item receive_report d-none" href="#" data-toggle="modal" data-target="#restaurar_os">
-                                Receber relatório
-                            </a>  
-                        <?php endif; ?>
-                      </div>
                     
                 </div>
             </div>
@@ -40,7 +40,7 @@
             <input type="hidden" name="" id="id-relatorio" value="<?= $relatorio->relatorio_pk; ?>">
 
 
-
+            <br>
             <div class="row py-2">
                 <div class="col-lg-12">
                     <div class="au-card d-flex flex-column">
