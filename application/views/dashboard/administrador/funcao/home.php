@@ -7,80 +7,91 @@
                     <div class="overview-wrap">
                         <h2 class="title-1">gerenciamento de funções
                         </h2>
-                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none" data-toggle="modal" data-title="Nova Função" data-contentid="save"
-                            data-target="#modal">
+
+                        <button class="au-btn au-btn-icon au-btn--blue btn_novo reset_multistep new d-none"
+                            data-toggle="modal" data-title="Nova Função" data-contentid="save" data-target="#modal">
                             <i class="zmdi zmdi-plus"></i>nova função</button>
                     </div>
                     <input type="hidden" name="opcao-editar" id="opcao-editar" value="false">
                     <div class="col-md-12 mt-3">
-                                <div class="collapse" id="collapseHelp">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <div class="card-title">
-                                                <h3>Guia do Usuário</h3>
-                                            </div>
-                                        </div>
-                                        <div class="card-body card-user-guide">
-                                        <div class="col-md-6">
-                                            <p>Bem-vindo a área de Gerenciamento de Funções!</p><br>
-                                            <p> Aqui você poderá realizar algumas operações para controlar as funções da sua organização.</p><br>
-                                            <p>Organizamos as suas funções de modo que ele possua serviços específicos conforme um tipo de serviço definido. Assim, controlar a prestação de serviços da sua organização torna-se uma tarefa fácil e rápida! </p><br>
-                                            <p>Além disso, você pode escolher as permissões que a função terá dentro do sistema.</p>
-                                        </div>
-                                        <div class="col-md-6 user-guide">
-                                            <p><b>Operações permitidas:</b></p>
-                                            <div class="col-md-12 functions-page" >
-                                                <div class="row">
-                                                    <div class="col-md-2 icon-guide">
-                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
-                                                            <div class="d-none d-block">
-                                                                <i class="fas fa-plus fa-fw"></i>
-                                                            </div>
-                                                        </button>
-                                                    </div>
-                                                    <div class="col-md-10 text-guide">Inserir uma função</div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-2 icon-guide">
-                                                        <button type="button" disabled="true" class="btn btn-sm btn-primary reset_multistep" title="Editar">
-                                                            <div class="d-none d-block">
-                                                                <i class="fas fa-edit fa-fw"></i>
-                                                            </div>
-                                                        </button>
-                                                    </div>
-                                                    <div class="col-md-10 text-guide">Editar função existente</div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-2 icon-guide">
-                                                        <button type="button" class="btn btn-sm btn-danger" disabled="true" title="Desativar">
-                                                                <div class="d-none d-block">
-                                                                    <i class="fas fa-times fa-fw"></i>
-                                                                </div>
-                                                        </button>
-                                                    </div>
-                                                    <div class="col-md-10 text-guide">Desativar funcao</div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-2 icon-guide">
-                                                        <button type="button" class="btn btn-sm btn-success" disabled="true" title="Reativar">
-                                                                <div class="d-none d-block">
-                                                                    <i class="fas fa-power-off fa-fw"></i>
-                                                                </div>
-                                                        </button>
-                                                    </div>
-                                                    <div class="col-md-10 text-guide">Ativar funcao novamente</div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-12>">
-                                                        <br><p><strong>Qualquer dúvida entre em contato com o suporte  na sua organização!</p></strong>
-                                                    </div>
-                                                </div>
-                                        </div>
+                        <div class="collapse" id="collapseHelp">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <h3>Guia do Usuário</h3>
                                     </div>
                                 </div>
+                                <div class="card-body card-user-guide">
+                                    <div class="col-md-6">
+                                        <p>Bem-vindo a área de Gerenciamento de Funções!</p><br>
+                                        <p> Aqui você poderá realizar algumas operações para controlar as funções da sua
+                                            organização.</p><br>
+                                        <p>Organizamos as suas funções de modo que ele possua serviços específicos
+                                            conforme um tipo de serviço definido. Assim, controlar a prestação de
+                                            serviços da sua organização torna-se uma tarefa fácil e rápida! </p><br>
+                                        <p>Além disso, você pode escolher as permissões que a função terá dentro do
+                                            sistema.</p>
+                                    </div>
+                                    <div class="col-md-6 user-guide">
+                                        <p><b>Operações permitidas:</b></p>
+                                        <div class="col-md-12 functions-page">
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" disabled="true"
+                                                        class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-plus fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Inserir uma função</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" disabled="true"
+                                                        class="btn btn-sm btn-primary reset_multistep" title="Editar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-edit fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Editar função existente</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" class="btn btn-sm btn-danger" disabled="true"
+                                                        title="Desativar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-times fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Desativar funcao</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 icon-guide">
+                                                    <button type="button" class="btn btn-sm btn-success" disabled="true"
+                                                        title="Reativar">
+                                                        <div class="d-none d-block">
+                                                            <i class="fas fa-power-off fa-fw"></i>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-10 text-guide">Ativar funcao novamente</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12>">
+                                                    <br>
+                                                    <p><strong>Qualquer dúvida entre em contato com o suporte na sua
+                                                            organização!</p></strong>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row py-2">
@@ -177,13 +188,11 @@
                         <div class="card-body card-block">
                             <div class="row form-group">
                                 <div class="col col-md-2">
-                                    <label for="funcao_nome"
-                                        class=" form-control-label"><strong>Nome*</strong></label>
+                                    <label for="funcao_nome" class=" form-control-label"><strong>Nome*</strong></label>
                                 </div>
                                 <div class="col-12 col-md-10">
-                                    <input type="text" id="funcao_nome" name="nome"
-                                        placeholder="Nome da Função" class="form-control" required="true"
-                                        maxlength="50" minlength="3">
+                                    <input type="text" id="funcao_nome" name="nome" placeholder="Nome da Função"
+                                        class="form-control" required="true" maxlength="50" minlength="3">
                                     <small class="form-text text-muted">Por favor, informe o nome da funcao</small>
                                 </div>
                             </div>
@@ -206,7 +215,7 @@
                         <div class="card-body card-block">
                             <div class="row form-group">
                                 <div class="col-12" id="permissions">
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -218,7 +227,7 @@
                                 <i class="fas fa-arrow-circle-right"></i> Próximo
                             </button>
 
-                            
+
                             <button type="button" class="btn btn-primary submit btn-sm not_superusuario d-none load">
                                 <i class="fa fa-dot-circle-o"></i> Finalizar
                             </button>
@@ -232,13 +241,11 @@
                         <div class="card-body card-block">
                             <div class="row form-group">
                                 <div class="col col-md-2">
-                                    <label for="senha"
-                                        class=" form-control-label"><strong>Senha*</strong></label>
+                                    <label for="senha" class=" form-control-label"><strong>Senha*</strong></label>
                                 </div>
                                 <div class="col-12 col-md-10">
                                     <input type="password" id="pass-modal-save" name="senha" placeholder="Senha Pessoal"
-                                        class="form-control" autocomplete="new-password" minlength="8"
-                                        required="true">
+                                        class="form-control" autocomplete="new-password" minlength="8" required="true">
                                     <small class="form-text text-muted">Por favor, informe sua senha de
                                         acesso</small>
                                 </div>
@@ -283,8 +290,7 @@
 
             <div class="form-group d-none superusuario">
                 <input type="password" class="form-control press_enter" autocomplete="false"
-                    placeholder="Confirme sua senha" required="required"
-                    id="pass-modal-deactivate" minlength="8">
+                    placeholder="Confirme sua senha" required="required" id="pass-modal-deactivate" minlength="8">
             </div>
 
             <div class="form-group">
@@ -307,8 +313,7 @@
             </div>
             <div class="form-group d-none superusuario">
                 <input type="password" class="form-control press_enter" autocomplete="false"
-                    placeholder="Confirme sua senha" required="required"
-                    id="pass-modal-activate">
+                    placeholder="Confirme sua senha" required="required" id="pass-modal-activate">
             </div>
             <div class="form-group">
                 <button type="button" class="btn btn-confirmar-senha action_activate load" name="post" value=""><i
@@ -320,5 +325,5 @@
 
 
 <script type="text/javascript">
-    const is_superusuario = <?php echo $this->session->user['is_superusuario'] === true ? 1 : 0; ?>;
+const is_superusuario = <?php echo $this->session->user['is_superusuario'] === true ? 1 : 0; ?>;
 </script>
