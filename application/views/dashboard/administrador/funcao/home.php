@@ -24,11 +24,10 @@
                                 <div class="card-body card-user-guide">
                                     <div class="col-md-6">
                                         <p>Bem-vindo a área de Gerenciamento de Funções!</p><br>
-                                        <p> Aqui você poderá realizar algumas operações para controlar as funções da sua
+                                        <p>Aqui você poderá realizar algumas operações para controlar as funções da sua
                                             organização.</p><br>
-                                        <p>Organizamos as suas funções de modo que ele possua serviços específicos
-                                            conforme um tipo de serviço definido. Assim, controlar a prestação de
-                                            serviços da sua organização torna-se uma tarefa fácil e rápida! </p><br>
+                                        <p>Organizamos as suas funções de modo que você possa definir diferentes níveis
+                                            de acesso para os diferentes cargos em sua organização</p><br>
                                         <p>Além disso, você pode escolher as permissões que a função terá dentro do
                                             sistema.</p>
                                     </div>
