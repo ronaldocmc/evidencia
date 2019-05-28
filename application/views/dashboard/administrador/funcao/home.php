@@ -210,6 +210,8 @@
                     <div class="card card-step col-12 px-0">
                         <div class="card-header">
                             Permissões
+                            <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="auto"
+                                data-selector="true" title='Nesse painel você poderá especificar as permissões para cada uma das entidades da organização.' style="cursor: help"></i>
                         </div>
                         <div class="card-body card-block">
                             <div class="row form-group">
