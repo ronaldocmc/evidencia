@@ -65,6 +65,7 @@ class GenericControl {
             Object.assign(sendData, moreFields);
         }
 
+
         if (is_superusuario) sendData['senha'] = this.myView.getPassword('save')['senha'];
 
         sendData[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
@@ -135,12 +136,9 @@ class GenericControl {
         } else {
             this.data.self.push(data);
         }
-
-
     }
 
     updateObject(data) {
-
         Object.assign(this.data.self[this.state.selectedId], data);
     }
 
