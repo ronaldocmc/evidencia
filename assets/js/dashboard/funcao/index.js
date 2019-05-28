@@ -20,6 +20,20 @@ class View extends GenericView {
 		let check_all;
 		let tooltip;
 
+		let tooltip_texts = {
+			"Alterar e Criar": "Permissão de criação e alteração de dados",
+			"Desativar": "Permitir que essa função desative itens",
+			"Ativar": "Permitir que essa função ative itens",
+			"Ver": "Permissão de visualização de dados de uma entidade",
+			"Modificar Situação": "Permitir que a função modifique a situaçãod euma Ordem de Serviço",
+			"Excluir": "Permitir que a função remova uma Ordem de Serviço completamente",
+			"Alterar senha": "Permitir a alteração de senha",
+			"Receber Relatório": "Permitir que funcionários com esse cargo recebam relatórios",
+			"Trocar Funcionário": "Permitir que portadores dessa função alterem a designação de funcionários para relatórios",
+			"Acessar Web": "Permissão que funcionários com essa funções sejam capazes de acessar a aplicação Web",
+			"Acessar App": "Permissão que funcionários com essa funções sejam capazes de acessar o app",
+		}
+
 		permissions.forEach(permission => {
 			exists = false;
 
@@ -40,7 +54,8 @@ class View extends GenericView {
 				$("#permissions").append(
 					`<div id='${permission.entidade
 						.split(" ")
-						.join("_")}' class='container'></div>`
+						.join("_")}' class='container'>
+						</div>`
 				);
 				entities.push(permission.entidade);
 				title = this.generateTitle(permission.entidade, 4);
@@ -58,12 +73,14 @@ class View extends GenericView {
 
 		entities.forEach(e => {
 			check_all = this.generateCheckAll(e.split(" ").join("_"));
-			$(`#${e.split(" ").join("_")}`).append(check_all + "&nbsp" + "&nbsp");
+			$(`#${e.split(" ").join("_")}`).append(
+				check_all + "&nbsp" + "&nbsp"
+			);
 
 			$(`#${e.split(" ").join("_")}`).append(`<br><hr>`);
 		});
-    }
-    
+	}
+
 	checkPermissions(permissions) {
 		permissions.forEach(permission => {
 			$(`#id-${permission.id}`).prop("checked", true);
@@ -71,16 +88,17 @@ class View extends GenericView {
 	}
 
 	generateCheckAll(entity) {
-		let render = `<input class='check_all' type='checkbox'
+		let render = `<div title='Selecionar todas as permissões.' style='display:inline-block'>
+		            <input class='check_all' type='checkbox'
                     id='id-${entity}'
                     name='check_all'>
-                    <label for='id-${entity}'> Selecionar Todas </label>`;
+                    <label for='id-${entity}'> Selecionar Todas </label></div>`;
 
 		return render;
 	}
 
 	generateToolTip(tooltip_text) {
-		let tooltip = `<i class="fas fa-question-circle" data-toggle='tooltip' data-placement='top' title='${tooltip_text}'></i>`;
+		let tooltip = `<i class="fas fa-question-circle" data-toggle="tooltip" data-placement="auto" data-selector="true" title="${tooltip_text}" style="display: inline-block"></i>`;
 		return tooltip;
 	}
 }
