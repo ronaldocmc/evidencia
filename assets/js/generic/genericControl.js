@@ -1,170 +1,185 @@
-
 class GenericControl {
+	constructor() {
+		this.state = {
+			selectedId: null
+		};
 
-    constructor() {
-        this.state = {
-            selectedId: null,
-        }
+		this.myView = new View();
+		this.myRequests = new Request();
+	}
 
-        this.myView = new View();
-        this.myRequests = new Request();
-    }
+	async init() {
+		this.data = await this.myRequests.init();
+		this.myView.init(this.data, this.tableFields, this.primaryKey);
 
-    async init() {
+		// Send request
+		$(document).on("click", ".submit", () => {
+			this.save();
+		});
+		$(document).on("click", ".action_deactivate", () => {
+			this.deactivate();
+		});
+		$(document).on("click", ".action_activate", () => {
+			this.activate();
+		});
 
-        this.data = await this.myRequests.init();
-        this.myView.init(this.data, this.tableFields, this.primaryKey);
+		// Open modal
+		$(document).on("click", ".btn_edit", () => {
+			this.handleFillFields();
+		});
+		$(document).on("click", ".btn_deactivate", () => {
+			this.handleDependences();
+		});
+		$(document).on("click", ".btn_activate", () => {});
 
-        // Send request
-        $(document).on('click', '.submit', () => { this.save() });
-        $(document).on('click', '.action_deactivate', () => { this.deactivate(); });
-        $(document).on('click', '.action_activate', () => { this.activate() });
+		$(document).on("change", "#filter-ativo", e => {
+			this.handleFilter(e.target);
+		});
 
-        // Open modal
-        $(document).on('click', '.btn_edit', () => { this.handleFillFields() });
-        $(document).on('click', '.btn_deactivate', () => { this.handleDependences(); });
-        $(document).on('click', '.btn_activate', () => { });
+		// $('#filter-ativo').val(1);
+		// $('#filter-ativo').trigger('change');
+	}
 
-        $(document).on('change', '#filter-ativo', (e) => { this.handleFilter(e.target); });
+	handleResponse(response, data) {
+		if (!response) {
+			this.myView.showMessage(
+				"failed",
+				"Falha",
+				"Entre em contato com a central!"
+			);
+			return;
+		}
 
-        // $('#filter-ativo').val(1);
-        // $('#filter-ativo').trigger('change');
-    }
+		if (response.code == 200) {
+			if (this.state.selectedId) {
+				this.updateObject(data);
+			} else {
+				this.addNewObject(data, response);
+			}
 
-    handleResponse(response, data) {
-        if (!response) {
-            this.myView.showMessage('failed', 'Falha', 'Entre em contato com a central!');
-            return;
-        }
+			this.myView.closeModal();
+			this.myView.showMessage("success", "Sucesso", "Operação realizada!");
+			this.handleFilter($("#filter-ativo").val());
+			$("#filter-ativo").trigger("change");
+			this.myView.render(this.data.self);
+		} else {
+			this.myView.showMessage("failed", "Falha", response.data.mensagem);
+		}
+	}
 
-        if (response.code == 200) {
+	// @object moreFields
+	async save(moreFields = null) {
+		this.myView.initLoad();
 
-            if (this.state.selectedId) {
-                this.updateObject(data);
-            } else {
-                this.addNewObject(data, response);
-            }
+		const sendData = this.myView.createJsonWithFields(this.fields, this.data);
 
-            this.myView.closeModal();
-            this.myView.showMessage('success', 'Sucesso', 'Operação realizada!');
-            this.handleFilter($('#filter-ativo').val());
-            $('#filter-ativo').trigger('change');
-            this.myView.render(this.data.self);
-        } else {
-            this.myView.showMessage('failed', 'Falha', response.data.mensagem);
-        }
-    }
+		if (moreFields != null) {
+			Object.assign(sendData, moreFields);
+		}
 
-    // @object moreFields
-    async save(moreFields = null) {
-        this.myView.initLoad();
+		if (is_superusuario)
+			sendData["senha"] = this.myView.getPassword("save")["senha"];
 
-        const sendData = this.myView.createJsonWithFields(this.fields, this.data);
+		sendData[this.primaryKey] = this.state.selectedId
+			? this.data.self[this.state.selectedId][this.primaryKey]
+			: "";
 
-        if (moreFields != null) {
-            Object.assign(sendData, moreFields);
-        }
+		const response = await this.myRequests.send("/save", sendData);
 
+		this.myView.endLoad();
 
-        if (is_superusuario) sendData['senha'] = this.myView.getPassword('save')['senha'];
+		delete sendData["senha"];
 
-        sendData[this.primaryKey] = this.state.selectedId ? this.data.self[this.state.selectedId][this.primaryKey] : '';
+		this.handleResponse(response, sendData);
 
-        const response = await this.myRequests.send('/save', sendData);
+		return response;
+	}
 
-        this.myView.endLoad();
+	async switchState(action) {
+		this.myView.initLoad();
 
-        delete sendData['senha'];
+		const sendData = is_superusuario ? this.myView.getPassword(action) : {};
+		sendData[this.primaryKey] = this.data.self[this.state.selectedId][
+			this.primaryKey
+		];
 
-        this.handleResponse(response, sendData);
+		const response = await this.myRequests.send(`/${action}`, sendData);
 
-        return response;
-    }
+		this.myView.endLoad();
 
-    async switchState(action) {
-        this.myView.initLoad();
+		sendData.ativo = this.handleActiveOrDeactive();
 
-        const sendData = is_superusuario ? this.myView.getPassword(action) : {};
-        sendData[this.primaryKey] = this.data.self[this.state.selectedId][this.primaryKey];
+		this.handleResponse(response, sendData);
+	}
 
-        const response = await this.myRequests.send(`/${action}`, sendData);
+	async activate() {
+		await this.switchState("activate");
+	}
 
-        this.myView.endLoad();
+	async deactivate() {
+		await this.switchState("deactivate");
+	}
 
-        sendData.ativo = this.handleActiveOrDeactive();
+	async handleDependences() {
+		let response = {
+			data: {
+				dependences: [],
+				dependence_type: ""
+			}
+		};
 
-        this.handleResponse(response, sendData);
-    }
+		if (this.verifyDependences) {
+			const sendData = {};
+			sendData[this.primaryKey] = this.data.self[this.state.selectedId][
+				this.primaryKey
+			];
 
-    async activate() {
-        await this.switchState('activate');
-    }
+			response = await this.myRequests.send("/get_dependents", sendData);
+		}
 
+		this.myView.handleDependences(response.data);
+	}
 
-    async deactivate() {
-        await this.switchState('deactivate');
-    }
+	handleActiveOrDeactive() {
+		return this.data.self[this.state.selectedId].ativo == 1 ? 0 : 1;
+	}
 
-    async handleDependences() {
-        let response = {
-            data: {
-                dependences: [],
-                dependence_type: '',
-            }
-        };
+	addNewObject(data, response) {
+		data.ativo = 1;
+		data[this.primaryKey] = response.data.id;
+		if (response.data.new !== undefined) {
+			this.data.self.push(response.data.new);
+		} else {
+			this.data.self.push(data);
+		}
+	}
 
-        if (this.verifyDependences) {
-            const sendData = {};
-            sendData[this.primaryKey] = this.data.self[this.state.selectedId][this.primaryKey];
+	updateObject(data) {
+		Object.assign(this.data.self[this.state.selectedId], data);
+	}
+	handleFillFields() {
+		this.fillFields(this.data.self[this.state.selectedId], this.fields);
+	}
 
-            response = await this.myRequests.send('/get_dependents', sendData);
-        }
+	fillFields(object, fields) {
+		fields.forEach(field => {
+			$(`#${field}`).val(object[field]);
+		});
+	}
 
-        this.myView.handleDependences(response.data);
-    }
+	clearSelectedId() {
+		this.state.selectedId = undefined;
+	}
 
-    handleActiveOrDeactive() {
-        return (this.data.self[this.state.selectedId].ativo == 1) ? 0 : 1;
-    }
+	handleFilter(target) {
+		this.myView.filter(this.data.self, target);
+	}
 
-    addNewObject(data, response) {
-        data.ativo = 1;
-        data[this.primaryKey] = response.data.id;
+	setSelectedId(id) {
+		this.state.selectedId = id;
+	}
 
-        if (response.data.new !== undefined) {
-            this.data.self.push(response.data.new);
-        } else {
-            this.data.self.push(data);
-        }
-    }
-
-    updateObject(data) {
-        Object.assign(this.data.self[this.state.selectedId], data);
-    }
-
-    handleFillFields() {
-        this.fillFields(this.data.self[this.state.selectedId], this.fields);
-    }
-
-    fillFields(object, fields) {
-        fields.forEach(field => {
-            $(`#${field}`).val(object[field]);
-        });
-    }
-
-    clearSelectedId() {
-        this.state.selectedId = undefined;
-    }
-
-    handleFilter(target) {
-        this.myView.filter(this.data.self, target);
-    }
-
-    setSelectedId(id) {
-        this.state.selectedId = id;
-    }
-
-    getSelectedId(){
-        return this.state.selectedId;
-    }
+	getSelectedId() {
+		return this.state.selectedId;
+	}
 }

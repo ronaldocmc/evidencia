@@ -292,7 +292,7 @@ class Ordem_Servico extends CRUD_Controller
 
     private function insert()
     {
-        $this->load->helper('insert_images');
+        $this->load->helper('images');
         $this->ordem_servico->__set('localizacao_fk', $this->localizacao->insert());
         $this->ordem_servico->__set('funcionario_fk', $this->session->user['id_user']);
 
@@ -344,7 +344,7 @@ class Ordem_Servico extends CRUD_Controller
     {
         try {
             $this->load->helper('exception');
-            $this->load->helper('insert_images');
+            $this->load->helper('images');
 
             $now = $this->now();
 
