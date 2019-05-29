@@ -147,7 +147,6 @@ class GenericControl {
 	addNewObject(data, response) {
 		data.ativo = 1;
 		data[this.primaryKey] = response.data.id;
-
 		if (response.data.new !== undefined) {
 			this.data.self.push(response.data.new);
 		} else {
@@ -158,7 +157,6 @@ class GenericControl {
 	updateObject(data) {
 		Object.assign(this.data.self[this.state.selectedId], data);
 	}
-
 	handleFillFields() {
 		this.fillFields(this.data.self[this.state.selectedId], this.fields);
 	}
