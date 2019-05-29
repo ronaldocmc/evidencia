@@ -44,10 +44,9 @@ class ViewController extends AuthorizationController
         $this->session->set_flashdata('scripts', [
             0 => base_url('assets/js/constants.js'),
             1 => base_url('assets/js/dashboard/dashboard/dashboard.js'),
-            2 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            3 => base_url('assets/vendor/datatables/datatables.min.js'),
-            4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            5 => base_url('assets/js/utils.js'),
+            2 => base_url('assets/vendor/datatables/datatables.min.js'),
+            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            4 => base_url('assets/js/utils.js'),
         ]);
         load_view([
             0 => [
