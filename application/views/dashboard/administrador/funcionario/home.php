@@ -196,6 +196,7 @@
                         <li class="active">Informações Pessoais</li>
                         <li>Acesso</li>
                         <li>Profissional</li>
+                        <li>Foto</li>
 
                         <li class="d-none superusuario">Identificação</li>
                     </ul>
