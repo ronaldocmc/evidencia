@@ -18,21 +18,28 @@ class View extends GenericView {
 		let entities = [];
 		let exists;
 		let check_all;
-		let tooltip;
 
 		let tooltip_texts = {
 			"Alterar e Criar": "Permissão de criação e alteração de dados",
 			"Desativar": "Permitir que essa função desative itens",
 			"Ativar": "Permitir que essa função ative itens",
 			"Ver": "Permissão de visualização de dados de uma entidade",
-			"Modificar Situação": "Permitir que a função modifique a situaçãod euma Ordem de Serviço",
-			"Excluir": "Permitir que a função remova uma Ordem de Serviço completamente",
+			"Modificar situacao":
+				"Permitir que a função modifique a situação de uma Ordem de Serviço",
+			"Excluir":
+				"Permitir que a função remova uma Ordem de Serviço completamente",
 			"Alterar senha": "Permitir a alteração de senha",
-			"Receber Relatório": "Permitir que funcionários com esse cargo recebam relatórios",
-			"Trocar Funcionário": "Permitir que portadores dessa função alterem a designação de funcionários para relatórios",
-			"Acessar Web": "Permissão que funcionários com essa funções sejam capazes de acessar a aplicação Web",
-			"Acessar App": "Permissão que funcionários com essa funções sejam capazes de acessar o app",
-		}
+			"Criar relatório":
+				"Permitir que funcionários com essa função criem relatórios",
+			"Receber relatório":
+				"Permitir que funcionários com essa função recebam relatórios",
+			"Trocar funcionário":
+				"Permitir que portadores dessa função alterem a designação de funcionários para relatórios",
+			"Acessar Web":
+				"Permissão que funcionários com essa funções sejam capazes de acessar a aplicação Web",
+			"Acessar":
+				"Permissão que funcionários com essa funções sejam capazes de acessar o app"
+		};
 
 		permissions.forEach(permission => {
 			exists = false;
@@ -41,7 +48,8 @@ class View extends GenericView {
 				"acao_nome",
 				"permissao_pk",
 				permission,
-				"permissoes"
+				"permissoes",
+				tooltip_texts
 			);
 
 			entities.forEach(e => {
@@ -59,11 +67,7 @@ class View extends GenericView {
 				);
 				entities.push(permission.entidade);
 				title = this.generateTitle(permission.entidade, 4);
-				tooltip = this.generateToolTip(permission.entidade);
-				$(`#${permission.entidade.split(" ").join("_")}`).append(title);
-				$(`#${permission.entidade.split(" ").join("_")}`).append(
-					tooltip + "<br>"
-				);
+				$(`#${permission.entidade.split(" ").join("_")}`).append(title + '<br>');
 			}
 
 			$(`#${permission.entidade.split(" ").join("_")}`).append(
@@ -87,6 +91,22 @@ class View extends GenericView {
 		});
 	}
 
+	generateTitle(text, size) {
+		let title = `<h${size} style="display:inline-block; margin-right:10pt;">${text}</h${size}>`;
+		return title;
+	}
+
+	generateCheckBox(inputText, inputValue, data, name, help_text) {
+		let render = `<input type='checkbox'
+        id='id-${data[inputValue]}'
+        name='${name}'>
+        <label for='id-${data[inputValue]}' data-toggle='tooltip' title='${
+			help_text[data[inputText]]
+		}' data-selector="true"> ${data[inputText]} </label>`;
+
+		return render;
+	}
+
 	generateCheckAll(entity) {
 		let render = `<div title='Selecionar todas as permissões.' style='display:inline-block'>
 		            <input class='check_all' type='checkbox'
@@ -95,11 +115,6 @@ class View extends GenericView {
                     <label for='id-${entity}'> Selecionar Todas </label></div>`;
 
 		return render;
-	}
-
-	generateToolTip(tooltip_text) {
-		let tooltip = `<i class="fas fa-question-circle" data-toggle="tooltip" data-placement="auto" data-selector="true" title="${tooltip_text}" style="display: inline-block"></i>`;
-		return tooltip;
 	}
 }
 
