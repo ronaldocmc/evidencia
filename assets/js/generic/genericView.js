@@ -329,4 +329,10 @@ class GenericView {
         let title = `<h${size}>${text}</h${size}>`;
         return title;
     }
+
+    generateHelpText(entidade){
+		let help_text = `<i class="fas fa-question-circle" data-toggle="collapse" data-target="#help-${entidade}" style="cursor:help"></i>`;
+		help_text += `<div id="help-${entidade}" class="collapse">Permissões relativas a ${entidade}</div><br>`
+		return help_text;
+	}
 }
