@@ -59,6 +59,17 @@ class View extends GenericView {
         const renderData = data.filter(d => (d.situacao_atual_fk == type || type == -1 ));
         this.render(renderData);
     }
+
+    generateButtons(condition, i) {
+        return `<div class='btn-group'>` +
+            (
+                this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
+                this.createButton('delete', 'delete', 'danger', 'Excluir Ordem', i, 'fa-times') +
+                this.createButton('create_history', 'create_history', 'success', 'Criar histórico', i, 'fa-calendar-plus') +
+                this.createButton('info', 'info', 'info', 'Ver informações', i, 'fa-eye')
+            ) +
+            `</div>`;
+    }
 }
 
 class Request extends GenericRequest {
