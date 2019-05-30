@@ -332,20 +332,9 @@ class GenericView {
 
     generateHelpText(entidade){
 		let help_text = `<i class="fas fa-question-circle" data-toggle="collapse" data-target="#help-${entidade}" style="cursor:help"></i>`;
-		help_text += `<div id="help-${entidade}" class="collapse">Permissões relativas a ${entidade}</div><br>`
 		return help_text;
+		help_text += `<div id="help-${entidade}" class="collapse">Permissões relativas a ${entidade}</div><br>`
 	}
-    generateButtons(condition, i) {
-        return `<div class='btn-group'>` +
-            (
-                this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
-                this.createButton('delete', 'delete', 'danger', 'Excluir Ordem', i, 'fa-times') +
-                this.createButton('create_history', 'create_history', 'success', 'Criar histórico', i, 'fa-calendar-plus') +
-                this.createButton('info', 'info', 'info', 'Ver informações', i, 'fa-eye')
-            ) +
-            `</div>`;
-    }
-
     checkElementDom(id) {
         return document.getElementById(id);
     }
