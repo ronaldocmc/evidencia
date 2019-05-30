@@ -111,7 +111,7 @@ class Ordem_Servico_model extends MY_Model
 
         foreach ($where as $field => $value) {
             if ($value !== '') {
-                $this->CI->db->where($field, $value);
+                $this->CI->db->where_in($field, $value);
             }
         }
 
