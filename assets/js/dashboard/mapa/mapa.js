@@ -140,31 +140,46 @@ function createCurrentSituationOject(os) {
     return data;
 }
 
-departamento.change(function () {
-    if (departamento.val() != -1) {
-        muda_depto();
-    } else {
-        all_tipos_servicos();
-    }
-}).change();
 
-tipo_servico.change(function () {
-    if (tipo_servico.val() != -1) {
-        muda_tipo_servico();
-    } else {
-        all_servicos();
+function has_all(selected) {
+    for (var i = 0; i < selected.length; i++) {
+        if (selected[i] === '-1') {
+            return true;
+        }
     }
-}).change();
+
+    return false;
+}
+
+
+departamento.on('click', () => {
+    if (has_all(departamento.val())) {
+        all_tipos_servicos();
+    } else  {
+        muda_depto();
+    }
+});
+
+
+tipo_servico.on('click', () => {
+    if (has_all(tipo_servico.val())) {
+        all_servicos();
+    } else  {
+        muda_tipo_servico();
+    }
+});
+
 
 function all_tipos_servicos() {
     $("#tipo_servico_pk option").remove();
 
     tipo_servico.append('<option value="-1">Todos</option>');
+    
     for (var i = 0; i < tipos_servicos.length; i++) {
         tipo_servico.append('<option value="' + tipos_servicos[i].tipo_servico_pk + '">' + tipos_servicos[i].tipo_servico_nome + '</option>');
     }
-    all_servicos();
 
+    all_servicos();
 }
 
 function all_servicos() {
@@ -182,42 +197,43 @@ function add_options_tipo_servico() {
 
     tipo_servico.append('<option value="-1">Todos</option>');
 
-    var depto = $("#departamento_pk option:selected").val();
-    for (var i = 0; i < tipos_servicos.length; i++) {
-        if (tipos_servicos[i].departamento_fk == depto) {
-            tipo_servico.append('<option value="' + tipos_servicos[i].tipo_servico_pk + '">' + tipos_servicos[i].tipo_servico_nome + '</option>');
-        }
+    let deptos = departamento.val();
 
+    for (var i = 0; i < tipos_servicos.length; i++) {
+        for (var j = 0; j < deptos.length; j++) {
+            
+            if (tipos_servicos[i].departamento_fk == deptos[j]) {
+                tipo_servico.append('<option value="' + tipos_servicos[i].tipo_servico_pk + '">' + tipos_servicos[i].tipo_servico_nome + '</option>');
+                break;
+            }
+
+        }
     }
 }
 
 function add_options_servico() {
     $("#servico_pk option").remove();
-
     servico.append('<option value="-1">Todos</option>');
 
-    var tipo_servico = $("#tipo_servico_pk option:selected").val();
+    var tipos = tipo_servico.val();
 
     for (var i = 0; i < servicos.length; i++) {
+        for (var j = 0; j < tipos.length; j++) {
 
-        if (servicos[i].tipo_servico_fk == tipo_servico) {
-
-            servico.append('<option value="' + servicos[i].servico_pk + '">' + servicos[i].servico_nome + '</option>');
+            if (servicos[i].tipo_servico_fk == tipos[j]) {
+                servico.append('<option value="' + servicos[i].servico_pk + '">' + servicos[i].servico_nome + '</option>');
+                break;
+            }
 
         }
 
     }
-
 }
 
 function muda_depto() {
-
-    var depto = $("#departamento_pk option:selected").val();
-
     add_options_tipo_servico();
 
     add_options_servico();
-
 }
 
 function muda_tipo_servico() {
