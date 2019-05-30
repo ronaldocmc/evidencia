@@ -182,7 +182,18 @@ class Control extends GenericControl {
 	}
 
 	save() {
+		this.myView.initLoad();
 		const data = {};
+
+		if (!TestaCPF($('#funcionario_cpf').val())) {
+			this.myView.showMessage(
+				"failed",
+				"Falha",
+				"Digite um CPF válido!"
+			);
+			return;
+		}
+
 		try {
 			const index = this.state.selectedId;
 
@@ -208,6 +219,8 @@ class Control extends GenericControl {
 				data.funcionario_senha = $("#funcionario_senha").val();
 			}
 			super.save(data);
+		} finally {
+			this.myView.endLoad();
 		}
 	}
 

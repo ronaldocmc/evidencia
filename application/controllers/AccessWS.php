@@ -72,7 +72,7 @@ class AccessWS extends MY_Controller
         $this->load->library('form_validation');
         $this->load->library('Authorization');
         $this->load->model('Funcionario_model', 'funcionario_model');
-        $this->load->model('Tentativa_model');
+        $this->load->model('Tentativa_model', 'tentativa');
 
         $authorization = new Authorization();
 
@@ -116,7 +116,7 @@ class AccessWS extends MY_Controller
 
                 // var_dump($user);die();
 
-                if ($user[0]) {
+                if ($user) {
                     $user = $user[0];
 
                     if ($user->ativo == 0) {
@@ -155,15 +155,15 @@ class AccessWS extends MY_Controller
                     $dados['dados'] = $d;
 
                     $this->response->set_data($dados);
-                    $this->tentativa_model->delete_ip($this->input->ip_address());
+                    $this->tentativa->delete_ip($this->input->ip_address());
                 } else {
                     $this->response->set_code(Response::NOT_FOUND);
                     $this->response->set_message('Usuário não encontrado');
-                    $attempt = [
-                        'tentativa_ip' => $this->input->ip_address(),
-                        'tentativa_tempo' => $today,
-                    ];
-                    $this->tentativa_model->insert($attempt);
+
+                    $this->tentativa->__set('tentativa_ip', $this->input->ip_address());
+                    $this->tentativa->__set('tentativa_tempo', $today);
+                    
+                    $this->tentativa->insert();
                 }
             } else {
                 $this->response->set_code(Response::FORBIDDEN);

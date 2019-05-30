@@ -1,4 +1,3 @@
-
 /* 
     Props {
       config: Object {
@@ -18,223 +17,250 @@
 // }
 
 class GenericMap {
+	constructor(props) {
+		this.state = {
+			map: undefined,
+			mapId: props.mapId || "map",
+			geocoder: null,
+			insideHideDiv: props.insideHideDiv,
 
-    constructor(props) {
+			mapConfig: props.config,
+			markerConfig: props.markerConfig,
 
-        this.state = {
-            map: undefined,
-            mapId: props.mapId || 'map',
-            geocoder: null,
-            insideHideDiv: props.insideHideDiv,
+			marker: null,
 
-            mapConfig: props.config,
-            markerConfig: props.markerConfig,
+			fields: {
+				sublocality: props.input.sublocality,
+				locality: props.input.locality,
+				route: props.input.street,
+				street_number: props.input.street_number,
+				administrative_area_level_1: props.input.state,
+				lat: props.input.lat,
+				long: props.input.long
+			},
 
-            marker: null,
+			markers: props.data,
 
-            fields: {
-                sublocality: props.input.sublocality,
-                locality: props.input.locality,
-                route: props.input.street,
-                street_number: props.input.street_number,
-                administrative_area_level_1: props.input.state,
-                lat: props.input.lat,
-                long: props.input.long
-            },
+			lastPositionClicked: {
+				latitude: null,
+				longitude: null
+			},
 
-            markers: props.data,
+			steps: {
+				useGeocoder: props.useGeocoder,
+				useCreateMarker: props.useCreateMarker
+			}
+		};
+	}
 
-            lastPositionClicked: {
-                latitude: null,
-                longitude: null,
-            },
+	initMap() {
+		const { mapId, mapConfig } = this.state;
 
-            steps: {
-                useGeocoder: props.useGeocoder,
-                useCreateMarker: props.useCreateMarker,
-            }
-        }
+		this.state.map = new google.maps.Map(
+			document.getElementById(mapId),
+			mapConfig
+		);
+		this.state.geocoder = new google.maps.Geocoder();
+		this.state.map.addListener("click", event => this.handleClick(event));
 
-    }
+		if (this.state.insideHideDiv) {
+			this.handleDivOpen();
+		}
 
-    initMap() {
-        const { mapId, mapConfig } = this.state;
+		this.renderMarkers();
+	}
 
-        this.state.map = new google.maps.Map(document.getElementById(mapId), mapConfig);
-        this.state.geocoder = new google.maps.Geocoder();
-        this.state.map.addListener('click', (event) => this.handleClick(event));
+	renderMarkers() {
+		const { markers } = this.state;
 
-        if (this.state.insideHideDiv) {
-            this.handleDivOpen();
-        }
+		markers.forEach(marker => {
+			this.createFilledMarker(marker);
+		});
 
-        this.renderMarkers();
-    }
+		// var marker = new google.maps.Marker({
+		//     position: {
+		//         lat: parseFloat(ordem.localizacao_lat),
+		//         lng: parseFloat(ordem.localizacao_long)
+		//     },
+		//     map: main_map,
+		//     icon: imagem,
+		//     id: ordem.ordem_servico_pk,
+		//     departamento: ordem.departamento_fk,
+		//     tipo_servico: ordem.tipo_servico_pk,
+		//     servico: ordem.servico_fk,
+		//     situacao: ordem.situacao_atual_fk,
+		//     data_criacao: ordem.ordem_servico_criacao,
+		//     prioridade: ordem.prioridade_fk,
+		//     setor: ordem.setor_fk,
+		//     title: ordem.localizacao_rua + ", " + ordem.localizacao_num + " - " + ordem.localizacao_bairro
+		// });
 
-    renderMarkers() {
-        const { markers } = this.state;
+		// marker.addListener('click', function () {
+		//     main_map.panTo(marker.getPosition());
+		//     request_data(this.id, marker.setor);
+		//     $('#v_evidencia').modal('show');
+		// });
+	}
 
-        markers.forEach(marker => {
+	getImage(prioridade) {
+		let imagem = "../assets/img/icons/Markers/Status/";
 
-            this.createFilledMarker(marker);
+		switch (prioridade) {
+			case "1": {
+				imagem += "prioridade_baixa.png";
+				break;
+			}
+			case "2": {
+				imagem += "prioridade_alta.png";
+				break;
+			}
+			case "4": {
+				imagem += "prioridade_media.png";
+				break;
+			}
+		}
+		return imagem;
+	}
 
-        });
+	fillInputs(address, location) {
+		const {
+			sublocality,
+			locality,
+			route,
+			street_number,
+			administrative_area_level_1,
+			lat,
+			long
+		} = this.state.fields;
 
+		address.forEach(data => {
+			if (this.is(data, "sublocality") && sublocality != false) {
+				$(`#${sublocality}`).val(data.long_name);
+			}
+			if (
+				(this.is(data, "locality") || this.is(data, "political")) &&
+				locality != false
+			) {
+				if (typeof this.handleCity == "function") {
+					this.handleCity(locality, data.long_name);
+				} else {
+					$(`#${locality}`).val(data.long_name);
+				}
+			}
+			if (this.is(data, "route") && route != false) {
+				$(`#${route}`).val(data.long_name);
+			}
+			if (this.is(data, "street_number") && street_number != false) {
+				$(`#${street_number}`).val(data.long_name);
+			}
+			if (
+				this.is(data, "administrative_area_level_1") &&
+				administrative_area_level_1 != false
+			) {
+				if (
+					$(
+						`#${administrative_area_level_1} option:selected`
+					).text() != endereco[i].short_name
+				) {
+					$(`#${administrative_area_level_1} option`)
+						.filter(function() {
+							return this.text == endereco[i].short_name;
+						})
+						.attr("selected", true);
+					estado = endereco[i].short_name;
+				}
+			}
+		});
 
-        // var marker = new google.maps.Marker({
-        //     position: {
-        //         lat: parseFloat(ordem.localizacao_lat),
-        //         lng: parseFloat(ordem.localizacao_long)
-        //     },
-        //     map: main_map,
-        //     icon: imagem,
-        //     id: ordem.ordem_servico_pk,
-        //     departamento: ordem.departamento_fk,
-        //     tipo_servico: ordem.tipo_servico_pk,
-        //     servico: ordem.servico_fk,
-        //     situacao: ordem.situacao_atual_fk,
-        //     data_criacao: ordem.ordem_servico_criacao,
-        //     prioridade: ordem.prioridade_fk,
-        //     setor: ordem.setor_fk,
-        //     title: ordem.localizacao_rua + ", " + ordem.localizacao_num + " - " + ordem.localizacao_bairro
-        // });
+		if (lat != false && long != false) {
+			$(`#${lat}`).val(location.lat);
+			$(`#${long}`).val(location.lng);
+		}
+	}
 
-        // marker.addListener('click', function () {
-        //     main_map.panTo(marker.getPosition());
-        //     request_data(this.id, marker.setor);
-        //     $('#v_evidencia').modal('show');
-        // });
+	async translateLocation(location) {
+		const { geocoder } = this.state;
 
-    }
+		return new Promise((resolve, reject) => {
+			geocoder.geocode({ location }, function(results, status) {
+				if (status === "OK") {
+					if (results[0]) {
+						resolve(results[0]);
+					} else {
+						reject("ERROR");
+					}
+				}
+			});
+		});
+	}
 
-    getImage(prioridade) {
-        let imagem = '../assets/img/icons/Markers/Status/';
+	createMarker(location) {
+		if (this.state.marker != null) {
+			this.state.marker.setMap(null);
+		}
 
-        switch (prioridade) {
-            case "1": {
-                imagem += "prioridade_baixa.png";
-                break;
-            }
-            case "2": {
-                imagem += "prioridade_alta.png";
-                break;
-            }
-            case "4": {
-                imagem += "prioridade_media.png";
-                break;
-            }
-        }
-        return imagem;
-    }
+		this.state.marker = new google.maps.Marker({
+			position: location,
+			map: this.state.map
+		});
+	}
 
+	createFilledMarker(marker) {
+		let newMarker = new google.maps.Marker({
+			position: {
+				lat: parseFloat(marker.localizacao_lat),
+				lng: parseFloat(marker.localizacao_long)
+			},
+			map: this.state.map,
+			// icon: this.getImage(marker.prioridade_fk),
+			props: marker
+		});
 
-    fillInputs(address, location) {
-        const { sublocality, locality, route, street_number, administrative_area_level_1, lat, long} = this.state.fields;
+		if (this.state.markerConfig.clickable) {
+			newMarker.addListener("click", () => {
+				this.handleMarkerClick(marker);
+			});
+		}
 
-        address.forEach((data) => {
+		return newMarker;
+	}
 
-            if (this.is(data, 'sublocality') && sublocality != false) {
-                $(`#${sublocality}`).val(data.long_name);
-            }
-            if ((this.is(data, 'locality') || this.is(data, 'political')) && locality != false) {
-                if (typeof this.handleCity == 'function') {
-                    this.handleCity(locality, data.long_name);
-                } else {
-                    $(`#${locality}`).val(data.long_name);
-                }
-            }
-            if (this.is(data, 'route') && route != false) {
-                $(`#${route}`).val(data.long_name);
-            }
-            if (this.is(data, 'street_number') && street_number != false) {
-                $(`#${street_number}`).val(data.long_name);
-            }
-            if (this.is(data, 'administrative_area_level_1') && administrative_area_level_1 != false) {
+	getCoordsFromLocal(local) {
+		this.state.geocoder.geocode({ address: local }, function(
+			results,
+			status
+		) {
+			if (status === "OK") {
+				if (results.length >= 1){
+					const location = {
+						lat: results[0].geometry.location.lat(),
+						lng: results[0].geometry.location.lng()
+					};
+					console.log('inside: ', location);
+					return location;
+				}
+			} else {
+				console.log(
+					"Geocode was not successful for the following reason: " +
+						status
+				);
+			}
+		});
+	}
 
-                if ($(`#${administrative_area_level_1} option:selected`).text() != endereco[i].short_name) {
+	is(data, type) {
+		return data.types.indexOf(type) !== -1;
+	}
 
-                    $(`#${administrative_area_level_1} option`).filter(function () {
-                        return this.text == endereco[i].short_name;
-                    }).attr('selected', true);
-                    estado = endereco[i].short_name;
-                }
-            }
+	getMap() {
+		return this.state.map;
+	}
 
-        });
+	setMap(map) {
+		this.state.map = map;
+	}
 
-        if(lat != false && long != false){
-
-            $(`#${lat}`).val(location.lat);
-            $(`#${long}`).val(location.lng);
-
-        }
-        
-    }
-
-    async translateLocation(location) {
-        const { geocoder } = this.state;
-
-        return new Promise((resolve, reject) => {
-
-            geocoder.geocode({ location }, function (results, status) {
-                if (status === 'OK') {
-                    if (results[0]) {
-
-                        resolve(results[0]);
-                    } else {
-
-                        reject("ERROR");
-                    }
-                } else {
-
-                }
-            });
-        });
-    }
-
-    createMarker(location) {
-        if (this.state.marker != null) {
-            this.state.marker.setMap(null);
-        }
-
-        this.state.marker = new google.maps.Marker({
-            position: location,
-            map: this.state.map
-        });
-    }
-
-    createFilledMarker(marker) {
-
-        let newMarker = new google.maps.Marker({
-            position: {
-                lat: parseFloat(marker.localizacao_lat),
-                lng: parseFloat(marker.localizacao_long)
-            },
-            map: this.state.map,
-            // icon: this.getImage(marker.prioridade_fk),
-            props: marker,
-        });
-
-        if (this.state.markerConfig.clickable) {
-            newMarker.addListener('click', () => { this.handleMarkerClick(marker); });
-        }
-
-        return newMarker;
-    }
-
-    is(data, type) {
-        return (data.types.indexOf(type) !== -1)
-    }
-
-    getMap() {
-        return this.state.map;
-    }
-
-    setMap(map) {
-        this.state.map = map;
-    }
-
-    setMapId(id){
-        this.state.mapId = id;
-    }
+	setMapId(id) {
+		this.state.mapId = id;
+	}
 }

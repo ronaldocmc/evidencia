@@ -196,6 +196,7 @@
                         <li class="active">Informações Pessoais</li>
                         <li>Acesso</li>
                         <li>Profissional</li>
+                        <li>Foto</li>
 
                         <li class="d-none superusuario">Identificação</li>
                     </ul>
@@ -228,11 +229,10 @@
                                     </label>
                                 </div>
                                 <div class="col-12 col-md-10">
-                                    <input type="text" id="funcionario_cpf" name="funcionario_cpf" placeholder="CPF"
-                                        class="form-control cpf-input" required>
+                                    <input type="text" id="funcionario_cpf" name="funcionario_cpf"
+                                        class="form-control cpf-input" minlength="11" maxlength="11" required>
                                     <small class="form-text text-muted">Por favor, informe o CPF do
                                         funcionário</small>
-
                                 </div>
                             </div>
                         </div>
