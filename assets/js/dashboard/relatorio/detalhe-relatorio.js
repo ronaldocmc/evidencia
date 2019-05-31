@@ -112,50 +112,6 @@ function padroniza_data(data){
     return ((date.getDate() + 1) + ' / ' + (date.getMonth() + 1) +' / ' + date.getFullYear());
 }
 
-//Função que aguarda o clique no botão editar e preenche os campos do modal
-$(document).on('click', '.btn_editar', function (event) 
-{
-    $('#ordem_servico_pk').val(ordens_servico[$(this).val()]['ordem_servico_pk']);
-    posicao_selecionada = $(this).val();
-
-    //var data = get_departamento_and_tiposervico(ordens_servico[posicao_selecionada]['tipo_servico_fk'])//Aqui eu vou fazer uma função que vai requisitar percorrer departamentos e encontrar o fk
-    var servico_selecionado_pk = ordens_servico[posicao_selecionada]['ordem_servico_criacao'];
-    $('#os_data').val(ordens_servico[posicao_selecionada]['ordem_servico_criacao']);
-    $('#codigo_os').val(ordens_servico[posicao_selecionada]['ordem_servico_cod']);
-    $('#ordem_servico_pk').val(parseInt(ordens_servico[posicao_selecionada]['ordem_servico_pk']));
-    $('#ordem_servico_desc').val(ordens_servico[posicao_selecionada]['ordem_servico_desc']);
-    $('#departamento').val(ordens_servico[posicao_selecionada]['departamento_nome']);
-    $('#tipo_servico').val(ordens_servico[posicao_selecionada]['tipo_servico_nome']);
-    $('#servico_pk').val(ordens_servico[posicao_selecionada]['servico_nome']);
-    $('#situacao_pk').val(ordens_servico[posicao_selecionada]['situacao_nome']);
-    // console.log($('#situacao_pk').val());
-    $('#prioridade_pk').val(ordens_servico[posicao_selecionada]['prioridade_nome']);
-    $('#procedencia_pk').val(ordens_servico[posicao_selecionada]['procedencia_nome']);
-    $('#setor_pk').val(ordens_servico[posicao_selecionada]['setor_nome']);
-    $("#latitude").val(ordens_servico[posicao_selecionada]['localizacao_lat']);
-    $("#longitude").val(ordens_servico[posicao_selecionada]['localizacao_long']);
-    $("#image-upload-div").hide();
-    $("#bairro-input").val(ordens_servico[posicao_selecionada]['localizacao_bairro']);
-    $("#logradouro-input").val(ordens_servico[posicao_selecionada]['localizacao_rua']);   
-    $("#numero-input").val(ordens_servico[posicao_selecionada]['localizacao_num']);    
-    $("#estado_pk").val("SP");
-    $("#cidade-input").val("Presidente Prudente");
-    $("#complemento-input").val(ordens_servico[posicao_selecionada]['localizacao_ponto_referencia']);
-
-    var data_local;
-    var local = "";
-
-    var latlng = {lat: parseFloat(ordens_servico[posicao_selecionada]['localizacao_lat']), lng: parseFloat(ordens_servico[posicao_selecionada]['localizacao_long'])}
-    populaLatLong(latlng);
-    main_map.setCenter(latlng);
-    criarMarcacao(latlng);
-
-    $("#logradouro-input").removeClass('loading');
-    $("#bairro-input").removeClass('loading');
-    $('#ce_ordem_servico').modal('show');
-
-});
-
 
 $('.save_situacao').click(function () {
     let os = $(this).val();

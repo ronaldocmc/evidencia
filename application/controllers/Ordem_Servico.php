@@ -319,7 +319,7 @@ class Ordem_Servico extends CRUD_Controller
     private function update()
     {
         $this->ordem_servico->__set('ordem_servico_pk', $this->input->post('ordem_servico_pk'));
-        $this->ordem_servico->__set('localizacao_fk', $this->input->post('localizacao_pk'));
+        $this->ordem_servico->__set('localizacao_fk', $this->localizacao->insert());
         $this->ordem_servico->__set('ordem_servico_atualizacao', $this->now());
         $this->ordem_servico->update();
     }
