@@ -161,6 +161,8 @@ Nós utilizamos [SemVer](https://semver.org/lang/pt-BR/) para versionamento. Par
 
 - [Robson Cruz](https://www.linkedin.com/in/robson-cruz-922931157/) - [@deadpyxel](https://github.com/deadpyxel)
 
+- [Maurício Gabriel Torres Rodrigues](https://www.linkedin.com/in/maur%C3%ADcio-rodrigues-6b5196170/) - [@mrodrigs](https://github.com/mrodrigs)
+
 ## Professor Orientador
 
 - [Ronaldo Celso Messias Correia](http://lattes.cnpq.br/2420360066008780)
