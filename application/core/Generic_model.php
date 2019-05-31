@@ -18,6 +18,7 @@ class Generic_Model extends CI_Model
     {
         $this->CI->db->select($select);
         $this->CI->db->from($this->getTableName());
+
         if ($where !== null) {
             if (is_array($where)) {
                 foreach ($where as $field => $value) {

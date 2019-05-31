@@ -332,8 +332,8 @@ class GenericView {
 
     generateHelpText(entidade){
 		let help_text = `<i class="fas fa-question-circle" data-toggle="collapse" data-target="#help-${entidade}" style="cursor:help"></i>`;
-		return help_text;
 		help_text += `<div id="help-${entidade}" class="collapse">Permissões relativas a ${entidade}</div><br>`
+		return help_text;
 	}
     checkElementDom(id) {
         return document.getElementById(id);

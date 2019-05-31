@@ -215,13 +215,12 @@ class Ordem_Servico extends CRUD_Controller
                     ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
                 ]
             );
-
         $procedencias = $this->procedencia->get_all(
-                '*',
-                null,
-                -1,
-                -1
-            );
+                        '*',
+                        null,
+                        -1,
+                        -1
+                    );
 
         $setores = $this->setor->get_all(
                 '*',
@@ -455,7 +454,7 @@ class Ordem_Servico extends CRUD_Controller
                 ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk'],
                 ['table' => 'setores', 'on' => 'setores.setor_pk = ordens_servicos.setor_fk'],
                 ['table' => 'servicos', 'on' => 'servicos.servico_pk = ordens_servicos.servico_fk'],
-                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = ordens_servicos.situacao_atual_fk']
+                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = ordens_servicos.situacao_atual_fk'],
             ]
         );
         $os_hist = $this->ordem_servico->get_historico($ordem_servico_pk);

@@ -12,64 +12,126 @@ var default_image =
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9AAAAMFBMVEXMzMz////Jycn19fXQ0ND8/Pzl5eXf39/U1NT4+Pjt7e3q6ury8vLOzs7n5+fb29vHz2+HAAACFUlEQVR4nO3c246qMABAUSzITZH//9tR8QKIYo+J5qRrvQ1gYnaYUoohywAAAAAAAAAAAAAAAAAAAIDfCJ/49Zf/stDmHyh+/fW/Kuw3n9j++vt/Vdh+FGuT1KklVgSxIgyx2jLeIdVY1T/MGrp0Y8V/shDrfWJFEOu05c1wYoWiL8uqeKdX8rFCO8ye9t36J5OP1URMNhOPFfL7zHz9DjnxWP34PuawNm6lHWu6WrNdiBXq0cbEY01vkevHY8vxHEOsV7FCNdkq1otY4TykbW+TisRj5eNW8zErXIb//Lo98VjVONZuGivU1x3tZUfasbLQjGLN5vD1fU851Eo8Vtbd15hnI1YxXn3uz0enHivLLlOtfH4rPV2pPxcSK9TlblfW8wlpM2k1DP5iDU/z58fkm5nTJVGsxUMWHlofr5ViLR3RPrY6fUKshQN2S62Ol0uPwh73H5Zbbba1WPPd1ZNWx1pizfY+b3WReqzxY7FGrJHHWF3Z3f/qxRqZxzqvLrS3KfzqqZVyrOvFL++HefzqoJVurNDdb2yaMiwsn4p1W8+ajVC7IpweUoh1NV4pfZyr74//ja9/R5lmrFAsjuVN//rUSjLW85HcmXVzjbW4tPCGBGMdVmfqYmV+Bx9FrAhiRRArglgRxIogVgSxIogVQawIYkUQK4JXFcTwEowYXq8CAAAAAAAAAAAAAAAAAAAA/6U/gAcVDMYj22gAAAAASUVORK5CYII=";
 
 class View extends GenericView {
-    // FUNÇÃO GENÉRICA PARA PREENCHER UM SELECT
-    // PARA PREENCHER UM MULTIPLE SELECT
+	// FUNÇÃO GENÉRICA PARA PREENCHER UM SELECT
+	// PARA PREENCHER UM MULTIPLE SELECT
 
+	constructor() {
+		super();
+	}
 
-    constructor() {
-        super();
-    }
+	init(data, tableFields, primaryKey) {
+		super.init(data, tableFields, primaryKey);
 
-    init(data, tableFields, primaryKey) {
-        super.init(data, tableFields, primaryKey);
+		this.generateSelect(
+			data.departamentos,
+			"departamento_nome",
+			"departamento_pk",
+			"departamento_fk"
+		);
+		this.generateSelect(
+			data.tipos_servicos,
+			"tipo_servico_nome",
+			"tipo_servico_pk",
+			"tipo_servico_fk"
+		);
+		this.generateSelect(
+			data.servicos,
+			"servico_nome",
+			"servico_pk",
+			"servico_fk"
+		);
+		this.generateSelect(
+			data.procedencias,
+			"procedencia_nome",
+			"procedencia_pk",
+			"procedencia_fk"
+		);
+		this.generateSelect(
+			data.prioridades,
+			"prioridade_nome",
+			"prioridade_pk",
+			"prioridade_fk"
+		);
+		this.generateSelect(
+			data.situacoes,
+			"situacao_nome",
+			"situacao_pk",
+			"situacao_inicial_fk"
+		);
+		this.generateSelect(
+			data.municipios,
+			"municipio_nome",
+			"municipio_pk",
+			"localizacao_municipio"
+		);
+		this.generateSelect(data.setores, "setor_nome", "setor_pk", "setor_fk");
+	}
 
-        this.generateSelect(data.departamentos, 'departamento_nome', 'departamento_pk', 'departamento_fk');
-        this.generateSelect(data.tipos_servicos, 'tipo_servico_nome', 'tipo_servico_pk', 'tipo_servico_fk');
-        this.generateSelect(data.servicos, 'servico_nome', 'servico_pk', 'servico_fk');
-        this.generateSelect(data.procedencias, 'procedencia_nome', 'procedencia_pk', 'procedencia_fk');
-        this.generateSelect(data.prioridades, 'prioridade_nome', 'prioridade_pk', 'prioridade_fk');
-        this.generateSelect(data.situacoes, 'situacao_nome', 'situacao_pk', 'situacao_inicial_fk');
-        this.generateSelect(data.municipios, 'municipio_nome', 'municipio_pk', 'localizacao_municipio');
-        this.generateSelect(data.setores, 'setor_nome', 'setor_pk', 'setor_fk');
+	createJsonWithFields(fields) {
+		const dataContainer = {};
+		const dataName = {};
 
-    }
+		fields.forEach(field => {
+			dataContainer[field] = $(`#${field}`).val();
 
-    createJsonWithFields(fields) {
-        const dataContainer = {};
-        const dataName = {};
+			if ($(`#${field}`).is("select")) {
+				dataName[field] = $(`#${field} option:selected`).text();
+			}
+		});
 
-        fields.forEach(field => {
-            
-            dataContainer[field] = $(`#${field}`).val();
+		dataContainer.prioridade_nome = dataName["prioridade_fk"];
+		dataContainer.servico_nome = dataName["servico_fk"];
+		dataContainer.setor_nome = dataName["setor_fk"];
 
-            if($(`#${field}`).is('select')){
-                dataName[field] = $(`#${field} option:selected`).text();
-            }
-        });
+		return dataContainer;
+	}
 
-        dataContainer.prioridade_nome = dataName['prioridade_fk'];
-        dataContainer.servico_nome = dataName['servico_fk'];
-        dataContainer.setor_nome = dataName ['setor_fk'];
+	filter(data, target) {
+		const type = $(target).val();
+		const renderData = data.filter(
+			d => d.situacao_atual_fk == type || type == -1
+		);
+		this.render(renderData);
+	}
 
-        return dataContainer;
-    }
-    
-    filter(data, target) {
-        const type = $(target).val();
-        const renderData = data.filter(d => (d.situacao_atual_fk == type || type == -1 ));
-        this.render(renderData);
-    }
-
-    generateButtons(condition, i) {
-        return `<div class='btn-group'>` +
-            (
-                this.createButton('edit', 'save', 'primary', 'Editar', i, 'fa-edit') +
-                this.createButton('delete', 'delete', 'danger', 'Excluir Ordem', i, 'fa-times') +
-                this.createButton('create_history', 'create_history', 'success', 'Criar histórico', i, 'fa-calendar-plus') +
-                this.createButton('info', 'info', 'info', 'Ver informações', i, 'fa-eye')
-            ) +
-            `</div>`;
-    }
+	generateButtons(condition, i) {
+		return (
+			`<div class='btn-group'>` +
+			(this.createButton(
+				"edit",
+				"save",
+				"primary",
+				"Editar",
+				i,
+				"fa-edit"
+			) +
+				this.createButton(
+					"delete",
+					"delete",
+					"danger",
+					"Excluir Ordem",
+					i,
+					"fa-times"
+				) +
+				this.createButton(
+					"create_history",
+					"create_history",
+					"success",
+					"Criar histórico",
+					i,
+					"fa-calendar-plus"
+				) +
+				this.createButton(
+					"info",
+					"info",
+					"info",
+					"Ver informações",
+					i,
+					"fa-eye"
+				)) +
+			`</div>`
+		);
+	}
 }
 
 class Request extends GenericRequest {
@@ -216,30 +278,35 @@ class Control extends GenericControl {
 			local += $("#localizacao_num").val() + " ";
 			local += $("#localizacao_bairro").val();
 
-			await map.state.geocoder.geocode({ address: local }, 
+			await map.state.geocoder.geocode(
+				{ address: local },
 				async (results, status) => {
-				if (status === "OK") {
+					if (status === "OK") {
+						$("#localizacao_lat").val(
+							results[0].geometry.location.lat()
+						);
+						$("#localizacao_long").val(
+							results[0].geometry.location.lng()
+						);
 
-					$("#localizacao_lat").val(results[0].geometry.location.lat());
-					$("#localizacao_long").val(results[0].geometry.location.lng());
+						let response = this.save({
+							imagens: this.saveImages(),
+							situacao_atual_fk: $("#situacao_inicial_fk").val()
+						});
 
-					let response = this.save({
-						imagens: this.saveImages(),
-						situacao_atual_fk: $("#situacao_inicial_fk").val()
-					});
-			
-					if (response.code == 200) {
-						this.counter = 0;
-						$("#images_saved").html("");
+						if (response.code == 200) {
+							this.counter = 0;
+							$("#images_saved").html("");
+						}
 					}
 				}
-			});
-		}else{
+			);
+		} else {
 			let response = this.save({
 				imagens: this.saveImages(),
 				situacao_atual_fk: $("#situacao_inicial_fk").val()
 			});
-	
+
 			if (response.code == 200) {
 				this.counter = 0;
 				$("#images_saved").html("");
@@ -508,96 +575,95 @@ myControl.init();
 var map;
 
 initMap = () => {
-    map = new GenericMap({
-        mapId: 'map',
-        insideHideDiv: true,
-        config: {
-            center: { lat: -22.121265, lng: -51.383400 },
-            zoom: 13
-        },
-        markerConfig: {
-            unique: true,
-            clickable: true,
-            target: 'v_evidencia'
-        },
-        input: {
-            sublocality: 'localizacao_bairro',
-            locality: 'localizacao_municipio',
-            street: 'localizacao_rua',
-            street_number: 'localizacao_num',
-            state: false,
-            lat: 'localizacao_lat',
-            long:'localizacao_long'
-        },
+	map = new GenericMap({
+		mapId: "map",
+		insideHideDiv: true,
+		config: {
+			center: { lat: -22.121265, lng: -51.3834 },
+			zoom: 13
+		},
+		markerConfig: {
+			unique: true,
+			clickable: true,
+			target: "v_evidencia"
+		},
+		input: {
+			sublocality: "localizacao_bairro",
+			locality: "localizacao_municipio",
+			street: "localizacao_rua",
+			street_number: "localizacao_num",
+			state: false,
+			lat: "localizacao_lat",
+			long: "localizacao_long"
+		},
 
-        data: [],
+		data: [],
 
-        useGeocoder: true,
-        useCreateMarker: true,
-    });
+		useGeocoder: true,
+		useCreateMarker: true
+	});
 
+	// Comportamento de um marker quando clicado
+	map.handleMarkerClick = function(event) {};
 
-    // Comportamento de um marker quando clicado
-    map.handleMarkerClick = function (event) {
-    }
+	// Comportamento de um clique no mapa
+	map.handleClick = async function(event) {
+		const { useGeocoder, useCreateMarker } = this.state.steps;
 
-    // Comportamento de um clique no mapa
-    map.handleClick = async function (event) {
-        const { useGeocoder, useCreateMarker } = this.state.steps;
+		const location = { lat: event.latLng.lat(), lng: event.latLng.lng() };
 
-        const location = { lat: event.latLng.lat(), lng: event.latLng.lng() };
+		// this.state.map.setCenter(event.latLng);
 
-        // this.state.map.setCenter(event.latLng);
+		this.state.lastPositionClicked = location;
 
-        this.state.lastPositionClicked = location;
+		if (useCreateMarker) {
+			this.createMarker(location);
+		}
 
-        if (useCreateMarker) {
-            this.createMarker(location);
-        }
+		if (useGeocoder) {
+			const response = await this.translateLocation(location);
+			this.fillInputs(response.address_components, location);
+		}
+	};
 
-        if (useGeocoder) {
-            const response = await this.translateLocation(location);
-            this.fillInputs(response.address_components, location);
-        }
-    }
+	map.handleDivOpen = function() {
+		$("#modal").on("shown.bs.modal", event => {
+			// myControl.handleSelects($("#departamento_fk".val()));
 
-    map.handleDivOpen = function () {
+			if (myControl.getSelectedId()) {
+				const {
+					localizacao_lat,
+					localizacao_long
+				} = myControl.data.self[myControl.getSelectedId()];
+				const location = {
+					lat: parseFloat(localizacao_lat),
+					lng: parseFloat(localizacao_long)
+				};
+				// map.setMap(new google.maps.Map(document.getElementById(this.state.mapId), this.state.mapConfig));
+				map.initMap();
+				map.createMarker(location);
+				map.getMap().setCenter(location);
+			} else {
+				map.initMap();
+			}
+		});
+	};
 
-        $('#modal').on('shown.bs.modal', (event) => {
+	map.handleCity = function(id, name) {
+		// let exists = false;
 
-            // myControl.handleSelects($("#departamento_fk".val()));
+		myControl.data.municipios.forEach(municipio => {
+			if (name == municipio.municipio_nome) {
+				$(`#${id}`).val(municipio.municipio_pk);
+				$(`#${id} option:selected`).val(municipio.municipio_pk);
+				exists = true;
+			}
+		});
 
-            if (myControl.getSelectedId()) {
+		// if(!exists){
+		//     alert("Infelizmente a cidade em questão não está sob responsabilidade da empresa");
+		// }
+	};
 
-                const { localizacao_lat, localizacao_long } = myControl.data.self[myControl.getSelectedId()];
-                const location = { lat: parseFloat(localizacao_lat), lng: parseFloat(localizacao_long) };
-                // map.setMap(new google.maps.Map(document.getElementById(this.state.mapId), this.state.mapConfig));
-                map.initMap();
-                map.createMarker(location);
-                map.getMap().setCenter(location);
-            } else {
-                map.initMap();
-            }
-        });
-
-    }
-
-    map.handleCity = function (id, name) {
-
-        // let exists = false;
-
-        myControl.data.municipios.forEach((municipio) => {
-            if (name == municipio.municipio_nome) {
-                $(`#${id}`).val(municipio.municipio_pk);
-                $(`#${id} option:selected`).val(municipio.municipio_pk);
-                exists = true;
-            }
-        });
-
-        // if(!exists){
-        //     alert("Infelizmente a cidade em questão não está sob responsabilidade da empresa");
-        // }
-    }
-
-    map.initMap();
-}
+	map.initMap();
+};

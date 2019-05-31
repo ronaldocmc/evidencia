@@ -349,12 +349,9 @@ class Relatorio extends CRUD_Controller
 
         $report_id = $report->relatorio_pk;
 
-        $workers = $this->funcionario_model->get(
-            "funcionarios.funcionario_pk, funcionarios.funcionario_nome",
-            [
-                "funcionarios.organizacao_fk" => $this->session->user['id_organizacao'],
-                "funcionarios.funcao_fk" => "6",
-            ]
+        $funcionarios = $this->funcionario_model->get_revisores(
+            '*',
+            $this->session->user['id_organizacao']
         );
 
         $situacoes = $this->situacao->get_all(
@@ -389,7 +386,7 @@ class Relatorio extends CRUD_Controller
         $params = [
             'ordens_servicos' => $ordens_servicos,
             'funcionario' => $responsible,
-            'funcionarios' => $workers,
+            'funcionarios' => $funcionarios,
             'relatorio' => $report,
             'filtros' => $strings_filters,
             'situacoes' => $situacoes,
