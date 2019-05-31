@@ -1,16 +1,18 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once APPPATH."core/Response.php";   
-require_once APPPATH."core/CRUD_Controller.php";
-
+require_once APPPATH.'core/Response.php';
+require_once APPPATH.'core/CRUD_Controller.php';
+require_once APPPATH.'core/MyException.php';
 
 class Dashboard extends CRUD_Controller 
 {
+    public $response; 
 
     function __construct() {
         parent::__construct();
         $this->load->library('session');
+        $this->response = new Response();
     }
 
     private function get_tipos_servicos(){
@@ -447,6 +449,148 @@ private function porcentagem($dividendo, $divisor) {
         }
     }
 
+    public function get(){
+
+        $this->load->model('funcionario_model');
+        $this->load->model('Setor_model', 'setor'); 
+        $this->load->model('ordem_servico_model', 'ordem_servico');
+        $this->load->model('dashboard_model');     
+        $this->load->model('Tipo_Servico_model', 'tipo_servico');
+
+        $this->response->add_data('self', $this->getOrdersTable());
+        $this->response->add_data('semana', $this->getOrdersByWeek());
+        $this->response->add_data('semana_setores', $this->getOrdersBySector());
+        $this->response->add_data('semana_tipos', $this->getOrdersByTypeService());
+        $this->response->add_data('ano', $this->getOrdersByYear());
+        $this->response->send();
+
+    }
+
+    private function getOrdersTable(){
+       
+        $start_week = date('Y-m-d');
+        $date = strtotime($start_week);
+        $d = strtotime("-7 day", $date);
+        $end_week = date('Y-m-d', $d);
+
+        $ordens_servico = $this->ordem_servico->get_home(
+            $this->session->user['id_organizacao'],
+            "ordens_servicos.ordem_servico_criacao BETWEEN '".$end_week."' AND '".$start_week."' AND ordens_servicos.ativo = 1"
+        );
+        return $ordens_servico;
+    }
+
+    private function getOrdersByWeek(){
+        $organizacao = $this->session->user['id_organizacao'];  
+        
+        try{
+
+            $ordens_semana_abertas = $this->dashboard_model->get_ordens_semana($organizacao, 1);
+            $ordens_semana_finalizadas = $this->dashboard_model->get_ordens_semana($organizacao, 2);
+            $ordens_semana_andamento = $this->dashboard_model->get_ordens_semana($organizacao, 5);
+            $ordens_semana_repetidas = $this->dashboard_model->get_ordens_semana($organizacao, 4);
+            $ordens_semana_nprocede = $this->dashboard_model->get_ordens_semana($organizacao, 3);
+
+            $ordens_semana = [];
+
+            array_push($ordens_semana,  $this->setNullasZero((array)$ordens_semana_abertas[0]));
+            array_push($ordens_semana,  $this->setNullasZero((array)$ordens_semana_finalizadas[0])); 
+            array_push($ordens_semana,  $this->setNullasZero((array)$ordens_semana_andamento[0]));
+            array_push($ordens_semana,  $this->setNullasZero((array)$ordens_semana_repetidas[0]));
+            array_push($ordens_semana,  $this->setNullasZero((array)$ordens_semana_nprocede[0]));
+
+            return $ordens_semana;
+            
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        }
+    }
+
+    private function getOrdersBySector(){
+        $organizacao = $this->session->user['id_organizacao'];   
+        $data_chart = []; 
+        $sector_names = [];
+       
+        try{
+            $setores = $this->setor->get_all(
+                'setores.setor_pk, setores.setor_nome',
+                ['setores.organizacao_fk' => $organizacao],
+                -1,
+                -1
+            );
+
+            foreach($setores as $s){
+                $data = $this->dashboard_model->get_ordens_setor($organizacao, $s->setor_pk);
+                array_push($data_chart, $this->setNullasZero((array)$data[0]));
+                array_push($sector_names, $s->setor_nome);
+            }
+            
+            return [$sector_names, $data_chart];
+            
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        } 
+    }
+
+    private function getOrdersByTypeService(){
+        $organizacao = $this->session->user['id_organizacao'];   
+        
+        $data_chart = []; 
+        $type_services_names = [];
+       
+        try{
+            $tipos_servicos= $this->tipo_servico->get_all(
+                'tipos_servicos.tipo_servico_pk,tipos_servicos.tipo_servico_nome',
+                ['departamentos.organizacao_fk' => $organizacao],
+                -1,
+                -1,
+                [
+                    ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
+                ]
+            );
+            
+
+            foreach($tipos_servicos as $s){
+                $data = $this->dashboard_model->get_ordens_tipo_servico($organizacao, $s->tipo_servico_pk);
+                array_push($data_chart, $data[0]->Total);
+                array_push($type_services_names, $s->tipo_servico_nome);
+            }
+           
+            return [$type_services_names, $data_chart];
+            
+        } catch (MyException $e) {
+            handle_my_exception($e);
+        } catch (Exception $e) {
+            handle_exception($e);
+        } 
+    }
+
+    private function getOrdersByYear(){
+
+        $organizacao = $this->session->user['id_organizacao'];   
+        $data = $this->dashboard_model->get_ordens_ano($organizacao);
+        $data_chart =  $this->setNullasZero((array)$data[0]);
+        
+        return $data_chart;
+    }
+
+    private function setNullasZero($ordens_semana){
+        $data = [];
+        foreach($ordens_semana as $index => $val){
+            
+            if($val == NULL){
+                array_push($data,0);
+            }else{
+                array_push($data, $val);
+            }
+        }
+        
+        return $data;
+    }
 
     public function funcionario_administrador_antigo()
     {
@@ -461,7 +605,7 @@ private function porcentagem($dividendo, $divisor) {
         $current_month = date("m");
         $current_year = date("Y");
 
-        $ordens_por_mes = $this->dashboard_model->get_ordens_ano("01.".$current_month.".".$current_year, "31.".$current_month.".".$current_year,$organizacao);
+        $ordens_por_mes = $this->dashboard_model->get_ordens_ano("01.01.".$current_year, "31.".$current_month.".".$current_year,$organizacao);
 
         
         $ordens_por_semana = $this->dashboard_model->get_ordens_semana($organizacao);
@@ -548,6 +692,7 @@ private function porcentagem($dividendo, $divisor) {
             ]
         ],'administrador');
     }
+
 }
 
 
