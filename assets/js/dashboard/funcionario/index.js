@@ -136,7 +136,7 @@ class Control extends GenericControl {
 
 			const sendData = {};
 
-			if (!this.confirmPassword()) {
+			if (!this.confirmPassword($("#p-senha"), $("#p-confirmar-senha"))) {
 				this.myView.showMessage(
 					"failed",
 					"Falha",
@@ -194,6 +194,16 @@ class Control extends GenericControl {
 			return;
 		}
 
+		if (!this.confirmPassword($('#funcionario_senha'), $('#funcionario_confirmar_senha'))) {
+			this.myView.showMessage(
+				"failed",
+				"Falha",
+				"As senhas inseridas são diferentes!"
+			);
+			this.myView.endLoad();
+			return;
+		}
+
 		try {
 			const index = this.state.selectedId;
 
@@ -224,11 +234,11 @@ class Control extends GenericControl {
 		}
 	}
 
-	confirmPassword() {
-		let password1 = $("#p-senha").val();
-		let password2 = $("#p-confirmar-senha").val();
+	confirmPassword(pw1, pw2) {
+		let password1 = pw1.val();
+		let password2 = pw2.val();
 
-		return password1 !== password2;
+		return password1 === password2;
 	}
 }
 
