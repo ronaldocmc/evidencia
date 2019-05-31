@@ -6,7 +6,7 @@ function readURL(input) {
 			$(".file-upload-image").cropper("destroy");
 			$(".file-upload-image").attr("src", e.target.result);
 			$(".file-upload-image").cropper({
-				aspectRatio: 1 / 1,
+				aspectRatio: 1,
 				viewMode: 2,
 				responsive: true,
 				checkOrientation: true,
@@ -19,12 +19,12 @@ function readURL(input) {
 
 		reader.readAsDataURL(input.files[0]);
 	} else {
-		removeUpload();
+		removeUploadFromForm();
 	}
 }
 
-function removeUpload() {
-	$(".file-upload-input").replaceWith($(".file-upload-input").clone());
+function removeUploadFromForm() {
+	$('.file-upload-input').val('');
 	$(".file-upload-image").cropper("destroy");
 	$(".file-upload-content").hide();
 	$(".image-upload-wrap").show();

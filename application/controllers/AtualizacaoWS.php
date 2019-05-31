@@ -57,7 +57,7 @@ class AtualizacaoWS extends MY_Controller
         $this->load->model('tentativa_model');
 
         $this->load->model('servico_model');
-        $this->load->model('tipo_servico_model');
+        $this->load->model('Tipo_Servico_model', 'tipo_servico_model');
         $this->load->model('prioridade_model');
         $this->load->model('setor_model');
         $this->load->model('funcionario_model');

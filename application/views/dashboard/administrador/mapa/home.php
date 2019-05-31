@@ -77,9 +77,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label for="servico_pk">Departamento</label>
-                            <select class="form-control" id="departamento_pk" name="departamento_pk" required="true">
+                            <select class="form-control" id="departamento_pk" name="departamento_pk" required="true" multiple>
                                 <option value="-1">Todos</option>
                                 <?php if ($departamentos != null): ?>
                                     <?php foreach ($departamentos as $d): ?>
@@ -89,12 +89,11 @@
                                     <?php endforeach?>
                                 <?php endif?>
                             </select>
-                            <!-- <small class="form-text text-muted">Filtrar por departamento</small> -->
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label for="servico_pk">Tipo de serviço</label>
-                            <select class="form-control" id="tipo_servico_pk" name="tipo_servico_pk" required="true">
+                            <select class="form-control" id="tipo_servico_pk" name="tipo_servico_pk" required="true" multiple>
                                 <option value="-1">Todos</option>
                                 <?php if ($tipos_servicos != null): ?>
                                     <?php foreach ($tipos_servicos as $t): ?>
@@ -104,12 +103,11 @@
                                     <?php endforeach?>
                                 <?php endif?>
                             </select>
-                            <!-- <small class="form-text text-muted">Filtrar por departamento</small> -->
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label for="servico_pk">Serviço</label>
-                            <select class="form-control" id="servico_pk" name="servico_pk" required="true">
+                            <select class="form-control" id="servico_pk" name="servico_pk" required="true" multiple>
                                 <option value="-1">Todos</option>
                                 <?php if ($servicos != null): ?>
                                     <?php foreach ($servicos as $s): ?>
@@ -119,12 +117,15 @@
                                     <?php endforeach?>
                                 <?php endif?>
                             </select>
-                            <!-- <small class="form-text text-muted">Filtrar por serviços</small> -->
                         </div>
-
-                        <div class="col-md-3">
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="row py-3">
+                        <div class="col-md-4">
                             <label for="situacao_pk">Situação</label>
-                            <select class="form-control" id="situacao_pk" name="situacao_pk" required="true">
+                            <select class="form-control" id="situacao_pk" name="situacao_pk" required="true" multiple>
                                 <option value="-1">Todos</option>
                                 <?php if ($situacoes != null): ?>
                                     <?php foreach ($situacoes as $s): ?>
@@ -134,25 +135,11 @@
                                     <?php endforeach?>
                                 <?php endif?>
                             </select>
-                            <!-- <small class="form-text text-muted">Filtrar por situação</small> -->
-                        </div>
-                    </div>
-                    <div class="divider"></div>
-                    <div class="row py-3">
-                        <div class="col-md-3">
-                            <label for="de">De</label>
-                            <input type="date" class="form-control" id="de">
-                            <!-- <small class="form-text text-muted">Dia inicial</small> -->
-                        </div>
-                        <div class="col-md-3">
-                            <label for="ate">Até</label>
-                            <input type="date" class="form-control" id="ate">
-                            <!-- <small class="form-text text-muted">Dia inicial</small> -->
                         </div>
                         
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label for="prioridade_pk">Prioridade</label>
-                            <select class="form-control" id="prioridade_pk" name="prioridade_pk" required="true">
+                            <select class="form-control" id="prioridade_pk" name="prioridade_pk" required="true" multiple>
                                 <option value="-1">Todos</option>
                                 <?php if ($prioridades != null): ?>
                                     <?php foreach ($prioridades as $p): ?>
@@ -162,12 +149,11 @@
                                     <?php endforeach?>
                                 <?php endif?>
                             </select>
-                            <!-- <small class="form-text text-muted">Filtrar por prioridade</small> -->
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label for="setor_pk">Setores</label>
-                            <select class="form-control" id="setor_pk" name="setor_pk" required="true">
+                            <select class="form-control" id="setor_pk" name="setor_pk" required="true" multiple>
                                 <option value="-1">Todos</option>
                                 <?php if ($setores != null): ?>
                                     <?php foreach ($setores as $s): ?>
@@ -179,7 +165,21 @@
                             </select>
                         </div>
                     </div>
-                    <button id="filtrar" class="au-btn au-btn-icon au-btn--blue reset_multistep pull-right">
+
+                    <div class="divider"></div>
+
+                    <div class="row py-3">
+                        <div class="col-md-4">
+                            <label for="de">De</label>
+                            <input type="date" class="form-control" id="de">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="ate">Até</label>
+                            <input type="date" class="form-control" id="ate">
+                        </div>
+                    </div>
+                    
+                    <button id="filtrar" class="au-btn au-btn-icon au-btn--blue" style="height: 45px; float: right; ">
                         <i class="fa fa-dot-circle-o"></i> Filtrar
                     </button>
                 </div>

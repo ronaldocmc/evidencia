@@ -215,13 +215,12 @@ class Ordem_Servico extends CRUD_Controller
                     ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
                 ]
             );
-
         $procedencias = $this->procedencia->get_all(
-                '*',
-                ['organizacao_fk' => $this->session->user['id_organizacao']],
-                -1,
-                -1
-            );
+                        '*',
+                        null,
+                        -1,
+                        -1
+                    );
 
         $setores = $this->setor->get_all(
                 '*',
@@ -292,7 +291,7 @@ class Ordem_Servico extends CRUD_Controller
 
     private function insert()
     {
-        $this->load->helper('insert_images');
+        $this->load->helper('images');
         $this->ordem_servico->__set('localizacao_fk', $this->localizacao->insert());
         $this->ordem_servico->__set('funcionario_fk', $this->session->user['id_user']);
 
@@ -319,7 +318,7 @@ class Ordem_Servico extends CRUD_Controller
     private function update()
     {
         $this->ordem_servico->__set('ordem_servico_pk', $this->input->post('ordem_servico_pk'));
-        $this->ordem_servico->__set('localizacao_fk', $this->input->post('localizacao_pk'));
+        $this->ordem_servico->__set('localizacao_fk', $this->localizacao->insert());
         $this->ordem_servico->__set('ordem_servico_atualizacao', $this->now());
         $this->ordem_servico->update();
     }
@@ -344,7 +343,7 @@ class Ordem_Servico extends CRUD_Controller
     {
         try {
             $this->load->helper('exception');
-            $this->load->helper('insert_images');
+            $this->load->helper('images');
 
             $now = $this->now();
 
@@ -455,7 +454,7 @@ class Ordem_Servico extends CRUD_Controller
                 ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = ordens_servicos.funcionario_fk'],
                 ['table' => 'setores', 'on' => 'setores.setor_pk = ordens_servicos.setor_fk'],
                 ['table' => 'servicos', 'on' => 'servicos.servico_pk = ordens_servicos.servico_fk'],
-                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = ordens_servicos.situacao_atual_fk']
+                ['table' => 'situacoes', 'on' => 'situacoes.situacao_pk = ordens_servicos.situacao_atual_fk'],
             ]
         );
         $os_hist = $this->ordem_servico->get_historico($ordem_servico_pk);

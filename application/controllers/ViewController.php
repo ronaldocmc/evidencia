@@ -44,10 +44,9 @@ class ViewController extends AuthorizationController
         $this->session->set_flashdata('scripts', [
             0 => base_url('assets/js/constants.js'),
             1 => base_url('assets/js/dashboard/dashboard/dashboard.js'),
-            2 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            3 => base_url('assets/vendor/datatables/datatables.min.js'),
-            4 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            5 => base_url('assets/js/utils.js'),
+            2 => base_url('assets/vendor/datatables/datatables.min.js'),
+            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
+            4 => base_url('assets/js/utils.js'),
         ]);
         load_view([
             0 => [
@@ -263,7 +262,7 @@ class ViewController extends AuthorizationController
             -1,
             [
                 ['table' => 'tipos_servicos', 'on' => 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk'],
-                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
+                ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
             ]
         );
         $departamentos = $this->departamento->get_all(
@@ -342,6 +341,8 @@ class ViewController extends AuthorizationController
             1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
             2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
             3 => base_url('assets/css/user_guide.css'),
+            4 => base_url('assets/vendor/cropper/cropper.css'),
+            5 => base_url('assets/vendor/input-image/input-image.css'),
         ]);
     }
 
@@ -357,7 +358,8 @@ class ViewController extends AuthorizationController
             6 => base_url('assets/js/jquery.noty.packaged.min.js'),
             7 => base_url('assets/js/dashboard/'.$name.'/index.js'),
             8 => base_url('assets/js/response_messages.js'),
-            9 => base_url('assets/vendor/input-image/input-image.js'),
+            9 => base_url('assets/vendor/cropper/cropper.js'),
+            10 => base_url('assets/vendor/input-image/input-image.js'),
         ]);
     }
 

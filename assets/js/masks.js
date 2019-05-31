@@ -1,24 +1,3 @@
-$(".cpf-input").mask("000.000.000-00",{placeholder:"___.___.___-__"});
-$(".celular-input").mask("(99) 99999-9999",{placeholder:"(__) _____-____"});
-$(".telefone-input").mask("(00) 0000-0000",{placeholder:"(__) ____-____"});
-$(".cnpj-input").mask("00.000.000/0000-00",{placeholder:"__.___.___/____-__"} )
-
-
-$(".cpf-input").keyup(function ()
-{
-  if(TestaCPF($(this).val()))
-  {
-    $(this).removeClass("is-invalid");
-    $(this).removeClass("is-valid").addClass("is-valid");
-  }
-  else
-  {
-    $(this).removeClass("is-valid");
-    $(this).removeClass("is-invalid").addClass("is-invalid");
-  }
-});
-
-
 $(".cnpj-input").keyup(function ()
 {
   if(validarCNPJ($(this).val()))
@@ -32,48 +11,6 @@ $(".cnpj-input").keyup(function ()
     $(this).removeClass("is-invalid").addClass("is-invalid");
   }
 });
-
-
-function TestaCPF(cpf) {  
- cpf = cpf.replace(/[^\d]+/g,'');    
- if(cpf == '') return false;
-   // Elimina CPFs invalidos conhecidos    
-
-   if (cpf.length != 11 ||
-     cpf == "00000000000" ||
-     cpf == "11111111111" ||
-     cpf == "22222222222" ||
-     cpf == "33333333333" ||
-     cpf == "44444444444" ||
-     cpf == "55555555555" ||
-     cpf == "66666666666" ||
-     cpf == "77777777777" ||
-     cpf == "88888888888" ||
-     cpf == "99999999999")
-     return false;   
-
-   // Valida 1o digito
-   add = 0;    
-   for (i=0; i < 9; i ++)      
-     add += parseInt(cpf.charAt(i)) * (10 - i);  
-   rev = 11 - (add % 11);  
-   if (rev == 10 || rev == 11)    
-     rev = 0;    
-   if (rev != parseInt(cpf.charAt(9)))    
-     return false;      
-
-   // Valida 2o digito
-   add = 0;    
-   for (i = 0; i < 10; i ++)       
-     add += parseInt(cpf.charAt(i)) * (11 - i);  
-   rev = 11 - (add % 11);  
-   if (rev == 10 || rev == 11)
-     rev = 0;    
-   if (rev != parseInt(cpf.charAt(10)))
-     return false;      
-   return true;  
- }
-
 
 function validarCNPJ(cnpj) {
  

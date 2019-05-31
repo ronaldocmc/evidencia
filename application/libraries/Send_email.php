@@ -1,5 +1,6 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+
+defined('BASEPATH') or exit('No direct script access allowed');
 require 'vendor/autoload.php'; // If you're using Composer (recommended)
 // Comment out the above line if not using Composer
 // require("<PATH TO>/sendgrid-php.php");
@@ -11,60 +12,52 @@ require 'vendor/autoload.php'; // If you're using Composer (recommended)
 
 class Send_email
 {
-	protected $ci;
+    protected $ci;
 
-	public function __construct()
-	{
-        $this->ci =& get_instance();
+    public function __construct()
+    {
+        $this->ci = &get_instance();
         $this->ci->load->library('email');
-	}
+    }
 
-	public function send_email($view, $subject, $message, $to)
-	{
+    public function send_email($view, $subject, $message, $to)
+    {
+        if (ENABLE_EMAIL) {
+            log_message('monitoring', 'Sending mail to ['.$to.']');
+            $data['url'] = $message;
+            $body = $this->ci->load->view($view, $data, true);
 
-		if (ENABLE_EMAIL)
-		{
-			log_message('monitoring', 'Sending mail to ['.$to.']');
-			$data['url'] = $message;
-			$body = $this->ci->load->view($view, $data, TRUE);
+            $email_data['from'] = 'noreply@prudenco.com.br';
+            $email_data['name'] = 'Evidência';
+            $email_data['to'] = $to;
+            $email_data['subject'] = $subject;
+            //$email_data['TID'] = 'd-15b009ed3996470c985834d9d0933353'; //template_id
 
-			$email_data['from'] = "noreply@prudenco.com.br";
-			$email_data['name'] = "Evidência";
-			$email_data['to'] = $to;
-			$email_data['subject'] = $subject;
-			//$email_data['TID'] = 'd-15b009ed3996470c985834d9d0933353'; //template_id
+            $email = new \SendGrid\Mail\Mail();
+            $email->setFrom($email_data['from'], $email_data['name']);
+            $email->setSubject($email_data['subject']);
+            $email->addTo($email_data['to'], $email_data['to']);
+            $email->addContent(
+                'text/html', $body
+            );
+            //$email->setTemplateId($email_data['TID']);
 
-			$email = new \SendGrid\Mail\Mail(); 
-			$email->setFrom($email_data['from'], $email_data['name']);
-			$email->setSubject($email_data['subject']);
-			$email->addTo($email_data['to'], $email_data['to']);
-			$email->addContent(
-			    "text/html", $body
-			);
-			//$email->setTemplateId($email_data['TID']);
-
-
-			$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
-			// var_dump(getenv('SENDGRID_API_KEY')); die();
-			try {
-			    $response = $sendgrid->send($email);
-			    // var_dump($response->statusCode());
-			    // var_dump($response->headers());
-				// var_dump($response->body());
-				// die();
-			    return $response->statusCode();
-			} catch (Exception $e) {
-			    echo 'Caught exception: '. $e->getMessage() ."\n";
-			}
-
-		}
-		else
-		{
-			return TRUE;
-		}
-	}
-	
-
+            $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
+            // var_dump(getenv('SENDGRID_API_KEY')); die();
+            try {
+                $response = $sendgrid->send($email);
+                // var_dump($response->statusCode());
+                // var_dump($response->headers());
+                // var_dump($response->body());
+                // die();
+                return $response->statusCode();
+            } catch (Exception $e) {
+                echo 'Caught exception: '.$e->getMessage()."\n";
+            }
+        } else {
+            return true;
+        }
+    }
 }
 
 /* End of file MY_Send_email.php */
