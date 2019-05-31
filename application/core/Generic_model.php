@@ -36,7 +36,7 @@ class Generic_Model extends CI_Model
         if ($limit != -1 && $offset != -1) {
             $this->CI->db->limit($limit, $offset);
         }
-        echo $this->CI->db->get_compiled_select();
+        //echo $this->CI->db->get_compiled_select();
 
         return $this->CI->db->get()->result();
     }
