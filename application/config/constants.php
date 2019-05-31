@@ -105,4 +105,4 @@ define('ID_SITUACAO_FINALIZADO', 2);
 
 define('SHOW_HIDE_MENU', false); //tipos e serviços
 define('TOKEN', ENVIRONMENT == 'release' ? 'Token' : 'token');
-define('VERSION', '2.1.0');
+define('VERSION', '2.1.1');
