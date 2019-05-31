@@ -215,6 +215,12 @@ class Ordem_Servico extends CRUD_Controller
                     ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
                 ]
             );
+        $procedencias = $this->procedencia->get_all(
+                        '*',
+                        null,
+                        -1,
+                        -1
+                    );
 
         $setores = $this->setor->get_all(
                 '*',
@@ -224,12 +230,6 @@ class Ordem_Servico extends CRUD_Controller
             );
         $municipios = $this->localizacao->get_cities();
 
-        $procedencias = $this->procedencia->get_all(
-                    '*',
-                    null,
-                    -1,
-                    -1
-                );
         $response->add_data('self', $ordens_servico);
         $response->add_data('departamentos', $departamentos);
         $response->add_data('tipos_servicos', $tipos_servico);
