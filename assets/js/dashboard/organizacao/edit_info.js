@@ -1,17 +1,10 @@
-function btn_load(button_submit){
-  button_submit.attr('disabled', 'disabled');
-  button_submit.css('cursor', 'default');
-  button_submit.find('i').removeClass();
-  button_submit.find('i').addClass('fa fa-refresh fa-spin');
-}
+$(document).ready(function () {
+    const myView = new GenericView();
+
+    myView.renderMenu();
+});
 
 
-function btn_ativar(button_submit){
-    button_submit.removeAttr('disabled');
-    button_submit.css('cursor', 'pointer');
-    button_submit.find('i').removeClass();
-    button_submit.find('i').addClass('fa fa-dot-circle-o');
-}
 
 $("#btn-edit").click(function()
 {
