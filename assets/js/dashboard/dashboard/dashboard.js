@@ -23,7 +23,7 @@ class View extends GenericView {
 	renderQuickAccess() {
 		const allCards = [
 			{
-				text: "nova ordem",
+				text: "Nova Ordem",
 				url: "Ordem_Servico",
 				color: "blue",
 				icon: "fa-thumbtack",
@@ -31,7 +31,7 @@ class View extends GenericView {
 				controller: "ordem_servico"
 			},
 			{
-				text: "novo relatório",
+				text: "Novo Relatório",
 				url: "relatorio/novo",
 				color: "orange",
 				icon: "fa-tasks",
@@ -39,7 +39,7 @@ class View extends GenericView {
 				controller: "relatorio"
 			},
 			{
-				text: "mapa",
+				text: "Mapa",
 				url: "mapa",
 				color: "red",
 				icon: "fa-map-marker-alt",
@@ -47,7 +47,7 @@ class View extends GenericView {
 				controller: "mapa"
 			},
 			{
-				text: "atualizar",
+				text: "Atualizar",
 				color: "green",
 				icon: "fa-refresh",
 				reload: true
@@ -344,7 +344,7 @@ class View extends GenericView {
 									<i class="fa fas ${card.icon}"></i>
 								</div>
 								<div class="text">
-									<h2>${card.text}</h2>
+									<h4>${card.text}</h4>
 									${textUpdate}
 								</div>
 							</div>
@@ -424,10 +424,6 @@ $("#tabela-funcionario").click(function() {
 $("#tabela-grafico").click(function() {
 	$(".heatmap").show();
 	$("#table-funcionario").hide();
-});
-
-$(document).ready(function() {
-	preencheAtualizacao("texto-atualizacao");
 });
 
 function preencheAtualizacao(id_element) {

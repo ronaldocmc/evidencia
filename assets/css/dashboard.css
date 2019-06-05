@@ -22,7 +22,7 @@ tbody {
 .acesso-rapido {
 	-webkit-transition: all 0.5s ease-in-out;
 	color: white;
-	height: 300px;
+	height: 130px;
 }
 
 .icones{
@@ -32,10 +32,10 @@ tbody {
 	display: flex;
     align-items: center;
     justify-content: center;
-	width: 70px;
-	height: 70px;
+	width: 40px;
+	height: 40px;
 	-webkit-transform: scale(1.5);
-	font-size: 20pt;
+	font-size: 15pt;
 }
 
 .fa {
@@ -76,17 +76,17 @@ tbody {
 .geral {
 	text-align: center;
     margin: 0 auto;
-    padding: 2em 0 3em;
+    padding: 1em 0 3em;
 }
 
-.acesso-rapido h2{
+.acesso-rapido h4{
 	color:white;
 }
 
 .text{
-	padding: 50px 10px;
+	padding: 15px 10px;
 }
 
 .bag {
-	margin-top:;
+	padding: 0px;
 }
