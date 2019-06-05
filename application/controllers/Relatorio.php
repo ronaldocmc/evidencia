@@ -38,6 +38,17 @@ class Relatorio extends CRUD_Controller
         ]);
     }
 
+    public function get() 
+    {
+        $response = new Response();
+
+        $reports = $this->get_all_reports();
+
+        $response->add_data('self', $reports);
+
+        $response->send();
+    }
+
     private function check_if_is_not_empty($array, $error_message)
     {
         if (!isset($array)) {
@@ -561,23 +572,17 @@ class Relatorio extends CRUD_Controller
 
     private function get_all_reports()
     {
+        $current_date = date('Y-m-d H:i:s');
+        $lastweek_time = mktime(0, 0, 0, date('m'), date('d') - 7, date('Y'));
+        $lastweek_date = date('Y-m-d H:i:s', $lastweek_time);
 
-        $reports = $this->report_model->get_all(
-            '*',
-            null, //['relatorios.ativo' => 1],
-            -1,
-            -1,
-            [
-                ['table' => 'funcionarios', 'on' => 'funcionarios.funcionario_pk = relatorios.relatorio_func_responsavel'],
-            ]);
+        $reports = $this->report_model->get_all_reports($this->session->user['id_organizacao'], $current_date, $lastweek_date);
 
         if ($reports) {
-            //arrumar a data:
+            //arrumando a data:
             foreach ($reports as $r) {
-
                 $r->relatorio_data_criacao = date('d/m/Y H:i:s', strtotime($r->relatorio_data_criacao));
                 $r->quantidade_os = $this->report_model->get_orders_of_report(['relatorio_fk' => $r->relatorio_pk], true);
-
                 if ($r->relatorio_data_entrega == null) {
                     $r->relatorio_data_entrega = '-- --';
                 } else {
@@ -685,12 +690,13 @@ class Relatorio extends CRUD_Controller
             }
 
             $this->report_model->__set('relatorio_data_entrega', date('Y-m-d H:i:s'));
-            $this->report_model->__set('relatorio_situacao', 'Entregue');
             $this->report_model->__set('ativo', 0);
             $this->report_model->__set('relatorio_pk', $id);
 
             if (!$all_executed) {
                 $this->report_model->__set('relatorio_situacao', 'Entregue incompleto');
+            } else {
+                $this->report_model->__set('relatorio_situacao', 'Entregue');
             }
 
             $this->report_model->update();
