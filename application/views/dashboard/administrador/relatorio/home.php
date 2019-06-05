@@ -98,9 +98,12 @@
                                     <div class="col-md-3">
                                         <label for="filter-ativo">Mostrar</label>
                                         <select name="filter-ativo" id="filter-ativo" class="form-control">
-                                            <option value="todos">Todos</option>
-                                            <option value="0">Apenas em andamento</option>
-                                            <option value="1">Apenas finalizados</option>
+                                            <option value="-1">Todos</option>
+                                            <option value="Criado">Apenas criados</option>
+                                            <option value="Em andamento">Apenas em andamento</option>
+                                            <option value="Entregue">Apenas entregues</option>
+                                            <option value="Entregue incompleto">Apenas entregues incompleto</option>
+                                            <option value="Inativo">Apenas inativos</option>
                                         </select>
                                         <br>
                                     </div>
@@ -119,66 +122,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
-                                        <?php
-                                        if ($relatorios):
-                                            foreach ($relatorios as $key => $r): ?>
-                                               <tr>
-                                                   <td>
-                                                       <?=$r->funcionario_nome ?>
-                                                   </td>
-                                                   <td>
-                                                       <?= $r->quantidade_os ?>
-                                                   </td>
-                                                   <td>
-                                                     <?= $r->relatorio_situacao ?>
-                                                   </td>
-                                                   <td>
-                                                       <?= $r->relatorio_data_criacao ?>
-                                                    </td>
-                                                    <td>
-                                                       <?= $r->relatorio_data_entrega ?>
-                                                    </td>
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <a class="btn btn-sm btn-primary report_detail d-none" href="<?= base_url('relatorio/detalhes/'.$r->relatorio_pk) ?>">
-                                                                   <div class="d-none d-sm-block">
-                                                                       Detalhes
-                                                                   </div>
-                                                                   <div class="d-block d-sm-none">
-                                                                       <i class="fas fa-eye fa-fw"></i>
-                                                                   </div>
-                                                               </a>
-                                                               
-                                                               <?php if($r->relatorio_situacao == 'Inativo'): ?>
-                                                               <a class="btn btn-sm btn-danger" disabled="true" style="color: white";>
-                                                                   <div class="d-none d-sm-block">
-                                                                       Inativo
-                                                                   </div>
-                                                                   <div class="d-block d-sm-none">
-                                                                   <i class="fas fa-minus-circle"></i>
-                                                                   </div>
-                                                               </a>
-                                                                <?php else:?>
-                                                               <a class="btn btn-sm btn-success imprimir_relatorio d-none" target="_blank" href="<?= base_url('relatorio/imprimir/'.$r->relatorio_pk) ?>">
-                                                                   <div class="d-none d-sm-block">
-                                                                       Imprimir
-                                                                   </div>
-                                                                   <div class="d-block d-sm-none">
-                                                                   <i class="fas fa-print"></i>
-                                                                   </div>
-                                                               </a>
-                                                               <?php endif;?>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach;endif;?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
+                </div>
 
                     <div class="row">
                         <div class="col-md-12">
@@ -221,7 +171,3 @@
         </div>
     </div>
 </div>
-
-            <script type="text/javascript">
-                var relatorios = <?php echo json_encode($relatorios !== false ? $relatorios : []) ?>;
-            </script>
