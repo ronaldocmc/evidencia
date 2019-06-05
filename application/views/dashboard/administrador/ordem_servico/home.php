@@ -132,7 +132,6 @@
                                 aria-controls="collapseHelp"></i>
                             Ordens de Serviço</h2>
                         <div class="">
-                            <h5>Filtrar por</h5><br>
                             <div class="row">
                                 <div class="col-md-4">
                                     <label for="filter-ativo">Mostrar</label>
@@ -262,6 +261,13 @@
                                                 required="true">
                                             </select>
                                             <small class="form-text text-muted">Por favor, informe a Situação</small>
+                                        </div>
+                                        <div class="col-7 col-md-4">
+                                            <label for="situacao_pk"><strong>Procedência*</strong></label>
+                                            <select class="form-control" id="procedencia_fk" name="procedencia_fk"
+                                                required="true">
+                                            </select>
+                                            <small class="form-text text-muted">Por favor, informe a Procedência</small>
                                         </div>
                                     </div>
                                 </div>

@@ -8,31 +8,31 @@
                 <div class="col-md-12">
                     <div class="overview-wrap">
                         <h2 class="title-1">Painel de Gerenciamento de Relatórios </h2>
+                        <button type="button" class="au-btn au-btn-icon btn au-btn--blue pull-left dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Opções
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item imprimir_relatorio d-none" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk); ?>">
+                                Imprimir relatório
+                            </a>
+                            <?php if ($relatorio->relatorio_situacao == 'Criado'): ?>
+                                <a class="dropdown-item" href="#" data-toggle="modal" 
+                                   data-target="#delegar_para_outra_pessoa">
+                                    Alterar funcionário
+                                </a>
+                            <?php endif; ?>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item imprimir_relatorio d-none" href="#" data-toggle="modal" data-target="#d-relatorio">
+                                Destruir relatório
+                            </a>
+                            <?php if ($relatorio->relatorio_situacao == 'Em andamento'): ?>
+                                <a class="dropdown-item receive_report d-none" href="#" data-toggle="modal" data-target="#restaurar_os">
+                                    Receber relatório
+                                </a>  
+                            <?php endif; ?>
+                        </div>
                     </div>
 
-                      <button type="button" class="au-btn au-btn-icon btn au-btn--blue pull-left dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Opções
-                      </button>
-                      <div class="dropdown-menu">
-                        <a class="dropdown-item imprimir_relatorio d-none" href="<?= base_url('relatorio/imprimir/'.$relatorio->relatorio_pk); ?>">
-                            Imprimir relatório
-                        </a>
-                        <?php if ($relatorio->relatorio_situacao == 'Criado'): ?>
-                            <a class="dropdown-item" href="#" data-toggle="modal" 
-                               data-target="#delegar_para_outra_pessoa">
-                                Alterar funcionário
-                            </a>
-                        <?php endif; ?>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item imprimir_relatorio d-none" href="#" data-toggle="modal" data-target="#d-relatorio">
-                            Destruir relatório
-                        </a>
-                        <?php if ($relatorio->relatorio_situacao == 'Em andamento'): ?>
-                            <a class="dropdown-item receive_report d-none" href="#" data-toggle="modal" data-target="#restaurar_os">
-                                Receber relatório
-                            </a>  
-                        <?php endif; ?>
-                      </div>
                     
                 </div>
             </div>
@@ -40,7 +40,7 @@
             <input type="hidden" name="" id="id-relatorio" value="<?= $relatorio->relatorio_pk; ?>">
 
 
-
+            <br>
             <div class="row py-2">
                 <div class="col-lg-12">
                     <div class="au-card d-flex flex-column">
@@ -194,155 +194,6 @@
                         <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL CRIA E ATUALIZA TIPO SERVICO -->
-<div class="modal fade" id="ce_ordem_servico">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title" id="titulo">Visualizar ordem de serviço</h4>
-                <button type="button" class="close" id="close-modal" data-dismiss="modal">&times;</button>
-            </div>
-            <!-- Modal body -->
-            <form class="msform">
-                <div class="modal-body">
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="row col-md-12 py-3">
-                                        <h4>Informações</h4>
-                                    </div>
-                                    <input type="hidden" id="ordem_servico_pk" value="" name="ordem_servico_fk">
-                                    <div class="row form-group">
-                                        <div class="col-7 col-md-6">
-                                            <label for="os_code">Código</label>
-                                            <input type="text" name="codigo_os" id="codigo_os" class="form-control"
-                                                disabled="true">
-                                        </div>
-                                        <div class="col-7 col-md-6">
-                                            <label for="os_data">Data</label>
-                                            <input type="text" name="os_data" id="os_data" class="form-control"
-                                                disabled="true">
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-
-                                        <div class="col-12">
-                                            <label for="ordem_servico_desc">Descrição</label>
-                                            <textarea class="form-control" id="ordem_servico_desc" name="ordem_servico_desc"
-                                                class="form-control" required="true" maxlength="200" disabled="true"></textarea>
-
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-7 col-md-4">
-                                            <label for="departamento">Departamento</label>
-
-                                            <input class="form-control" type="text" name="departamento" id="departamento"
-                                                value="" disabled="true">
-
-                                        </div>
-                                        <div class="col-7 col-md-4">
-                                            <label for="tipo_servico">Tipo de Serviço</label>
-                                            <input class="form-control" type="text" name="tipo_servico" id="tipo_servico"
-                                                disabled="true">
-                                        </div>
-                                        <div class="col-7 col-md-4">
-                                            <label for="servico_pk">Serviço</label>
-                                            <input type="text" name="servico_pk" id="servico_pk" class="form-control"
-                                                disabled="true">
-
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-7 col-md-4" id="procedencias_options">
-                                            <label for="procedencia_pk">Procedência</label>
-                                            <input type="text" name="procedencia_pk" id="procedencia_pk" class="form-control"
-                                                disabled="true">
-
-                                        </div>
-                                        <div class="col-7 col-md-4">
-                                            <label for="prioridade_pk">Prioridade</label>
-                                            <input type="text" name="prioridade_pk" id="prioridade_pk" class="form-control"
-                                                disabled="true">
-
-                                        </div>
-                                        <div class="col-7 col-md-4">
-                                            <label for="situacao_pk">Situação</label>
-                                            <input class="form-control" type="text" name="situacao_pk" id="situacao_pk"
-                                                disabled="true">
-
-                                        </div>
-                                    </div>
-                                    <div class="row col-md-12 py-3">
-                                        <h4>Localização</h4>
-                                    </div>
-                                    <div class="row form-group">
-
-                                        <div class="col-3 col-md-3">
-                                            <label for="uf-input" class=" form-control-label">Estado</label>
-                                            <input type="text" name="estado_pk" id="estado_pk" class="form-control"
-                                                disabled="true">
-
-                                        </div>
-                                        <div class="col-8 col-md-6">
-                                            <label for="cidade-input" class="form-control-label">Cidade</label>
-                                            <input type="text" name="municipio_pk" id="cidade-input" class="form-control"
-                                                disabled="true">
-                                        </div>
-                                        <div class="col-3 col-md-3">
-                                            <label for="setor_pk">Setor</label>
-                                            <input type="text" name="setor_pk" id="setor_pk" class="form-control"
-                                                disabled="true">
-
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-12 col-md-9">
-                                            <label for="logradouro_nome">Logradouro</label>
-                                            <input class="form-control" type="text" id="logradouro-input" name="logradouro_nome"
-                                                disabled="true">
-
-                                        </div>
-                                        <div class="col-12 col-md-3">
-                                            <label for="numero-input" class=" form-control-label">N°</label>
-                                            <input type="number" id="numero-input" name="local_num" class="form-control numero-input endereco"
-                                                min="0" required="true" disabled="true">
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-12 col-md-6">
-                                            <label for="complemento-input" class=" form-control-label">Complemento</label>
-                                            <input type="text" id="complemento-input" name="local_complemento" class="form-control endereco"
-                                                maxlength="30" disabled="true">
-                                        </div>
-                                        <div class="col-12 col-md-6">
-                                            <label for="bairro-input" class="form-control-label loading">Bairro</label>
-                                            <input type="hidden" name="bairro_nome" id="bairro_pk">
-                                            <div class="dropdown" id="drop-bairro">
-                                                <input class="form-control input-dropdown endereco" type="text" id="bairro-input"
-                                                    name="bairro" disabled="true">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <!-- Modal footer -->
-            <div class="modal-footer d-md-none">
-                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>

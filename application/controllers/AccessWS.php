@@ -1,37 +1,33 @@
 <?php
 
 /**
- * AccessWS
+ * AccessWS.
  *
- * @package     application
- * @subpackage  core
  * @author      Pietro, Gustavo
  */
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once APPPATH."core/Response.php";   
-require_once APPPATH . "core/MY_Controller.php";
+require_once APPPATH.'core/Response.php';
+require_once APPPATH.'core/MY_Controller.php';
 
 class AccessWS extends MY_Controller
 {
-
     /**
-     * Constante que guarda a duração de um token
+     * Constante que guarda a duração de um token.
      *
-     * @var String
+     * @var string
      */
     const DURACAO_TOKEN = '5 days';
 
     /**
-     * Objeto responsável por monstar a resposta da requisição
+     * Objeto responsável por monstar a resposta da requisição.
      *
      * @var Response
      */
     private $response;
 
     /**
-     * Array que guarda os dados da requisição json
+     * Array que guarda os dados da requisição json.
      *
      * @var array
      */
@@ -39,7 +35,7 @@ class AccessWS extends MY_Controller
 
     /**
      * Construtor da classe, responsável por setar a timezone
-     * e chamar o construtor do pai
+     * e chamar o construtor do pai.
      */
     public function __construct()
     {
@@ -49,11 +45,10 @@ class AccessWS extends MY_Controller
     }
 
     /**
-     * Destrutor da classe
+     * Destrutor da classe.
      */
     public function __destruct()
     {
-
     }
 
     public function index()
@@ -77,13 +72,14 @@ class AccessWS extends MY_Controller
         $this->load->library('form_validation');
         $this->load->library('Authorization');
         $this->load->model('Funcionario_model', 'funcionario_model');
-        $this->load->model('Tentativa_model');
+        $this->load->model('Tentativa_model', 'tentativa');
 
         $authorization = new Authorization();
 
         $today = date('Y-m-d H:i:s');
 
         $obj = json_decode(file_get_contents('php://input'));
+        log_message('MONITORING', 'User: ['.$obj->login_user.'] trying to log in from '.$this->input->ip_address());
 
         $attempt_result = true;
         // $attempt_result = verify_attempt($this->input->ip_address());
@@ -91,7 +87,7 @@ class AccessWS extends MY_Controller
         $login = explode('@', $obj->login_user);
 
         $data['funcionarios.funcionario_login'] = $obj->login_user;
-        $data['funcionarios.funcionario_senha'] = hash(ALGORITHM_HASH, $obj->password_user . SALT);
+        $data['funcionarios.funcionario_senha'] = hash(ALGORITHM_HASH, $obj->password_user.SALT);
 
         $this->form_validation->set_data($data);
 
@@ -107,7 +103,6 @@ class AccessWS extends MY_Controller
 
         if ($this->form_validation->run()) {
             if ($attempt_result === true) {
-
                 if ($login[1] === 'admin') {
                     //Se for superusuário, não tem login no app
                     $this->response->set_code(Response::NOT_FOUND);
@@ -116,13 +111,12 @@ class AccessWS extends MY_Controller
                     $this->response->send();
                     die();
                 }
-                
+
                 $user = $this->funcionario_model->get('*', $data);
 
                 // var_dump($user);die();
-                
 
-                if ($user[0]) {
+                if ($user) {
                     $user = $user[0];
 
                     if ($user->ativo == 0) {
@@ -136,7 +130,7 @@ class AccessWS extends MY_Controller
                     $data_token['id_pessoa'] = $user->funcionario_pk;
                     $data_token['id_funcionario'] = $user->funcionario_pk;
                     $data_token['id_empresa'] = $user->organizacao_fk;
-                    $data_token['last_update'] = "01/01/2000";
+                    $data_token['last_update'] = '01/01/2000';
 
                     $permissions = $authorization->return_permissions($user->funcao_fk);
 
@@ -149,7 +143,7 @@ class AccessWS extends MY_Controller
                     $d['permissions'] = $permissions;
 
                     $setores = $this->funcionario_model->get_setores(
-                        ["funcionarios.funcionario_pk" => $user->funcionario_pk]
+                        ['funcionarios.funcionario_pk' => $user->funcionario_pk]
                     );
 
                     if (count($setores) > 0) {
@@ -161,20 +155,19 @@ class AccessWS extends MY_Controller
                     $dados['dados'] = $d;
 
                     $this->response->set_data($dados);
-                    $this->tentativa_model->delete_ip($this->input->ip_address());
-                    
+                    $this->tentativa->delete_ip($this->input->ip_address());
                 } else {
                     $this->response->set_code(Response::NOT_FOUND);
                     $this->response->set_message('Usuário não encontrado');
-                    $attempt = [
-                        'tentativa_ip' => $this->input->ip_address(),
-                        'tentativa_tempo' => $today,
-                    ];
-                    $this->tentativa_model->insert($attempt);
+
+                    $this->tentativa->__set('tentativa_ip', $this->input->ip_address());
+                    $this->tentativa->__set('tentativa_tempo', $today);
+                    
+                    $this->tentativa->insert();
                 }
             } else {
                 $this->response->set_code(Response::FORBIDDEN);
-                $this->response->set_message('Máximo de tentativas alcançado. ' . $attempt_result);
+                $this->response->set_message('Máximo de tentativas alcançado. '.$attempt_result);
             }
         } else {
             $this->response->set_code(Response::BAD_REQUEST);
@@ -199,9 +192,7 @@ class AccessWS extends MY_Controller
         $attempt_result = verify_attempt($this->input->ip_address());
 
         if ($attempt_result === true) {
-            
             $obj = apache_request_headers();
-
 
             $new_token = verify_token($obj[TOKEN], $this->response);
 
@@ -248,5 +239,4 @@ class AccessWS extends MY_Controller
         $this->response->send();
         $this->__destruct();
     }
-
 }

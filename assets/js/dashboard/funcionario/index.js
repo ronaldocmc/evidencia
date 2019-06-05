@@ -131,16 +131,12 @@ class Control extends GenericControl {
 			this.myView.showPasswordInput();
 		});
 
-		$(document).on("click", ".btn_new", () => {
-			this.myView.showPasswordInput();
-		});
-
 		$(document).on("click", ".action_change_password", async () => {
 			this.myView.initLoad();
 
 			const sendData = {};
 
-			if (!this.confirmPassword()) {
+			if (!this.confirmPassword($("#p-senha"), $("#p-confirmar-senha"))) {
 				this.myView.showMessage(
 					"failed",
 					"Falha",
@@ -171,7 +167,7 @@ class Control extends GenericControl {
 
 	remove_image() {
 		$("#img-input").attr("src", "");
-		removeUpload();
+		removeUploadFromForm();
 	}
 
 	blobToBase64(blob) {
@@ -186,7 +182,28 @@ class Control extends GenericControl {
 	}
 
 	save() {
+		this.myView.initLoad();
 		const data = {};
+
+		if (!TestaCPF($('#funcionario_cpf').val())) {
+			this.myView.showMessage(
+				"failed",
+				"Falha",
+				"Digite um CPF válido!"
+			);
+			return;
+		}
+
+		if (!this.confirmPassword($('#funcionario_senha'), $('#funcionario_confirmar_senha'))) {
+			this.myView.showMessage(
+				"failed",
+				"Falha",
+				"As senhas inseridas são diferentes!"
+			);
+			this.myView.endLoad();
+			return;
+		}
+
 		try {
 			const index = this.state.selectedId;
 
@@ -212,14 +229,16 @@ class Control extends GenericControl {
 				data.funcionario_senha = $("#funcionario_senha").val();
 			}
 			super.save(data);
+		} finally {
+			this.myView.endLoad();
 		}
 	}
 
-	confirmPassword() {
-		let password1 = $("#p-senha").val();
-		let password2 = $("#p-confirmar-senha").val();
+	confirmPassword(pw1, pw2) {
+		let password1 = pw1.val();
+		let password2 = pw2.val();
 
-		return password1 !== password2;
+		return password1 === password2;
 	}
 }
 

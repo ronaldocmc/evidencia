@@ -27,7 +27,7 @@ class Funcionario extends CRUD_Controller
 
         $this->load->library('form_validation');
         $this->load->library('upload');
-        $this->load->helper('insert_images');
+        $this->load->helper('images');
 
         $this->load->helper('exception');
 
@@ -75,22 +75,30 @@ class Funcionario extends CRUD_Controller
     private function update()
     {
         $this->funcionario_model->__set('funcionario_pk', $_POST['funcionario_pk']);
+        // In case the user is sending a new profile picture
+        // we need to remove it from Blob Storage
+        if ($this->input->post('img')) {
+            $old_image = $this->funcionario_model->get_image_path($_POST['funcionario_pk']);
+            $old_image = $old_image[0]->funcionario_caminho_foto;
+            if ($old_image != null) {  // If the user had no profile picture set we skip the removal
+                remove_image($old_image);
+            }
+            $path = upload_img(
+                [
+                    'id' => $_POST['funcionario_pk'],
+                    'path' => 'PATH_FUNC',
+                    'is_os' => false,
+                ],
+                [0 => $this->input->post('img')]
+            );
 
-        $path = upload_img(
-            [
-                'id' => $_POST['funcionario_pk'],
-                'path' => 'PATH_FUNC',
-                'is_os' => false,
-            ],
-            [0 => $this->input->post('img')]
-        );
-
-        if ($path != null) {
-            $this->funcionario_model->__set('funcionario_caminho_foto', $path[0]);
-            $user_data = $this->session->user;
-            $user_data['image_user_min'] = $path[0];
-            $user_data['image_user'] = $path[0];
-            $this->session->set_userdata('user', $user_data);
+            if ($path != null) {
+                $this->funcionario_model->__set('funcionario_caminho_foto', $path[0]);
+                $user_data = $this->session->user;
+                $user_data['image_user_min'] = $path[0];
+                $user_data['image_user'] = $path[0];
+                $this->session->set_userdata('user', $user_data);
+            }
         }
 
         if (isset($_POST['setor_fk'])) {
