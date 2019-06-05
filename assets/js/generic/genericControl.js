@@ -64,9 +64,8 @@ class GenericControl {
 
 			this.myView.closeModal();
 			this.myView.showMessage("success", "Sucesso", "Operação realizada!");
-			this.handleFilter($("#filter-ativo").val());
+			
 			$("#filter-ativo").trigger("change");
-			this.myView.render(this.data.self);
 		} else {
 			this.myView.showMessage("failed", "Falha", response.data.mensagem);
 		}
