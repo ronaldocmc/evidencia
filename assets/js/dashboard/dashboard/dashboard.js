@@ -10,7 +10,7 @@
 
 var table = $('#ordens_servico').DataTable();
 var days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-feira', 'Quinta-Feira', 'Sexta-feira', 'Sábado'];
-// var myColours = ['','','','','','','','','','','','','','','','','','','','','','','','','','',''] 
+var myColours = ['#1bbc9b','#f1c40f','#3598db','#9b58b5','#bec3c7','#e77e23','#34495e','#c1392b','#2dcc70','#756a14','#2a80b9','#f39c11','#27ae61','#2a57ab','#3e3e3e','#ccbf74','#c1392b','#8f44ad','#d25400'] 
 var is_superusuario = false; 
 var months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
@@ -76,8 +76,8 @@ class View extends GenericView {
 					{
 						label: 'Quantidade de Ordens de Serviço',
 						data: data,
-						backgroundColor: 'rgba(0,123,255, 0.5)',
-						borderColor: 'rgba(0,123,255, 1)',
+						backgroundColor: 'rgba(27,188,155, 0.5)',
+						borderColor: 'rgba(27,188,155, 1)',
 						borderWidth: 1,
 						fill: 'start',
 						lineTension: 0
@@ -90,6 +90,11 @@ class View extends GenericView {
 							beginAtZero: true,
 						},
 					}],
+				},
+				title: {
+					display: true,
+					text: 'Ordens de Serviço por Mês',
+					position: 'top', 
 				},
 				tooltips: {
 					mode: 'index',
@@ -186,19 +191,10 @@ class View extends GenericView {
 					mode: 'point',
 					intersect: true
 				},
-				annotation: {
-					annotations: [{
-						type: 'line',
-						mode: 'horizontal',
-						scaleID: 'y-axis-0',
-						value: 7,
-						borderColor: 'rgba(0, 35, 7, 1)',
-						borderWidth: 1,
-						label: {
-						enabled: false,
-						content: 'Média por Mês'
-						}
-					}]
+				title: {
+					display: true,
+					text: 'Ordens de Serviço por Semana',
+					position: 'top', 
 				}
 			},
 		});	
@@ -224,7 +220,12 @@ class View extends GenericView {
 					enabled: true,
 					mode: 'label'
 					// intersect: true
-				}
+				},
+				title: {
+					display: true,
+					text: 'Quantidade de OS em cada Setor por Semana',
+					position: 'top', 
+				},
 			},
 		});	
 	}
@@ -238,9 +239,9 @@ class View extends GenericView {
 
 		//Generating colors for sections
 		for(var i in types){
-			var color = this.generateRandomColors();
-			coloursBackground.push(color[0]);
-			coloursBorders.push(color[1]);
+			// var color = this.generateRandomColors();
+			coloursBackground.push(myColours[i]);
+			coloursBorders.push(myColours[i]);
 		}		
 
 		var myChart = new Chart(ctx, {
@@ -261,7 +262,12 @@ class View extends GenericView {
 					enabled: true,
 					mode: 'label'
 					// intersect: true
-				}
+				},
+				title: {
+					display: true,
+					text: 'Quantidade de OS por Tipo de Serviço',
+					position: 'top', 
+				},
 			},
 		});	
 
@@ -296,9 +302,9 @@ class View extends GenericView {
 
 		//Generating colors for sections
 		for(var i in sectors){
-			var color = this.generateRandomColors();
-			coloursBackground.push(color[0]);
-			coloursBorders.push(color[1]);
+			// var color = this.generateRandomColors();
+			coloursBackground.push(myColours[i]);
+			coloursBorders.push(myColours[i]);
 		}
 
 		for (var i in data){
