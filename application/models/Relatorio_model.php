@@ -183,4 +183,18 @@ class Relatorio_model extends MY_Model
 
         return $this->CI->db->get()->result();
     }
+
+    public function get_em_andamento_or_criado($id = NULL) {
+        $this->CI->db->select('*');
+        $this->CI->db->from('relatorios');
+        $this->CI->db->where('relatorio_situacao', 'Em andamento');
+        $this->CI->db->or_where('relatorio_situacao', 'Criado');
+        $this->CI->db->where('ativo', 1);
+
+        if ($id !== NULL) {
+            $this->CI->db->where('relatorio_pk', $id);
+        }
+
+        return $this->CI->db->get()->result();
+    }
 }
