@@ -30,14 +30,39 @@
 			<!-- END ACESSO RÁPIDO -->
 
 			<!-- STATISTIC -->
-			<hr class="m-b-35">
+			<hr class="m-b-20">
 			<div class="row">
 				<div class="col-md-12">
 					<h2 class="title-5 m-b-20">Estatísticas Gerais</h2>
 				</div>
 			</div>
 
-
+			<div class="au-card d-flex flex-column m-t-10">
+				<div class="col-md-9">
+						<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Nossos Números</h2>
+				</div> 	
+				<div class="col-lg-12 col-sm-12 col-md-12" style="display: flex;"> <!--  padding-left: 10%; -->
+					<div class="card" style="width: 16rem; margin-right: 40px;"> 
+						<div class="card-body">
+							<h5 class="card-title">Total de Ordens de Serviço</h5>
+							<h3 id="total_ordens"></h4>
+						</div>
+					</div>
+					<div class="card" style="width: 16rem; margin-right: 40px;">
+						<div class="card-body">
+							<h5 class="card-title">Taxa de Crescimento Semanal</h5>
+							<h3 id="taxa_crescimento"></h4>
+						</div>
+					</div>
+					<div class="card" style="width: 16rem;">
+						<div class="card-body">
+							<h5 class="card-title">Tempo Médio de Finalização</h5>
+							<h3 id="media_finalizacao"></h4>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>
 			<div class="au-card d-flex flex-column m-t-10">							
 				<div class="col-md-9">
 						<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Ordens de Serviço</h2>
@@ -88,13 +113,13 @@
 				</div>
 			</div> 
 			
-			<!-- DADOS DE FUNCIONÁRIOS -->
+			<!-- DADOS DE FUNCIONÁRIOS
 			<div class="au-card d-flex flex-column m-t-50">
 				<div class="row">
 					<div class="col-md-9">
 						<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Funcionários</h2>
 					</div>
-					<!-- Menu iterativo que o usuário clica em qual opção quer ver
+					Menu iterativo que o usuário clica em qual opção quer ver
 						<div class="col-md-3" style="display:none;">
 						<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 							<li class="nav-item">
@@ -106,13 +131,13 @@
 								aria-selected="false">Gráfico</a>
 							</li>
 						</ul>
-					</div> -->
+					</div> 
 				</div>
 				<div class="row">
 					<div class="col-md-12">
 						<div id="table-funcionario" style="display: block;">
 							<div class="table-responsive table-data2 table--no-card m-b-40">
-								<!-- <table id="funcionarios" class="table table-striped table-datatable">
+								<table id="funcionarios" class="table table-striped table-datatable">
 									<thead>
 										<tr>
 											<th>Nome</th>
@@ -123,21 +148,21 @@
 											<th>Status</th>
 										</tr>
 									</thead>
-								</table> -->
+								</table> 
 							</div>
 						</div>
-						<div class="heatmap"> <!-- estava com display none -->
-							<!-- <div class="heatmap"><h5 class="title-4" style="text-align: center;">Relatório não foi gerado no dia de hoje, portanto não é possível mostrar estatísticas.</h5></div> -->
+						<div class="heatmap">  estava com display none
+							 <div class="heatmap"><h5 class="title-4" style="text-align: center;">Relatório não foi gerado no dia de hoje, portanto não é possível mostrar estatísticas.</h5></div>
 							<div class="heatmap" id="heatmap"></div>
 						</div>
 						<div class="col-md-12">
-							<!-- <canvas id="myChart" width="400" height="400"></canvas>
-							<canvas id="ordens_funcionario" name="step-size" width="400" height="400"></canvas> -->
+							<canvas id="myChart" width="400" height="400"></canvas>
+							<canvas id="ordens_funcionario" name="step-size" width="400" height="400"></canvas>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!-- END FUNCIONÁRIOS -->
+			END FUNCIONÁRIOS -->
 
 			<!-- FOOTER -->
 			<div class="row">

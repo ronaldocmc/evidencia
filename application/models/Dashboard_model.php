@@ -112,14 +112,41 @@ class Dashboard_model extends My_Model
         $this->CI->db->from('ordens_servicos');
         $this->CI->db->join('setores', 'setores.setor_pk = ordens_servicos.setor_fk');
         $this->CI->db->where("setores.organizacao_fk = '".$organizacao_fk."'");
-        $this->CI->db->where("ordem_servico_criacao > SUBDATE(NOW(), 7)");
+        // $this->CI->db->where("ordem_servico_criacao > SUBDATE(NOW(), 7)");
 
         // echo $this->CI->db->get_compiled_select(); die();
 
         $result =  $this->CI->db->get()->result();
-        
         return $result; 
 
+    }
+
+    public function get_total_semana($organizacao_fk, $date){
+        $this->CI->db->select("count(ordem_servico_criacao) AS Total");
+
+        $this->CI->db->from('ordens_servicos');
+        $this->CI->db->join('setores', 'setores.setor_pk = ordens_servicos.setor_fk');
+        $this->CI->db->where("setores.organizacao_fk = '".$organizacao_fk."'");
+        $this->CI->db->where("ordem_servico_criacao <= '".$date."'");
+
+        // echo $this->CI->db->get_compiled_select(); die();
+
+        $result =  $this->CI->db->get()->result();
+        return $result; 
+
+    }
+
+    public function get_ordens_finalizadas($organizacao_fk, $select, $where){
+        $this->CI->db->select($select);
+        $this->CI->db->from('ordens_servicos');
+        $this->CI->db->join('setores', 'setores.setor_pk = ordens_servicos.setor_fk');
+        $this->CI->db->where("setores.organizacao_fk = '".$organizacao_fk."'");
+        $this->CI->db->where($where);
+        
+        // echo $this->CI->db->get_compiled_select(); die();
+        $result =  $this->CI->db->get()->result();
+        return $result; 
+        
     }
 
 }

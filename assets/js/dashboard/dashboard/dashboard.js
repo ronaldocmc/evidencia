@@ -10,7 +10,7 @@
 
 var table = $('#ordens_servico').DataTable();
 var days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-feira', 'Quinta-Feira', 'Sexta-feira', 'Sábado'];
-var myColours = ['#1bbc9b','#f1c40f','#3598db','#9b58b5','#bec3c7','#e77e23','#34495e','#c1392b','#2dcc70','#756a14','#2a80b9','#f39c11','#27ae61','#2a57ab','#3e3e3e','#ccbf74','#c1392b','#8f44ad','#d25400'] 
+var myColours = ['#1bbc9b','#bec3c7','#3598db','#34495e','#f1c40f','#e77e23','#9b58b5','#c1392b','#2dcc70','#756a14','#2a80b9','#f39c11','#27ae61','#2a57ab','#3e3e3e','#ccbf74','#c1392b','#8f44ad','#d25400'] 
 var is_superusuario = false; 
 var months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
@@ -18,6 +18,14 @@ class View extends GenericView {
 
 	constructor() {
 		super();
+	}
+
+	renderStatisticsCards(total_year, rate, average){
+		
+		$('#total_ordens').text(total_year);
+		$('#taxa_crescimento').text(rate + '%');
+		$('#media_finalizacao').text(average.toString() + 'h');
+
 	}
 
 	renderQuickAccess() {
@@ -64,7 +72,7 @@ class View extends GenericView {
 	}
 
 	renderOrdersByMonth(months, data){
-	
+		
 		data.splice((data.length-1), 1);
 
 		var ctx = document.getElementById("ordens_mes").getContext("2d");
@@ -407,12 +415,17 @@ class Control extends GenericControl {
 	}
 
 	async init() {
-        this.data = await this.myRequests.init();
+
+		
+		
+		this.data = await this.myRequests.init();
 		this.myView.init(this.data, this.tableFields, this.primaryKey);
 		this.myView.renderOrdersByWeek(days, this.data.semana);
 		this.myView.renderOrdersbySector(this.data.semana_setores[0], this.data.semana_setores[1]);
 		this.myView.renderOrdersbyServices(this.data.semana_tipos[0], this.data.semana_tipos[1]);
-		this.myView.renderOrdersByMonth(months, this.data.ano);
+		this.myView.renderStatisticsCards(this.data.ordens_ano[12], this.data.taxa_crescimento, this.data.media_finalizacao);
+		this.myView.renderOrdersByMonth(months, this.data.ordens_ano);
+		
 	}
 }
 
