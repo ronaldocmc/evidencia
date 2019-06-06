@@ -30,6 +30,27 @@ class Organizacao extends CRUD_Controller {
         $this->organizacao->config_form_validation();
     }
 
+    public function get() {
+        $this->load->model('Municipio_model', 'municipio');
+
+        $organizacao = $this->organizacao->get_all(
+            '*',
+            ['organizacao_pk' => $this->session->user['id_organizacao']],
+            -1,
+            -1,
+            [
+                ['table' => 'localizacoes', 'on' => 'localizacoes.localizacao_pk = organizacoes.localizacao_fk'],
+                ['table' => 'municipios', 'on' => 'municipios.municipio_pk = localizacoes.localizacao_municipio']
+            ]
+        );
+
+        $municipios = $this->municipio->get_all('*', null, -1, -1);
+
+        $this->response->add_data('self', $organizacao);
+        $this->response->add_data('municipios', $municipios);
+        $this->response->send(); 
+    }
+
     public function index()
     {
         $this->load->model('municipio_model', 'municipio');
