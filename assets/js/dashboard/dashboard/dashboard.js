@@ -10,7 +10,7 @@
 
 var table = $('#ordens_servico').DataTable();
 var days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-feira', 'Quinta-Feira', 'Sexta-feira', 'Sábado'];
-// var myColours = ['','','','','','','','','','','','','','','','','','','','','','','','','','',''] 
+var myColours = ['#1bbc9b','#bec3c7','#3598db','#34495e','#f1c40f','#e77e23','#9b58b5','#c1392b','#2dcc70','#756a14','#2a80b9','#f39c11','#27ae61','#2a57ab','#3e3e3e','#ccbf74','#c1392b','#8f44ad','#d25400'] 
 var is_superusuario = false; 
 var months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
@@ -20,10 +20,18 @@ class View extends GenericView {
 		super();
 	}
 
+	renderStatisticsCards(total_year, rate, average){
+		
+		$('#total_ordens').text(total_year);
+		$('#taxa_crescimento').text(rate + '%');
+		$('#media_finalizacao').text(average.toString() + 'h');
+
+	}
+
 	renderQuickAccess() {
 		const allCards = [
 			{
-				text: "nova ordem",
+				text: "Nova Ordem",
 				url: "Ordem_Servico",
 				color: "blue",
 				icon: "fa-thumbtack",
@@ -31,7 +39,7 @@ class View extends GenericView {
 				controller: "ordem_servico"
 			},
 			{
-				text: "novo relatório",
+				text: "Novo Relatório",
 				url: "relatorio/novo",
 				color: "orange",
 				icon: "fa-tasks",
@@ -39,7 +47,7 @@ class View extends GenericView {
 				controller: "relatorio"
 			},
 			{
-				text: "mapa",
+				text: "Mapa",
 				url: "mapa",
 				color: "red",
 				icon: "fa-map-marker-alt",
@@ -47,7 +55,7 @@ class View extends GenericView {
 				controller: "mapa"
 			},
 			{
-				text: "atualizar",
+				text: "Atualizar",
 				color: "green",
 				icon: "fa-refresh",
 				reload: true
@@ -64,7 +72,7 @@ class View extends GenericView {
 	}
 
 	renderOrdersByMonth(months, data){
-	
+		
 		data.splice((data.length-1), 1);
 
 		var ctx = document.getElementById("ordens_mes").getContext("2d");
@@ -76,8 +84,8 @@ class View extends GenericView {
 					{
 						label: 'Quantidade de Ordens de Serviço',
 						data: data,
-						backgroundColor: 'rgba(0,123,255, 0.5)',
-						borderColor: 'rgba(0,123,255, 1)',
+						backgroundColor: 'rgba(27,188,155, 0.5)',
+						borderColor: 'rgba(27,188,155, 1)',
 						borderWidth: 1,
 						fill: 'start',
 						lineTension: 0
@@ -90,6 +98,11 @@ class View extends GenericView {
 							beginAtZero: true,
 						},
 					}],
+				},
+				title: {
+					display: true,
+					text: 'Ordens de Serviço por Mês',
+					position: 'top', 
 				},
 				tooltips: {
 					mode: 'index',
@@ -186,19 +199,10 @@ class View extends GenericView {
 					mode: 'point',
 					intersect: true
 				},
-				annotation: {
-					annotations: [{
-						type: 'line',
-						mode: 'horizontal',
-						scaleID: 'y-axis-0',
-						value: 7,
-						borderColor: 'rgba(0, 35, 7, 1)',
-						borderWidth: 1,
-						label: {
-						enabled: false,
-						content: 'Média por Mês'
-						}
-					}]
+				title: {
+					display: true,
+					text: 'Ordens de Serviço por Semana',
+					position: 'top', 
 				}
 			},
 		});	
@@ -224,7 +228,12 @@ class View extends GenericView {
 					enabled: true,
 					mode: 'label'
 					// intersect: true
-				}
+				},
+				title: {
+					display: true,
+					text: 'Quantidade de OS em cada Setor por Semana',
+					position: 'top', 
+				},
 			},
 		});	
 	}
@@ -238,9 +247,9 @@ class View extends GenericView {
 
 		//Generating colors for sections
 		for(var i in types){
-			var color = this.generateRandomColors();
-			coloursBackground.push(color[0]);
-			coloursBorders.push(color[1]);
+			// var color = this.generateRandomColors();
+			coloursBackground.push(myColours[i]);
+			coloursBorders.push(myColours[i]);
 		}		
 
 		var myChart = new Chart(ctx, {
@@ -261,7 +270,12 @@ class View extends GenericView {
 					enabled: true,
 					mode: 'label'
 					// intersect: true
-				}
+				},
+				title: {
+					display: true,
+					text: 'Quantidade de OS por Tipo de Serviço',
+					position: 'top', 
+				},
 			},
 		});	
 
@@ -296,9 +310,9 @@ class View extends GenericView {
 
 		//Generating colors for sections
 		for(var i in sectors){
-			var color = this.generateRandomColors();
-			coloursBackground.push(color[0]);
-			coloursBorders.push(color[1]);
+			// var color = this.generateRandomColors();
+			coloursBackground.push(myColours[i]);
+			coloursBorders.push(myColours[i]);
 		}
 
 		for (var i in data){
@@ -344,7 +358,7 @@ class View extends GenericView {
 									<i class="fa fas ${card.icon}"></i>
 								</div>
 								<div class="text">
-									<h2>${card.text}</h2>
+									<h4>${card.text}</h4>
 									${textUpdate}
 								</div>
 							</div>
@@ -401,45 +415,127 @@ class Control extends GenericControl {
 	}
 
 	async init() {
-        this.data = await this.myRequests.init();
+
+		
+		
+		this.data = await this.myRequests.init();
 		this.myView.init(this.data, this.tableFields, this.primaryKey);
 		this.myView.renderOrdersByWeek(days, this.data.semana);
 		this.myView.renderOrdersbySector(this.data.semana_setores[0], this.data.semana_setores[1]);
 		this.myView.renderOrdersbyServices(this.data.semana_tipos[0], this.data.semana_tipos[1]);
-		this.myView.renderOrdersByMonth(months, this.data.ano);
+		this.myView.renderStatisticsCards(this.data.ordens_ano[12], this.data.taxa_crescimento, this.data.media_finalizacao);
+		this.myView.renderOrdersByMonth(months, this.data.ordens_ano);
+		
 	}
 }
 
 const myControl = new Control();
 
-myControl.init();
-myControl.myView.renderQuickAccess();
-myControl.myView.renderButtonsBasedOnPermissions();
+// myControl.init();
 
-$("#tabela-funcionario").click(function() {
-	$("#table-funcionario").show();
-	$(".heatmap").hide();
-});
+var map;
 
-$("#tabela-grafico").click(function() {
-	$(".heatmap").show();
-	$("#table-funcionario").hide();
-});
+initMap = async () => {
 
-$(document).ready(function() {
-	preencheAtualizacao("texto-atualizacao");
-});
+	await myControl.init();
+	myControl.myView.renderQuickAccess();
+	myControl.myView.renderButtonsBasedOnPermissions();
 
-function preencheAtualizacao(id_element) {
-	let options = {
-		hour: "numeric",
-		minute: "numeric",
-		second: "numeric",
-		day: "numeric",
-		month: "numeric",
-		year: "numeric"
-	};
-	let formatter = Intl.DateTimeFormat("pt-BR", options);
-	let atual = formatter.format(new Date());
-	$("#" + id_element).text("última atualização: " + atual);
+	map = new GenericMap({
+		mapId: "map",
+		insideHideDiv: false,
+		setIcons: true,
+		config: {
+			center: { lat: -22.121265, lng: -51.3834 },
+			zoom: 13
+		},
+		markerConfig: {
+			unique: false,
+			clickable: false,
+			target: "v_evidencia"
+		},
+		input: {
+			sublocality: "localizacao_bairro",
+			locality: "localizacao_municipio",
+			street: "localizacao_rua",
+			street_number: "localizacao_num",
+			state: false,
+			lat: "localizacao_lat",
+			long: "localizacao_long"
+		},
+
+		data: myControl.data.self,
+
+		useGeocoder: true,
+		useCreateMarker: true
+	});
+
+	map.initMap();
+	
+	map.handleMarkerClick = function(event) {};
 }
+
+	// Comportamento de um marker quando clicado
+	
+
+	// Comportamento de um clique no mapa
+	// map.handleClick = async function(event) {
+	// 	const { useGeocoder, useCreateMarker } = this.state.steps;
+
+	// 	const location = { lat: event.latLng.lat(), lng: event.latLng.lng() };
+
+	// 	// this.state.map.setCenter(event.latLng);
+
+	// 	this.state.lastPositionClicked = location;
+
+	// 	if (useCreateMarker) {
+	// 		this.createMarker(location);
+	// 	}
+
+	// 	if (useGeocoder) {
+	// 		const response = await this.translateLocation(location);
+	// 		this.fillInputs(response.address_components, location);
+	// 	}
+	// };
+
+	// map.handleDivOpen = function() {
+	// 	$("#modal").on("shown.bs.modal", event => {
+	// 		// myControl.handleSelects($("#departamento_fk".val()));
+
+	// 		if (myControl.getSelectedId()) {
+	// 			const {
+	// 				localizacao_lat,
+	// 				localizacao_long
+	// 			} = myControl.data.self[myControl.getSelectedId()];
+	// 			const location = {
+	// 				lat: parseFloat(localizacao_lat),
+	// 				lng: parseFloat(localizacao_long)
+	// 			};
+	// 			// map.setMap(new google.maps.Map(document.getElementById(this.state.mapId), this.state.mapConfig));
+	// 			map.initMap();
+	// 			map.createMarker(location);
+	// 			map.getMap().setCenter(location);
+	// 		} else {
+	// 			map.initMap();
+	// 		}
+	// 	});
+	// };
+
+	// map.handleCity = function(id, name) {
+	// 	// let exists = false;
+
+	// 	myControl.data.municipios.forEach(municipio => {
+	// 		if (name == municipio.municipio_nome) {
+	// 			$(`#${id}`).val(municipio.municipio_pk);
+	// 			$(`#${id} option:selected`).val(municipio.municipio_pk);
+	// 			exists = true;
+	// 		}
+	// 	});
+
+		// if(!exists){
+		//     alert("Infelizmente a cidade em questão não está sob responsabilidade da empresa");
+		// };
+
+
+
+

@@ -3353,7 +3353,7 @@ section {
 	-webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1);
 	-moz-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1);
 	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1);
-	padding: 40px 20px 40px 20px;
+	padding: 20px 20px 20px 20px;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
@@ -5065,9 +5065,9 @@ section {
 	background: #fff;
 	padding: 20px 30px;
 	position: relative;
-	min-height: 180px;
+	min-height: 130px;
 	overflow: hidden;
-	margin-bottom: 40px;
+	margin-bottom: 20px;
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {

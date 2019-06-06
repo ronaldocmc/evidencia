@@ -23,7 +23,7 @@ class GenericMap {
 			mapId: props.mapId || "map",
 			geocoder: null,
 			insideHideDiv: props.insideHideDiv,
-
+			setIcons: null,
 			mapConfig: props.config,
 			markerConfig: props.markerConfig,
 
@@ -55,7 +55,6 @@ class GenericMap {
 
 	initMap() {
 		const { mapId, mapConfig } = this.state;
-
 		this.state.map = new google.maps.Map(
 			document.getElementById(mapId),
 			mapConfig
@@ -212,7 +211,7 @@ class GenericMap {
 				lng: parseFloat(marker.localizacao_long)
 			},
 			map: this.state.map,
-			// icon: this.getImage(marker.prioridade_fk),
+			icon: this.state.setIcons ? '' : this.getImage(marker.prioridade_fk),
 			props: marker
 		});
 
@@ -236,7 +235,7 @@ class GenericMap {
 						lat: results[0].geometry.location.lat(),
 						lng: results[0].geometry.location.lng()
 					};
-					console.log('inside: ', location);
+					
 					return location;
 				}
 			} else {
