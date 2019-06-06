@@ -431,30 +431,111 @@ class Control extends GenericControl {
 
 const myControl = new Control();
 
-myControl.init();
-myControl.myView.renderQuickAccess();
-myControl.myView.renderButtonsBasedOnPermissions();
+// myControl.init();
 
-$("#tabela-funcionario").click(function() {
-	$("#table-funcionario").show();
-	$(".heatmap").hide();
-});
+var map;
 
-$("#tabela-grafico").click(function() {
-	$(".heatmap").show();
-	$("#table-funcionario").hide();
-});
+initMap = async () => {
 
-function preencheAtualizacao(id_element) {
-	let options = {
-		hour: "numeric",
-		minute: "numeric",
-		second: "numeric",
-		day: "numeric",
-		month: "numeric",
-		year: "numeric"
-	};
-	let formatter = Intl.DateTimeFormat("pt-BR", options);
-	let atual = formatter.format(new Date());
-	$("#" + id_element).text("última atualização: " + atual);
+	await myControl.init();
+	myControl.myView.renderQuickAccess();
+	myControl.myView.renderButtonsBasedOnPermissions();
+
+	map = new GenericMap({
+		mapId: "map",
+		insideHideDiv: false,
+		setIcons: true,
+		config: {
+			center: { lat: -22.121265, lng: -51.3834 },
+			zoom: 13
+		},
+		markerConfig: {
+			unique: false,
+			clickable: false,
+			target: "v_evidencia"
+		},
+		input: {
+			sublocality: "localizacao_bairro",
+			locality: "localizacao_municipio",
+			street: "localizacao_rua",
+			street_number: "localizacao_num",
+			state: false,
+			lat: "localizacao_lat",
+			long: "localizacao_long"
+		},
+
+		data: myControl.data.self,
+
+		useGeocoder: true,
+		useCreateMarker: true
+	});
+
+	map.initMap();
+	
+	map.handleMarkerClick = function(event) {};
 }
+
+	// Comportamento de um marker quando clicado
+	
+
+	// Comportamento de um clique no mapa
+	// map.handleClick = async function(event) {
+	// 	const { useGeocoder, useCreateMarker } = this.state.steps;
+
+	// 	const location = { lat: event.latLng.lat(), lng: event.latLng.lng() };
+
+	// 	// this.state.map.setCenter(event.latLng);
+
+	// 	this.state.lastPositionClicked = location;
+
+	// 	if (useCreateMarker) {
+	// 		this.createMarker(location);
+	// 	}
+
+	// 	if (useGeocoder) {
+	// 		const response = await this.translateLocation(location);
+	// 		this.fillInputs(response.address_components, location);
+	// 	}
+	// };
+
+	// map.handleDivOpen = function() {
+	// 	$("#modal").on("shown.bs.modal", event => {
+	// 		// myControl.handleSelects($("#departamento_fk".val()));
+
+	// 		if (myControl.getSelectedId()) {
+	// 			const {
+	// 				localizacao_lat,
+	// 				localizacao_long
+	// 			} = myControl.data.self[myControl.getSelectedId()];
+	// 			const location = {
+	// 				lat: parseFloat(localizacao_lat),
+	// 				lng: parseFloat(localizacao_long)
+	// 			};
+	// 			// map.setMap(new google.maps.Map(document.getElementById(this.state.mapId), this.state.mapConfig));
+	// 			map.initMap();
+	// 			map.createMarker(location);
+	// 			map.getMap().setCenter(location);
+	// 		} else {
+	// 			map.initMap();
+	// 		}
+	// 	});
+	// };
+
+	// map.handleCity = function(id, name) {
+	// 	// let exists = false;
+
+	// 	myControl.data.municipios.forEach(municipio => {
+	// 		if (name == municipio.municipio_nome) {
+	// 			$(`#${id}`).val(municipio.municipio_pk);
+	// 			$(`#${id} option:selected`).val(municipio.municipio_pk);
+	// 			exists = true;
+	// 		}
+	// 	});
+
+		// if(!exists){
+		//     alert("Infelizmente a cidade em questão não está sob responsabilidade da empresa");
+		// };
+
+
+
+

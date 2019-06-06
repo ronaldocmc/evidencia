@@ -38,8 +38,8 @@
 			</div>
 
 			<div class="au-card d-flex flex-column m-t-10">
-				<div class="col-md-9">
-						<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Nossos Números</h2>
+				<div class="col-md-12">
+					<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Nossos Números</h2>
 				</div> 	
 				<div class="col-lg-12 col-sm-12 col-md-12" style="display: flex;"> <!--  padding-left: 10%; -->
 					<div class="card" style="width: 16rem; margin-right: 40px;"> 
@@ -63,9 +63,10 @@
 				</div>
 			</div>
 			<br>
+			<!-- Gráficos Ordens de Serviço -->
 			<div class="au-card d-flex flex-column m-t-10">							
-				<div class="col-md-9">
-						<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Ordens de Serviço</h2>
+				<div class="col-md-12">
+					<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Gráficos de Ordens de Serviço</h2>
 				</div> 
 				<div class="row">
 					<div class="col-md-12" style="display: flex">
@@ -88,10 +89,30 @@
 						</div>
 					</div> 
 				</div>
-				<br>
+			</div>
+			<!-- Fim dos Gráficos Ordens de Serviço -->
+			<br>
+			<!-- Mapa rápido -->
+			<div class="au-card d-flex flex-column m-t-10">							
 				<div class="row">
 					<div class="col-md-12">
-						<div class="table-responsive table--no-card m-b-40" style="display: none;">
+						<h2 class="title-2 m-b-20 fs-16" style="text-align: left;">Mapa Rápido</h2>
+					</div>
+					<div class="col-12">
+						<div id="map" style="height:300px; width:100%; !important;"></div>
+					</div>
+				</div>
+			</div>
+			<!-- Fim do Mapa rápido -->
+			<br>
+			<!-- Tabela Ordens de Serviço 7 dias -->
+			<div class="au-card d-flex flex-column m-t-10">							
+				<div class="row">
+					<div class="col-md-12">
+						<h2 class="title-2 m-b-20 fs-16" style="text-align: left;">Tabela Rápida - Ordens da Semana</h2>
+					</div>
+					<div class="col-md-12">
+						<div class="table-responsive table--no-card m-b-30" style="display: none;">
 							<table id="ordens_servico" class="table table-striped">
 								<thead>
 									<tr>
@@ -107,15 +128,13 @@
 							</table>
 						</div>
 					</div>
-					<div class="col-md-12">
-						<div class="map"><div id="map"></div></div>
-					</div>
 				</div>
-			</div> 
-			
+			</div>
+			<!-- Fim da Tabela Ordens de Serviço 7 dias -->
+
 			<!-- DADOS DE FUNCIONÁRIOS
 			<div class="au-card d-flex flex-column m-t-50">
-				<div class="row">
+				<div classSSSSSSSS="row">
 					<div class="col-md-9">
 						<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Funcionários</h2>
 					</div>
@@ -181,75 +200,3 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.min.js"></script>
-<script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
-
-<script type="text/javascript">
-	var xValues = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
-
-	var yValues = ['Pietro'];
-
-	var zValues = [
-	[0.00, 0.00, 0.75, 0.75, 0.00, 0.25, 0.25, 0.00, 0.00, 0.00, 0.00],
-	];
-
-	var colorscaleValue = [
-	[0, '#3D9970'],
-	[1, '#001f3f']
-	];
-
-	var data = [{
-		x: xValues,
-		y: yValues,
-		z: zValues,
-		type: 'heatmap',
-		colorscale: colorscaleValue,
-		showscale: true
-	}];
-
-	var layout = {
-		title: 'Performance Funcionários',
-		annotations: [],
-		xaxis: {
-			ticks: '',
-			side: 'top'
-		},
-		yaxis: {
-			ticks: '',
-			ticksuffix: ' ',
-			width: 700,
-			height: 700,
-			autosize: false
-		},
-	};
-
-	for ( var i = 0; i < yValues.length; i++ ) {
-		for ( var j = 0; j < xValues.length; j++ ) {
-			var currentValue = zValues[i][j];
-			if (currentValue != 0.0) {
-				var textColor = 'white';
-			}else{
-				var textColor = 'black';
-			}
-			var result = {
-				xref: 'x1',
-				yref: 'y1',
-				x: xValues[j],
-				y: yValues[i],
-				text: zValues[i][j],
-				font: {
-					family: 'Arial',
-					size: 12,
-					color: 'rgb(50, 171, 96)'
-				},
-				showarrow: false,
-				font: {
-					color: textColor
-				}
-			};
-			layout.annotations.push(result);
-		}
-	}
-
-	Plotly.newPlot('heatmap', data, layout);
-
-</script>
