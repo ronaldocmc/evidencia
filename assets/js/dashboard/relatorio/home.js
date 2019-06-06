@@ -88,7 +88,7 @@ class Control extends GenericControl {
         			    'relatorio_func_responsavel', 'relatorio_pk', 'relatorio_situacao'];
         this.tableFields = ['funcionario_nome', 'quantidade_os', 'relatorio_situacao',
         					'relatorio_data_criacao', 'relatorio_data_entrega'];
-        this.verifyDependences = true;
+        this.verifyDependences = false;
     }
 
     init() {
