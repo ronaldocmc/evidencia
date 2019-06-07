@@ -362,8 +362,23 @@
                         </div>
                         <div class="card-body card-block">
                             <div class="row form-group">
-                                <div class="file-upload col-12">
-
+                                <div class="col-12" id="image-upload-div">
+                                    <div class="image-upload-wrap" style="">
+                                        <input class="file-upload-input" type="file" onchange="readURL(this);" accept="image/*" id="input-upload">
+                                        <div class="drag-text">
+                                            <h3>Clique ou arraste uma imagem e solte aqui</h3>
+                                        </div>
+                                    </div>
+                                    <div class="file-upload-content" style="display: none;">
+                                        <img id="img-input" class="file-upload-image" src="" alt="your image">
+                                        <div class="col-12" id="images_buttons" >
+                                            <button type="button" class="btn btn-danger clean_input_images" onclick="myControl.cleanInputImage();">Remover</button>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">Por favor, se necessário, carregue a imagem</small>
+                                    <div class="col-12" id="images_saved" style="margin-top: 20px; display:flex;"></div>
+                                </div>
+                                <!-- <div class="file-upload col-12">
                                     <div style="text-align: center">
                                         <img width="300px" src="" id="show-img-funcionario" alt="">
                                         <br>
@@ -386,7 +401,7 @@
                                                 class="btn btn-danger">Remover Imagem</button>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <div class="card-footer text-center">
