@@ -19,12 +19,17 @@
 			<!-- ACESSO RÁPIDO -->
 			<div class="row">
 				<div class="col-md-12">
-					<h2 class="title-5 m-b-10">Acesso Rápido</h2>
+					<h2 class="title-5 m-b-10">Acesso Rápido</h2>	
 				</div>
 			</div>
 
 			<hr class="m-b-15">
 			<div class="container">
+				<div id="loading1">
+					<div class="center" style="text-align: center">
+						<img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading1" width="150" heigth="150">
+					</div>
+				</div>
 				<div class="row quick-access"></div>
 			</div>
 			<!-- END ACESSO RÁPIDO -->
@@ -40,54 +45,68 @@
 			<div class="au-card d-flex flex-column m-t-10">
 				<div class="col-md-12">
 					<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Nossos Números</h2>
-				</div> 	
-				<div class="col-lg-12 col-sm-12 col-md-12" style="display: flex;"> <!--  padding-left: 10%; -->
-					<div class="card" style="width: 16rem; margin-right: 40px;"> 
-						<div class="card-body">
-							<h5 class="card-title">Total de Ordens de Serviço</h5>
-							<h3 id="total_ordens"></h4>
+				</div>
+				<div id="loading2">
+						<div class="center" style="text-align: center">
+							<img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading2" width="150" heigth="150">
 						</div>
-					</div>
-					<div class="card" style="width: 16rem; margin-right: 40px;">
-						<div class="card-body">
-							<h5 class="card-title">Taxa de Crescimento Semanal</h5>
-							<h3 id="taxa_crescimento"></h4>
+				</div> 
+				<div id="nossos_numeros" hidden="true">
+					<div class="col-lg-12 col-sm-12 col-md-12" style="display: flex;"> <!--  padding-left: 10%; -->
+						<div class="card" style="width: 16rem; margin-right: 40px;"> 
+							<div class="card-body">
+								<h5 class="card-title">Total de Ordens de Serviço</h5>
+								<h3 id="total_ordens"></h4>
+							</div>
 						</div>
-					</div>
-					<div class="card" style="width: 16rem;">
-						<div class="card-body">
-							<h5 class="card-title">Tempo Médio de Finalização</h5>
-							<h3 id="media_finalizacao"></h4>
+						<div class="card" style="width: 16rem; margin-right: 40px;">
+							<div class="card-body">
+								<h5 class="card-title">Taxa de Crescimento Semanal</h5>
+								<h3 id="taxa_crescimento"></h4>
+							</div>
+						</div>
+						<div class="card" style="width: 16rem;">
+							<div class="card-body">
+								<h5 class="card-title">Tempo Médio de Finalização</h5>
+								<h3 id="media_finalizacao"></h4>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<br>
 			<!-- Gráficos Ordens de Serviço -->
-			<div class="au-card d-flex flex-column m-t-10">							
+			<div class="au-card d-flex flex-column m-t-10">	
 				<div class="col-md-12">
 					<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Gráficos de Ordens de Serviço</h2>
 				</div> 
-				<div class="row">
-					<div class="col-md-12" style="display: flex">
-						<div class="col-md-6 chart-container">
-							<canvas id="ordens_semana" name="multi-axis"></canvas>
-						</div>
-						<div class="col-md-6 chart-container">
-							<canvas id="ordens_setor_semana" name="bar-stacked"></canvas> 
-						</div>
+				<div id="loading3">
+					<div class="center" style="text-align: center">
+						<img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading3" width="150" heigth="150">
 					</div>
 				</div>
-				<br>
-				<div class="row">
-					<div class="col-md-12>" style="display: flex; width: 100%;">
-						<div class="col-md-6 chart-container">
-							<canvas id="ordens_mes" name="line-boundaries"></canvas>
+				<div id="graficos" hidden="true">
+					<div class="row">
+						<div class="col-md-12" style="display: flex">
+							<div class="col-md-6 chart-container">
+								<canvas id="ordens_semana" name="multi-axis"></canvas>
+							</div>
+							<div class="col-md-6 chart-container">
+								<canvas id="ordens_setor_semana" name="bar-stacked"></canvas> 
+							</div>
 						</div>
-						<div class="col-md-6 chart-container">
-							<canvas id="ordens_tipo_servico" name="pie"></canvas>
-						</div>
-					</div> 
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-md-12>" style="display: flex; width: 100%;">
+							<div class="col-md-6 chart-container">
+								<canvas id="ordens_mes" name="line-boundaries"></canvas>
+							</div>
+							<div class="col-md-6 chart-container">
+								<canvas id="ordens_tipo_servico" name="pie"></canvas>
+							</div>
+						</div> 
+					</div>
 				</div>
 			</div>
 			<!-- Fim dos Gráficos Ordens de Serviço -->
@@ -96,9 +115,14 @@
 			<div class="au-card d-flex flex-column m-t-10">							
 				<div class="row">
 					<div class="col-md-12">
-						<h2 class="title-2 m-b-20 fs-16" style="text-align: left;">Mapa Rápido</h2>
+						<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Mapa Rápido</h2>
 					</div>
-					<div class="col-12">
+					<div id="loading5">
+						<div class="center" style="text-align: center;">
+							<img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading5" width="150" heigth="150">
+						</div>
+					</div>
+					<div class="col-12" id="mapa" hidden="true">
 						<div id="map" style="height:300px; width:100%; !important;"></div>
 					</div>
 				</div>
@@ -106,12 +130,17 @@
 			<!-- Fim do Mapa rápido -->
 			<br>
 			<!-- Tabela Ordens de Serviço 7 dias -->
-			<div class="au-card d-flex flex-column m-t-10">							
+			<div class="au-card d-flex flex-column m-t-10">						
 				<div class="row">
 					<div class="col-md-12">
-						<h2 class="title-2 m-b-20 fs-16" style="text-align: left;">Tabela Rápida - Ordens da Semana</h2>
+						<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Tabela Rápida - Ordens da Semana</h2>
 					</div>
-					<div class="col-md-12">
+					<div id="loading4">
+						<div class="center" style="text-align: center;">
+							<img src="<?= base_url('assets/images/loading.gif'); ?>" id="v_loading4" width="150" heigth="150">
+						</div>
+					</div>						
+					<div class="col-md-12" id="tabela" hidden="true">
 						<div class="table-responsive table--no-card m-b-30" style="display: none;">
 							<table id="ordens_servico" class="table table-striped">
 								<thead>

@@ -427,6 +427,20 @@ class Control extends GenericControl {
 		this.myView.renderOrdersByMonth(months, this.data.ordens_ano);
 		
 	}
+
+	removeLoading(){
+		
+		$('#loading1').hide();
+		$('#loading2').hide();
+		$('#loading3').hide();
+		$('#loading4').hide();
+		$('#loading5').hide();
+	
+		$('#nossos_numeros').attr('hidden', false);
+		$('#graficos').attr('hidden', false);
+		$('#tabela').attr('hidden', false);
+		$('#mapa').attr('hidden', false);
+	}
 }
 
 const myControl = new Control();
@@ -440,6 +454,7 @@ initMap = async () => {
 	await myControl.init();
 	myControl.myView.renderQuickAccess();
 	myControl.myView.renderButtonsBasedOnPermissions();
+	myControl.removeLoading();
 
 	map = new GenericMap({
 		mapId: "map",
@@ -471,6 +486,7 @@ initMap = async () => {
 	});
 
 	map.initMap();
+	
 	
 	map.handleMarkerClick = function(event) {};
 }
