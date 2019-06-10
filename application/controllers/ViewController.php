@@ -47,7 +47,12 @@ class ViewController extends AuthorizationController
             2 => base_url('assets/vendor/datatables/datatables.min.js'),
             3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
             4 => base_url('assets/js/utils.js'),
-            5 => base_url('assets/js/dashboard/dashboard/dashboard.js')
+            5 => base_url('assets/js/dashboard/dashboard/dashboard.js'),
+            6 => base_url('assets/vendor/input-image/input-image.js')
+        ]);
+        
+        $this->session->set_flashdata('mapa', [
+            0 => true,
         ]);
         load_view([
             0 => [

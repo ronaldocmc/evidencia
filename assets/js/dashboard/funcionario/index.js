@@ -240,8 +240,17 @@ class Control extends GenericControl {
 
 		return password1 === password2;
 	}
+
+	cleanInputImage() {
+		$("#img-input").attr("src", "");
+		removeUpload();
+	}
 }
 
 const myControl = new Control();
+
+$('#modal').on('hide.bs.modal', function (event) {
+    myControl.cleanInputImage();
+});
 
 myControl.init();

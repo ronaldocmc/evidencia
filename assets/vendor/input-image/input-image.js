@@ -23,7 +23,7 @@ function readURL(input) {
 	}
 }
 
-function removeUploadFromForm() {
+function removeUpload() {
 	$('.file-upload-input').val('');
 	$(".file-upload-image").cropper("destroy");
 	$(".file-upload-content").hide();
