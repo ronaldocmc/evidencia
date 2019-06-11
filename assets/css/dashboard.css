@@ -71,8 +71,6 @@ tbody {
 	-webkit-transform: scale(1.1); 
 }
 
-
-
 .geral {
 	text-align: center;
     margin: 0 auto;
@@ -90,3 +88,36 @@ tbody {
 .bag {
 	padding: 0px;
 }
+
+.statistics_charts{
+	display: flex !important;
+}
+
+.statistics_numbers{
+	display: flex !important;
+}
+
+@media (max-width: 1200px)  {
+	.statistics_charts {
+	  display: block !important;
+	}
+  }
+/* 
+@media (max-width: 576px)  {
+	.statistics_charts {
+	  display: block !important;
+	}
+  } */
+
+  @media (max-width: 450px){
+	.charts_os {
+	  display: none !important;
+	}
+  }
+
+  @media (max-width: 576px) {
+	.statistics_numbers {
+	  display: block !important;
+	  align-items: center;
+	}
+  }
