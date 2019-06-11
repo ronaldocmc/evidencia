@@ -43,7 +43,7 @@
 			</div>
 
 			<div class="au-card d-flex flex-column m-t-10">
-				<div class="col-md-12">
+				<div class="col-sm-12 col-md-12">
 					<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Nossos Números</h2>
 				</div>
 				<div id="loading2">
@@ -52,7 +52,7 @@
 						</div>
 				</div> 
 				<div id="nossos_numeros" hidden="true">
-					<div class="col-lg-12 col-sm-12 col-md-12" style="display: flex;"> <!--  padding-left: 10%; -->
+					<div class="col-lg-12 col-sm-12 col-md-12 statistics_numbers"> <!--  padding-left: 10%; -->
 						<div class="card" style="width: 16rem; margin-right: 40px;"> 
 							<div class="card-body">
 								<h5 class="card-title">Total de Ordens de Serviço</h5>
@@ -76,7 +76,7 @@
 			</div>
 			<br>
 			<!-- Gráficos Ordens de Serviço -->
-			<div class="au-card d-flex flex-column m-t-10">	
+			<div class="au-card d-flex flex-column m-t-10 charts_os">	
 				<div class="col-md-12">
 					<h2 class="title-2 m-b-30 fs-16" style="text-align: left;">Gráficos de Ordens de Serviço</h2>
 				</div> 
@@ -87,22 +87,22 @@
 				</div>
 				<div id="graficos" hidden="true">
 					<div class="row">
-						<div class="col-md-12" style="display: flex">
-							<div class="col-md-6 chart-container">
+						<div class="col-md-12 statistics_charts">
+							<div class="col-sm-12 col-md-12 col-xl-6 chart-container">
 								<canvas id="ordens_semana" name="multi-axis"></canvas>
 							</div>
-							<div class="col-md-6 chart-container">
+							<div class="col-sm-12 col-md-12 col-xl-6 chart-container">
 								<canvas id="ordens_setor_semana" name="bar-stacked"></canvas> 
 							</div>
 						</div>
 					</div>
 					<br>
 					<div class="row">
-						<div class="col-md-12>" style="display: flex; width: 100%;">
-							<div class="col-md-6 chart-container">
+						<div class="col-md-12 statistics_charts" style="width: 100%;">
+							<div class="col-sm-12 col-md-12 col-xl-6 chart-container">
 								<canvas id="ordens_mes" name="line-boundaries"></canvas>
 							</div>
-							<div class="col-md-6 chart-container">
+							<div class="col-sm-12 col-md-12 col-xl-6 chart-container">
 								<canvas id="ordens_tipo_servico" name="pie"></canvas>
 							</div>
 						</div> 

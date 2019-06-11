@@ -98,6 +98,7 @@ class View extends GenericView {
 							beginAtZero: true,
 						},
 					}],
+					responsive: true
 				},
 				title: {
 					display: true,
@@ -182,7 +183,8 @@ class View extends GenericView {
 					}]
 				},
 			options: {
-				scales: {
+				scales: { 
+					responsive: true,
 					yAxes: [{
 						ticks:{
 							beginAtZero: true,	
@@ -192,8 +194,7 @@ class View extends GenericView {
 						ticks:{
 							autoSkip: false
 						},
-					}],
-				responsive: true
+					}]
 				},
 				tooltips: {
 					mode: 'point',
@@ -219,10 +220,10 @@ class View extends GenericView {
 				datasets: set
 				},
 			options: {
-				scales: { 
+				scales: {
+					responsive: true, 
 					xAxes: [{ stacked: true }],
-            		yAxes: [{ stacked: true }],
-					responsive: true,
+            		yAxes: [{ stacked: true }]
 				},
 				tooltips: {
 					enabled: true,
@@ -416,8 +417,6 @@ class Control extends GenericControl {
 
 	async init() {
 
-		
-		
 		this.data = await this.myRequests.init();
 		this.myView.init(this.data, this.tableFields, this.primaryKey);
 		this.myView.renderOrdersByWeek(days, this.data.semana);
