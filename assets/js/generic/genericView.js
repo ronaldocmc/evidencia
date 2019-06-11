@@ -552,4 +552,9 @@ class GenericView {
                     <p><b>Descrição:</b> ${desc}</p>
                 </div>`
     }
+
+    generateParagraph(text) {
+        let p = `<p> ${text} </p>`;
+        return p;
+    }
 }
