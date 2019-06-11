@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
@@ -16,7 +17,7 @@
                         </div>
                         <div class="card-body card-block">
                             <div class="form-group">
-                                <label for="organizacao_pk" class="form-control-label"><strong>Domínio*</strong></label>
+                                <label for="organizacao_pk" class="form-control-label">Domínio</label>
                                 <input type="text" id="organizacao_pk" name="organizacao_pk" class="form-control" required="true" disabled="true" maxlength="10" minlength="3">
                                 <small class="form-text text-muted"></small>
                             </div>
@@ -50,6 +51,7 @@
                                     <select class="form-control loading" id="cidade-input" name="municipio_pk" data-value="<?= '$organizacao->municipio_pk' ?>" required="true"></select>
                                 </div> -->
                                 <div class="col-12 col-md-9">
+                                    <label for="localizacao_municipio" class="form-control-label"><strong>Município*</strong></label>
                                     <select class="form-control" name="localizacao_municipio" id="localizacao_municipio" required="true">
 
                                     </select>
@@ -79,22 +81,6 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <strong>Área de Atuação</strong>
-                        </div>
-                        <div class="card-body card-block">
-                            <div class="form-group">
-                                <label for="add_city"> Adicione Cidades </label> <br>
-                                <input type="text" name="add_city" id="add_city" class="form-control col-md-8">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="row div-btn-lower">
                 <div class="col-md-12 d-flex justify-content-center">
                     <div class="overview-wrap">
@@ -104,6 +90,38 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row pt-4">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Área de Atuação</strong>
+                        </div>
+                        <div class="card-body" style="display: table;">
+                            <label for="new_city"> Adicione Cidades </label><br>
+                            <input type="text" name="new_city" id="new_city" class="form-control col-12"><br>
+                            <button class="au-btn au-btn-icon au-btn--blue col-12" id="add_city">
+                                <i class="fas fa-plus"></i>
+                                Adicionar
+                            </button>    
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Cidades Adicionadas</strong>
+                        </div>
+                        <div class="card-body card-block">
+                            <div id="cities" style="display: inline-block;">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
