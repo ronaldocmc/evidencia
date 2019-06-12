@@ -419,15 +419,15 @@ class View extends GenericView {
 
 const myControl = new GenericControl();
 
-const initMap = async () => {
-
+initMap = async () => {
+	await myControl.init();
 	const map = new GenericMap({
 		mapId: "map",
 		insideHideDiv: false,
 		setIcons: true,
 		config: {
 			center: { lat: -22.121265, lng: -51.3834 },
-			zoom: 13
+			zoom: 14
 		},
 		markerConfig: {
 			unique: true,
@@ -444,7 +444,7 @@ const initMap = async () => {
 			long: "localizacao_long"
 		},
 
-		data: myControl.data.self, // ?????
+		data: myControl.data, // ?????
 
 		useGeocoder: true,
 		useCreateMarker: true
