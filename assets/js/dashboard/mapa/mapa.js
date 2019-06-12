@@ -18,43 +18,10 @@ $(document).ready(function() {
 
 	btn_load($("#filtrar"));
 
-	let date = new Date();
-
-	let filters = {
-		data_inicial:
-			date.getFullYear() +
-			"-" +
-			(date.getMonth() + 1) +
-			"-" +
-			(date.getDate() - 7) +
-			" 00:01:00",
-		data_final:
-			date.getFullYear() +
-			"-" +
-			(date.getMonth() + 1) +
-			"-" +
-			date.getDate() +
-			" 23:59:00"
-	};
-
-	$("#de").val(formatDate(lastWeek()));
-	$("#ate").val(formatDate(new Date()));
-
-	let url = base_url + "/Ordem_Servico/get_map";
-
-	$.post(url, filters)
-		.done(function(response) {
-			markers = [];
-			response.data.map(function(ordem) {
-				popula_markers(ordem);
-			});
-		})
-		.fail(function(response) {});
-
 	btn_ativar($("#filtrar"));
 });
 
-//TODO: Refactor this 
+//TODO: Refactor this
 function lastWeek() {
 	var today = new Date();
 	var lastweek = new Date(
@@ -76,28 +43,6 @@ function formatDate(date) {
 	if (day.length < 2) day = "0" + day;
 
 	return [year, month, day].join("-");
-}
-
-
-function seleciona_imagem(prioridade) {
-	let imagem = "./assets/img/icons/Markers/Status/";
-
-	switch (prioridade) {
-		case "1": {
-			imagem += "prioridade_baixa.png";
-			break;
-		}
-		case "2": {
-			imagem += "prioridade_alta.png";
-			break;
-		}
-		case "4": {
-			imagem += "prioridade_media.png";
-			break;
-		}
-	}
-
-	return imagem;
 }
 
 // TODO: Dafuq is this
@@ -324,53 +269,10 @@ function get_filters() {
 	return filters;
 }
 
-// TODO: replace this with renderMarkers and such
-function popula_markers(ordem) {
-	let imagem = seleciona_imagem(ordem.prioridade_fk);
-
-	var marker = new google.maps.Marker({
-		position: {
-			lat: parseFloat(ordem.localizacao_lat),
-			lng: parseFloat(ordem.localizacao_long)
-		},
-		map: main_map,
-		icon: imagem,
-		id: ordem.ordem_servico_pk,
-		departamento: ordem.departamento_fk,
-		tipo_servico: ordem.tipo_servico_pk,
-		servico: ordem.servico_fk,
-		situacao: ordem.situacao_atual_fk,
-		data_criacao: ordem.ordem_servico_criacao,
-		prioridade: ordem.prioridade_fk,
-		setor: ordem.setor_fk,
-		title:
-			ordem.localizacao_rua +
-			", " +
-			ordem.localizacao_num +
-			" - " +
-			ordem.localizacao_bairro
-	});
-
-	marker.addListener("click", function() {
-		main_map.panTo(marker.getPosition());
-		request_data(this.id, marker.setor);
-		$("#v_evidencia").modal("show");
-	});
-
-	markers.push(marker);
-}
-
-// function initMap() {
-// 	main_map = new google.maps.Map(document.getElementById("map"), {
-// 		center: { lat: -22.114184, lng: -51.405798 },
-// 		zoom: 14
-// 	});
-// }
 
 class Request extends GenericRequest {
-
-    constructor() {
-        super();
+	constructor() {
+		super();
 		this.route = "/Ordem_Servico"; // get_map method
 	}
 
@@ -395,11 +297,14 @@ class Request extends GenericRequest {
 		const response = await this.send("/get_map", filters);
 		return response.data;
 	}
+	
+	async getSpecificOS(id) {
+		// Request to get specific os by id
+		const os_data = await this.send('get_specific/' + id, {}); 
+	}
 }
 class Control extends GenericControl {
-
 	constructor() {
-
 		super();
 		this.verifyDependences = false;
 	}
@@ -407,6 +312,11 @@ class Control extends GenericControl {
 	async init() {
 		this.data = await this.myRequests.init();
 	}
+
+	async getSpecificOS(id, setor){
+		os_data = this.myRequests.getSpecificOS(id);
+	}
+
 }
 
 // Dummy View for the GenericControl
@@ -430,7 +340,7 @@ initMap = async () => {
 			zoom: 14
 		},
 		markerConfig: {
-			unique: true,
+			unique: false,
 			clickable: true,
 			target: "v_evidencia"
 		},
@@ -451,4 +361,5 @@ initMap = async () => {
 	});
 
 	map.initMap();
+	map.handleMarkerClick = event => {console.log(event)};
 };
