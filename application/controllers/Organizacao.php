@@ -19,7 +19,7 @@ class Organizacao extends CRUD_Controller {
         $this->response = new Response();
         $this->load->helper('exception');
         $this->load->library('form_validation');
-        $this->load->model('organizacao_model', 'organizacao');
+        $this->load->model('Organizacao_model', 'organizacao');
     }
 
     private function load()
@@ -28,6 +28,39 @@ class Organizacao extends CRUD_Controller {
 
         $this->localizacao->config_form_validation();
         $this->organizacao->config_form_validation();
+    }
+
+    public function get() {
+        $this->load->model('Municipio_model', 'municipio');
+        $this->load->model('Organizacao_Cidade_model', 'org_cidade');
+
+        $organizacao = $this->organizacao->get_all(
+            '*',
+            ['organizacao_pk' => $this->session->user['id_organizacao']],
+            -1,
+            -1,
+            [
+                ['table' => 'localizacoes', 'on' => 'localizacoes.localizacao_pk = organizacoes.localizacao_fk'],
+                ['table' => 'municipios', 'on' => 'municipios.municipio_pk = localizacoes.localizacao_municipio']
+            ]
+        );
+
+        $municipios = $this->municipio->get_all('*', null, -1, -1);
+
+        $self_municipios = $this->org_cidade->get_all(
+            'municipios.municipio_pk, municipios.municipio_nome',
+            $this->session->user['id_organizacao'],
+            -1,
+            -1,
+            [
+                ['table' => 'municipios', 'on' => 'municipios.municipio_pk = organizacoes_cidades.municipio_fk']
+            ]
+        );
+
+        $this->response->add_data('self', $organizacao);
+        $this->response->add_data('municipios', $municipios);
+        $this->response->add_data('self_municipios', $self_municipios);
+        $this->response->send(); 
     }
 
     public function index()
@@ -217,6 +250,47 @@ class Organizacao extends CRUD_Controller {
             handle_exception($e);
         }
     }    
+
+    public function add_city() {
+        $this->load->model('Organizacao_Cidade_model', 'org_cidade');
+        try{   
+            $this->begin_transaction();
+
+            $_POST['organizacao_fk'] = $this->session->user['id_organizacao'];
+            
+            $this->org_cidade->fill();
+            $this->org_cidade->insert();
+
+            $this->end_transaction();
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
+        }catch(MyException $e){
+            handle_my_exception($e);
+        } catch(Exception $e){
+            handle_exception($e);
+        }
+    }
+
+    public function remove_city() {
+        $this->load->model('Organizacao_Cidade_model', 'org_cidade');
+        try{   
+            $this->begin_transaction();
+
+            $_POST['organizacao_fk'] = $this->session->user['id_organizacao'];
+            
+            $this->org_cidade->delete_city($this->input->post());
+
+            $this->end_transaction();
+
+            $this->response->set_code(Response::SUCCESS);
+            $this->response->send();
+        }catch(MyException $e){
+            handle_my_exception($e);
+        } catch(Exception $e){
+            handle_exception($e);
+        }
+    }
 }
 
 ?>

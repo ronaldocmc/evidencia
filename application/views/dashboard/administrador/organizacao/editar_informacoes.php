@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
@@ -16,20 +17,18 @@
                         </div>
                         <div class="card-body card-block">
                             <div class="form-group">
-                                <input type="hidden" id="local_pk" name="local_pk" class="form-control" value="<?= $organizacao->localizacao_fk ?>">
-
-                                <label for="dominio-input" class="form-control-label"><strong>Domínio*</strong></label>
-                                <input type="text" id="dominio-input" name="dominio" class="form-control" required="true" disabled="true" maxlength="10" minlength="3" value="<?= $organizacao->organizacao_pk ?>">
+                                <label for="organizacao_pk" class="form-control-label">Domínio</label>
+                                <input type="text" id="organizacao_pk" name="organizacao_pk" class="form-control" required="true" disabled="true" maxlength="10" minlength="3">
                                 <small class="form-text text-muted"></small>
                             </div>
                             <div class="form-group">
-                                <label for="nome-input" class="form-control-label"><strong>Nome*</strong></label>
-                                <input type="text" id="nome-input" name="organizacao_nome" class="form-control" required="true" maxlength="60" minlength="3" value="<?= $organizacao->organizacao_nome ?>">
+                                <label for="organizacao_nome" class="form-control-label"><strong>Nome*</strong></label>
+                                <input type="text" id="organizacao_nome" name="organizacao_nome" class="form-control" required="true" maxlength="60" minlength="3">
                                 <small class="form-text text-muted"></small>
                             </div>
                             <div class="form-group">
-                                <label for="cnpj-input" class="form-control-label"><strong>CNPJ*</strong></label>
-                                <input type="text" id="cnpj-input" name="organizacao_cnpj" class="form-control cnpj-input" required="true" minlength="18" maxlength="18" value="<?= $organizacao->organizacao_cnpj ?>">
+                                <label for="organizacao_cnpj" class="form-control-label"><strong>CNPJ*</strong></label>
+                                <input type="text" id="organizacao_cnpj" name="organizacao_cnpj" class="form-control cnpj-input" required="true" minlength="18" maxlength="18">
                                 <small class="form-text text-muted"></small>
                             </div>
                         </div>
@@ -52,32 +51,28 @@
                                     <select class="form-control loading" id="cidade-input" name="municipio_pk" data-value="<?= '$organizacao->municipio_pk' ?>" required="true"></select>
                                 </div> -->
                                 <div class="col-12 col-md-9">
+                                    <label for="localizacao_municipio" class="form-control-label"><strong>Município*</strong></label>
                                     <select class="form-control" name="localizacao_municipio" id="localizacao_municipio" required="true">
-                                        <?php foreach($municipios as $m): ?>
-                                            <?php 
-                                                $checked = ($m->municipio_pk == $organizacao->localizacao_municipio) ? 'checked': '';
-                                            ?>
-                                            <option $checked value="<?= $m->municipio_pk ?>"><?= $m->municipio_nome ?></option>
-                                        <?php endforeach; ?>
+
                                     </select>
                                 </div>
                             </div>
                             <div class="row form-group">
 
                                 <div class="col-12 col-md-9">
-                                    <label for="logradouro_pk" class=" form-control-label"><strong>Logradouro*</strong></label>
-                                    <input type="text" name="logradouro-input" id="logradouro-input" class="form-control" value="<?= $organizacao->localizacao_rua ?>">
+                                    <label for="localizacao_rua" class=" form-control-label"><strong>Logradouro*</strong></label>
+                                    <input type="text" name="localizacao_rua" id="localizacao_rua" class="form-control">
                                 </div>
                                 <div class="col-12 col-md-3">
-                                    <label for="numero-input" class=" form-control-label"><strong>N°*</strong></label>
-                                    <input type="number" id="numero-input" name="local_num" class="form-control numero-input" min="0" required="true" value="<?= $organizacao->localizacao_num ?>">
+                                    <label for="localizacao_num" class=" form-control-label"><strong>N°*</strong></label>
+                                    <input type="number" id="localizacao_num" name="localizacao_num" class="form-control " min="0" required="true">
                                 </div>
                             </div>
                             <div class="row form-group">
             
                                 <div class="col-12 col-md-6">
-                                    <label for="bairro-input" class=" form-control-label"><strong>Bairro*</strong></label>
-                                    <input type="text" name="bairro-input" id="bairro-input" class="form-control" value="<?= $organizacao->localizacao_bairro ?>">
+                                    <label for="localizacao_bairro" class=" form-control-label"><strong>Bairro*</strong></label>
+                                    <input type="text" name="localizacao_bairro" id="localizacao_bairro" class="form-control">
                                     
                                 </div>
                             </div>
@@ -89,12 +84,44 @@
             <div class="row div-btn-lower">
                 <div class="col-md-12 d-flex justify-content-center">
                     <div class="overview-wrap">
-                        <button id="btn-edit" class="au-btn au-btn-icon au-btn--blue" value="<?= $this->session->user['is_superusuario'] ?>"><i class="fa fa-dot-circle-o"></i>
+                        <button id="btn-edit" class="au-btn au-btn-icon au-btn--blue"><i class="fa fa-dot-circle-o"></i>
                             confirmar edição
                         </button>
                     </div>
                 </div>
             </div>
+
+            <div class="row pt-4">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Área de Atuação</strong>
+                        </div>
+                        <div class="card-body" style="display: table;">
+                            <label for="new_city"> Adicione Cidades </label><br>
+                            <input type="text" name="new_city" id="new_city" class="form-control col-12"><br>
+                            <button class="au-btn au-btn-icon au-btn--blue col-12" id="add_city">
+                                <i class="fas fa-plus"></i>
+                                Adicionar
+                            </button>    
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Cidades Adicionadas</strong>
+                        </div>
+                        <div class="card-body card-block">
+                            <div id="cities" style="display: inline-block;">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -108,7 +135,7 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                           <input type="password" class="form-control" autocomplete="false" name="pass-modal-reativar" placeholder="Confirme sua senha" required="required" id="pass-modal-editar" minlength="8">
+                           <input type="password" class="form-control" autocomplete="false" name="pass-modal-reativar" placeholder="Confirme sua senha" required="required" id="pass-modal-save" minlength="8">
                         </div>
                         <div class="form-group">
                            <button type="button" class="btn btn-confirmar-senha" id="btn-confirmar-edicao" name="post" value=""><i class="fa fa-dot-circle-o"></i> Confirmar</button>

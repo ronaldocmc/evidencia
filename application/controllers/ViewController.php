@@ -220,15 +220,13 @@ class ViewController extends AuthorizationController
             ]);
             //Scripts para edição
             $this->session->set_flashdata('scripts', [
-                0 => base_url('assets/js/localizacao.js'),
-                1 => base_url('assets/vendor/datatables/datatables.min.js'),
-                2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-                3 => base_url('assets/vendor/select-input/select-input.js'),
-                4 => base_url('assets/js/dashboard/organizacao/edit_info.js'),
-                5 => base_url('assets/js/constants.js'),
-                6 => base_url('assets/js/utils.js'),
-                7 => base_url('assets/js/jquery.noty.packaged.min.js'),
-                8 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
+                0 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
+                1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
+                2 => base_url('assets/js/utils.js'),
+                3 => base_url('assets/js/constants.js'),
+                4 => base_url('assets/js/jquery.noty.packaged.min.js'),
+                5 => base_url('assets/js/response_messages.js'),
+                6 => base_url('assets/js/dashboard/organizacao/edit_info.js')
             ]);
             load_view([
                 0 => [
