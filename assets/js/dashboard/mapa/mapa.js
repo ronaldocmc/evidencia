@@ -371,16 +371,37 @@ class Request extends GenericRequest {
 
     constructor() {
         super();
-        this.route = '/Ordem_servico';
-    }
+		this.route = "/Ordem_Servico"; // get_map method
+	}
 
+	async init() {
+		let date = new Date();
+		let filters = {
+			data_inicial:
+				date.getFullYear() +
+				"-" +
+				(date.getMonth() + 1) +
+				"-" +
+				(date.getDate() - 7) +
+				" 00:01:00",
+			data_final:
+				date.getFullYear() +
+				"-" +
+				(date.getMonth() + 1) +
+				"-" +
+				date.getDate() +
+				" 23:59:00"
+		};
+		const response = await this.send("/get_map", filters);
+		return response.data;
+	}
 }
 class Control extends GenericControl {
 
-    constructor() {
+	constructor() {
 
-        super();
-        this.verifyDependences = false;
+		super();
+		this.verifyDependences = false;
 	}
 
 	async init() {
