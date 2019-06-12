@@ -102,8 +102,7 @@ class GenericMap {
 	}
 
 	getImage(prioridade) {
-		let imagem = "../assets/img/icons/Markers/Status/";
-
+		let imagem = base_url + "/assets/img/icons/Markers/Status/";
 		switch (prioridade) {
 			case "1": {
 				imagem += "prioridade_baixa.png";
