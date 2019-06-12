@@ -38,7 +38,7 @@
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <strong>Localização</strong>
+                            <strong>Localização da Organização</strong>
                         </div>
                         <div class="card-body card-block">
                             <div class="row form-group">
@@ -95,15 +95,17 @@
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <strong>Área de Atuação</strong>
+                            <strong>Áreas de Atuação</strong>
                         </div>
                         <div class="card-body" style="display: table;">
-                            <label for="new_city"> Adicione Cidades </label><br>
+                            <label for="new_city"> Digite o nome do município: </label><br>
                             <input type="text" name="new_city" id="new_city" class="form-control col-12"><br>
-                            <button class="au-btn au-btn-icon au-btn--blue col-12" id="add_city">
-                                <i class="fas fa-plus"></i>
-                                Adicionar
-                            </button>    
+                            <div style="text-align:center">
+                                <button class="au-btn au-btn-icon au-btn--blue col-6" text-align="center" id="add_city">
+                                    <i class="fas fa-plus"></i>
+                                    Adicionar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -111,11 +113,10 @@
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <strong>Cidades Adicionadas</strong>
+                            <strong>Municípios Adicionados</strong>
                         </div>
                         <div class="card-body card-block">
-                            <div id="cities" style="display: inline-block;">
-                                
+                            <div class="col-md-12 "id="cities" style="display: inline-block;">
                             </div>
                         </div>
                     </div>
