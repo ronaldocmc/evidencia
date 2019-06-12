@@ -36,6 +36,7 @@ class Ordem_Servico extends CRUD_Controller
         $this->load->model('Procedencia_model', 'procedencia');
         $this->load->model('Setor_model', 'setor');
         $this->load->model('Localizacao_model', 'localizacao');
+        $this->load->model('Organizacao_Cidade_model', 'org_cidade');
 
         $this->load->library('form_validation');
         $this->load->helper('exception');
@@ -228,7 +229,16 @@ class Ordem_Servico extends CRUD_Controller
                 -1,
                 -1
             );
-        $municipios = $this->localizacao->get_cities();
+
+        $municipios = $this->org_cidade->get_all(
+            '*',
+            ['organizacoes_cidades.organizacao_fk' => $this->session->user['id_organizacao']],
+            -1,
+            -1,
+            [
+                ['table' => 'municipios', 'on' => 'municipios.municipio_pk = organizacoes_cidades.municipio_fk']
+            ]
+        );
 
         $response->add_data('self', $ordens_servico);
         $response->add_data('departamentos', $departamentos);
