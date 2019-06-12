@@ -409,6 +409,14 @@ class Control extends GenericControl {
 	}
 }
 
+// Dummy View for the GenericControl
+class View extends GenericView {
+	constructor() {
+		super();
+	}
+	init() {}
+}
+
 const myControl = new GenericControl();
 
 const initMap = async () => {
