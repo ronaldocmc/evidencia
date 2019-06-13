@@ -328,8 +328,38 @@ class Control extends GenericControl {
 class View extends GenericView {
 	constructor() {
 		super();
+		this.conditionalRender();
 	}
 	init() {}
+
+	renderModalFromMap(data) {
+		$("#v_descricao").html(data.ordem_servico[0].ordem_servico_desc);
+		$("#v_codigo").html(data.ordem_servico[0].ordem_servico_cod);
+		$("#v_setor").html(data.ordem_servico[0].setor_nome);
+		$("#v_servico").html(data.ordem_servico[0].servico_nome);
+
+		let carousel = "";
+		let timeline = "";
+		let cards = "";
+
+		carousel = this.renderCarousel(data.imagens);
+		timeline = this.renderTimelineHistoric(data.historico);
+		timeline += this.renderCurrentSituation(
+			createCurrentSituationOject(data.ordem_servico[0])
+		);
+
+		if (data.imagens.length > 0) {
+			cards = this.renderCarouselCards(data.imagens);
+		}
+
+		$("#v_loading").hide();
+		$("#card_slider").html(carousel);
+		$(".carousel-inner").html(cards);
+		$("#timeline").html(timeline);
+		$("#v_evidencia").show();
+	}
+
+	
 }
 
 const myControl = new GenericControl();
