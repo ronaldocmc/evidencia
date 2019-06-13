@@ -1,22 +1,21 @@
 class GenericRequest {
+	constructor() {}
 
-    constructor() {
-        
-    }
+	async init() {
+		const response = await this.send("/get", {});
 
-    async init() {
-        const response = await this.send('/get', {});
+		return response.data;
+	}
 
-        return response.data;
-    }
-
-    async send(endPoint, data) {
-        try {
-            const response = await $.post(base_url + this.route + endPoint, data);
-            return response;
-        } catch (err) {
-            return false;
-        }
-    }
-
+	async send(endPoint, data) {
+		try {
+			const response = await $.post(
+				base_url + this.route + endPoint,
+				data
+			);
+			return response;
+		} catch (err) {
+			return false;
+		}
+	}
 }
