@@ -297,10 +297,11 @@ class Request extends GenericRequest {
 		const response = await this.send("/get_map", filters);
 		return response.data;
 	}
-	
+
 	async getSpecificOS(id) {
 		// Request to get specific os by id
-		const os_data = await this.send('get_specific/' + id, {}); 
+		const os_data = await this.send("/get_specific/" + id, {});
+		return os_data;
 	}
 }
 class Control extends GenericControl {
@@ -313,8 +314,12 @@ class Control extends GenericControl {
 		this.data = await this.myRequests.init();
 	}
 
-	async getSpecificOS(id, setor){
-		os_data = this.myRequests.getSpecificOS(id);
+	async showSpecificOS(id) {
+		remove_data();
+		btn_load($("#filtrar"));
+		let os_data = await this.myRequests.getSpecificOS(id);
+		this.myView.renderModalFromMap(os_data.data);
+		btn_ativar($("#filtrar"));
 	}
 
 }
