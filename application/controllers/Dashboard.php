@@ -346,43 +346,43 @@ class Dashboard extends CRUD_Controller
         //         return strpos($string, $substring) !== false;
         //     }
         
-        //     private function get_funcionarios(){
-        //         $this->load->model('dashboard_model', 'model');
-        //         $funcionarios = array();
+            private function get_funcionarios(){
+                $this->load->model('dashboard_model', 'model');
+                $funcionarios = array();
         
         
-        //         $res = $this->model->get_funcionarios();
+                $res = $this->model->get_funcionarios();
         
-        //         foreach($res as $f){
-        //             $id_relatorio = $f->relatorio_id;
+                foreach($res as $f){
+                    $id_relatorio = $f->relatorio_id;
         
-        //             $setores = $this->model->get_setores_do_relatorio($id_relatorio);
-        //             $servicos = $this->model->get_servicos_do_relatorio($id_relatorio);
-        
-        
-        //             $string_setores  = $this->get_string($setores, 'explode', ' ', 1);
-        //             $string_servicos = $this->get_string($servicos);
+                    $setores = $this->model->get_setores_do_relatorio($id_relatorio);
+                    $servicos = $this->model->get_servicos_do_relatorio($id_relatorio);
         
         
-        //             $performance = $this->get_performance($id_relatorio);
+                    $string_setores  = $this->get_string($setores, 'explode', ' ', 1);
+                    $string_servicos = $this->get_string($servicos);
         
-        //             $ultima_ordem = $this->get_ultima_ordem($id_relatorio);
         
-        //             $status = $this->get_status($performance);
+                    $performance = $this->get_performance($id_relatorio);
         
-        //             $funcionarios[] = array(
-        //                 'nome'        => $f->nome,
-        //                 'performance' => $performance,
-        //                 'setores'     => $string_setores,
-        //                 'servicos'    => $string_servicos,
-        //                 'ultima_ordem'=> $ultima_ordem,
-        //                 'status'      => $status
+                    $ultima_ordem = $this->get_ultima_ordem($id_relatorio);
         
-        //             );
-        //         }
+                    $status = $this->get_status($performance);
         
-        //         return $funcionarios;
-        //     }
+                    $funcionarios[] = array(
+                        'nome'        => $f->nome,
+                        'performance' => $performance,
+                        'setores'     => $string_setores,
+                        'servicos'    => $string_servicos,
+                        'ultima_ordem'=> $ultima_ordem,
+                        'status'      => $status
+        
+                    );
+                }
+        
+                return $funcionarios;
+            }
         
         //     private function get_status($performance){
         
@@ -698,42 +698,42 @@ class Dashboard extends CRUD_Controller
         //     }
         
         
-        //     public function superusuario()
-        //     {
-        //         if ($this->session->user['id_user'] !== NULL)
-        //         {
+            public function superusuario()
+            {
+                if ($this->session->user['id_user'] !== NULL)
+                {
         
-        //             // Atualizando a sessão, caso ele esteja vindo de uma organização
-        //             if($this->session->user['id_organizacao'] !== 'admin')
-        //             {
-        //                 $array_session = $this->session->user;
-        //                 $this->session->unset_userdata('user');
+                    // Atualizando a sessão, caso ele esteja vindo de uma organização
+                    if($this->session->user['id_organizacao'] !== 'admin')
+                    {
+                        $array_session = $this->session->user;
+                        $this->session->unset_userdata('user');
                         
-        //                 $array_session['id_organizacao'] = 'admin';
-        //                 $array_session['name_organizacao'] = 'Administração';
+                        $array_session['id_organizacao'] = 'admin';
+                        $array_session['name_organizacao'] = 'Administração';
         
-        //                 $this->session->set_userdata('user',$array_session);
-        //             }
+                        $this->session->set_userdata('user',$array_session);
+                    }
         
-        //             $this->session->set_flashdata('css',[
-        //                 0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
-        //                 1 => base_url('assets/vendor/icon-hover-effects/component.css'),
-        //                 2 => base_url('assets/vendor/icon-hover-effects/default.css'),
-        //                 3 => base_url('assets/css/dashboard.css')
-        //             ]);
+                    $this->session->set_flashdata('css',[
+                        0 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css'),
+                        1 => base_url('assets/vendor/icon-hover-effects/component.css'),
+                        2 => base_url('assets/vendor/icon-hover-effects/default.css'),
+                        3 => base_url('assets/css/dashboard.css')
+                    ]);
         
-        //             load_view([
-        //                 0 => [
-        //                     'src'=>'dashboard/superusuario/principal/home',
-        //                     'params' =>  NULL
-        //                 ]
-        //             ],'superusuario');
-        //         }
-        //         else
-        //         {
-        //             redirect('access','refresh');
-        //         }
-        //     }
+                    load_view([
+                        0 => [
+                            'src'=>'dashboard/superusuario/principal/home',
+                            'params' =>  NULL
+                        ]
+                    ],'superusuario');
+                }
+                else
+                {
+                    redirect('access','refresh');
+                }
+            }
         
 
 }
