@@ -362,9 +362,9 @@ class View extends GenericView {
 	
 }
 
-const myControl = new GenericControl();
+const myControl = new Control();
 
-initMap = async () => {
+const initMap = async () => {
 	await myControl.init();
 	const map = new GenericMap({
 		mapId: "map",
@@ -396,5 +396,7 @@ initMap = async () => {
 	});
 
 	map.initMap();
-	map.handleMarkerClick = event => {console.log(event)};
+	map.handleMarkerClick = async event => {
+		await myControl.showSpecificOS(event.ordem_servico_pk);
+	};
 };
