@@ -86,7 +86,7 @@
                                                 <div class="col-md-12>">
                                                     <br>
                                                     <p><strong>Qualquer dúvida entre em contato com o suporte na sua
-                                                            organização!</p></strong>
+                                                            organização!</strong></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -226,7 +226,6 @@
         </div>
     </div>
 </div>
-</div>
 
 <!-- MODAL -->
 <div class="modal fade" id="v_evidencia">
@@ -264,21 +263,22 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
 
 
-        <script type="text/javascript">
-        var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
-        var prioridades = <?php echo json_encode($prioridades !== false ? $prioridades : []); ?>;
-        var situacoes = <?php echo json_encode($situacoes !== false ? $situacoes : []); ?>;
-        var departamentos = <?php echo json_encode($departamentos !== false ? $departamentos : []); ?>;
-        var tipos_servicos = <?php echo json_encode($tipos_servicos !== false ? $tipos_servicos : []); ?>;
-        </script>
+<script type="text/javascript">
+var servicos = <?php echo json_encode($servicos !== false ? $servicos : []); ?>;
+var prioridades = <?php echo json_encode($prioridades !== false ? $prioridades : []); ?>;
+var situacoes = <?php echo json_encode($situacoes !== false ? $situacoes : []); ?>;
+var departamentos = <?php echo json_encode($departamentos !== false ? $departamentos : []); ?>;
+var tipos_servicos = <?php echo json_encode($tipos_servicos !== false ? $tipos_servicos : []); ?>;
+</script>
 
-        <script
-            src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-        </script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+</script>
 
 
-        <!-- END MAIN CONTENT-->
-        <!-- END PAGE CONTAINER
+<!-- END MAIN CONTENT-->
+<!-- END PAGE CONTAINER
