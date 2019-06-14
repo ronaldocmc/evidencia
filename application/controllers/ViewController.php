@@ -28,6 +28,15 @@ class ViewController extends AuthorizationController
         $this->_load_view($name, $name.'s', null);
     }
 
+    public function super_index($name)
+    {
+        $this->_load_css();
+
+        $this->_load_scripts($name);
+
+        $this->_load_super_view($name);
+    }
+
     public function funcionario()
     {
         $organizacao = $this->session->user['id_organizacao'];
@@ -216,7 +225,7 @@ class ViewController extends AuthorizationController
             $this->session->set_flashdata('css', [
                 0 => base_url('assets/css/modal_desativar.css'),
                 1 => base_url('assets/css/loading_input.css'),
-                2 => base_url('assets/css/media_query_edit_org.css'),
+                2 => base_url('assets/css/media_query_edit_org.css')
             ]);
             //Scripts para edição
             $this->session->set_flashdata('scripts', [
@@ -375,6 +384,16 @@ class ViewController extends AuthorizationController
                 'params' => [$plural => $data],
             ],
         ], 'administrador');
+    }
+
+    private function _load_super_view($name)
+    {
+        load_view([
+            0 => [
+                'src' => 'dashboard/superusuario/'.$name.'/home',
+                'params' => [],
+            ],
+        ], 'superusuario');
     }
 
     private function check_permissions()
