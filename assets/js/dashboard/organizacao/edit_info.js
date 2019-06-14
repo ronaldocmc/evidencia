@@ -32,16 +32,29 @@ class View extends GenericView {
     }
 
     generateCity(municipio, pos) {
-        $('#cities').append(`<div id="${municipio.municipio_nome.split(' ').join('_')}"> </div>`);
-        $(`#${municipio.municipio_nome.split(' ').join('_')}`).append(this.generateParagraph(municipio.municipio_nome));
-        $(`#${municipio.municipio_nome.split(' ').join('_')}`).append(this.createButton('remove', municipio.municipio_pk, 'danger', 'remover', pos, 'fa-times'));
-    }
+        $('#cities').append(
+            `<div class="col-md-12" style="display: inline-flex;" id="${municipio.municipio_nome.split(' ').join('_')}"> 
+            </div>`);
+
+        $(`#${municipio.municipio_nome.split(' ').join('_')}`).append(
+            `<div class="col-md-10 citie" style="padding-left: 0px; margin-bottom: 15px; border-bottom: solid 1px #9e9e9e;"> 
+                ${this.generateParagraph(municipio.municipio_nome)}
+            </div>`
+        );
+        
+
+        $(`#${municipio.municipio_nome.split(' ').join('_')}`).append(
+            `<div class="col-md-2 remove" style="padding-bottom:7px; margin-bottom: 15px; border-bottom: solid 1px #9e9e9e;"> 
+                ${this.createButton('remove', municipio.municipio_pk, 'danger', 'remover', pos, 'fa-times')}
+            </div>`
+        );
+    } 
 
 }
 
 class Request extends GenericRequest {
 
-    constructor() {
+    constructor() {      
         super();
         this.route = '/organizacao';
     }
