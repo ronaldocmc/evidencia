@@ -14,29 +14,18 @@ $(document).ready(function() {
 
 //TODO: Refactor this
 function lastWeek() {
-	var today = new Date();
-	var lastweek = new Date(
-		today.getFullYear(),
-		today.getMonth(),
-		today.getDate() - 7
-	);
-	return lastweek;
+	let d = new Date();
+	d.setDate(d.getDate() - 7);
+	return d;
 }
 
 //TODO: Refactor this to use Intl.formatdate
 function formatDate(date) {
-	var d = new Date(date),
-		month = "" + (d.getMonth() + 1),
-		day = "" + d.getDate(),
-		year = d.getFullYear();
-
-	if (month.length < 2) month = "0" + month;
-	if (day.length < 2) day = "0" + day;
-
-	return [year, month, day].join("-");
+	let d = new Date(date);
+	return d.toISOString().split("T")[0];
 }
 
-// TODO: Dafuq is this
+// Remove HTML content on modal div
 function remove_data() {
 	$("#v_descricao").html("");
 	$("#v_codigo").html("");
@@ -224,22 +213,9 @@ class Request extends GenericRequest {
 	}
 
 	async init() {
-		let date = new Date();
 		let filters = {
-			data_inicial:
-				date.getFullYear() +
-				"-" +
-				(date.getMonth() + 1) +
-				"-" +
-				(date.getDate() - 7) +
-				" 00:01:00",
-			data_final:
-				date.getFullYear() +
-				"-" +
-				(date.getMonth() + 1) +
-				"-" +
-				date.getDate() +
-				" 23:59:00"
+			data_inicial: formatDate(lastWeek()) + " 23:59:00",
+			data_final: formatDate(new Date()) + " 00:00:00"
 		};
 		return this.getOSbyFilter(filters);
 	}
