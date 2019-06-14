@@ -32,20 +32,20 @@
 <!-- Main JS-->
 <script src="<?php echo base_url('assets/js/main.js')?>"></script>
 
-	<?php
+<?php
     if(isset($this->session->scripts))
     {
         foreach ($this->session->scripts as $script) 
         { ?>
-            
             <script src="<?= $script ?>"></script>
-
- 	<?php }
+    <?php }
     }
-	?>
+?>
 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPHWVMBuM2tU-MWEBh5UNXq_8hwKar9wc&callback=initMap"
-  type="text/javascript"></script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPHWVMBuM2tU-MWEBh5UNXq_8hwKar9wc&callback=initMap"
+    type="text/javascript">
+</script>
 </body>
 
 </html>
