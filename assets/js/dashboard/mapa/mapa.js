@@ -273,7 +273,7 @@ function get_filters() {
 class Request extends GenericRequest {
 	constructor() {
 		super();
-		this.route = "/Ordem_Servico"; // get_map method
+		this.route = "/Ordem_Servico";
 	}
 
 	async init() {
@@ -294,6 +294,10 @@ class Request extends GenericRequest {
 				date.getDate() +
 				" 23:59:00"
 		};
+		return this.getOSbyFilter(filters);
+	}
+
+	async getOSbyFilter(filters){
 		const response = await this.send("/get_map", filters);
 		return response.data;
 	}
