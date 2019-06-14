@@ -265,7 +265,6 @@ $('#pula-para-confirmacao').click(function () {
 	current_id = $('ul.progressbar li.active').attr('id');
 	clicked_id = quantidade_de_cards; //é o id do card de confirmação
 	let element_exists = document.getElementById("pass-modal-edit");
-	console.log('element exists: ' + element_exists);
 
 	if (element_exists == null) {
 		is_superusuario = false;
@@ -365,12 +364,10 @@ $('ul.progressbar li').click(function () {
 
 
 	if (editar) {
-		console.log(editar);
 		//1 - poder saltar pelos passos
 		var i = 0;
 		var current_id = $('ul.progressbar li.active').attr('id');
 		var clicked_id = $(this).attr('id');
-		console.log('current id:' + current_id + " clicked id : " + clicked_id);
 
 		if (current_id != clicked_id) {
 			//estamos pegando o card do índice que estmaos e do card que o cara clicou

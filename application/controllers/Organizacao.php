@@ -63,49 +63,38 @@ class Organizacao extends CRUD_Controller {
         $this->response->send(); 
     }
 
-    public function index()
-    {
-        $this->load->model('municipio_model', 'municipio');
-        
-        $data['organizacoes'] = $this->organizacao->get();
+    public function index() {
+        $this->load->model('Municipio_model', 'municipio');
+        $this->load->model('Organizacao_Cidade_model', 'org_cidade');
 
-        $data['municipios'] = $this->municipio->get(); //get all
-
-        //CSS para crud organizações
-        $this->session->set_flashdata('css',[
-            0 => base_url('assets/css/modal_desativar.css'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.css'),
-            2 => base_url('assets/css/loading_input.css'),
-            3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.css')
-        ]);
-
-        //Scripts para crud organizações
-        $this->session->set_flashdata('scripts',[
-            0 => base_url('assets/vendor/masks/jquery.mask.min.js'),
-            1 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
-            2 => base_url('assets/js/masks.js'),
-            3 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
-            4 => base_url('assets/vendor/datatables/datatables.min.js'),
-            5 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-            6 => base_url('assets/js/localizacao.js'),
-            7 => base_url('assets/js/utils.js'),
-            8 => base_url('assets/js/constants.js'),
-            9 => base_url('assets/js/jquery.noty.packaged.min.js'),
-            10 => base_url('assets/js/dashboard/organizacao/index.js'),
-            11 => base_url('assets/vendor/select-input/select-input.js')
-        ]);
-
-        load_view([
-            0 => [
-                'src' => 'dashboard/superusuario/organizacao/home',
-                'params' => $data
-            ],
-            1 => [
-                'src' => 'access/pre_loader',
-                'params' => []
+        $organizacoes = $this->organizacao->get_all(
+            '*',
+            null,
+            -1,
+            -1,
+            [
+                ['table' => 'localizacoes', 'on' => 'localizacoes.localizacao_pk = organizacoes.localizacao_fk'],
+                ['table' => 'municipios', 'on' => 'municipios.municipio_pk = localizacoes.localizacao_municipio']
             ]
-        ],'superusuario');
+        );
 
+        $municipios = $this->municipio->get_all('*', null, -1, -1);
+
+        foreach ($organizacoes as $i => $org) {
+            $organizacoes[$i]->self_municipios = $this->org_cidade->get_all(
+                'municipios.municipio_pk, municipios.municipio_nome',
+                $org->organizacao_pk,
+                -1,
+                -1,
+                [
+                    ['table' => 'municipios', 'on' => 'municipios.municipio_pk = organizacoes_cidades.municipio_fk']
+                ]
+            );
+        }
+
+        $this->response->add_data('self', $organizacoes);
+        $this->response->add_data('municipios', $municipios);
+        $this->response->send(); 
     }
 
 
@@ -180,6 +169,7 @@ class Organizacao extends CRUD_Controller {
             else 
             {
                 $this->insert();
+                $this->response->set_data(['id' => $organizacao_pk]);
             }
 
             $this->end_transaction();

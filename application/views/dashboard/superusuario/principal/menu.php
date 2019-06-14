@@ -25,7 +25,7 @@
                                     <a href="<?=base_url('superusuario')?>">Superusuários</a>
                                 </li>
                                 <li>
-                                    <a href="<?=base_url('organizacao')?>">Filiais</a>
+                                    <a href="<?=base_url('filial')?>">Filiais</a>
                                 </li>
                             </ul>
                         </li>
@@ -53,7 +53,7 @@
                                     <a href="<?=base_url('superusuario')?>">Superusuários</a>
                                 </li>
                                 <li>
-                                    <a href="<?=base_url('organizacao')?>">Filiais</a>
+                                    <a href="<?=base_url('filial')?>">Filiais</a>
                                 </li>
                             </ul>
                         </li>
