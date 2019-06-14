@@ -1,7 +1,3 @@
-let view;
-let main_map;
-let markers = null;
-
 let departamento = $("#departamento_pk");
 let tipo_servico = $("#tipo_servico_pk");
 let servico = $("#servico_pk");
@@ -13,12 +9,7 @@ let ate = $("#ate");
 
 // TODO: Replace with Generics
 $(document).ready(function() {
-	view = new GenericView();
-	view.conditionalRender();
-
-	btn_load($("#filtrar"));
-
-	btn_ativar($("#filtrar"));
+	initMap();
 });
 
 //TODO: Refactor this
@@ -55,48 +46,6 @@ function remove_data() {
 	$("#card_slider").html("");
 	$("#timeline").html("");
 	$("#v_loading").show();
-}
-
-// TODO: Replace with GenericRequests call
-function request_data(id, setor) {
-	remove_data();
-	btn_load($("#filtrar"));
-	$.ajax({
-		url: base_url + "/Ordem_Servico/get_specific/" + id,
-		dataType: "json",
-		success: function(response) {
-			$("#v_descricao").html(
-				response.data.ordem_servico[0].ordem_servico_desc
-			);
-			$("#v_codigo").html(
-				response.data.ordem_servico[0].ordem_servico_cod
-			);
-			$("#v_setor").html(response.data.ordem_servico[0].setor_nome);
-			$("#v_servico").html(response.data.ordem_servico[0].servico_nome);
-
-			let carousel = "";
-			let indicators = "";
-			let active = " active";
-			let timeline = "";
-			let cards = "";
-
-			carousel = view.renderCarousel(response.data.imagens);
-			timeline = view.renderTimelineHistoric(response.data.historico);
-			timeline += view.renderCurrentSituation(
-				createCurrentSituationOject(response.data.ordem_servico[0])
-			);
-
-			if (response.data.imagens.length > 0) {
-				cards = view.renderCarouselCards(response.data.imagens);
-			}
-
-			$("#v_loading").hide();
-			$("#card_slider").html(carousel);
-			$(".carousel-inner").html(cards);
-			$("#timeline").html(timeline);
-		}
-	});
-	btn_ativar($("#filtrar"));
 }
 
 function createCurrentSituationOject(os) {
@@ -235,7 +184,6 @@ $("#filtrar").click(function() {
 	$.post(url, filters)
 		.done(function(response) {
 			removeAll();
-			markers = [];
 			response.data.map(function(ordem) {
 				popula_markers(ordem);
 			});
@@ -269,7 +217,6 @@ function get_filters() {
 	return filters;
 }
 
-
 class Request extends GenericRequest {
 	constructor() {
 		super();
@@ -297,7 +244,7 @@ class Request extends GenericRequest {
 		return this.getOSbyFilter(filters);
 	}
 
-	async getOSbyFilter(filters){
+	async getOSbyFilter(filters) {
 		const response = await this.send("/get_map", filters);
 		return response.data;
 	}
@@ -325,7 +272,6 @@ class Control extends GenericControl {
 		this.myView.renderModalFromMap(os_data.data);
 		btn_ativar($("#filtrar"));
 	}
-
 }
 
 // Dummy View for the GenericControl
@@ -360,10 +306,8 @@ class View extends GenericView {
 		$("#card_slider").html(carousel);
 		$(".carousel-inner").html(cards);
 		$("#timeline").html(timeline);
-		$("#v_evidencia").show();
+		$("#v_evidencia").modal("show");
 	}
-
-	
 }
 
 const myControl = new Control();
@@ -393,7 +337,7 @@ const initMap = async () => {
 			long: "localizacao_long"
 		},
 
-		data: myControl.data, // ?????
+		data: myControl.data,
 
 		useGeocoder: true,
 		useCreateMarker: true
