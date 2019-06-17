@@ -1,27 +1,30 @@
-<?php 
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 require_once APPPATH.'core/Response.php';
 require_once APPPATH.'core/CRUD_Controller.php';
 require_once APPPATH.'core/MyException.php';
 
-class Dashboard extends CRUD_Controller 
+class Dashboard extends CRUD_Controller
 {
-    public $response; 
+    public $response;
 
-    function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->load->library('session');
         $this->response = new Response();
     }
 
-// 
-    public function get(){
-
+    public function get()
+    {
         $this->load->model('funcionario_model');
-        $this->load->model('Setor_model', 'setor'); 
-        $this->load->model('ordem_servico_model', 'ordem_servico');
-        $this->load->model('dashboard_model');     
+        $this->load->model('Setor_model', 'setor');
+        $this->load->model('Ordem_Servico_model', 'ordem_servico');
+        $this->load->model('dashboard_model');
         $this->load->model('Tipo_Servico_model', 'tipo_servico');
 
         $this->response->add_data('self', $this->getOrdersTable());
@@ -30,69 +33,67 @@ class Dashboard extends CRUD_Controller
         $this->response->add_data('semana_tipos', $this->getOrdersByTypeService());
         $this->response->add_data('ordens_ano', $this->getOrdersByYear());
         $this->response->add_data('taxa_crescimento', $this->getGrowthRate());
-        $this->response->add_data('media_finalizacao',$this->getFinalizationTime());
+        $this->response->add_data('media_finalizacao', $this->getFinalizationTime());
         $this->response->send();
-
     }
 
-    private function getGrowthRate(){
+    private function getGrowthRate()
+    {
+        $organizacao = $this->session->user['id_organizacao'];
 
-        $organizacao = $this->session->user['id_organizacao'];  
-        
         $start_week = date('Y-m-d');
         $date = strtotime($start_week);
-        $d = strtotime("-7 day", $date);
+        $d = strtotime('-7 day', $date);
         $end_week = date('Y-m-d', $d);
 
         $total_start = $this->dashboard_model->get_total_semana($organizacao, $start_week);
         $total_end = $this->dashboard_model->get_total_semana($organizacao, $end_week);
 
-        $growth_rate = ((float) $total_start[0]->Total - (float) $total_end[0]->Total)/ (float)$total_end[0]->Total;
+        $growth_rate = ((float) $total_start[0]->Total - (float) $total_end[0]->Total) / (float) $total_end[0]->Total;
 
-        return (number_format($growth_rate*100, 2, '.', ''));
+        return number_format($growth_rate * 100, 2, '.', '');
     }
 
-    private function getFinalizationTime(){
+    private function getFinalizationTime()
+    {
+        $organizacao = $this->session->user['id_organizacao'];
 
-        $organizacao = $this->session->user['id_organizacao'];  
-
-        $ordens = $this->dashboard_model->get_ordens_finalizadas( $organizacao,
+        $ordens = $this->dashboard_model->get_ordens_finalizadas($organizacao,
             'ordem_servico_criacao, ordem_servico_finalizacao',
             'situacao_atual_fk = 5 OR situacao_atual_fk = 4 OR situacao_atual_fk = 3');
 
-        
-        $sum_seconds = 0; 
+        $sum_seconds = 0;
 
-        foreach($ordens as $os){
-            if($os->ordem_servico_finalizacao !== NULL){
+        foreach ($ordens as $os) {
+            if ($os->ordem_servico_finalizacao !== null) {
                 $sum_seconds += strtotime($os->ordem_servico_finalizacao) - strtotime($os->ordem_servico_criacao);
             }
         }
-        $hours = $sum_seconds/3600;
+        $hours = $sum_seconds / 3600;
 
-        return (int)($hours/count($ordens));
-    
+        return (int) ($hours / count($ordens));
     }
 
-    private function getOrdersTable(){
-       
+    private function getOrdersTable()
+    {
         $start_week = date('Y-m-d');
         $date = strtotime($start_week);
-        $d = strtotime("-7 day", $date);
+        $d = strtotime('-7 day', $date);
         $end_week = date('Y-m-d', $d);
 
         $ordens_servico = $this->ordem_servico->get_home(
             $this->session->user['id_organizacao'],
             "ordens_servicos.ordem_servico_criacao BETWEEN '".$end_week."' AND '".$start_week."' AND ordens_servicos.ativo = 1"
         );
+
         return $ordens_servico;
     }
 
-    private function getOrdersByWeek(){
-        $organizacao = $this->session->user['id_organizacao'];  
-        
-        try{
+    private function getOrdersByWeek()
+    {
+        $organizacao = $this->session->user['id_organizacao'];
 
+        try {
             $ordens_semana_abertas = $this->dashboard_model->get_ordens_semana($organizacao, 1);
             $ordens_semana_finalizadas = $this->dashboard_model->get_ordens_semana($organizacao, 2);
             $ordens_semana_andamento = $this->dashboard_model->get_ordens_semana($organizacao, 5);
@@ -101,14 +102,13 @@ class Dashboard extends CRUD_Controller
 
             $ordens_semana = [];
 
-            array_push($ordens_semana,  $this->setNullasZero((array)$ordens_semana_abertas[0]));
-            array_push($ordens_semana,  $this->setNullasZero((array)$ordens_semana_finalizadas[0])); 
-            array_push($ordens_semana,  $this->setNullasZero((array)$ordens_semana_andamento[0]));
-            array_push($ordens_semana,  $this->setNullasZero((array)$ordens_semana_repetidas[0]));
-            array_push($ordens_semana,  $this->setNullasZero((array)$ordens_semana_nprocede[0]));
+            array_push($ordens_semana, $this->setNullasZero((array) $ordens_semana_abertas[0]));
+            array_push($ordens_semana, $this->setNullasZero((array) $ordens_semana_finalizadas[0]));
+            array_push($ordens_semana, $this->setNullasZero((array) $ordens_semana_andamento[0]));
+            array_push($ordens_semana, $this->setNullasZero((array) $ordens_semana_repetidas[0]));
+            array_push($ordens_semana, $this->setNullasZero((array) $ordens_semana_nprocede[0]));
 
             return $ordens_semana;
-            
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
@@ -116,12 +116,13 @@ class Dashboard extends CRUD_Controller
         }
     }
 
-    private function getOrdersBySector(){
-        $organizacao = $this->session->user['id_organizacao'];   
-        $data_chart = []; 
+    private function getOrdersBySector()
+    {
+        $organizacao = $this->session->user['id_organizacao'];
+        $data_chart = [];
         $sector_names = [];
-       
-        try{
+
+        try {
             $setores = $this->setor->get_all(
                 'setores.setor_pk, setores.setor_nome',
                 ['setores.organizacao_fk' => $organizacao],
@@ -129,74 +130,72 @@ class Dashboard extends CRUD_Controller
                 -1
             );
 
-            foreach($setores as $s){
+            foreach ($setores as $s) {
                 $data = $this->dashboard_model->get_ordens_setor($organizacao, $s->setor_pk);
-                array_push($data_chart, $this->setNullasZero((array)$data[0]));
+                array_push($data_chart, $this->setNullasZero((array) $data[0]));
                 array_push($sector_names, $s->setor_nome);
             }
-            
+
             return [$sector_names, $data_chart];
-            
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
             handle_exception($e);
-        } 
+        }
     }
 
-    private function getOrdersByTypeService(){
-        $organizacao = $this->session->user['id_organizacao'];   
-        
-        $data_chart = []; 
+    private function getOrdersByTypeService()
+    {
+        $organizacao = $this->session->user['id_organizacao'];
+
+        $data_chart = [];
         $type_services_names = [];
-       
-        try{
-            $tipos_servicos= $this->tipo_servico->get_all(
+
+        try {
+            $tipos_servicos = $this->tipo_servico->get_all(
                 'tipos_servicos.tipo_servico_pk,tipos_servicos.tipo_servico_nome',
                 ['departamentos.organizacao_fk' => $organizacao],
                 -1,
                 -1,
                 [
-                    ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk']
+                    ['table' => 'departamentos', 'on' => 'departamentos.departamento_pk = tipos_servicos.departamento_fk'],
                 ]
             );
-            
 
-            foreach($tipos_servicos as $s){
+            foreach ($tipos_servicos as $s) {
                 $data = $this->dashboard_model->get_ordens_tipo_servico($organizacao, $s->tipo_servico_pk);
                 array_push($data_chart, $data[0]->Total);
                 array_push($type_services_names, $s->tipo_servico_nome);
             }
-           
+
             return [$type_services_names, $data_chart];
-            
         } catch (MyException $e) {
             handle_my_exception($e);
         } catch (Exception $e) {
             handle_exception($e);
-        } 
+        }
     }
 
-    private function getOrdersByYear(){
-
-        $organizacao = $this->session->user['id_organizacao'];   
+    private function getOrdersByYear()
+    {
+        $organizacao = $this->session->user['id_organizacao'];
         $data = $this->dashboard_model->get_ordens_ano($organizacao);
-        $data_chart =  $this->setNullasZero((array)$data[0]);
+        $data_chart = $this->setNullasZero((array) $data[0]);
 
         return $data_chart;
     }
 
-    private function setNullasZero($ordens_semana){
+    private function setNullasZero($ordens_semana)
+    {
         $data = [];
-        foreach($ordens_semana as $index => $val){
-            
-            if($val == NULL){
-                array_push($data,0);
-            }else{
+        foreach ($ordens_semana as $index => $val) {
+            if ($val == null) {
+                array_push($data, 0);
+            } else {
                 array_push($data, $val);
             }
         }
-        
+
         return $data;
     }
 
@@ -205,44 +204,40 @@ class Dashboard extends CRUD_Controller
     //     $this->load->model('funcionario_model');
     //     $this->load->helper('date_helper');
 
-    //     $organizacao = $this->session->user['id_organizacao'];       
+    //     $organizacao = $this->session->user['id_organizacao'];
 
     //     $this->load->model('dashboard_model');
-
 
     //     $current_month = date("m");
     //     $current_year = date("Y");
 
     //     $ordens_por_mes = $this->dashboard_model->get_ordens_ano("01.01.".$current_year, "31.".$current_month.".".$current_year,$organizacao);
 
-        
     //     $ordens_por_semana = $this->dashboard_model->get_ordens_semana($organizacao);
-        
+
     //     $ordens_por_setor_semana = $this->dashboard_model->get_ordens_setor_semana($organizacao);
-        
+
     //     $ordens_por_bairro_ano = $this->dashboard_model->get_ordens_bairro_ano($organizacao);
 
     //     $ordens_por_tipo_semana = $this->dashboard_model->get_ordens_tipo_semana($organizacao);
 
-        
     //     $ordens_finalizadas = $this->dashboard_model->get_ordens_hoje_finalizadas();
     //     $quantidade_de_ordens_finalizadas = $ordens_finalizadas;
-
 
     //     $hoje = $this->dashboard_model->get_ordens_hoje();
     //     $quantidade_de_ordens_de_hoje = $hoje;
 
     //     //$quantidade_de_ordens_abertas = $quantidade_de_ordens_de_hoje - $quantidade_de_ordens_finalizadas;
     //     $quantidade_de_ordens_abertas = $this->dashboard_model->get_ordens_hoje();
-        
+
     //     // $ultimas_ordens = $this->dashboard_model->get_ultimas_ordens($organizacao);
-        
+
     //     $quantidade_ordens_mes = $ordens_por_mes['total'];
     //     $quantidade_ordens_semana = $ordens_por_semana['total'];
 
     //     unset($ordens_por_mes['total']);
     //     unset($ordens_por_semana['total']);
-        
+
     //     $dia_da_semana = date('w');
     //     $mes = date("n");
 
@@ -276,8 +271,8 @@ class Dashboard extends CRUD_Controller
 
     //     $dados['quantidade_ordens_mes'] = $quantidade_ordens_mes;
     //     $dados['quantidade_ordens_semana'] = $quantidade_ordens_semana;
-    //     $dados['ordens_servico_meses'] = $ordens_por_mes; 
-    //     $dados['ordens_servico_semanas'] = $ordens_por_semana; 
+    //     $dados['ordens_servico_meses'] = $ordens_por_mes;
+    //     $dados['ordens_servico_semanas'] = $ordens_por_semana;
     //     $dados['ordens_por_setor_semana'] = $ordens_por_setor_semana;
     //     $dados['quantidade_ordens_bairro'] = $quantidade_ordens_bairro;
     //     $dados['quantidade_ordens_tipo'] = $quantidade_ordens_tipo;
@@ -286,9 +281,8 @@ class Dashboard extends CRUD_Controller
     //         "finalizados" => 0,
     //         "novas" => $quantidade_de_ordens_abertas
     //     );
-        
-    //     // Carrega a view principal do administrador, passando os dados obtidos
 
+    //     // Carrega a view principal do administrador, passando os dados obtidos
 
     //     $this->session->set_flashdata('scripts',[
     //         0 => base_url('assets/js/dashboard/dashboard/index.js'),
@@ -303,45 +297,43 @@ class Dashboard extends CRUD_Controller
 
     // private function get_tipos_servicos(){
         //         $this->load->model('dashboard_model', 'model');
-                
+
         //         return $this->model->get_tipos_servicos_do_dia();
-        
+
         //     }
-        
+
         //     private function heatmap(){
         //         $response = array(
         //             'x' => [],
         //             'y' => [],
         //             'z' => []
         //         );
-        
+
         //         $response['x'] = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
-        
+
         //         $response['y'] = $this->get_revisores_array();
-                    
-        
+
         //         $data = $this->model->get_heatmap();
-        
+
         //         if($data == false){
         //             return false;
         //         }
-        
+
         //         $response = $this->format_data_heatmap($data);
-        
+
         //         return $response;
         //     }
-        
+
         //     private function format_data_heatmap($data){
         //         $r = array(
         //             'x' => [],
         //             'y' => [],
         //             'z' => []
         //             );
-        
-        
+
         //         return $r;
         //     }
-        
+
         //     private function contains($string, $substring){
         //         return strpos($string, $substring) !== false;
         //     }
@@ -385,9 +377,9 @@ class Dashboard extends CRUD_Controller
             }
         
         //     private function get_status($performance){
-        
+
         //        $status = array();
-        
+
         //        if ($this->contains($performance['label'], '100')){
         //             $status = array(
         //                 'label' => 'Disponível',
@@ -399,15 +391,15 @@ class Dashboard extends CRUD_Controller
         //                 'class' => 'status--denied'
         //             );
         //         }
-        
+
         //         return $status;
         //     }
-        
+
         //     private function get_ultima_ordem($id_relatorio){
         //         $this->load->model('dashboard_model', 'model');
-        
+
         //         $ultima_ordem = array();
-        
+
         //         $data = $this->model->get_data_ultima_ordem($id_relatorio);
         //         if($data == false){
         //             return array(
@@ -415,13 +407,11 @@ class Dashboard extends CRUD_Controller
         //                 'label'   => '---'
         //             );
         //         }
-        
-        
-                
+
         //         $date_dif = strtotime(date('Y-m-d H:i:s')) - strtotime($data);
-        
+
         //         $date_dif = $this->model->date_dif($data);
-        
+
         //             if($date_dif > 60){ //é em horas
         //                 $value = round($date_dif/60);
         //                 $format = 'H:i';
@@ -436,56 +426,53 @@ class Dashboard extends CRUD_Controller
         //                  $format = 'H:i';
         //                 $time = 'minutos';
         //             }
-        
+
         //             $tooltip = date($format, strtotime($data));
-        
+
         //             $ultima_ordem    = array(
         //                 'tooltip' => $tooltip,
         //                 'label'   => $value.' '.$time.' atrás'
         //             );
-        
+
         //             return $ultima_ordem;
-        
+
         //     }
-        
+
         //     private function get_performance($id_relatorio){
         //         $this->load->model('dashboard_model', 'model');
         //         $performance = array();
-        
-        
+
         //         $porcentagem = 0;
         //         $total_ordens = $this->model->get_ordens($id_relatorio);
         //         $ordens_concluidas = $this->model->get_ordens_concluidas($id_relatorio);
-        
+
         //         $porcentagem = $this->porcentagem($ordens_concluidas, $total_ordens).' %';
         //         $tooltip = $ordens_concluidas.'/'.$total_ordens.' (concluídas/total)';
-        
+
         //         $performance = array(
         //             'tooltip' => $tooltip,
         //             'label'   => $porcentagem
         //         );
-        
+
         //         return $performance;
         //     }
-        
-        
+
         //     private function get_ordens_em_execucao(){
         //         $this->load->model('dashboard_model', 'model');
-        
+
         //         return $this->model->get_ordens_em_execucao();
         //     }
-        
+
         //     private function get_charts(){
         //         $this->load->model('dashboard_model', 'model');
-        
+
         //         $charts = array();
         //         $labels = array();
         //         $charts['doughnut'] = array();
-        
+
         //         $em_andamento = count($this->model->get_ordens_em_execucao());
         //         $finalizadas  = $this->model->get_ordens_hoje_finalizadas();
-        
-        
+
         //         $labels[] = array(
         //             'color' => 'blue',
         //             'label' => 'em andamento',
@@ -496,7 +483,7 @@ class Dashboard extends CRUD_Controller
         //             'label' => 'concluidas',
         //             'data'  => ''.$finalizadas
         //         );
-                
+
         //         $charts['doughnut'] = array(
         //          'title'   => 'Concluídas %',
         //          'percent' => $this->get_ordens_hoje(),
@@ -504,24 +491,24 @@ class Dashboard extends CRUD_Controller
         //          'data'    => $this->get_data($labels),
         //          'labels'  => $this->get_labels($labels)
         //      );
-        
+
         //         return $charts;
         //     }
-        
+
         //     private function get_cards() {
-        
+
         //         $cards = array();
         //         $ordens_concluidas = $this->get_ordens_concluidas();
         //         $revisores = $this->get_revisores();
         //         $setores = $this->get_setores();
-        
+
         //         $cards[] = array(
         //             'color' => 'green',
         //             'title' => $this->get_ordens_hoje(),
         //             'label' => 'novas',
         //             'icon'  =''> 'fa-plus'
         //         );
-        
+
         //         $cards[] = array(
         //             'color' => 'orange',
         //             'title' => $ordens_concluidas['porcentagem'],
@@ -529,7 +516,7 @@ class Dashboard extends CRUD_Controller
         //             'icon'  => 'fa-tasks',
         //             'tooltip' => $ordens_concluidas['text']
         //         );
-        
+
         //         $cards[] = array(
         //             'color' => 'red',
         //             'title' => $revisores['quantidade'],
@@ -537,7 +524,7 @@ class Dashboard extends CRUD_Controller
         //             'icon'  => 'fa-users',
         //             'tooltip' => $revisores['nomes']
         //         );
-        
+
         //         $cards[] = array(
         //             'color' => 'blue',
         //             'title' => $setores['quantidade'],
@@ -545,17 +532,16 @@ class Dashboard extends CRUD_Controller
         //             'icon'  => 'fa-map-marker-alt',
         //             'tooltip' => $setores['nomes']
         //         );
-        
+
         //         return $cards;
-        
+
         //     }
-        
-        
+
         //     private function primeiro_nome($nome){
         //         $array = explode(' ', $nome);
         //         return $array[0];
         //     }
-        
+
         //     private function get_data($labels){
         //         $data = '';
         //         for($i = 0; $i < count($labels); $i++){
@@ -567,7 +553,7 @@ class Dashboard extends CRUD_Controller
         //         }
         //         return $data;
         //     }
-        
+
         //     private function get_labels($labels){
         //         $data = '';
         //         for($i = 0; $i < count($labels); $i++){
@@ -579,54 +565,53 @@ class Dashboard extends CRUD_Controller
         //         }
         //         return $data;
         //     }
-        
-        
+
         //     private function get_setores() {
         //         $this->load->model('dashboard_model', 'model');
         //         $response = array(
         //             'quantidade' => '',
         //             'nomes' => ''
         //         );
-        
+
         //         $setores = $this->model->get_setores_do_dia();
         //         $response['quantidade'] = count($setores);
         //         $response['nomes'] = $this->get_string($setores, 'explode', ' ', 1);
-        
+
         //         return $response;
         //     }
-        
+
         //     private function get_revisores_array(){
         //         $this->load->model('dashboard_model', 'model');
         //         $response = array();
-        
+
         //         $revisores = $this->model->get_revisores_do_dia();
         //         foreach($revisores as $r){
         //             $arr = explode(' ', $r->nome);
         //             $response[] = $arr[0]; //pegando o primeiro nome
         //         }
-        
+
         //         return $response;
         //     }
-        
+
         //     private function get_revisores() {
         //         $this->load->model('dashboard_model', 'model');
-        
+
         //         $response = array(
         //             'quantidade' => '',
         //             'nomes' => ''
         //         );
-        
+
         //         $revisores = $this->model->get_revisores_do_dia();
-        
+
         //         $response['quantidade'] = count($revisores);
         //         $response['nomes'] = $this->get_string($revisores, 'explode');
-        
+
         //         return $response;
         //     }
-        
+
         //     private function get_string($array, $method = NULL, $condition = ' ', $piece = 0){
         //      $string = '';
-        
+
         //      for($i = 0; $i < count($array); $i++){
         //         if($i == 0){ //se for o primeiro registro
         //         }else if($i == count($array) -1){ //se for o ultimo registro:
@@ -634,66 +619,63 @@ class Dashboard extends CRUD_Controller
         //         }else{ // se tiver no meio
         //             $string.= ', ';
         //         }
-        
+
         //         if($method == NULL){
         //             $string.= $array[$i]->nome;
         //         } else {
         //             if($method == 'explode') {
         //              $explode_array = explode($condition, $array[$i]->nome);
-        
-        //              $string.= $explode_array[$piece]; 
+
+        //              $string.= $explode_array[$piece];
         //          }
         //      }
         //  }
-        
+
         //  return $string;
         // }
-        
+
         // private function get_ordens_concluidas(){
         //     $this->load->model('dashboard_model', 'model');
-        
+
         //     $response = array(
         //             'porcentagem' => '', //será retornado como string
         //             'text' => ''
         //         );
         //     $ordens_em_execucao = $this->model->get_ordens_em_execucao();
         //     if($ordens_em_execucao != false){
-        //         $em_andamento = count($this->model->get_ordens_em_execucao()); 
+        //         $em_andamento = count($this->model->get_ordens_em_execucao());
         //         $finalizadas  = $this->model->get_ordens_hoje_finalizadas();
         //     } else {
         //         $em_andamento = 0;
         //         $finalizadas = 0;
         //     }
-        
-        
-        
-        
+
         //     $response['porcentagem'] = $this->porcentagem($finalizadas,$em_andamento).' %';
         //     $response['text'] = $finalizadas.'/'.$em_andamento.' (concluídas/total)';
-        
+
         //     return $response;
         // }
-        
+
         // private function porcentagem($dividendo, $divisor) {
         //     if($divisor == 0){
         //         return 0;
         //     } else {
         //             $porcentagem = $dividendo/$divisor; //intervalo de 0 a 1
-        
+
         //             $porcentagem = round($porcentagem, 4);
-        
+
         //             $porcentagem = $porcentagem * 100;
-                    
+
         //             $porcentagem = $porcentagem.'';
         //             $porcentagem = str_replace('.', ',', $porcentagem);
-        
+
         //             return $porcentagem;
         //         }
         //     }
-        
+
         //     private function get_ordens_hoje(){
         //         $this->load->model('dashboard_model', 'model');
-        
+
         //         return $this->model->get_ordens_hoje();
         //     }
         
@@ -735,8 +717,4 @@ class Dashboard extends CRUD_Controller
                 }
             }
         
-
 }
-
-
-?>

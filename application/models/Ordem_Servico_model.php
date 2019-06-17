@@ -107,8 +107,19 @@ class Ordem_Servico_model extends MY_Model
         $this->CI->db->join('tipos_servicos', 'tipos_servicos.tipo_servico_pk = servicos.tipo_servico_fk');
         $this->CI->db->join('setores', 'setores.setor_pk = ordens_servicos.setor_fk');
 
-        $dates['data_final'] = array_pop($where);
-        $dates['data_inicial'] = array_pop($where);
+        if ($where['data_inicial']){
+            $dates['data_inicial'] = $where['data_inicial'];
+            unset($where['data_inicial']);
+        }else{
+            $dates['data_inicial'] = '';
+        }
+        if ($where['data_final']){
+            $dates['data_final'] = $where['data_final'];
+            unset($where['data_final']);
+        }else{
+            $dates['data_final'] = '';
+        }
+        
 
         foreach ($where as $field => $value) {
             if ($value !== '') {
