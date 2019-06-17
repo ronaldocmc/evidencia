@@ -189,7 +189,7 @@ class GenericView {
         const dataContainer = {};
 
         fields.forEach(field => {
-            dataContainer[field] = $(`#${field}`).val()
+            dataContainer[field] = $(`#${field}`).val();
         });
         return dataContainer;
     }
@@ -551,5 +551,10 @@ class GenericView {
                     <p><b>Código:</b> ${cod} </p>
                     <p><b>Descrição:</b> ${desc}</p>
                 </div>`
+    }
+
+    generateParagraph(text) {
+        let p = `<p> ${text} </p>`;
+        return p;
     }
 }

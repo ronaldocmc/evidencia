@@ -3,7 +3,7 @@
             <div class="header-mobile__bar">
                 <div class="container-fluid">
                     <div class="header-mobile-inner">
-                        <a class="logo" href="index.html">
+                        <a class="logo" href="<?=base_url('dashboard/superusuario')?>">
                             <img src="<?php echo base_url('assets/images/icon/logo.png') ?>" alt="Evidência" />
                         </a>
                         <button class="hamburger hamburger--slider" type="button">
@@ -25,7 +25,7 @@
                                     <a href="<?=base_url('superusuario')?>">Superusuários</a>
                                 </li>
                                 <li>
-                                    <a href="<?=base_url('organizacao')?>">Filiais</a>
+                                    <a href="<?=base_url('filial')?>">Filiais</a>
                                 </li>
                             </ul>
                         </li>
@@ -38,7 +38,7 @@
         <!-- MENU SIDEBAR-->
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
-                <a href="#">
+                <a href="<?=base_url('dashboard/superusuario')?>">
                     <img src="<?php echo base_url('assets/images/icon/logo.png') ?>" alt="Evidência" />
                 </a>
             </div>
@@ -53,7 +53,7 @@
                                     <a href="<?=base_url('superusuario')?>">Superusuários</a>
                                 </li>
                                 <li>
-                                    <a href="<?=base_url('organizacao')?>">Filiais</a>
+                                    <a href="<?=base_url('filial')?>">Filiais</a>
                                 </li>
                             </ul>
                         </li>

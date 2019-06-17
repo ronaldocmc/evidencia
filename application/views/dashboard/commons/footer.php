@@ -5,6 +5,7 @@
 <!-- Jquery JS-->
 
 <script src="<?php echo base_url('assets/vendor/jquery-3.2.1.min.js')?>"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <!-- Bootstrap JS-->
 <script src="<?php echo base_url('assets/vendor/bootstrap-4.1/popper.min.js')?>"></script>
 <script src="<?php echo base_url('assets/vendor/bootstrap-4.1/bootstrap.min.js')?>"></script>
@@ -41,12 +42,11 @@
     <?php }
     }
 ?>
-
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPHWVMBuM2tU-MWEBh5UNXq_8hwKar9wc&callback=initMap"
-    type="text/javascript">
-</script>
-</body>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<?php if(isset($this->session->mapa)): ?>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPHWVMBuM2tU-MWEBh5UNXq_8hwKar9wc&callback=initMap"
+        type="text/javascript"></script>
+<?php endif;?>
 
 </html>
 <!-- end document-->

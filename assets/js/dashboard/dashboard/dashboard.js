@@ -98,6 +98,7 @@ class View extends GenericView {
 							beginAtZero: true,
 						},
 					}],
+					responsive: true
 				},
 				title: {
 					display: true,
@@ -182,7 +183,8 @@ class View extends GenericView {
 					}]
 				},
 			options: {
-				scales: {
+				scales: { 
+					responsive: true,
 					yAxes: [{
 						ticks:{
 							beginAtZero: true,	
@@ -192,8 +194,7 @@ class View extends GenericView {
 						ticks:{
 							autoSkip: false
 						},
-					}],
-				responsive: true
+					}]
 				},
 				tooltips: {
 					mode: 'point',
@@ -219,10 +220,10 @@ class View extends GenericView {
 				datasets: set
 				},
 			options: {
-				scales: { 
+				scales: {
+					responsive: true, 
 					xAxes: [{ stacked: true }],
-            		yAxes: [{ stacked: true }],
-					responsive: true,
+            		yAxes: [{ stacked: true }]
 				},
 				tooltips: {
 					enabled: true,
@@ -416,8 +417,6 @@ class Control extends GenericControl {
 
 	async init() {
 
-		
-		
 		this.data = await this.myRequests.init();
 		this.myView.init(this.data, this.tableFields, this.primaryKey);
 		this.myView.renderOrdersByWeek(days, this.data.semana);
@@ -426,6 +425,20 @@ class Control extends GenericControl {
 		this.myView.renderStatisticsCards(this.data.ordens_ano[12], this.data.taxa_crescimento, this.data.media_finalizacao);
 		this.myView.renderOrdersByMonth(months, this.data.ordens_ano);
 		
+	}
+
+	removeLoading(){
+		
+		$('#loading1').hide();
+		$('#loading2').hide();
+		$('#loading3').hide();
+		$('#loading4').hide();
+		$('#loading5').hide();
+	
+		$('#nossos_numeros').attr('hidden', false);
+		$('#graficos').attr('hidden', false);
+		$('#tabela').attr('hidden', false);
+		$('#mapa').attr('hidden', false);
 	}
 }
 
@@ -440,6 +453,7 @@ initMap = async () => {
 	await myControl.init();
 	myControl.myView.renderQuickAccess();
 	myControl.myView.renderButtonsBasedOnPermissions();
+	myControl.removeLoading();
 
 	map = new GenericMap({
 		mapId: "map",
@@ -471,6 +485,7 @@ initMap = async () => {
 	});
 
 	map.initMap();
+	
 	
 	map.handleMarkerClick = function(event) {};
 }

@@ -102,7 +102,7 @@ class GenericControl {
 	async switchState(action) {
 		this.myView.initLoad();
 
-		const sendData = is_superusuario ? this.myView.getPassword(action) : {};
+		const sendData = this.myView.state.is_superusuario ? this.myView.getPassword(action) : {};
 		sendData[this.primaryKey] = this.data.self[this.state.selectedId][
 			this.primaryKey
 		];
@@ -161,6 +161,7 @@ class GenericControl {
 	updateObject(data) {
 		Object.assign(this.data.self[this.state.selectedId], data);
 	}
+	
 	handleFillFields() {
 		this.fillFields(this.data.self[this.state.selectedId], this.fields);
 	}

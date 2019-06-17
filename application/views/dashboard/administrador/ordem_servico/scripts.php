@@ -10,6 +10,7 @@
     }
 	?>
 
-
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPHWVMBuM2tU-MWEBh5UNXq_8hwKar9wc&callback=initMap"
-    type="text/javascript"></script>
+<?php if(isset($this->session->mapa)): ?>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPHWVMBuM2tU-MWEBh5UNXq_8hwKar9wc&callback=initMap"
+        type="text/javascript"></script>
+<?php endif;?>

@@ -21,7 +21,7 @@
                                                 <i class="fa fas fa-users"></i>
                                             </div>
                                             <div class="text">
-                                                <h2>superusuários</h2>                                                
+                                                <h4>Superusuários</h4>                                                
                                             </div>
                                         </div>
                                     </div>
@@ -35,7 +35,7 @@
                                                 <i class="fa fas fa-building"></i>
                                             </div>
                                             <div class="text">
-                                                <h2>filiais</h2>
+                                                <h4>Filiais</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -49,7 +49,7 @@
                                                 <i class="fa fas fa-refresh"></i>
                                             </div>
                                             <div class="text">
-                                                <h2>atualizar</h2>
+                                                <h4>Atualizar</h4>
                                             </div>
                                         </div>
                                     </div>

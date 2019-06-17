@@ -28,6 +28,15 @@ class ViewController extends AuthorizationController
         $this->_load_view($name, $name.'s', null);
     }
 
+    public function super_index($name)
+    {
+        $this->_load_css();
+
+        $this->_load_scripts($name);
+
+        $this->_load_super_view($name);
+    }
+
     public function funcionario()
     {
         $organizacao = $this->session->user['id_organizacao'];
@@ -47,7 +56,12 @@ class ViewController extends AuthorizationController
             2 => base_url('assets/vendor/datatables/datatables.min.js'),
             3 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
             4 => base_url('assets/js/utils.js'),
-            5 => base_url('assets/js/dashboard/dashboard/dashboard.js')
+            5 => base_url('assets/js/dashboard/dashboard/dashboard.js'),
+            6 => base_url('assets/vendor/input-image/input-image.js')
+        ]);
+        
+        $this->session->set_flashdata('mapa', [
+            0 => true,
         ]);
         load_view([
             0 => [
@@ -211,19 +225,17 @@ class ViewController extends AuthorizationController
             $this->session->set_flashdata('css', [
                 0 => base_url('assets/css/modal_desativar.css'),
                 1 => base_url('assets/css/loading_input.css'),
-                2 => base_url('assets/css/media_query_edit_org.css'),
+                2 => base_url('assets/css/media_query_edit_org.css')
             ]);
             //Scripts para edição
             $this->session->set_flashdata('scripts', [
-                0 => base_url('assets/js/localizacao.js'),
-                1 => base_url('assets/vendor/datatables/datatables.min.js'),
-                2 => base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js'),
-                3 => base_url('assets/vendor/select-input/select-input.js'),
-                4 => base_url('assets/js/dashboard/organizacao/edit_info.js'),
-                5 => base_url('assets/js/constants.js'),
-                6 => base_url('assets/js/utils.js'),
-                7 => base_url('assets/js/jquery.noty.packaged.min.js'),
-                8 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
+                0 => base_url('assets/vendor/bootstrap-multistep-form/bootstrap.multistep.js'),
+                1 => base_url('assets/vendor/bootstrap-multistep-form/jquery.easing.min.js'),
+                2 => base_url('assets/js/utils.js'),
+                3 => base_url('assets/js/constants.js'),
+                4 => base_url('assets/js/jquery.noty.packaged.min.js'),
+                5 => base_url('assets/js/response_messages.js'),
+                6 => base_url('assets/js/dashboard/organizacao/edit_info.js')
             ]);
             load_view([
                 0 => [
@@ -372,6 +384,16 @@ class ViewController extends AuthorizationController
                 'params' => [$plural => $data],
             ],
         ], 'administrador');
+    }
+
+    private function _load_super_view($name)
+    {
+        load_view([
+            0 => [
+                'src' => 'dashboard/superusuario/'.$name.'/home',
+                'params' => [],
+            ],
+        ], 'superusuario');
     }
 
     private function check_permissions()
