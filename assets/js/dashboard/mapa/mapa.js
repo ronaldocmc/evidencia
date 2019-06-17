@@ -9,6 +9,7 @@ let ate = $("#ate");
 
 // TODO: Replace with Generics
 $(document).ready(function() {
+	de.val(formatDate(lastWeekDate()));
 	initMap();
 });
 
