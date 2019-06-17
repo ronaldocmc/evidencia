@@ -40,6 +40,7 @@ class GenericMap {
 			},
 
 			markers: props.data,
+			currentMarkers: [],
 
 			lastPositionClicked: {
 				latitude: null,
@@ -70,35 +71,20 @@ class GenericMap {
 	}
 
 	renderMarkers() {
-		const { markers } = this.state;
+		const { markers, currentMarkers } = this.state;
 
 		markers.forEach(marker => {
-			this.createFilledMarker(marker);
+			currentMarkers.push(this.createFilledMarker(marker));
+		});
+	}
+
+	clearMarkers() {
+		const { currentMarkers } = this.state;
+		currentMarkers.forEach(marker => {
+			marker.setMap(null);
 		});
 
-		// var marker = new google.maps.Marker({
-		//     position: {
-		//         lat: parseFloat(ordem.localizacao_lat),
-		//         lng: parseFloat(ordem.localizacao_long)
-		//     },
-		//     map: main_map,
-		//     icon: imagem,
-		//     id: ordem.ordem_servico_pk,
-		//     departamento: ordem.departamento_fk,
-		//     tipo_servico: ordem.tipo_servico_pk,
-		//     servico: ordem.servico_fk,
-		//     situacao: ordem.situacao_atual_fk,
-		//     data_criacao: ordem.ordem_servico_criacao,
-		//     prioridade: ordem.prioridade_fk,
-		//     setor: ordem.setor_fk,
-		//     title: ordem.localizacao_rua + ", " + ordem.localizacao_num + " - " + ordem.localizacao_bairro
-		// });
-
-		// marker.addListener('click', function () {
-		//     main_map.panTo(marker.getPosition());
-		//     request_data(this.id, marker.setor);
-		//     $('#v_evidencia').modal('show');
-		// });
+		this.state.currentMarkers = [];
 	}
 
 	getImage(prioridade) {
@@ -165,7 +151,7 @@ class GenericMap {
 							return this.text == endereco[i].short_name;
 						})
 						.attr("selected", true);
-					estado = endereco[i].short_name;
+					//let estado = endereco[i].short_name;
 				}
 			}
 		});
@@ -210,7 +196,9 @@ class GenericMap {
 				lng: parseFloat(marker.localizacao_long)
 			},
 			map: this.state.map,
-			icon: this.state.setIcons ? '' : this.getImage(marker.prioridade_fk),
+			icon: this.state.setIcons
+				? ""
+				: this.getImage(marker.prioridade_fk),
 			props: marker
 		});
 
@@ -229,12 +217,12 @@ class GenericMap {
 			status
 		) {
 			if (status === "OK") {
-				if (results.length >= 1){
+				if (results.length >= 1) {
 					const location = {
 						lat: results[0].geometry.location.lat(),
 						lng: results[0].geometry.location.lng()
 					};
-					
+
 					return location;
 				}
 			} else {
