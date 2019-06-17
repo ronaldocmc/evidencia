@@ -7,20 +7,19 @@ let setor = $("#setor_pk");
 let de = $("#de");
 let ate = $("#ate");
 
-// TODO: Replace with Generics
 $(document).ready(function() {
 	de.val(formatDate(lastWeekDate()));
 	initMap();
 });
 
-//TODO: Refactor this
-function lastWeek() {
+// Get last Week date
+function lastWeekDate() {
 	let d = new Date();
 	d.setDate(d.getDate() - 7);
 	return d;
 }
 
-//TODO: Refactor this to use Intl.formatdate
+// format given date to String YYYY-MM-DD
 function formatDate(date) {
 	let d = new Date(date);
 	return d.toISOString().split("T")[0];
@@ -38,25 +37,12 @@ function remove_data() {
 	$("#v_loading").show();
 }
 
-function createCurrentSituationOject(os) {
-	let data = {
-		funcionario_caminho_foto: os.funcionario_caminho_foto,
-		funcionario_nome: os.funcionario_nome,
-		ordem_servico_atualizacao: os.ordem_servico_atualizacao,
-		situacao_atual_nome: os.situacao_nome,
-		ordem_servico_comentario: os.ordem_servico_comentario
-	};
-
-	return data;
-}
-
 function has_all(selected) {
-	for (var i = 0; i < selected.length; i++) {
+	for (let i = 0; i < selected.length; i++) {
 		if (selected[i] === "-1") {
 			return true;
 		}
 	}
-
 	return false;
 }
 
@@ -78,10 +64,8 @@ tipo_servico.on("click", () => {
 
 function all_tipos_servicos() {
 	$("#tipo_servico_pk option").remove();
-
 	tipo_servico.append('<option value="-1">Todos</option>');
-
-	for (var i = 0; i < tipos_servicos.length; i++) {
+	for (let i = 0; i < tipos_servicos.length; i++) {
 		tipo_servico.append(
 			'<option value="' +
 				tipos_servicos[i].tipo_servico_pk +
@@ -96,9 +80,8 @@ function all_tipos_servicos() {
 
 function all_servicos() {
 	$("#servico_pk option").remove();
-
 	servico.append('<option value="-1">Todos</option>');
-	for (var i = 0; i < servicos.length; i++) {
+	for (let i = 0; i < servicos.length; i++) {
 		servico.append(
 			'<option value="' +
 				servicos[i].servico_pk +
@@ -111,13 +94,11 @@ function all_servicos() {
 
 function add_options_tipo_servico() {
 	$("#tipo_servico_pk option").remove();
-
 	tipo_servico.append('<option value="-1">Todos</option>');
 
 	let deptos = departamento.val();
-
-	for (var i = 0; i < tipos_servicos.length; i++) {
-		for (var j = 0; j < deptos.length; j++) {
+	for (let i = 0; i < tipos_servicos.length; i++) {
+		for (let j = 0; j < deptos.length; j++) {
 			if (tipos_servicos[i].departamento_fk == deptos[j]) {
 				tipo_servico.append(
 					'<option value="' +
@@ -136,7 +117,7 @@ function add_options_servico() {
 	$("#servico_pk option").remove();
 	servico.append('<option value="-1">Todos</option>');
 
-	var tipos = tipo_servico.val();
+	let tipos = tipo_servico.val();
 
 	for (var i = 0; i < servicos.length; i++) {
 		for (var j = 0; j < tipos.length; j++) {
@@ -156,7 +137,6 @@ function add_options_servico() {
 
 function muda_depto() {
 	add_options_tipo_servico();
-
 	add_options_servico();
 }
 
@@ -164,47 +144,16 @@ function muda_tipo_servico() {
 	add_options_servico();
 }
 
-$("#filtrar").click(function() {
-	$("#p_ordens").hide();
-	btn_load($("#filtrar"));
-
-	let filters = get_filters();
-	let url = base_url + "/Ordem_Servico/get_map";
-
-	$.post(url, filters)
-		.done(function(response) {
-			removeAll();
-			response.data.map(function(ordem) {
-				popula_markers(ordem);
-			});
-		})
-		.fail(function(response) {});
-
-	btn_ativar($("#filtrar"));
-});
-
-function removeAll() {
-	if (markers !== null) {
-		markers.map(marker => {
-			marker.setMap();
-			marker.setVisible(false);
-		});
-	}
-}
-
-function get_filters() {
-	let filters = {
-		departamento_fk: departamento.val() != -1 ? departamento.val() : null,
-		tipo_servico_pk: tipo_servico.val() != -1 ? tipo_servico.val() : null,
-		servico_fk: servico.val() != -1 ? servico.val() : null,
-		prioridade_fk: prioridade.val() != -1 ? prioridade.val() : null,
-		setor_fk: setor.val() != -1 ? setor.val() : null,
-		situacao_atual_fk: situacao.val() != -1 ? situacao.val() : null,
-		data_inicial: de.val() != -1 ? de.val() + " 00:01:00" : null,
-		data_final: ate.val() != -1 ? ate.val() + " 23:59:00" : null
+function createCurrentSituationOject(os) {
+	let data = {
+		funcionario_caminho_foto: os.funcionario_caminho_foto,
+		funcionario_nome: os.funcionario_nome,
+		ordem_servico_atualizacao: os.ordem_servico_atualizacao,
+		situacao_atual_nome: os.situacao_nome,
+		ordem_servico_comentario: os.ordem_servico_comentario
 	};
 
-	return filters;
+	return data;
 }
 
 class Request extends GenericRequest {
@@ -215,8 +164,8 @@ class Request extends GenericRequest {
 
 	async init() {
 		let filters = {
-			data_inicial: formatDate(lastWeek()) + " 23:59:00",
-			data_final: formatDate(new Date()) + " 00:00:00"
+			data_inicial: formatDate(lastWeekDate()) + " 00:00:00",
+			data_final: formatDate(new Date()) + " 23:59:59"
 		};
 		return this.getOSbyFilter(filters);
 	}
@@ -249,9 +198,14 @@ class Control extends GenericControl {
 		this.myView.renderModalFromMap(os_data.data);
 		btn_ativar($("#filtrar"));
 	}
+
+	async showFilteredOS() {
+		let filters = this.myView.get_filters();
+		let data = this.myRequests.getOSbyFilter(filters);
+		return data;
+	}
 }
 
-// Dummy View for the GenericControl
 class View extends GenericView {
 	constructor() {
 		super();
@@ -284,6 +238,21 @@ class View extends GenericView {
 		$(".carousel-inner").html(cards);
 		$("#timeline").html(timeline);
 		$("#v_evidencia").modal("show");
+	}
+
+	get_filters() {
+		let filters = {
+			departamento_fk: departamento.val() != -1 ? departamento.val() : null,
+			tipo_servico_pk: tipo_servico.val() != -1 ? tipo_servico.val() : null,
+			servico_fk: servico.val() != -1 ? servico.val() : null,
+			prioridade_fk: prioridade.val() != -1 ? prioridade.val() : null,
+			setor_fk: setor.val() != -1 ? setor.val() : null,
+			situacao_atual_fk: situacao.val() != -1 ? situacao.val() : null,
+			data_inicial: de.val() != "" ? de.val() + " 00:00:00" : null,
+			data_final: ate.val() != "" ? ate.val() + " 23:59:59" : null
+		};
+	
+		return filters;
 	}
 }
 
@@ -324,4 +293,13 @@ const initMap = async () => {
 	map.handleMarkerClick = async event => {
 		await myControl.showSpecificOS(event.ordem_servico_pk);
 	};
+
+	$("#filtrar").click(async () => {
+		$("#p_ordens").hide();
+		btn_load($("#filtrar"));
+		map.clearMarkers();
+		map.state.markers = await myControl.showFilteredOS();
+		map.renderMarkers();
+		btn_ativar($("#filtrar"));
+	});
 };
