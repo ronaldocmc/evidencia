@@ -26,7 +26,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
 */
 
 $localhost = 'http://localhost/evidencia_v2';
-$azure = 'http://evidencia.azurewebsites.net';
+$azure = 'http://evidencia-app.azurewebsites.net';
 
 switch (ENVIRONMENT) {
     case 'production':
