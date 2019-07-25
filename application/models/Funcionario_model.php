@@ -63,7 +63,7 @@ class Funcionario_model extends MY_Model
 
         //echo $this->CI->db->get_compiled_select();
         //echo $this->CI->db->get();
-        $res = $this->CI->db->get()->first_row();
+        $res = $this->CI->db->get();
         var_dump($res);
 
         if ($res == null || !$res) {
