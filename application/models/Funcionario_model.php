@@ -61,7 +61,7 @@ class Funcionario_model extends MY_Model
             $this->CI->db->where($k, $this->object[$k]);
         }
 
-        echo $this->CI->get_compiled_select();
+        echo $this->CI->db->get_compiled_select();
         $res = $this->CI->db->get()->row();
 
         if ($res == null || $res == false) {
