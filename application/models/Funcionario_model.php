@@ -61,14 +61,12 @@ class Funcionario_model extends MY_Model
             $this->CI->db->where($k, $this->object[$k]);
         }
 
-        //echo $this->CI->db->get_compiled_select();
-        $res = $this->CI->db->get();
-        echo 'result=>'.$res->row();
-
-        if ($res->row() == null || !$res->row()) {
+        $res = $this->CI->db->get()->row();
+        
+        if ($res == null || !$res) {
             throw new MyException('Usuário e/ou senha inválidos.', Response::NOT_FOUND);
         } else {
-            return $res->row();
+            return $res;
         }
     }
 
