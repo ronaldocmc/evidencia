@@ -62,8 +62,8 @@ class Funcionario_model extends MY_Model
         }
 
         $res = $this->CI->db->get()->row();
-
-        if ($res == null || $res == false) {
+        
+        if ($res == null || !$res) {
             throw new MyException('Usuário e/ou senha inválidos.', Response::NOT_FOUND);
         } else {
             return $res;

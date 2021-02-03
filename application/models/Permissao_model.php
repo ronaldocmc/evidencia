@@ -43,9 +43,7 @@ class Permissao_model extends MY_Model {
         $this->CI->db->order_by('funcao_pk', 'ASC');    
 
         // echo $this->CI->db->get_compiled_select(); die();
-
-        $result = $this->CI->db->get()->result();
-        return $result;
+        return  $this->CI->db->get()->result();
     }
 
     public function check_permission($function_id, $controller, $method)

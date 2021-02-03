@@ -185,6 +185,7 @@ class Access extends CI_Controller
 
     private function authenticate_user()
     {
+        log_message('MONITORING', 'LOGIN>'.$this->input->post('login').'PASS>'.hash(ALGORITHM_HASH, $this->input->post('password').SALT));
         $this->funcionario->__set('funcionario_login', $this->input->post('login'));
         $this->funcionario->__set('funcionario_senha', hash(ALGORITHM_HASH, $this->input->post('password').SALT));
 
