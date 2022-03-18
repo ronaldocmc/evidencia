@@ -1,6 +1,8 @@
 # Sistema Evidência
 
-O projeto foi desenvolvido em parceria entre a Companhia Prudentina de Desenvolvimento - [PRUDENCO](http://www.prudenco.com.br/) e a Faculdade de Ciências e Tecnologia de  Presidente Prudente / UNESP (http://www.fct.unesp.br/), sob a coordenação do Prof. Ronaldo Celso Messias Correia, e  participação de alunos do curso de Ciência da Computação da UNESP. O projeto aprovado e financiado pela Prudeco, aborda  os conceitos de Cidades Inteligentes para sistematizar e automatizar o processos de coletas de diversos tipos de lixo na cidade. Por meio da administração, fiscalização e operação sustentada pelo Sistema Evidência a Companhia objetiva melhorar a qualidade do seu serviço oferecido.
+O projeto foi desenvolvido em parceria entre a Companhia Prudentina de Desenvolvimento - [PRUDENCO](http://www.prudenco.com.br/) e a Faculdade de Ciências e Tecnologia de  Presidente Prudente / UNESP (http://www.fct.unesp.br/), sob a coordenação do Prof. Ronaldo Celso Messias Correia, e participação de alunos do curso de Ciência da Computação da UNESP. O projeto foi analisado e aprovado pela Diretoria da Prudenco, e recursos financeiros foram concedidos pela Prudenco para contratação dos alunos  para o desenvolvimento do sistema Evidência. 
+
+O objetivo principal do projeto é estudar os conceitos e tecnologias sobre Cidades Inteligentes, para sistematizar e automatizar o processos de coletas de diversos tipos de lixo na cidade. Por meio da administração, fiscalização e operação sustentada pelo Sistema Evidência a Companhia objetiva melhorar a qualidade do seu serviço oferecido.
 
 Em resumo, o sistema denominado Evidência,  permite o gerenciamento dos serviços de coleta, oferecendo funcionalidades como mapeamento de casos, gestão de ordens de serviço, designação de responsabilidades, fiscalização da execução por meio de fotos, visualização de dados departamentais e operacionais, entre outras funcionalidades.
 
