@@ -163,7 +163,7 @@ Nós utilizamos [SemVer](https://semver.org/lang/pt-BR/) para versionamento. Par
 
 - [Maurício Gabriel Torres Rodrigues](https://www.linkedin.com/in/maur%C3%ADcio-rodrigues-6b5196170/) - [@mrodrigs](https://github.com/mrodrigs)
 
-## Professor Orientador
+## Coordenador do Projeto / Orientador
 
 - [Ronaldo Celso Messias Correia](http://lattes.cnpq.br/2420360066008780)
 
